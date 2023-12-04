@@ -1,0 +1,39 @@
+{
+    "name": "mGramSeva",
+    "short_name": "mGramSeva",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#eeeeee",
+    "theme_color": "#0B4B66",
+    "description": "A mobile-based application that enables the gram panchayat water committee to collect & manage revenue and expenditure.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshots/mGramSeva.jpg",
+            "sizes": "320x640",
+            "type": "image/jpeg",
+            "form_factor": "narrow",
+            "label": "mGramSeva"
+        },
+        {
+            "src": "screenshots/mGramSeva-web.png",
+            "sizes": "640x320",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "mGramSeva-web"
+        }
+    ]
+}
