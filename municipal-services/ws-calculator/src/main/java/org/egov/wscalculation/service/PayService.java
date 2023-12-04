@@ -62,7 +62,8 @@ public class PayService {
 	 * @return estimation of time based exemption
 	 */
 	public Map<String, BigDecimal> applyPenaltyRebateAndInterest(BigDecimal waterCharge,
-			String assessmentYear, Map<String, JSONArray> timeBasedExemptionMasterMap, Long billingExpiryDate) {
+			String assessmentYear,Map<String, Object> penaltyMaster, Long billingExpiryDate, 
+			boolean isGetPenaltyEstimate, int demandListSize) {
 
 		if (BigDecimal.ZERO.compareTo(waterCharge) >= 0)
 			return Collections.emptyMap();
@@ -71,9 +72,9 @@ public class PayService {
 		long numberOfDaysInMillis = billingExpiryDate - currentUTC;
 		BigDecimal noOfDays = BigDecimal.valueOf((TimeUnit.MILLISECONDS.toDays(Math.abs(numberOfDaysInMillis))));
 		if(BigDecimal.ONE.compareTo(noOfDays) <= 0) noOfDays = noOfDays.add(BigDecimal.ONE);
-		BigDecimal penalty = getApplicablePenalty(waterCharge, noOfDays, timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_PENANLTY_MASTER));
-		BigDecimal interest = getApplicableInterest(waterCharge, noOfDays, timeBasedExemptionMasterMap.get(WSCalculationConstant.WC_INTEREST_MASTER));
-		estimates.put(WSCalculationConstant.WS_TIME_PENALTY, penalty.setScale(2, 2));
+		BigDecimal penaltyType = getApplicablePenalty(waterCharge, noOfDays,penaltyMaster,isGetPenaltyEstimate,demandListSize);
+		BigDecimal interest = getApplicableInterest(waterCharge, noOfDays, penaltyMaster);
+		estimates.put(WSCalculationConstant.WS_TIME_PENALTY, penaltyType.setScale(2, 2));
 		estimates.put(WSCalculationConstant.WS_TIME_INTEREST, interest.setScale(2, 2));
 		return estimates;
 	}
@@ -102,19 +103,32 @@ public class PayService {
 	 *            master configuration
 	 * @return applicable penalty
 	 */
-	public BigDecimal getApplicablePenalty(BigDecimal waterCharge, BigDecimal noOfDays, JSONArray config) {
+	public BigDecimal getApplicablePenalty(BigDecimal waterCharge, BigDecimal noOfDays, Map<String, Object> penaltyMaster
+			, boolean isGetPenaltyEstimate, int demandListSize) {
+
 		BigDecimal applicablePenalty = BigDecimal.ZERO;
-		Map<String, Object> penaltyMaster = mDService.getApplicableMaster(estimationService.getAssessmentYear(), config);
-		if (null == penaltyMaster) return applicablePenalty;
-		BigDecimal daysApplicable = null != penaltyMaster.get(WSCalculationConstant.DAYA_APPLICABLE_NAME)
-				? BigDecimal.valueOf(((Number) penaltyMaster.get(WSCalculationConstant.DAYA_APPLICABLE_NAME)).intValue())
-				: null;
-		if (daysApplicable == null)
-			return applicablePenalty;
-		BigDecimal daysDiff = noOfDays.subtract(daysApplicable);
-		if (daysDiff.compareTo(BigDecimal.ONE) < 0) {
+
+		String type = (String) penaltyMaster.get(WSCalculationConstant.TYPE_FIELD_NAME);
+		String subType = (String) penaltyMaster.get(WSCalculationConstant.SUBTYPE_FIELD_NAME);
+		
+		if (null == penaltyMaster) {
 			return applicablePenalty;
 		}
+		BigDecimal daysApplicable = null != penaltyMaster.get(WSCalculationConstant.DAYS_APPLICABLE_NAME)
+				? BigDecimal.valueOf(((Number) penaltyMaster.get(WSCalculationConstant.DAYS_APPLICABLE_NAME)).intValue())
+				: null;
+		if (daysApplicable == null) {
+			return applicablePenalty;	
+		}
+			
+		if(!isGetPenaltyEstimate) {
+			BigDecimal daysDiff = noOfDays.subtract(daysApplicable);
+			if (daysDiff.compareTo(BigDecimal.ONE) < 0) {
+				return applicablePenalty;
+			}
+		}
+		
+		
 		BigDecimal rate = null != penaltyMaster.get(WSCalculationConstant.RATE_FIELD_NAME)
 				? BigDecimal.valueOf(((Number) penaltyMaster.get(WSCalculationConstant.RATE_FIELD_NAME)).doubleValue())
 				: null;
@@ -123,13 +137,43 @@ public class PayService {
 				? BigDecimal
 						.valueOf(((Number) penaltyMaster.get(WSCalculationConstant.FLAT_AMOUNT_FIELD_NAME)).doubleValue())
 				: BigDecimal.ZERO;
+		
+		BigDecimal amount = null != penaltyMaster.get(WSCalculationConstant.AMOUNT_FIELD_NAME)
+				? BigDecimal
+						.valueOf(((Number) penaltyMaster.get(WSCalculationConstant.AMOUNT_FIELD_NAME)).doubleValue())
+				: null;
+		
+		applicablePenalty = calculateApplicablePenaltyAmount(waterCharge, type, subType, rate, flatAmt, amount,demandListSize);
+		
+		
+		
+		return applicablePenalty;
+	}
 
-		if (rate == null)
-			applicablePenalty = flatAmt.compareTo(waterCharge) > 0 ? BigDecimal.ZERO : flatAmt;
-		else {
-			// rate of penalty
-			applicablePenalty = waterCharge.multiply(rate.divide(WSCalculationConstant.HUNDRED));
+	private BigDecimal calculateApplicablePenaltyAmount(BigDecimal waterCharge, String type, String subType, BigDecimal rate,
+			BigDecimal flatAmt, BigDecimal amount, int demandListSize) {
+		BigDecimal applicablePenalty = BigDecimal.ZERO;
+		if(WSCalculationConstant.FIXED.equalsIgnoreCase(type) && rate != null) {
+			if(WSCalculationConstant.PENALTY_CURRENT_MONTH.equalsIgnoreCase(subType)
+					|| WSCalculationConstant.PENALTY_OUTSTANDING.equalsIgnoreCase(subType)
+					|| WSCalculationConstant.OUTSTANDING.equalsIgnoreCase(subType)) {
+				applicablePenalty = waterCharge.multiply(rate.divide(WSCalculationConstant.HUNDRED));
+
+			}
+
 		}
+		if(WSCalculationConstant.FLAT.equalsIgnoreCase(type) && amount != null) {
+			if(WSCalculationConstant.PENALTY_CURRENT_MONTH.equalsIgnoreCase(subType)) {
+				applicablePenalty = amount;
+			}
+			if(WSCalculationConstant.PENALTY_OUTSTANDING.equalsIgnoreCase(subType)) {
+				applicablePenalty = amount.multiply(new BigDecimal(demandListSize));
+
+			}
+		}
+//		else {
+//			applicablePenalty = flatAmt.compareTo(waterCharge) > 0 ? BigDecimal.ZERO : flatAmt;
+//		}
 		return applicablePenalty;
 	}
 	
@@ -141,12 +185,11 @@ public class PayService {
 	 *            master configuration
 	 * @return applicable Interest
 	 */
-	public BigDecimal getApplicableInterest(BigDecimal waterCharge, BigDecimal noOfDays, JSONArray config) {
+	public BigDecimal getApplicableInterest(BigDecimal waterCharge, BigDecimal noOfDays, Map<String, Object> interestMaster) {
 		BigDecimal applicableInterest = BigDecimal.ZERO;
-		Map<String, Object> interestMaster = mDService.getApplicableMaster(estimationService.getAssessmentYear(), config);
 		if (null == interestMaster) return applicableInterest;
-		BigDecimal daysApplicable = null != interestMaster.get(WSCalculationConstant.DAYA_APPLICABLE_NAME)
-				? BigDecimal.valueOf(((Number) interestMaster.get(WSCalculationConstant.DAYA_APPLICABLE_NAME)).intValue())
+		BigDecimal daysApplicable = null != interestMaster.get(WSCalculationConstant.DAYS_APPLICABLE_NAME)
+				? BigDecimal.valueOf(((Number) interestMaster.get(WSCalculationConstant.DAYS_APPLICABLE_NAME)).intValue())
 				: null;
 		if (daysApplicable == null)
 			return applicableInterest;

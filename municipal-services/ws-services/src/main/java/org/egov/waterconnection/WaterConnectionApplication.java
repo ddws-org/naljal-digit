@@ -2,6 +2,8 @@ package org.egov.waterconnection;
 
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
+
 import org.egov.tracer.config.TracerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +23,11 @@ public class WaterConnectionApplication{
 	@Value("${app.timezone}")
 	private String timeZone;
 
+	@PostConstruct
+	public void initialize() {
+		TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+	}
+	
 	public static void main(String[] args) {
 		SpringApplication.run(WaterConnectionApplication.class, args);
 

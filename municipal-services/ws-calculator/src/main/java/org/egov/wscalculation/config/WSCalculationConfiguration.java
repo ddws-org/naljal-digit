@@ -185,7 +185,7 @@ public class WSCalculationConfiguration {
 
     	@Value("${egov.shortener.url}")
 	private String shortenerURL;
-    
+     
     	@Value("${egov.property.service.host}")
 	private String propertyHost;
 
@@ -197,4 +197,57 @@ public class WSCalculationConfiguration {
 
 	@Value("${workflow.process.search.path}")
 	private String searchWorkflowProcessEndPoint;
+	
+	@Value("${download.bill.link.path}")
+	private String downLoadBillLink;
+
+	@Value("${bulk.demand.link}")
+	private String bulkDemandLink;
+	
+	//URL Shorting
+	
+    @Value("${egov.url.shortner.host}")
+    private String urlShortnerHost;
+    
+    @Value("${egov.url.shortner.endpoint}")
+    private String urlShortnerEndpoint;
+    
+    // Demand SMS link 
+
+	@Value("${egov.demand.gp.user.link}")
+	private String gpUserDemandLink;
+	
+	@Value("${egov.sms.bill.download.link}")
+	private String billDownloadSMSLink;
+	
+	//Bulk Demand configuration Topics
+
+
+	@Value("${egov.wscal.bulk.demand.schedular.topic}")
+	private String bulkDemandSchedularTopic;
+	
+	@Value("${egov.generate.bulk.demand.manually.topic}")
+	private String generateBulkDemandTopic;
+
+	@Value("${egov.bilk.demand.failed.link}")
+	private String bulkDemandFailedLink;
+
+	@Value("${egov.sms.bill.payment.link}")
+	private String billPaymentSMSLink;
+
+	@Value("${egov.pspcl.vendor.number}")
+	private String pspclVendorNumber;
+
+	@Value("${sms.demand.enabled}")
+	private  boolean isSmsForDemandEnable;
+
+	@Value("${sms.payment.link.enabled}")
+	private  boolean isSmsForPaymentLinkEnable;
+
+	@Value("${sms.bill.download.enabled}")
+	private boolean isSmsForBillDownloadEnabled;
+
+	@Value("${sms.exclude.tenant}")
+	private String smsExcludeTenant;
+	
 }

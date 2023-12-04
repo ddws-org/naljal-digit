@@ -15,8 +15,8 @@ public class UserEventsQueryBuilder {
 	@Autowired
 	private PropertiesManager properties;
 	
-	public static final String EVENT_SEARCH_QUERY = "SELECT id, tenantid, source, eventtype, category, description, status, referenceid, name, postedby,"
-			+ " eventdetails, actions, recepient, createdby, createdtime, lastmodifiedby, lastmodifiedtime FROM eg_usrevents_events ";
+	public static final String EVENT_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, id, tenantid, source, eventtype, category, description, status, referenceid, name, postedby,"
+			+ " eventdetails, actions, recepient, additionaldetails, createdby, createdtime, lastmodifiedby, lastmodifiedtime FROM eg_usrevents_events ";
 	
 	public static final String EVENT_INNER_SEARCH_QUERY = "id IN (SELECT eventid FROM eg_usrevents_recepnt_event_registry WHERE ";
 	

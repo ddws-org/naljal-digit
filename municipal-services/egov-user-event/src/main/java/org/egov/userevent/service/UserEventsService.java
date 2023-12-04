@@ -62,6 +62,7 @@ import org.egov.userevent.model.RecepientEvent;
 import org.egov.userevent.model.enums.Status;
 import org.egov.userevent.producer.UserEventsProducer;
 import org.egov.userevent.repository.UserEventRepository;
+import org.egov.userevent.repository.rowmappers.UserEventRowMapper;
 import org.egov.userevent.utils.ResponseInfoFactory;
 import org.egov.userevent.utils.UserEventsConstants;
 import org.egov.userevent.utils.UserEventsUtils;
@@ -104,6 +105,9 @@ public class UserEventsService {
 	@Autowired
 	private LocalizationService localizationService;
 
+	@Autowired
+	private UserEventRowMapper rowMapper;
+	
 	/**
 	 * Service method to create events Enriches the request and produces it on the
 	 * queue for persister to pick.
@@ -238,7 +242,7 @@ public class UserEventsService {
 			events = repository.fetchEvents(criteria);
 		}
 		return EventResponse.builder().responseInfo(responseInfo.createResponseInfoFromRequestInfo(requestInfo, true))
-				.events(events).build();
+				.events(events).totalCount(rowMapper.getFull_count()).build();
 	}
 
 	/**
@@ -252,10 +256,9 @@ public class UserEventsService {
 	 */
 	public List<Event> citizenSearchPostProcessor(List<Event> events, EventSearchCriteria criteria) {
 		events = events.stream()
-				.filter(obj -> (obj.getEventType().equals(UserEventsConstants.MEN_MDMS_BROADCAST_CODE)
-						&& obj.getStatus().equals(Status.ACTIVE))
-						|| (obj.getEventType().equals(UserEventsConstants.MEN_MDMS_EVENTSONGROUND_CODE)
-								|| obj.getEventType().equals(UserEventsConstants.MEN_MDMS_SYSTEMGENERATED_CODE)))
+				.filter(obj -> (obj.getEventType().equals(UserEventsConstants.MEN_MDMS_BROADCAST_CODE) && obj.getStatus().equals(Status.ACTIVE)) 
+						|| (obj.getEventType().equals(UserEventsConstants.MEN_MDMS_EVENTSONGROUND_CODE) || obj.getEventType().equals(UserEventsConstants.MEN_MDMS_SYSTEMGENERATED_CODE)) 
+						|| obj.getStatus().equals(Status.READ))
 				.collect(Collectors.toList()); // Everything except inactive BROADCASTs by default.
 
 		if (!CollectionUtils.isEmpty(criteria.getEventTypes())) {
@@ -327,7 +330,7 @@ public class UserEventsService {
 				}// BROADCASTs are ACTIVE only between the given from and to date, they're INACTIVE beyond that.
 				
 				else {
-					if(null != event.getEventDetails().getToDate()) {
+					if(null != event.getEventDetails().getToDate() && !event.getStatus().equals(Status.READ)) {
 						if((event.getEventDetails().getToDate() < new Date().getTime())) {
 							event.setStatus(Status.INACTIVE);
 							tobeAdded = true;

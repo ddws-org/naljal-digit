@@ -3,8 +3,11 @@ package org.egov.echallan.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
+import org.egov.echallan.expense.validator.ExpenseValidator;
 import org.egov.echallan.model.AuditDetails;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
@@ -42,6 +45,15 @@ public class PaymentUpdateService {
 	
 	@Autowired
 	 private CommonUtils commUtils;
+
+	@Autowired
+	private CommonUtils utils;
+
+	@Autowired
+	private ExpenseValidator expenseValidator;
+
+	@Autowired
+	private UserService userService;
 	
 	
 	
@@ -58,17 +70,28 @@ public class PaymentUpdateService {
 			for (PaymentDetail paymentDetail : paymentDetails) {
 				SearchCriteria criteria = new SearchCriteria();
 				criteria.setTenantId(paymentRequest.getPayment().getTenantId());
-				criteria.setChallanNo(paymentDetail.getBill().getConsumerCode());
+				criteria.setReferenceId(paymentDetail.getBill().getConsumerCode());
 				criteria.setBusinessService(paymentDetail.getBusinessService());
-				List<Challan> challans = challanService.search(criteria, requestInfo);
-				//update challan only if payment is done for challan. 
+				Map<String, String> finalData = new HashMap<String, String>();
+				List<Challan> challans = challanService.search(criteria, requestInfo, finalData);
+				//update challan only if payment is done for challan.
+
 				if(!CollectionUtils.isEmpty(challans) ) {
 					String uuid = requestInfo.getUserInfo().getUuid();
 				    AuditDetails auditDetails = commUtils.getAuditDetails(uuid, true);
-					challans.forEach(challan -> challan.setApplicationStatus(StatusEnum.PAID));
-					challans.get(0).setAuditDetails(auditDetails);
-					ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challans.get(0)).build();
-					producer.push(config.getUpdateChallanTopic(), request);
+
+					challans.forEach(challan -> {
+						ChallanRequest challanRequest = new ChallanRequest(requestInfo, challan);
+						Object mdmsData = utils.mDMSCall(challanRequest);
+						expenseValidator.validateFields(challanRequest, mdmsData);
+						userService.setAccountUser(challanRequest);
+
+						challan.setApplicationStatus(StatusEnum.PAID);
+						challan.setIsBillPaid(true);
+						challan.setAuditDetails(auditDetails);
+						ChallanRequest request = ChallanRequest.builder().requestInfo(requestInfo).challan(challan).build();
+						producer.push(config.getUpdateChallanTopic(), request);
+					});
 				}
 			}
 		} catch (Exception e) {

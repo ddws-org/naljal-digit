@@ -80,6 +80,10 @@ public class ChallanConfiguration {
 
     @Value("${persister.update.challan.topic}")
     private String updateChallanTopic;
+    
+    @Value("${persister.update.status.challan.topic}")
+    private String updateStatusChallanTopic;
+
 
     //Location Config
     @Value("${egov.location.host}")
@@ -183,10 +187,94 @@ public class ChallanConfiguration {
     @Value("${egov.localityservice.host}")
     private String boundaryHost;
 
-    @Value("${egov.locality.search.endpoint}")
-    private String fetchBoundaryEndpoint;
+	@Value("${egov.locality.search.endpoint}")
+	private String fetchBoundaryEndpoint;
 
-    @Value("${state.level.tenant.id}")
-    public String stateLevelTenantId;
+	// Vendor
+	@Value("${egov.vendor.host}")
+	private String vendorHost;
+
+	@Value("${egov.vendor.context.path}")
+	private String vendorContextPath;
+
+	@Value("${egov.vendor.search.path}")
+	private String vendorSearchEndpoint;
+
+	@Value("${egov.collection.service.host}")
+	private String paymentContextPath;
+
+	@Value("${egov.collection.service.create.endpoint}")
+	private String paymentCreateEndpoint;
+
+	@Value("${egov.billing.service.search.path}")
+	private String searchBill;
+	
+	@Value("${egov.collection.service.search}")
+	private String paymentSearchEndpoint;
+	
+	@Value("${egov.collection.payment.update.search}")
+	private String paymentUpdateSearch;
+	
+	@Value("${egov.collection.payment.update.search.endpoint}")
+	private String paymentUpdateSearchEndpoint;
+	
+	@Value("${egov.collection.service.update}")
+	private String paymentUpdateEndpoint;
+	
+	@Value("${egov.month.revenue.dashboard.link}")
+	private String monthRevenueDashboardLink;
+	
+	@Value("${egov.month.dashboard.link}")
+	private String monthDashboardLink;
+	
+	@Value("${egov.expenditure.link}")
+	private String expenditureLink;
+	
+	@Value("${egov.demand.generation.link}")
+	private String demanGenerationLink;
+	
+	@Value("${egov.expense.bill.markpaid.link}")
+	private String expenseBillMarkPaidLink;
+	
+	@Value("${egov.day.collection.link}")
+	private String dayCollectionLink;
+	
+	
+// adding Event notification paths.
+	
+	@Value("${egov.pending.collection.link}")
+	private String pendingCollectionLink;
+	
+	@Value("${egov.monthly.summary.link}")
+	private String monthlySummary;
+
+	@Value("${egov.new.Expenditure.link}")
+	private String newExpenditureLink;
+
+	@Value("${egov.mark.paid.Expenditure.link}")
+	private String markPaidExpenditureLink;
+
+	@Value("${egov.bilk.demand.failed.link}")
+	private String bulkDemandFailedLink;
+
+	@Value("${egov.today.collection.link}")
+	private String todayCollectionLink;
+
+    @Value("${billing.service.host}")
+    private String billingServiceHost;
+
+    @Value("${billing.service.search.bill.endpoint}")
+    private String billingServiceSearchBillEndpoint;
+
+    @Value("${sms.expenditure.enabled}")
+    private boolean isSmsForExpenditureEnabled;
+
+    @Value("${sms.expenditure.mark.bill.enabled}")
+    private boolean isSmsForMarkBillEnabled;
+
+    @Value("${sms.monthy.summary.enabled}")
+    private boolean isSmsForMonthlySummaryEnabled;
+
+
 
 }

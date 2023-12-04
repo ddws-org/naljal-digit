@@ -1,5 +1,7 @@
 package org.egov.wscalculation.web.models;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -53,5 +55,5 @@ public class Event {
 	
 	private EventDetails eventDetails;
 		
-
+	private Map<String, Object> additionalDetails;
 }

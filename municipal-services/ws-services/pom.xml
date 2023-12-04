@@ -1,18 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.egov</groupId>
 	<artifactId>ws-services</artifactId>
 	<packaging>jar</packaging>
 	<name>water-services</name>
-	<version>1.4.2-SNAPSHOT</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<properties>
-		<log4j2.version>2.17.1</log4j2.version>
 		<java.version>1.8</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<lombok.version>1.18.8</lombok.version>
 		<springfox-version>2.7.0</springfox-version>
+		<log4j2.version>2.17.1</log4j2.version>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -107,6 +108,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -152,41 +164,41 @@
 				</configuration>
 			</plugin>
 			<plugin>
-		        <groupId>cz.habarta.typescript-generator</groupId>
-		        <artifactId>typescript-generator-maven-plugin</artifactId>
-		        <version>2.22.595</version>
-		        <executions>
-		          <execution>
-		            <id>generate</id>
-		            <goals>
-		              <goal>generate</goal>
-		            </goals>
-		            <phase>process-classes</phase>
-		          </execution>
-		        </executions>
-		        <configuration>
-		          <jsonLibrary>jackson2</jsonLibrary>
-		          <classes>
-			          <class>org.egov.waterconnection.web.models.Connection</class>
-			          <class>org.egov.waterconnection.web.models.WaterConnection</class>
-			          <class>org.egov.waterconnection.web.models.Document</class>
-			          <class>org.egov.waterconnection.web.models.PlumberInfo</class>
-			          <class>org.egov.waterconnection.web.models.RequestInfoWrapper</class>
-			          <class>org.egov.waterconnection.web.models.WaterConnectionRequest</class>
-			          <class>org.egov.waterconnection.web.models.WaterConnectionResponse</class>
-		          </classes>
-		          <customTypeMappings>
+				<groupId>cz.habarta.typescript-generator</groupId>
+				<artifactId>typescript-generator-maven-plugin</artifactId>
+				<version>2.22.595</version>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<jsonLibrary>jackson2</jsonLibrary>
+					<classes>
+						<class>org.egov.waterconnection.web.models.Connection</class>
+						<class>org.egov.waterconnection.web.models.WaterConnection</class>
+						<class>org.egov.waterconnection.web.models.Document</class>
+						<class>org.egov.waterconnection.web.models.PlumberInfo</class>
+						<class>org.egov.waterconnection.web.models.RequestInfoWrapper</class>
+						<class>org.egov.waterconnection.web.models.WaterConnectionRequest</class>
+						<class>org.egov.waterconnection.web.models.WaterConnectionResponse</class>
+					</classes>
+					<customTypeMappings>
 						<customTypeMapping>org.egov.common.contract.request.User:User</customTypeMapping>
 						<customTypeMapping>org.egov.waterconnection.web.models.users.User:User</customTypeMapping>
 						<customTypeMapping>org.egov.common.contract.request.User:User</customTypeMapping>
 						<customTypeMapping>org.egov.common.contract.request.RequestInfo:RequestInfo</customTypeMapping>
 						<customTypeMapping>org.egov.common.contract.response.ResponseInfo:ResponseInfo</customTypeMapping>
 					</customTypeMappings>
-		          <namespace>Digit</namespace>
-		          <debug>true</debug>
-		          <outputKind>module</outputKind>
-	          	</configuration>
-          </plugin>
+					<namespace>Digit</namespace>
+					<debug>true</debug>
+					<outputKind>module</outputKind>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

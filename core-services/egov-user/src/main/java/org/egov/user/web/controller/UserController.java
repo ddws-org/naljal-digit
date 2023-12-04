@@ -197,6 +197,10 @@ public class UserController {
             if ((isEmpty(searchCriteria.getId()) && isEmpty(searchCriteria.getUuid())) && (searchCriteria.getLimit() > defaultSearchSize
                     || searchCriteria.getLimit() == 0))
                 searchCriteria.setLimit(defaultSearchSize);
+        }else if ((searchCriteria.getLimit() > 5000 || searchCriteria.getLimit() == 0)) {
+            log.info("User search request:"+searchCriteria);
+            log.info("INside set limit interservice call limit:"+searchCriteria.getLimit());
+            searchCriteria.setLimit(5000);
         }
 
         List<User> userModels = userService.searchUsers(searchCriteria, isInterServiceCall(headers), request.getRequestInfo());

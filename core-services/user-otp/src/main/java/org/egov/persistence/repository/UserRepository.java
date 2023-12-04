@@ -46,7 +46,7 @@ public class UserRepository {
             List<UserSearchResponseContent> users = (List<UserSearchResponseContent>) response.get("user");
             if (!users.isEmpty()) {
                 UserSearchResponseContent user = mapper.convertValue(users.get(0), UserSearchResponseContent.class);
-                return new User(user.getId(), user.getEmailId(), user.getMobileNumber());
+                return new User(user.getId(), user.getEmailId(), user.getMobileNumber(), false);
             } else {
                 return null;
             }

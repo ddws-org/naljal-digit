@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.1.4 - 2021-05-11
+
+- Added additional details to store the user event loclization message and placeholder values to support localization in ui
+
 ## 1.1.3 - 2021-05-11
 
 - Fixed security issue of untrusted data pass as user input.

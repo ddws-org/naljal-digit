@@ -1,5 +1,6 @@
 package org.egov.waterconnection.web.models;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +53,10 @@ public class SearchCriteria {
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
 	
+
+	@JsonProperty("name")
+	private String name;
+	
 	@JsonProperty("propertyId")
 	private String propertyId;
 
@@ -72,6 +77,9 @@ public class SearchCriteria {
 	
 	@JsonProperty("applicationType")
 	private String applicationType;
+	
+	@JsonProperty("propertyType")
+	private String propertyType;
 
 	@JsonProperty("locality")
 	private String locality;
@@ -84,6 +92,47 @@ public class SearchCriteria {
 
 	@JsonIgnore
 	private List<String> ownerIds;
+	
+	@JsonIgnore
+	@JsonProperty("iscollectionAmount")
+	private Boolean iscollectionAmount = false;
+	
+	@JsonProperty("sortBy")
+    private SortBy sortBy;
+	
+	@JsonProperty("sortOrder")
+	private SortOrder sortOrder;
+	
+	@JsonProperty("isPropertyCount")
+	private Boolean isPropertyCount = false;
+	
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+	
+	private Boolean isCollectionDataCount = false;
+	
+	@JsonProperty("isCollectionCount") 
+	private Boolean isCollectionCount = false;
+
+	@JsonProperty("currentDate")
+	private Long currentDate;
+	
+	@JsonProperty("textSearch")
+	private String textSearch;
+	
+	private Set<String> connectionNoSet;
+	
+	public enum SortOrder {
+	    ASC,
+	    DESC
+	}
+	public enum SortBy {
+		connectionNumber,
+		name,
+		collectionAmount,
+		collectionPendingAmount,
+		lastDemandGeneratedDate
+	}
 
 	public boolean isEmpty() {
 		return (StringUtils.isEmpty(this.tenantId) && StringUtils.isEmpty(this.mobileNumber)
@@ -99,6 +148,15 @@ public class SearchCriteria {
 				&& this.connectionNumber == null && this.oldConnectionNumber == null && this.mobileNumber == null
 				&& this.fromDate == null && this.toDate == null && this.ownerIds == null && this.propertyId == null
 				&& this.applicationType == null);
+	}
+	
+	public boolean mobileNumberOny() {
+		return (!StringUtils.isEmpty(this.tenantId) 
+				&& StringUtils.isEmpty(this.propertyId) && CollectionUtils.isEmpty(this.ids)
+				&& StringUtils.isEmpty(this.oldConnectionNumber) && StringUtils.isEmpty(this.connectionNumber)
+				&& StringUtils.isEmpty(this.status) && StringUtils.isEmpty(this.applicationNumber)
+				&& StringUtils.isEmpty(this.applicationStatus) && StringUtils.isEmpty(this.fromDate)
+				&& StringUtils.isEmpty(this.toDate) && StringUtils.isEmpty(this.applicationType));
 	}
 
 }

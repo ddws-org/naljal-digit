@@ -70,4 +70,21 @@ public class MasterDataService {
 		return (String) billingMap.get(WCConstants.BILLING_CYCLE_STRING);
 	}
 	
+	public Object getFeedbackQuestions(RequestInfo requestInfo, String tenantId){
+		MasterDetail masterDetail=MasterDetail.builder().name(WCConstants.MDMS_FEEDBACK).filter("[?(@.active== " + true+")]").build();
+		ModuleDetail moduleDetail = ModuleDetail.builder().moduleName(WCConstants.MDMS_WC_MOD_NAME)
+				.masterDetails(Arrays.asList(masterDetail)).build();
+		MdmsCriteria mdmsCriteria = MdmsCriteria.builder().moduleDetails(Arrays.asList(moduleDetail)).tenantId(tenantId)
+				.build();
+	 MdmsCriteriaReq mdmsCriteriaReq=MdmsCriteriaReq.builder().requestInfo(requestInfo).mdmsCriteria(mdmsCriteria).build();
+		
+	  StringBuilder uri = new StringBuilder(mdmsHost).append(mdmsEndpoint);
+		Object res = repository.fetchResult(uri, mdmsCriteriaReq);
+		if (res == null) {
+			throw new CustomException("MDMS_ERROR_FOR_CHECKLIST", "ERROR IN FETCHING THE CHECKList");
+		}
+		
+		return res;
+	}
+	
 }

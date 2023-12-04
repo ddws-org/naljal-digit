@@ -45,10 +45,14 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandCriteria;
+import org.egov.demand.model.DemandHistory;
+import org.egov.demand.producer.Producer;
 import org.egov.demand.service.DemandService;
 import org.egov.demand.util.migration.DemandMigration;
+import org.egov.demand.web.contract.DemandHistoryResponse;
 import org.egov.demand.web.contract.DemandRequest;
 import org.egov.demand.web.contract.DemandResponse;
 import org.egov.demand.web.contract.RequestInfoWrapper;
@@ -81,6 +85,14 @@ public class DemandController {
 	
 	@Autowired
 	private DemandMigration migrationService;
+	
+	@Autowired
+	private ApplicationProperties properties;
+	
+	@Autowired
+	Producer producer;
+	
+	
 
 	/**
 	 * API to create demands
@@ -96,14 +108,21 @@ public class DemandController {
 		log.info("the demand request object : " + demandRequest);
 
 		DemandResponse demandResponse = demandService.create(demandRequest);
-
+		
+		demandRequest.setDemands(demandResponse.getDemands());
+		
+		producer.push(properties.getCreateDemand(), demandRequest);
+		
 		return new ResponseEntity<>(demandResponse, HttpStatus.CREATED);
 	}
 
 	@PostMapping("_update")
 	public ResponseEntity<?> update(@RequestHeader HttpHeaders headers, @RequestBody @Valid DemandRequest demandRequest) {
 
-		return new ResponseEntity<>(demandService.updateAsync(demandRequest, null), HttpStatus.CREATED);
+		DemandResponse demandResponse=demandService.updateAsync(demandRequest, null);
+		demandRequest.setDemands(demandResponse.getDemands());
+		producer.push(properties.getUpdateDemand(), demandRequest);
+		return new ResponseEntity<>(demandResponse, HttpStatus.CREATED);
 	}
 
 	@PostMapping("_search")
@@ -127,8 +146,21 @@ public class DemandController {
 	public ResponseEntity<?> migrate(@RequestBody @Valid RequestInfoWrapper wrapper,
 			@RequestParam(required=false) Integer batchStart, @RequestParam(required=true) Integer batchSizeInput) {
 
-		Map<String, String> resultMap = migrationService.migrateToV1(batchStart, batchSizeInput);
+		Map<String, String> resultMap = migrationService.migrateToV1(batchStart, batchSizeInput, wrapper.getRequestInfo().getUserInfo().getTenantId().substring(0,2));
 		return new ResponseEntity<>(resultMap, HttpStatus.OK);
+	}
+    
+    @PostMapping("_history")
+	public ResponseEntity<?> history(@RequestBody RequestInfoWrapper requestInfoWrapper,
+			@ModelAttribute @Valid DemandCriteria demandCriteria) {
+
+		RequestInfo requestInfo = requestInfoWrapper.getRequestInfo();
+
+		DemandHistory demands = demandService.getDemandHistory(demandCriteria, requestInfo);
+		DemandHistoryResponse response = DemandHistoryResponse.builder().demands(demands.getDemandList())
+				.advanceAdjustedAmount(demands.getAdvanceAdjustedAmount()).waterCharge(demands.getWaterCharge()).
+				responseInfo(responseFactory.getResponseInfo(requestInfo, HttpStatus.OK)).build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
     
 }

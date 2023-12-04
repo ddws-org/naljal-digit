@@ -1,12 +1,12 @@
 package org.egov.echallan.util;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.ReadContext;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.springframework.web.client.RestTemplate;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
@@ -15,11 +15,16 @@ import org.egov.echallan.model.RequestInfoWrapper;
 import org.egov.echallan.repository.ServiceRequestRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.transform.impl.AddInitTransformer;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ReadContext;
 
-import java.math.BigDecimal;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Component
@@ -54,35 +59,46 @@ public class NotificationUtil {
 	}
 
 
-	public HashMap<String, String> getCustomizedMsg(RequestInfo requestInfo, Challan challan ) {
+	public HashMap<String, String> getCustomizedMsg(RequestInfo requestInfo, Challan challan, Map<String, Object> additionalDetailsMap ) {
+		additionalDetailsMap.put("localizationCode", CREATE_CODE);
 		HashMap<String, String> msgDetail  = fetchContentFromLocalization(requestInfo,challan.getTenantId(),MODULE,CREATE_CODE);
-		msgDetail.put(MSG_KEY, getCreateMsg(requestInfo,challan,msgDetail.get(MSG_KEY)));
+		msgDetail.put(MSG_KEY, getCreateMsg(requestInfo,challan,msgDetail.get(MSG_KEY), additionalDetailsMap));
 		return msgDetail;
 	}
 	
 	
-	public HashMap<String, String> getCustomizedMsgForUpdate(RequestInfo requestInfo, Challan challan ) {
+	public HashMap<String, String> getCustomizedMsgForUpdate(RequestInfo requestInfo, Challan challan, Map<String, Object> additionalDetailsMap ) {
+		additionalDetailsMap.put("localizationCode", UPDATE_CODE);
 		HashMap<String, String> msgDetail  =  fetchContentFromLocalization(requestInfo,challan.getTenantId(),MODULE,UPDATE_CODE);
-		msgDetail.put(MSG_KEY, getCreateMsg(requestInfo,challan,msgDetail.get(MSG_KEY)));
+		msgDetail.put(MSG_KEY, getCreateMsg(requestInfo,challan,msgDetail.get(MSG_KEY), additionalDetailsMap));
 		return msgDetail;
 	}
 	
-	public HashMap<String, String> getCustomizedMsgForCancel(RequestInfo requestInfo, Challan challan ) {
+	public HashMap<String, String> getCustomizedMsgForCancel(RequestInfo requestInfo, Challan challan, Map<String, Object> additionalDetailsMap ) {
+		additionalDetailsMap.put("localizationCode", CANCEL_CODE);
 		HashMap<String, String> msgDetail  =  fetchContentFromLocalization(requestInfo,challan.getTenantId(),MODULE,CANCEL_CODE);
-		msgDetail.put(MSG_KEY, getCancelMsg(requestInfo,challan,msgDetail.get(MSG_KEY)));
+		msgDetail.put(MSG_KEY, getCancelMsg(requestInfo,challan,msgDetail.get(MSG_KEY), additionalDetailsMap));
 		return msgDetail;
 	}
 
-	private String getCancelMsg(RequestInfo requestInfo,Challan challan, String message) {
-		 HashMap<String, String> businessMsg  =  fetchContentFromLocalization(requestInfo,challan.getTenantId(),MODULE,formatCodes(challan.getBusinessService()));
+	private String getCancelMsg(RequestInfo requestInfo,Challan challan, String message, Map<String, Object> additionalDetailsMap) {
+		Map<String, String> attributes = new HashMap<>();
+		HashMap<String, String> businessMsg  =  fetchContentFromLocalization(requestInfo,challan.getTenantId(),MODULE,formatCodes(challan.getBusinessService()));
 		 message = message.replace("<citizen>",challan.getCitizen().getName());
 	     message = message.replace("<challanno>", challan.getChallanNo());
 	     message = message.replace("<service>", businessMsg.get(MSG_KEY));
+	     
+	     attributes.put("<citizen>",challan.getCitizen().getName());
+	     attributes.put("<challanno>", challan.getChallanNo());
+	     attributes.put("<service>", businessMsg.get(MSG_KEY));
+	     
+	     additionalDetailsMap.put("attributes", attributes);
 	     return message;
 	}
 	
-	private String getCreateMsg(RequestInfo requestInfo,Challan challan, String message) {
+	private String getCreateMsg(RequestInfo requestInfo,Challan challan, String message, Map<String, Object> additionalDetailsMap) {
 		String billDetails = getBillDetails(requestInfo,challan);
+		Map<String, String> attributes = new HashMap<>();
 		
 		Object obj = JsonPath.parse(billDetails).read(BILL_AMOUNT_JSONPATH);
 		Object expiryDate = JsonPath.parse(billDetails).read(BILL_DUEDATE);
@@ -108,12 +124,23 @@ public class NotificationUtil {
         message = message.replace("<amount>", amountToBePaid.toString());
         String UIHost = config.getUiAppHost();
 		String paymentPath = config.getPayLinkSMS();
-		paymentPath = paymentPath.replace("$consumercode",challan.getChallanNo());
+		paymentPath = paymentPath.replace("$consumercode",challan.getReferenceId());
 		paymentPath = paymentPath.replace("$tenantId",challan.getTenantId());
 		paymentPath = paymentPath.replace("$businessservice",challan.getBusinessService());
 		String finalPath = UIHost + paymentPath;
 		message = message.replace("<Link>",getShortenedUrl(finalPath));
-
+		
+		attributes.put("<citizen>",challan.getCitizen().getName());
+		attributes.put("<challanno>", challan.getChallanNo());
+		attributes.put("<service>", businessMsg.get(MSG_KEY));
+		attributes.put("<fromdate>", " "+ fromcal.get(Calendar.DATE) + "/" + (fromcal.get(Calendar.MONTH)+1) + "/" + fromcal.get(Calendar.YEAR)+ " ".toUpperCase());
+		attributes.put("<todate>", " "+ tocal.get(Calendar.DATE) + "/" + (tocal.get(Calendar.MONTH)+1) + "/" + tocal.get(Calendar.YEAR)+ " ".toUpperCase());
+		attributes.put("<duedate>", " "+ cal.get(Calendar.DATE) + "/" + (cal.get(Calendar.MONTH)+1) + "/" + cal.get(Calendar.YEAR)+ " ".toUpperCase());
+		attributes.put("<amount>", amountToBePaid.toString());
+		attributes.put("<Link>",getShortenedUrl(finalPath));
+		
+		additionalDetailsMap.put("attributes", attributes);
+		
         return message;
     }
 	
@@ -124,15 +151,11 @@ public class NotificationUtil {
 		String templateId = null;
 		HashMap<String, String> msgDetail = new HashMap<String, String>();
 		Object result = null;
-		String locale; // Conventionally locale is sent in the first index of msgid split by |
-		String msgId = requestInfo.getMsgId();
-		if(!StringUtils.isEmpty(msgId)){
-			locale = requestInfo.getMsgId().split("[|]")[1];
-			if(StringUtils.isEmpty(locale))
-				locale = NOTIFICATION_LOCALE;
-		}
-		else
-			locale = NOTIFICATION_LOCALE;
+		
+		String locale = NOTIFICATION_LOCALE;
+		if (!StringUtils.isEmpty(requestInfo.getMsgId()) && requestInfo.getMsgId().split("|").length >= 2)
+			locale = requestInfo.getMsgId().split("\\|")[1];
+			
 		StringBuilder uri = new StringBuilder();
 		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
 		.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
@@ -246,10 +269,40 @@ public class NotificationUtil {
 		builder.append("?tenantId=");
 		builder.append(challan.getTenantId());
 		builder.append("&consumerCode=");
-		builder.append(challan.getChallanNo());
+		builder.append(challan.getReferenceId());
 		builder.append("&businessService=");
 		builder.append(challan.getBusinessService());
 		return builder;
 	}
 	
+	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
+		HashMap<String, String> msgDetail = new HashMap<String, String>();
+		String locale = NOTIFICATION_LOCALE;
+		if (!StringUtils.isEmpty(requestInfo.getMsgId()) && requestInfo.getMsgId().split("|").length >= 2)
+			locale = requestInfo.getMsgId().split("\\|")[1];
+		
+		String templateId = null;
+		Object result = null;
+		StringBuilder uri = new StringBuilder();
+		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
+				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
+				.append("&tenantId=").append(tenantId, 0, 2).append("&module=").append("mgramseva-common")
+				.append("&codes=").append(code);
+
+		Map<String, Object> request = new HashMap<>();
+		request.put("RequestInfo", requestInfo);
+		try {
+			result = serviceRequestRepository.fetchResult(uri, request);
+			Configuration suppressExceptionConfiguration = Configuration.defaultConfiguration()
+					.addOptions(Option.SUPPRESS_EXCEPTIONS);
+			ReadContext jsonData = JsonPath.using(suppressExceptionConfiguration).parse(result);
+			String message = jsonData.read(LOCALIZATION_MSGS_JSONPATH);
+			msgDetail.put(MSG_KEY, message);
+			msgDetail.put(TEMPLATE_KEY, templateId);
+		} catch (Exception e) {
+			log.error("Exception while fetching from localization: " + e);
+		}
+		return msgDetail;
+	}
+
 }

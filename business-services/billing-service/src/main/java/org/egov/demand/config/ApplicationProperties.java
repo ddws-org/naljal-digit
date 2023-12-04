@@ -75,6 +75,9 @@ public class ApplicationProperties {
 	@Value("${bs.bill.billnumber.format}")
 	private String billNumberFormat;
 	
+	@Value("${bs.bill.billnumber.name}")
+	private String billNumberName;
+	
 	@Value("${bs.bill.billnumber.format.module}")
 	private String moduleReplaceStirng;
 	
@@ -193,4 +196,15 @@ public class ApplicationProperties {
     @Value("${amendment.id.format.name}")
     private String amendmentIdFormatName;
     
+    @Value("${kafka.mgramseva.create.demand}")
+    private String createDemand;
+    
+    @Value("${kafka.mgramseva.update.demand}")
+    private String updateDemand;
+    
+    @Value("${kafka.mgramseva.create.bill}")
+    private String createBill;
+    
+    @Value("${kafka.mgramseva.update.bill}")
+    private String updateBill;
 }

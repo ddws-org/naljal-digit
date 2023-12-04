@@ -1,7 +1,19 @@
 package org.egov.echallan.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
+import org.egov.echallan.expense.service.PaymentService;
 import org.egov.echallan.model.AuditDetails;
 import org.egov.echallan.model.Challan;
 import org.egov.echallan.model.Challan.StatusEnum;
@@ -15,21 +27,12 @@ import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.web.models.Idgen.IdResponse;
 import org.egov.echallan.web.models.user.User;
 import org.egov.echallan.web.models.user.UserDetailResponse;
-import org.egov.mdms.model.MasterDetail;
-import org.egov.mdms.model.MdmsCriteria;
-import org.egov.mdms.model.MdmsCriteriaReq;
-import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.jayway.jsonpath.JsonPath;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.egov.echallan.util.ChallanConstants.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class EnrichmentService {
@@ -40,16 +43,23 @@ public class EnrichmentService {
     private UserService userService;
     private ChallanRepository challanRepository;
     private ServiceRequestRepository serviceRequestRepository;
+    private PaymentService paymentService;
+    
+
+
+	@Autowired
+	private ObjectMapper mapper;
     
     @Autowired
     public EnrichmentService(IdGenRepository idGenRepository, ChallanConfiguration config, CommonUtils commonUtils, UserService userService, 
-    		ChallanRepository challanRepository,ServiceRequestRepository serviceRequestRepository) {
+    		ChallanRepository challanRepository,ServiceRequestRepository serviceRequestRepository, PaymentService paymentService) {
         this.idGenRepository = idGenRepository;
         this.config = config;
         this.commUtils = commonUtils;
         this.userService = userService;
         this.challanRepository = challanRepository;
         this.serviceRequestRepository = serviceRequestRepository;
+        this.paymentService = paymentService;
     }
 
     public void enrichCreateRequest(ChallanRequest challanRequest) {
@@ -64,8 +74,12 @@ public class EnrichmentService {
         	challan.getAddress().setId(UUID.randomUUID().toString());
         	challan.getAddress().setTenantId(challan.getTenantId());
         }
-        challan.setFilestoreid(null);
+//        challan.setFilestoreid(null);
         setIdgenIds(challanRequest);
+        // If referenceId not provided in the request, then set it to same value as challanNo
+        if(challan.getReferenceId() == null || challan.getReferenceId().isEmpty()) {
+            challan.setReferenceId(challan.getChallanNo());
+        }
     }
 
     private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey,
@@ -123,12 +137,12 @@ public class EnrichmentService {
         users.forEach(user -> userIdToOwnerMap.put(user.getUuid(),user));
         challans.forEach(challan -> {
         	if(challan.getAccountId()==null)
-                        throw new CustomException("OWNER SEARCH ERROR","The owner of the challan "+challan.getId()+" is not coming in user search");
+                        throw new CustomException("EXP_OWNER_SEARCH_ERROR","The owner of the challan "+challan.getId()+" is not coming in user search");
             else {
                    User user = userIdToOwnerMap.get(challan.getAccountId());
-                   UserInfo userinfo = getUserInfo(user);
+//                   UserInfo userinfo = getUserInfo(user);
                     	
-                   challan.setCitizen(userinfo);
+//                   challan.setCitizen(userinfo);
                  }
        });
 
@@ -150,7 +164,7 @@ public class EnrichmentService {
     }
     public List<Challan> enrichChallanSearch(List<Challan> challans, SearchCriteria criteria, RequestInfo requestInfo){
 
-       
+        
         SearchCriteria searchCriteria = enrichChallanSearchCriteriaWithOwnerids(criteria,challans);
         UserDetailResponse userDetailResponse = userService.getUser(searchCriteria,requestInfo);
         enrichOwner(userDetailResponse,challans);
@@ -169,17 +183,18 @@ public class EnrichmentService {
         return searchCriteria;
     }
 
-	public void enrichUpdateRequest(ChallanRequest request) {
+	public void enrichUpdateRequest(ChallanRequest request, Challan searchChallan) {
 		 RequestInfo requestInfo = request.getRequestInfo();
 	     String uuid = requestInfo.getUserInfo().getUuid();
 	     AuditDetails auditDetails = commUtils.getAuditDetails(uuid, false);
 	     Challan challan = request.getChallan();
 	     challan.setAuditDetails(auditDetails);
+         challan.setReferenceId(searchChallan.getReferenceId());
 	     String fileStoreId = challan.getFilestoreid();
 	     if(fileStoreId!=null) {
 	    	 challanRepository.setInactiveFileStoreId(challan.getTenantId().split("\\.")[0], Collections.singletonList(fileStoreId));
 	     }
-	     challan.setFilestoreid(null);
+	    // challan.setFilestoreid(null);
 	}
 
 }

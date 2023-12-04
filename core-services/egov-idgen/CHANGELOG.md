@@ -1,5 +1,14 @@
 All notable changes to this module will be documented in this file.
 
+
+
+## 1.2.4 - 2022-02-02
+- Updated to log4j2 version 2.17.1
+
+## 1.2.3 - 2021-09-23
+
+- Sequence number format changed.
+
 ## 1.2.2 - 2021-05-11
 
 - TimeZone is now made configurable

@@ -68,11 +68,13 @@ public class UserService {
         StringBuilder url = new StringBuilder();
         url.append(appProperties.getUserServiceHost()).append(appProperties.getUserServiceSearchPath());
         try {
+	    log.debug("url-----> ", url.toString());
+	    log.debug("request-----> ", request);
             userResponse = restTemplate.postForObject(url.toString(), request, UserResponse.class);
         }catch(Exception e) {
             log.error("Exception while fetching user: ", e);
         }
-
+	log.debug("userResponse get------> ", userResponse);
         return userResponse.getUser();
 
     }
@@ -116,7 +118,7 @@ public class UserService {
             log.error("Exception while creating user: ", e);
             return null;
         }
-
+	log.debug("userResponse create------> "+response);
         return response.getUser();
     }
 }

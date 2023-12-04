@@ -42,6 +42,7 @@ public class Property extends PropertyInfo {
 	@SafeHtml
 	private String acknowldgementNumber;
 
+	@NotNull
 	@JsonProperty("propertyType")
 	@SafeHtml
 	private String propertyType;
@@ -103,6 +104,9 @@ public class Property extends PropertyInfo {
 	@DiffIgnore
 	private ProcessInstance workflow;
 	
+	@JsonProperty("AlternateUpdated")
+	private boolean AlternateUpdated;
+	
 	@Builder
 	public Property(String id, String propertyId, String surveyId, List<String> linkedProperties, String tenantId,
 			String accountId, String oldPropertyId, Status status, Address address, String acknowldgementNumber,
@@ -159,4 +163,5 @@ public class Property extends PropertyInfo {
 			this.documents.add(documentsItem);
 		return this;
 	}
+
 }

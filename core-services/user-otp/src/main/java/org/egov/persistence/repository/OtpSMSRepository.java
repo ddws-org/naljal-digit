@@ -1,20 +1,19 @@
 package org.egov.persistence.repository;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.egov.domain.model.Category;
 import org.egov.domain.model.OtpRequest;
+import org.egov.domain.model.User;
 import org.egov.domain.service.LocalizationService;
 import org.egov.persistence.contract.SMSRequest;
 import org.egov.tracer.kafka.CustomKafkaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.util.Map;
-
-import static java.lang.String.format;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
@@ -23,7 +22,10 @@ public class OtpSMSRepository {
 
     private static final String LOCALIZATION_KEY_REGISTER_SMS = "sms.register.otp.msg";
     private static final String LOCALIZATION_KEY_LOGIN_SMS = "sms.login.otp.msg";
-    private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "sms.pwd.reset.otp.msg";
+    private static final String LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS = "RESET_PASSWORD_FIRST_TIME_OTP";
+    private static final String LOCALIZATION_KEY_PWD_RESET_SMS = "RESET_PASSWORD_OTP";
+    private static String locale = "en_IN";
+    private static final String module = "mgramseva-common";
 
     @Value("${expiry.time.for.otp: 4000}")
     private long maxExecutionTime=2000L;
@@ -33,6 +35,8 @@ public class OtpSMSRepository {
 
     private CustomKafkaTemplate<String, SMSRequest> kafkaTemplate;
     private String smsTopic;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private LocalizationService localizationService;
@@ -53,29 +57,45 @@ public class OtpSMSRepository {
 
     private String getMessage(String otpNumber, OtpRequest otpRequest) {
         final String messageFormat = getMessageFormat(otpRequest);
-        return format(messageFormat, otpNumber);
+        String message = messageFormat.replace("{otp}", otpNumber);
+        System.out.println("OTP MSG::" + message);
+        return message;
     }
 
     private String getMessageFormat(OtpRequest otpRequest) {
         String tenantId = getRequiredTenantId(otpRequest.getTenantId());
-        Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, "en_IN", "egov-user");
+        
+        if(StringUtils.isNotBlank(otpRequest.getLocale())) {
+        	locale = otpRequest.getLocale();
+        }
+        
+        Map<String, String> localisedMsgs = localizationService.getLocalisedMessages(tenantId, locale, module);
         if (localisedMsgs.isEmpty()) {
             log.info("Localization Service didn't return any msgs so using default...");
             localisedMsgs.put(LOCALIZATION_KEY_REGISTER_SMS, "Dear Citizen, Your OTP to complete your mSeva Registration is %s.");
             localisedMsgs.put(LOCALIZATION_KEY_LOGIN_SMS, "Dear Citizen, Your Login OTP is %s.");
-            localisedMsgs.put(LOCALIZATION_KEY_PWD_RESET_SMS, "Dear Citizen, Your OTP for recovering password is %s.");
         }
         String message = null;
 
         if (otpRequest.isRegistrationRequestType())
             message = localisedMsgs.get(LOCALIZATION_KEY_REGISTER_SMS);
-        else if (otpRequest.isLoginRequestType())
-            message = localisedMsgs.get(LOCALIZATION_KEY_LOGIN_SMS);
+		else if (otpRequest.isLoginRequestType()) {
+			if (isDefaultPwd(otpRequest))
+				message = localisedMsgs.get(LOCALIZATION_KEY_FIRSTIME_LOGIN_SMS);
+			else
+				message = localisedMsgs.get(LOCALIZATION_KEY_LOGIN_SMS);
+		}
         else
             message = localisedMsgs.get(LOCALIZATION_KEY_PWD_RESET_SMS);
 
         return message;
     }
+    
+	private boolean isDefaultPwd(OtpRequest otpRequest) {
+		final User matchingUser = userRepository.fetchUser(otpRequest.getMobileNumber(), otpRequest.getTenantId(),
+				otpRequest.getUserType());
+		return (!matchingUser.isDefaultPwdChgd());
+	}
 
     /**
      *  getRequiredTenantId() method return tenatid for loclisation 

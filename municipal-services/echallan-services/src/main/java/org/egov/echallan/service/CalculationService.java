@@ -41,7 +41,7 @@ public class CalculationService {
         Challan challan = request.getChallan();
 
         if(challan==null)
-            throw new CustomException("INVALID REQUEST","The request for calculation cannot be empty or null");
+            throw new CustomException("EXP_INVALID_REQUEST","The request for calculation cannot be empty or null");
 
         CalculationRes response = getCalculation(requestInfo,challan);
         List<Calculation> calculations = response.getCalculations();
@@ -75,7 +75,7 @@ public class CalculationService {
             response = mapper.convertValue(result,CalculationRes.class);
         }
         catch (IllegalArgumentException e){
-            throw new CustomException("PARSING ERROR","Failed to parse response of calculate");
+            throw new CustomException("EXP_CAL_ERROR","Failed to parse response of calculate");
         } 
         return response;
     }

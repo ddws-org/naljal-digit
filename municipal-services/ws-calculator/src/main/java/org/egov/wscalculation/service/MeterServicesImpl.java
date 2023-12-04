@@ -78,7 +78,7 @@ public class MeterServicesImpl implements MeterService {
 			criteriaList.add(criteria);
 		});
 		CalculationReq calculationRequest = CalculationReq.builder().requestInfo(requestInfo)
-				.calculationCriteria(criteriaList).isconnectionCalculation(true).build();
+				.calculationCriteria(criteriaList).isconnectionCalculation(true).isAdvanceCalculation(false).build();
 		wSCalculationService.getCalculation(calculationRequest);
 	}
 	

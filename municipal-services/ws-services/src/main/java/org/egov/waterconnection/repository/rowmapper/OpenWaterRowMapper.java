@@ -19,9 +19,21 @@ import java.util.Map;
 
 @Component
 public class OpenWaterRowMapper implements ResultSetExtractor<List<WaterConnection>> {
+	
+	private int full_count=0;
+
+	public int getFull_count() {
+		return full_count;
+	}
+
+	public void setFull_count(int full_count) {
+		this.full_count = full_count;
+	}
+	
 	@Override
     public List<WaterConnection> extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<String, WaterConnection> connectionListMap = new HashMap<>();
+        this.setFull_count(0);
         WaterConnection currentWaterConnection = new WaterConnection();
         while (rs.next()) {
             String Id = rs.getString("connection_Id");
@@ -44,15 +56,22 @@ public class OpenWaterRowMapper implements ResultSetExtractor<List<WaterConnecti
                 additionalDetails.put(WCConstants.INITIAL_METER_READING_CONST, rs.getBigDecimal("initialmeterreading"));
                 additionalDetails.put(WCConstants.APP_CREATED_DATE, rs.getBigDecimal("appCreatedDate"));
                 additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
+                additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
+                additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
                 currentWaterConnection.setAdditionalDetails(additionalDetails);
                 currentWaterConnection
                         .processInstance(ProcessInstance.builder().action((rs.getString("action"))).build());
                 currentWaterConnection.setPropertyId(rs.getString("property_id"));
-
+                currentWaterConnection.setPreviousReadingDate(rs.getLong("previousreadingdate"));
+                currentWaterConnection.setArrears(rs.getBigDecimal("arrears"));
+                currentWaterConnection.setPaymentType(rs.getString("paymentType"));
+                currentWaterConnection.setPenalty(rs.getBigDecimal("penalty"));
+                currentWaterConnection.setAdvance(rs.getBigDecimal("advance"));
                 currentWaterConnection.setConnectionExecutionDate(rs.getLong("connectionExecutionDate"));
                 currentWaterConnection.setApplicationType(rs.getString("applicationType"));
                 currentWaterConnection.setDateEffectiveFrom(rs.getLong("dateEffectiveFrom"));
-
+                this.setFull_count(rs.getInt("full_count"));
+                
                 AuditDetails auditdetails = AuditDetails.builder().createdBy(rs.getString("ws_createdBy"))
                         .createdTime(rs.getLong("ws_createdTime")).lastModifiedBy(rs.getString("ws_lastModifiedBy"))
                         .lastModifiedTime(rs.getLong("ws_lastModifiedTime")).build();

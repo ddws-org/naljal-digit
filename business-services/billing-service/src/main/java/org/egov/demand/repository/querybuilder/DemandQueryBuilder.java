@@ -76,6 +76,23 @@ public class DemandQueryBuilder {
 			+ "dmdl.createdtime AS dlcreatedtime,dmdl.lastModifiedtime AS dllastModifiedtime,"
 			+ "dmdl.tenantid AS dltenantid,dmdl.additionaldetails as detailadditionaldetails " + "FROM egbs_demand_v1 dmd "
 			+ "INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid " + "AND dmd.tenantid=dmdl.tenantid WHERE ";
+	
+	public static final String BASE_DEMAND_HISTORY_QUERY = "SELECT dmd.id AS did,dmd.consumercode AS dconsumercode,"
+			+ "dmd.consumertype AS dconsumertype,dmd.businessservice AS dbusinessservice,dmd.payer,"
+			+ "dmd.billexpirytime AS dbillexpirytime, dmd.fixedBillExpiryDate as dfixedBillExpiryDate, "
+			+ "dmd.taxperiodfrom AS dtaxperiodfrom,dmd.taxperiodto AS dtaxperiodto,"
+			+ "dmd.minimumamountpayable AS dminimumamountpayable,dmd.createdby AS dcreatedby,"
+			+ "dmd.lastmodifiedby AS dlastmodifiedby,dmd.createdtime AS dcreatedtime,"
+			+ "dmd.lastmodifiedtime AS dlastmodifiedtime,dmd.tenantid AS dtenantid,dmd.status,"
+			+ "dmd.additionaldetails as demandadditionaldetails,dmd.ispaymentcompleted as ispaymentcompleted,"
+
+			+ "dmdlau.id AS dlid,dmdlau.demandid AS dldemandid,dmdlau.taxheadcode AS dltaxheadcode,"
+			+ "dmdlau.taxamount AS dltaxamount,dmdlau.collectionamount AS dlcollectionamount,"
+			+ "dmdl.createdby AS dlcreatedby,dmdl.lastModifiedby AS dllastModifiedby,"
+			+ "dmdl.createdtime AS dlcreatedtime,dmdl.lastModifiedtime AS dllastModifiedtime,"
+			+ "dmdl.tenantid AS dltenantid,dmdl.additionaldetails as detailadditionaldetails " + "FROM egbs_demand_v1 dmd "
+			+ "INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid " + "AND dmd.tenantid=dmdl.tenantid "
+			+ "INNER JOIN egbs_demanddetail_v1_audit dmdlau ON dmdl.id=dmdlau.demanddetailid AND dmdl.tenantid=dmdlau.tenantid WHERE ";
 
 	public static final String BASE_DEMAND_DETAIL_QUERY = "SELECT "
 			+ "demanddetail.id AS dlid,demanddetail.demandid AS dldemandid,demanddetail.taxheadcode AS dltaxheadcode,"
@@ -230,7 +247,7 @@ public class DemandQueryBuilder {
 
 	private static void addPagingClause(StringBuilder demandQueryBuilder, List<Object> preparedStatementValues) {
 		demandQueryBuilder.append(" LIMIT ?");
-		preparedStatementValues.add(500);
+		preparedStatementValues.add(5000);
 		demandQueryBuilder.append(" OFFSET ?");
 		preparedStatementValues.add(0);
 	}
@@ -254,5 +271,32 @@ public class DemandQueryBuilder {
 	private void addToPreparedStatement(List<Object> preparedStmtList, Collection<String> ids)
 	{
 		ids.forEach(id ->{ preparedStmtList.add(id);});
+	}
+	
+	public String getDemandHistoryQuery(DemandCriteria demandCriteria, List<Object> preparedStatementValues) {
+
+		StringBuilder demandQuery = new StringBuilder(BASE_DEMAND_HISTORY_QUERY);		
+		
+		if( demandCriteria.getTenantId() != null) {
+			demandQuery.append(" dmd.tenantid = ? ");
+			preparedStatementValues.add(demandCriteria.getTenantId());
+		}
+		if (demandCriteria.getBusinessService() != null) {
+			addAndClause(demandQuery);
+			demandQuery.append("dmd.businessservice=?");
+			preparedStatementValues.add(demandCriteria.getBusinessService());
+		}
+		
+		if (demandCriteria.getConsumerCode() != null && !demandCriteria.getConsumerCode().isEmpty()) {
+			addAndClause(demandQuery);
+			demandQuery.append("dmd.consumercode IN ("
+			+ getIdQueryForStrings(demandCriteria.getConsumerCode()) + ")");
+			addToPreparedStatement(preparedStatementValues, demandCriteria.getConsumerCode());
+		}
+
+		addPagingClause(demandQuery, preparedStatementValues);
+
+		log.info("the query String for demand : " + demandQuery.toString());
+		return demandQuery.toString();
 	}
 }

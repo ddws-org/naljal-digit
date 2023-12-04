@@ -1,6 +1,25 @@
 
 All notable changes to this module will be documented in this file.
 
+## 1.4.0 - 2022-10-14
+- version update
+
+## 1.4.0-beta - 2022-09-13
+- Allowing the creation of bills for advance amount
+- Adding a new api to get the demand audit history
+- Updating the demand search api to filter for active demands
+
+## 1.3.6 - 2022-04-19
+- Allowing payment for employee as well
+
+
+## 1.3.5 - 2022-02-02
+- Updated to log4j2 version 2.17.1
+
+## 1.3.4 - 2021-09-23
+
+ - Change in event type and project id.
+
 ## 1.3.3 - 2021-07-26
 
  - Earliest bill search

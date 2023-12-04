@@ -416,7 +416,6 @@ public class BillServicev2 {
 					billAmount = billAmount.add(billDetail.getAmount());
 				}
 				
-				if (billAmount.compareTo(BigDecimal.ZERO) >= 0) {
 
 					BillV2 bill = BillV2.builder()
 						.auditDetails(util.getAuditDetail(requestInfo))
@@ -435,7 +434,7 @@ public class BillServicev2 {
 						.build();
 				
 					bills.add(bill);
-				}
+				
 			}
 
 		}
@@ -444,15 +443,23 @@ public class BillServicev2 {
 
 	private List<String> getBillNumbers(RequestInfo requestInfo, String tenantId, String module, int count) {
 
+		List<String> billNumbers= new ArrayList<>();
+		List<String> formattedBillNumbers= new ArrayList<>();
+
 		String billNumberFormat = appProps.getBillNumberFormat();
 		billNumberFormat = billNumberFormat.replace(appProps.getModuleReplaceStirng(), module);
 
 		if (appProps.getIsTenantLevelBillNumberingEnabled())
 			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(), "_".concat(tenantId.split("\\.")[1]));
 		else
-			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(), "");
+			billNumberFormat = billNumberFormat.replace(appProps.getTenantIdReplaceString(),"");
 
-		return idGenRepo.getId(requestInfo, tenantId, "billnumberid", billNumberFormat, count);
+		billNumbers = idGenRepo.getId(requestInfo, tenantId, appProps.getBillNumberName(), billNumberFormat, count);
+		
+		if (!billNumbers.isEmpty())
+			billNumbers.forEach(bNumber -> formattedBillNumbers.add(bNumber.replace(appProps.getModuleReplaceStirng(), module)));
+
+		return formattedBillNumbers;
 	}
 
 

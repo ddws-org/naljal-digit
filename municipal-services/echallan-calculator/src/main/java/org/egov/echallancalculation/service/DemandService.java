@@ -1,6 +1,8 @@
 package org.egov.echallancalculation.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
@@ -39,6 +41,9 @@ public class DemandService {
     private DemandRepository demandRepository;
 
     public static final String MDMS_ROUNDOFF_TAXHEAD= "_ROUNDOFF";
+
+    public static final String CHALLAN_NO_ADDITIONAL_FIELD_NAME = "challanNo";
+
     /**
      * Creates or updates Demand
      * @param requestInfo The RequestInfo of the calculation request
@@ -53,17 +58,31 @@ public class DemandService {
         if(!CollectionUtils.isEmpty(calculations)){
 
             String tenantId = calculations.get(0).getTenantId();
-            Set<String> applicationNumbers = calculations.stream().map(calculation -> calculation.getChallan().getChallanNo()).collect(Collectors.toSet());
-            List<Demand> demands = searchDemand(tenantId,applicationNumbers,requestInfo,businessService);
-            Set<String> applicationNumbersFromDemands = new HashSet<>();
-            if(!CollectionUtils.isEmpty(demands))
-                applicationNumbersFromDemands = demands.stream().map(Demand::getConsumerCode).collect(Collectors.toSet());
+            List<String> demandConsumerCodes =
+                    calculations.stream().map(calculation -> calculation.getChallan().getReferenceId()).collect(Collectors.toList());
+            List<Demand> demands = searchDemand(tenantId,demandConsumerCodes,requestInfo,businessService);
+            List<String> applicationNumbersFromDemands = new ArrayList<>();
+            if(!CollectionUtils.isEmpty(demands)) {
+                for(Demand demand : demands) {
+                    if(demand.getAdditionalDetails() != null) {
+                        JsonNode additionalDetails = mapper.convertValue(demand.getAdditionalDetails(), JsonNode.class);
+                        if(additionalDetails != null && additionalDetails.get(CHALLAN_NO_ADDITIONAL_FIELD_NAME) != null) {
+                            String applicationNumberFromDemand =
+                                    additionalDetails.get(CHALLAN_NO_ADDITIONAL_FIELD_NAME).asText();
+                            applicationNumbersFromDemands.add(applicationNumberFromDemand);
+                        }
+                    }
+                }
+            }
 
             for(Calculation calculation : calculations)
-            {      if(!applicationNumbersFromDemands.contains(calculation.getChallan().getChallanNo()))
+            {
+                if (calculation.getChallan() != null) {
+                    if (!applicationNumbersFromDemands.contains(calculation.getChallan().getChallanNo()))
                         createCalculations.add(calculation);
                     else
                         updateCalculations.add(calculation);
+                }
             }
         }
 
@@ -74,9 +93,9 @@ public class DemandService {
             updateDemand(requestInfo,updateCalculations,businessService);
             //Calling fetchbill service after demand creation/updation to handle duplicate bill generation issue
         for (Calculation calculation : calculations) {
-            if(calculation.getChallan().getApplicationStatus()!=null && !calculation.getChallan().getApplicationStatus().equals(StatusEnum.CANCELLED.toString())) {
+            if(calculation.getChallan() != null && calculation.getChallan().getApplicationStatus()!=null && !calculation.getChallan().getApplicationStatus().equals(StatusEnum.CANCELLED.toString())) {
                 String tenantId = calculation.getTenantId();
-                String consumerCode = calculation.getChallan().getChallanNo();
+                String consumerCode = calculation.getChallan().getReferenceId();
                 GenerateBillCriteria billCriteria = GenerateBillCriteria.builder().
                         tenantId(tenantId).
                         consumerCode(consumerCode).
@@ -113,7 +132,7 @@ public class DemandService {
                         calculation.getChallanNo() + " challan with this number does not exist ");
 
             String tenantId = calculation.getTenantId();
-            String consumerCode = calculation.getChallan().getChallanNo();
+            String consumerCode = calculation.getChallan().getReferenceId();
 
             User owner = challan.getCitizen().toCommonUser();
 
@@ -130,6 +149,8 @@ public class DemandService {
             Long taxPeriodTo = challan.getTaxPeriodTo();
             String businessService = challan.getBusinessService();
             addRoundOffTaxHead(calculation.getTenantId(), demandDetails,businessService);
+            ObjectNode additionalDetails = mapper.createObjectNode();
+            additionalDetails.put(CHALLAN_NO_ADDITIONAL_FIELD_NAME, challan.getChallanNo());
             Demand singleDemand = Demand.builder()
                     .consumerCode(consumerCode)
                     .demandDetails(demandDetails)
@@ -139,6 +160,7 @@ public class DemandService {
                     .taxPeriodTo(taxPeriodTo)
                     .consumerType("challan")
                     .businessService(businessService)
+                    .additionalDetails(additionalDetails)
                     .build();
             demands.add(singleDemand);
         }
@@ -155,21 +177,26 @@ public class DemandService {
      */
     private List<Demand> updateDemand(RequestInfo requestInfo,List<Calculation> calculations,String businessService){
         List<Demand> demands = new LinkedList<>();
-        for(Calculation calculation : calculations) {
+        if (calculations != null && !calculations.isEmpty()) {
 
-            List<Demand> searchResult = searchDemand(calculation.getTenantId(),Collections.singleton(calculation.getChallan().getChallanNo())
-                    , requestInfo,businessService);
+            for (Calculation calculation : calculations) {
+                if (calculation.getChallan() != null) {
+                    List<Demand> searchResult = searchDemand(calculation.getTenantId(),
+                            Collections.singletonList(calculation.getChallan().getReferenceId()),
+                            requestInfo, businessService);
 
-            if(CollectionUtils.isEmpty(searchResult))
-                throw new CustomException("INVALID UPDATE","No demand exists for applicationNumber: "+calculation.getChallan().getChallanNo());
-            
-            Demand demand = searchResult.get(0);
-            if(calculation.getChallan().getApplicationStatus()!=null && calculation.getChallan().getApplicationStatus().equals(StatusEnum.CANCELLED.toString()))
-            	demand.setStatus(StatusEnum.CANCELLED);
-            List<DemandDetail> demandDetails = demand.getDemandDetails();
-            List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(calculation,demandDetails);
-            demand.setDemandDetails(updatedDemandDetails);
-            demands.add(demand);
+                    if (CollectionUtils.isEmpty(searchResult))
+                        throw new CustomException("INVALID UPDATE", "No demand exists for applicationNumber: " + calculation.getChallan().getChallanNo());
+
+                    Demand demand = searchResult.get(0);
+                    if (calculation.getChallan().getApplicationStatus() != null && calculation.getChallan().getApplicationStatus().equals(StatusEnum.CANCELLED.toString()))
+                        demand.setStatus(StatusEnum.CANCELLED);
+                    List<DemandDetail> demandDetails = demand.getDemandDetails();
+                    List<DemandDetail> updatedDemandDetails = getUpdatedDemandDetails(calculation, demandDetails);
+                    demand.setDemandDetails(updatedDemandDetails);
+                    demands.add(demand);
+                }
+            }
         }
          return demandRepository.updateDemand(requestInfo,demands);
     }
@@ -182,7 +209,8 @@ public class DemandService {
      * @param requestInfo The RequestInfo of the incoming request
      * @return Lis to demands for the given consumerCode
      */
-    private List<Demand> searchDemand(String tenantId,Set<String> consumerCodes,RequestInfo requestInfo, String businessService){
+    private List<Demand> searchDemand(String tenantId, List<String> consumerCodes,RequestInfo requestInfo,
+                                      String businessService){
         String uri = utils.getDemandSearchURL();
         uri = uri.replace("{1}",tenantId);
         uri = uri.replace("{2}",businessService);
@@ -218,7 +246,8 @@ public class DemandService {
         String consumerCode = billCriteria.getConsumerCode();
         String tenantId = billCriteria.getTenantId();
 
-        List<Demand> demands = searchDemand(tenantId,Collections.singleton(consumerCode),requestInfo,billCriteria.getBusinessService());
+        List<Demand> demands = searchDemand(tenantId, Collections.singletonList(consumerCode), requestInfo,
+                billCriteria.getBusinessService());
 
 
         if(CollectionUtils.isEmpty(demands))

@@ -7,10 +7,16 @@ import org.egov.vendor.web.model.VendorSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Component
 public class VendorQueryBuilder {
 
+	public static final String VENDOR_REPORT_QUERY = "select echallan.challanno,echallan.typeofexpense as type_of_expense,"
+			+ " vendor.name,eg_user.uuid as owner_uuid from eg_echallan echallan INNER JOIN eg_vendor vendor on " +
+			" echallan.vendor=vendor.id INNER JOIN eg_user on eg_user.uuid=vendor.owner_id where " +
+			" echallan.applicationstatus!='CANCELLED' and echallan.tenantid =? " +
+			" and echallan.taxperiodfrom >= ? order by echallan.challanno desc ";
 	@Autowired
 	private VendorConfiguration config;
 
@@ -54,10 +60,15 @@ public class VendorQueryBuilder {
 		return builder.toString();
 	}
 
-	public String getvendorCount(List<String> ownerList,List<Object> preparedStmtList) {
+	public String getvendorCount(List<String> ownerList,String tenantId, List<Object> preparedStmtList) {
 		StringBuilder builder = new StringBuilder(VENDOR_COUNT);		
 		builder.append("(").append(createQuery(ownerList)).append(")");
 		addToPreparedStatement(preparedStmtList, ownerList);
+		
+		if( !StringUtils.isEmpty(tenantId)) {
+			builder.append(" and tenantid = ?");
+			preparedStmtList.add(tenantId);
+		}
 		return builder.toString();
 
 	}
@@ -66,6 +77,12 @@ public class VendorQueryBuilder {
 	public String getVendorSearchQuery(VendorSearchCriteria criteria, List<Object> preparedStmtList) {
 		StringBuilder builder = new StringBuilder(Query);
 		if (criteria.getTenantId() != null) {
+			
+				addClauseIfRequired(preparedStmtList, builder);
+				builder.append(" vendor.status = ? ");
+				preparedStmtList.add("ACTIVE");
+			
+			
 			if (criteria.getTenantId().split("\\.").length == 1) {
 				addClauseIfRequired(preparedStmtList, builder);
 				builder.append(" vendor.tenantid like ?");

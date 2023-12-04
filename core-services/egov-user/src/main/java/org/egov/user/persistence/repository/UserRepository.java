@@ -90,9 +90,9 @@ public class UserRepository {
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
         enrichRoles(users);
-
         return users;
     }
+
 
 
     /**
@@ -126,7 +126,7 @@ public class UserRepository {
 
         final Map<String, Object> parametersMap = new HashMap<String, Object>();
         parametersMap.put("userName", userName);
-        parametersMap.put("tenantId", tenantId);
+        parametersMap.put("tenantId", "%"+tenantId+"%");
         parametersMap.put("userType", userType.toString());
 
         int count = namedParameterJdbcTemplate.queryForObject(query, parametersMap, Integer.class);
@@ -177,6 +177,7 @@ public class UserRepository {
         updateuserInputs.put("type", oldUser.getType().toString());
         updateuserInputs.put("tenantid", oldUser.getTenantId());
         updateuserInputs.put("AadhaarNumber", user.getAadhaarNumber());
+        updateuserInputs.put("defaultpwdchgd", user.isDefaultPwdChgd());
 
         if (isNull(user.getAccountLocked()))
             updateuserInputs.put("AccountLocked", oldUser.getAccountLocked());
@@ -220,10 +221,8 @@ public class UserRepository {
                 updateuserInputs.put("Gender", 1);
             } else if (Gender.MALE.toString().equals(user.getGender().toString())) {
                 updateuserInputs.put("Gender", 2);
-            } else if (Gender.OTHERS.toString().equals(user.getGender().toString())) {
-                updateuserInputs.put("Gender", 3);
             } else if (Gender.TRANSGENDER.toString().equals(user.getGender().toString())) {
-                updateuserInputs.put("Gender", 4); 
+                updateuserInputs.put("Gender", 3);
             } else {
                 updateuserInputs.put("Gender", 0);
             }
@@ -317,6 +316,8 @@ public class UserRepository {
                 new BeanPropertyRowMapper<>(FailedLoginAttempt.class));
 
     }
+
+   
 
     public FailedLoginAttempt insertFailedLoginAttempt(FailedLoginAttempt failedLoginAttempt) {
         Map<String, Object> inputs = new HashMap<>();
@@ -470,10 +471,8 @@ public class UserRepository {
             userInputs.put("gender", 1);
         } else if (Gender.MALE.equals(entityUser.getGender())) {
             userInputs.put("gender", 2);
-        } else if (Gender.OTHERS.equals(entityUser.getGender())) {
-            userInputs.put("gender", 3);
         } else if (Gender.TRANSGENDER.equals(entityUser.getGender())) {
-            userInputs.put("gender", 4);
+            userInputs.put("gender", 3);
         } else {
             userInputs.put("gender", 0);
         }
@@ -527,7 +526,7 @@ public class UserRepository {
         userInputs.put("lastmodifieddate", entityUser.getLastModifiedDate());
         userInputs.put("createdby", entityUser.getLoggedInUserId());
         userInputs.put("lastmodifiedby", entityUser.getLoggedInUserId());
-
+        log.info("sql query to execute for creating user"+userInputs.toString());
         namedParameterJdbcTemplate.update(userTypeQueryBuilder.getInsertUserQuery(), userInputs);
         return entityUser;
     }

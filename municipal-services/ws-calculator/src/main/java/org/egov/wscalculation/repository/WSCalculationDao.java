@@ -2,6 +2,7 @@ package org.egov.wscalculation.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.egov.wscalculation.web.models.MeterConnectionRequest;
 import org.egov.wscalculation.web.models.MeterReading;
@@ -26,5 +27,10 @@ public interface WSCalculationDao {
 	List<String> getTenantId();
 	
 	int isBillingPeriodExists(String connectionNo, String billingPeriod);
+	Boolean isDemandExists(String tenantId, Long bilingDate,Long endTime, Set<String> connectionNos);
+
+	List<String> getNonMeterConnectionsList(String tenantId, Long dayStartTime, Long dayEndTime);
+
+	Boolean isConnectionExists(String tenantId, Long startTime, Long endTime, Set<String> connectionNos);
 
 }

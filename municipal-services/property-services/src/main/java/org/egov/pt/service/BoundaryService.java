@@ -52,7 +52,6 @@ public class BoundaryService {
 
 		if (ObjectUtils.isEmpty(property))
 			return;
-
 		String tenantId = property.getTenantId();
 
 		if (property.getAddress() == null || property.getAddress().getLocality() == null)
@@ -74,7 +73,6 @@ public class BoundaryService {
 			if (CollectionUtils.isEmpty(responseMap))
 				throw new CustomException("BOUNDARY ERROR", "The response from location service is empty or null");
 			String jsonString = new JSONObject(responseMap).toString();
-
 			Map<String, String> propertyIdToJsonPath = getJsonpath(property);
 
 			DocumentContext context = JsonPath.parse(jsonString);

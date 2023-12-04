@@ -17,6 +17,7 @@ public class OtpRequest {
     private String tenantId;
     private OtpRequestType type;
     private String userType;
+    private String locale;
 
     public void validate() {
         if(isTenantIdAbsent()

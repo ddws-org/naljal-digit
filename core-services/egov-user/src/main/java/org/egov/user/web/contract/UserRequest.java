@@ -140,6 +140,8 @@ public class UserRequest {
     private Date dob;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private Date pwdExpiryDate;
+    
+    private boolean defaultPwdChgd;
 
     public UserRequest(User user) {
 
@@ -175,6 +177,7 @@ public class UserRequest {
         this.uuid = user.getUuid();
         mapPermanentAddress(user);
         mapCorrespondenceAddress(user);
+        this.defaultPwdChgd = user.isDefaultPwdChgd();
     }
 
     private void mapCorrespondenceAddress(User user) {
@@ -241,6 +244,7 @@ public class UserRequest {
                 .correspondenceAddress(toDomainCorrespondenceAddress())
                 .guardian(fatherOrHusbandName)
                 .guardianRelation(relationship)
+                .defaultPwdChgd(this.defaultPwdChgd)
                 .build();
     }
 

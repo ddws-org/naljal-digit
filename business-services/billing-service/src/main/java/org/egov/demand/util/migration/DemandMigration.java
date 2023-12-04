@@ -96,12 +96,32 @@ public class DemandMigration {
 			}
 		};
 	}
-	
-	public Map<String, String> migrateToV1(Integer startBatch, Integer batchSizeInput) {
+
+	public static String getCountQuery(String stateLevelTenantId){
+		return new String("select count(*) from egbs_demand where businessservice IN ('TL','PT') AND tenantid ilike '"+stateLevelTenantId+"%';");
+	}
+	public static String getSelectQuery(String stateLevelTenantId){
+		return new String("select d.id as did,dl.id as dlid,dl.demandid as dldemandid,"
+				+ "d.consumercode as dconsumercode,d.consumertype as dconsumertype,d.taxperiodfrom as dtaxperiodfrom,"
+				+ "d.taxperiodto as dtaxperiodto,U.uuid as payer,null as dbillexpirytime,"
+				+ " d.businessservice as dbusinessservice,d.status as status,d.minimumamountpayable as dminimumamountpayable, "
+				+ " (CASE WHEN taxheadcode='PT_DECIMAL_CEILING_CREDIT' OR taxheadcode='PT_DECIMAL_CEILING_DEBIT' THEN 'PT_ROUNDOFF' else taxheadcode END)"
+				+ " as dltaxheadcode, (CASE WHEN taxheadcode IN ('PT_TIME_REBATE', 'PT_ADVANCE_CARRYFORWARD', 'PT_OWNER_EXEMPTION','PT_UNIT_USAGE_EXEMPTION'"
+				+ ", 'PT_ADHOC_REBATE', 'PT_DECIMAL_CEILING_DEBIT','TL_ADHOC_REBATE') then taxamount*-1 else taxamount END) as dltaxamount,"
+				+ " dl.collectionamount as dlcollectionamount, dl.createdby as dlcreatedby,dl.createdtime as dlcreatedtime,dl.lastmodifiedby as dllastmodifiedby,"
+				+ " dl.lastmodifiedtime as dllastmodifiedtime,dl.tenantid as dltenantid, d.createdby as dcreatedby,d.createdtime as dcreatedtime,"
+				+ " d.lastmodifiedby as dlastmodifiedby,d.lastmodifiedtime as dlastmodifiedtime,d.tenantid as dtenantid "
+				+ " from egbs_demand d inner join egbs_demanddetail dl ON d.id=dl.demandid AND d.tenantid=dl.tenantid "
+				+ " LEFT OUTER JOIN eg_user U ON U.id::CHARACTER VARYING=d.owner"
+				+ " WHERE d.businessservice IN ('TL','PT') AND d.tenantid ilike '"+stateLevelTenantId+"%' "
+				+ " AND d.id IN (select id from egbs_demand order by id offset ? limit ?);");
+	}
+
+	public Map<String, String> migrateToV1(Integer startBatch, Integer batchSizeInput,String stateLevelTenantId) {
 		
 		Map<String, String> responseMap = new HashMap<>();
 		
-		int count = jdbcTemplate.queryForObject(COUNT_QUERY, Integer.class);
+		int count = jdbcTemplate.queryForObject(getCountQuery(stateLevelTenantId), Integer.class);
 		int i = 0;
 		if (null != startBatch && startBatch > 0)
 			i = startBatch;
@@ -111,7 +131,7 @@ public class DemandMigration {
 		
 		for( ; i<count;i = i+batchSize) {
 
-			List<Demand> demands = jdbcTemplate.query(SELECT_QUERY, new Object[] { i, batchSize }, demandRowMapper);
+			List<Demand> demands = jdbcTemplate.query(getSelectQuery(stateLevelTenantId), new Object[] { i, batchSize }, demandRowMapper);
 			try {
 
 				apportionDemands(demands);
@@ -128,7 +148,7 @@ public class DemandMigration {
 		
 		return responseMap;
 	}
-	
+
 	private void addResponseToMap(List<Demand> demands, Map<String, String> responseMap, String message) {
 
 		demands.forEach(demand -> {

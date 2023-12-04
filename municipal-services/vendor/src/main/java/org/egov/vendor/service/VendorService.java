@@ -1,5 +1,9 @@
 package org.egov.vendor.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -14,6 +18,7 @@ import org.egov.vendor.config.VendorConfiguration;
 import org.egov.vendor.repository.VendorRepository;
 import org.egov.vendor.validator.VendorValidator;
 import org.egov.vendor.web.model.Vendor;
+import org.egov.vendor.web.model.VendorReportData;
 import org.egov.vendor.web.model.VendorRequest;
 import org.egov.vendor.web.model.VendorSearchCriteria;
 import org.egov.vendor.web.model.user.User;
@@ -29,9 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class VendorService {
-
-	@Autowired
-	private VendorRepository vendorRepository;
 
 	@Autowired
 	private VendorValidator vendorValidator;
@@ -59,10 +61,12 @@ public class VendorService {
 		if (vendorRequest.getVendor().getTenantId().split("\\.").length == 1) {
 			throw new CustomException("Invalid TenantId", " Application cannot be create at StateLevel");
 		}
-
+		vendorRequest.getVendor().setName(vendorRequest.getVendor().getName().trim());
+		vendorRequest.getVendor().getOwner().setName(vendorRequest.getVendor().getOwner().getName().trim());
+		
 		vendorValidator.validateCreate(vendorRequest);
 		enrichmentService.enrichCreate(vendorRequest);
-		vendorRepository.save(vendorRequest);
+		repository.save(vendorRequest);
 		return vendorRequest.getVendor();
 
 	}
@@ -157,4 +161,19 @@ public class VendorService {
         return vendorList;
 	}
 
+	public List<VendorReportData> vendorReport(String monthStartDate, String tenantId, Integer offset, Integer limit, RequestInfo requestInfo)
+	{
+
+		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate startDate= LocalDate.parse(monthStartDate,formatter);
+//		LocalDate endDate=LocalDate.parse(monthEndDate,formatter);
+
+		Long monthStartDateTime= LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),
+				0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+//		Long monthEndDateTime=LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		List<VendorReportData> vendorReportData=repository.getVendorReportData(monthStartDateTime,tenantId,offset,limit);
+				return vendorReportData;
+
+	}
 }

@@ -83,6 +83,7 @@ public class User {
     private Long loggedInUserId;
     private boolean otpValidationMandatory;
     private boolean mobileValidationMandatory = true;
+    private boolean defaultPwdChgd=false;
 
     public User addAddressItem(Address addressItem) {
         if (this.addresses == null) {
@@ -100,10 +101,6 @@ public class User {
         return this;
     }
 
-    public void validateNewUser() {
-        validateNewUser(true);
-    }
-
     public void validateNewUser(boolean createUserValidateName) {
         if (isUsernameAbsent()
                 || (createUserValidateName && isNameAbsent())
@@ -117,6 +114,10 @@ public class User {
                 || isTenantIdAbsent()) {
             throw new InvalidUserCreateException(this);
         }
+    }
+
+    public void validateNewUser() {
+        validateNewUser(true);
     }
 
     public void validateUserModification() {

@@ -43,6 +43,8 @@ public class WaterConnection extends Connection {
 	@JsonProperty("noOfTaps")
 	private Integer noOfTaps = null;
 
+	@JsonProperty("paymentType")
+	private String paymentType = null;
 
 	public WaterConnection waterSource(String waterSource) {
 		this.waterSource = waterSource;

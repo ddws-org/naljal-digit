@@ -8,10 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum Source {
 	
-  MUNICIPAL_RECORDS("MUNICIPAL_RECORDS"),
-    
-  FIELD_SURVEY("FIELD_SURVEY");
+	MUNICIPAL_RECORDS("MUNICIPAL_RECORDS"),
 
+	FIELD_SURVEY("FIELD_SURVEY");
   private String value;
 
   Source(String value) {

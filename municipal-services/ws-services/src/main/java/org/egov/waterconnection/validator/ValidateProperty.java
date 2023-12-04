@@ -50,7 +50,7 @@ public class ValidateProperty {
 	public Property getOrValidateProperty(WaterConnectionRequest waterConnectionRequest) {
 		Optional<Property> propertyList = waterServiceUtil.propertySearch(waterConnectionRequest).stream().findFirst();
 		if (!propertyList.isPresent()) {
-			throw new CustomException("INVALID_PROPERTY",
+			throw new CustomException("INVALID_PROPERTY_ENRICH",
 					"Water connection cannot be enriched without PropertyId");
 		}
 		Property property = propertyList.get();

@@ -40,8 +40,11 @@ public class DemandNotificationService {
 		if (config.getIsSMSEnabled() != null && config.getIsSMSEnabled()) {
 			List<SMSRequest> smsRequests = new LinkedList<>();
 			enrichSMSRequest(notificationObj, smsRequests, topic);
-			if (!CollectionUtils.isEmpty(smsRequests))
-				util.sendSMS(smsRequests);
+			if (!CollectionUtils.isEmpty(smsRequests)) {
+				if(config.isSmsForDemandEnable()) {
+					util.sendSMS(smsRequests);
+				}
+			}
 		}
 		if (config.getIsEmailEnabled() != null && config.getIsEmailEnabled()) {
 			List<EmailRequest> emailRequests = new LinkedList<>();
@@ -58,7 +61,7 @@ public class DemandNotificationService {
 		enrichNotificationReceivers(receiverList, notificationObj);
 		receiverList.forEach(receiver -> {
 			String message = util.getAppliedMsg(receiver, messageTemplate, notificationObj);
-			SMSRequest sms = SMSRequest.builder().mobileNumber(receiver.getMobileNumber()).message(message).category(Category.TRANSACTION).build();
+			SMSRequest sms = SMSRequest.builder().mobileNumber(receiver.getMobileNumber()).message(message).category(Category.TRANSACTION).tenantid(tenantId).build();
 			smsRequest.add(sms);
 		});
 	}

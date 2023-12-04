@@ -18,11 +18,11 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: "/digit-ui/",
+    publicPath: "/mgramseva-web/",
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
+      chunks: "all",
     },
   },
   plugins: [

@@ -55,6 +55,7 @@ import org.egov.demand.model.DemandCriteria;
 import org.egov.demand.model.DemandDetail;
 import org.egov.demand.model.PaymentBackUpdateAudit;
 import org.egov.demand.repository.querybuilder.DemandQueryBuilder;
+import org.egov.demand.repository.rowmapper.DemandHistoryRowMapper;
 import org.egov.demand.repository.rowmapper.DemandRowMapper;
 import org.egov.demand.util.Util;
 import org.egov.demand.web.contract.DemandRequest;
@@ -83,6 +84,9 @@ public class DemandRepository {
 	
 	@Autowired
 	private Util util;
+	
+	@Autowired
+	private DemandHistoryRowMapper demandHistoryRowMapper;
 	
 	public List<Demand> getDemands(DemandCriteria demandCriteria) {
 
@@ -397,5 +401,12 @@ public class DemandRepository {
 		}
 
 		return paymentId;
+	}
+	
+	public List<Demand> getDemandHistory(DemandCriteria demandCriteria) {
+
+		List<Object> preparedStatementValues = new ArrayList<>();
+		String searchDemandQuery = demandQueryBuilder.getDemandHistoryQuery(demandCriteria, preparedStatementValues);
+		return jdbcTemplate.query(searchDemandQuery, preparedStatementValues.toArray(), demandHistoryRowMapper);
 	}
 }

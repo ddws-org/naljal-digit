@@ -126,6 +126,7 @@ public class UserService {
     public User getUniqueUser(String userName, String tenantId, UserType userType) {
 
         UserSearchCriteria userSearchCriteria = UserSearchCriteria.builder()
+                .mobileNumber(userName)
                 .userName(userName)
                 .tenantId(getStateLevelTenantForCitizen(tenantId, userType))
                 .type(userType)
@@ -202,11 +203,21 @@ public class UserService {
      * @return
      */
     public User createUser(User user, RequestInfo requestInfo) {
+        
         user.setUuid(UUID.randomUUID().toString());
         user.validateNewUser(createUserValidateName);
         conditionallyValidateOtp(user);
+        
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+        
+        if(!userRepository.isUserPresent(user.getMobileNumber(), getStateLevelTenantForCitizen(user.getTenantId(), user
+                .getType()), user.getType())) {
+        	
+        	// copy mobie number to username, so that login with mobile number will work.
+            user.setUsername(user.getMobileNumber());
+        }
+        
         validateUserUniqueness(user);
         if (isEmpty(user.getPassword())) {
             user.setPassword(UUID.randomUUID().toString());
@@ -231,7 +242,7 @@ public class UserService {
     }
 
     private String getStateLevelTenantForCitizen(String tenantId, UserType userType) {
-        if (!isNull(userType) && userType.equals(UserType.CITIZEN) && !isEmpty(tenantId) && tenantId.contains("."))
+        if (!isNull(userType) && !isEmpty(tenantId) && tenantId.contains("."))
             return tenantId.split("\\.")[0];
         else
             return tenantId;
@@ -278,7 +289,7 @@ public class UserService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.set("Authorization", "Basic ZWdvdi11c2VyLWNsaWVudDo=");
+            headers.set("Authorization", "Basic ZWdvdi11c2VyLWNsaWVudDplZ292LXVzZXItc2VjcmV0");
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
             map.add("username", user.getUsername());
             if (!isEmpty(password))
@@ -429,6 +440,7 @@ public class UserService {
 
         validateExistingPassword(user, updatePasswordRequest.getExistingPassword());
         validatePassword(updatePasswordRequest.getNewPassword());
+        user.setDefaultPwdChgd(Boolean.TRUE);
         user.updatePassword(encryptPwd(updatePasswordRequest.getNewPassword()));
         userRepository.update(user, user);
     }
@@ -459,19 +471,23 @@ public class UserService {
         user.updatePassword(encryptPwd(request.getNewPassword()));
         /* encrypt here */
         /* encrypted value is stored in DB*/
+        user.setDefaultPwdChgd(Boolean.TRUE);
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
+
         userRepository.update(user, user);
     }
 
 
     /**
      * Deactivate failed login attempts for provided user
-     *
+     * If the failed attment count is zero insert one failed attempt with active false, to indicate that user logged in atleast once.
      * @param user whose failed login attempts are to be reset
      */
     public void resetFailedLoginAttempts(User user) {
-        if (user.getUuid() != null)
-            userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
+        if (user.getUuid() != null) {
+          	 userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
+        }
+           
     }
 
     /**

@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -198,7 +199,7 @@ public class MasterDataService {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> enrichBillingPeriod(CalculationCriteria criteria, ArrayList<?> mdmsResponse,
-			Map<String, Object> masterMap) {
+			Map<String, Object> masterMap,boolean isconnectionCalculation) {
 		log.info("Billing Frequency Map {}", mdmsResponse.toString());
 		Map<String, Object> master = new HashMap<>();
 		for (Object o : mdmsResponse) {
@@ -208,15 +209,48 @@ public class MasterDataService {
 				break;
 			}
 		}
+		
 		Map<String, Object> billingPeriod = new HashMap<>();
-		if (master.get(WSCalculationConstant.ConnectionType).toString()
-				.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+		if(!isconnectionCalculation) {
+			
+			
+			Calendar startDate = Calendar.getInstance();
+			Calendar endDate = Calendar.getInstance();
+			startDate.setTimeInMillis(criteria.getFrom());
+			int currentMonthNumber = startDate.get(Calendar.MONTH);
+			if (currentMonthNumber < 3) {
+				startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
+			}				
+			startDate.set(Calendar.MONTH,3);
+			startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
+			estimationService.setTimeToBeginningOfDay(startDate);
+			criteria.setFrom(startDate.getTimeInMillis());
+			if (!master.get(WSCalculationConstant.ConnectionType).toString()
+					.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+				
+				endDate.setTimeInMillis(criteria.getTo());
+				endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+				estimationService.setTimeToEndofDay(endDate);
+				criteria.setTo(endDate.getTimeInMillis());
+				
+			}
+			System.out.println("demand from time" + criteria.getFrom());
+			System.out.println("demand to time" + criteria.getTo());
 			billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, criteria.getFrom());
 			billingPeriod.put(WSCalculationConstant.ENDING_DATE_APPLICABLES, criteria.getTo());
+			
+		}else if (master.get(WSCalculationConstant.ConnectionType).toString()
+				.equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+			
+			billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, criteria.getFrom());
+			billingPeriod.put(WSCalculationConstant.ENDING_DATE_APPLICABLES, criteria.getTo());
+		
+			
 		} else {
+			
 			if (WSCalculationConstant.Monthly_Billing_Period
 					.equalsIgnoreCase(master.get(WSCalculationConstant.Billing_Cycle_String).toString())) {
-				estimationService.getMonthStartAndEndDate(billingPeriod);
+				estimationService.getMonthStartAndEndDate(billingPeriod,criteria);
 			} else if (WSCalculationConstant.Quaterly_Billing_Period
 					.equalsIgnoreCase(master.get(WSCalculationConstant.Billing_Cycle_String).toString())) {
 				estimationService.getQuarterStartAndEndDate(billingPeriod);
@@ -425,5 +459,6 @@ public class MasterDataService {
 		}
 		return master;
 	}
+
 	
 }

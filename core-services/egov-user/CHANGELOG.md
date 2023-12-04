@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.2.7 - 2022-02-02
+- Updated to log4j2 version 2.17.1
+
+## 1.2.6 - 2021-09-23
+- Added search based on role
+- Changes in default password
+- Allowing multiple uses with same mobile number, manipulating the username with mobilenumber+randon number. So that login with username will result into one user.
+
 ## 1.2.5 - 2021-07-26
 - Added OTHERS as one of the gender option values
 - Allowed names with apostrophe symbol

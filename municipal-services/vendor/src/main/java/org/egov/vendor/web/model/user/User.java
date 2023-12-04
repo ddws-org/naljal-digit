@@ -64,7 +64,7 @@ public class User {
 
     @NotNull
     @SafeHtml
-    @Pattern(regexp = "^[0-9]{10}$", message = "MobileNumber should be 10 digit number")
+    @Pattern(regexp = "^[6-9][0-9]{9}$", message = "Invalid mobile number")
     @JsonProperty("mobileNumber")
     private String mobileNumber;
 

@@ -199,4 +199,112 @@ public class WSConfiguration {
 
 	@Value("${state.level.tenant.id}")
 	private String stateLevelTenantId;
+	
+	@Value("${egov.billing.service.host}")
+	private String billingHost;
+	
+	@Value("${egov.demand.searchendpoint}")
+	private String demandSearchUri;
+	
+	@Value("${egov.demand.update.endpoint}")
+	private String demandUpdateEndPoint;
+	
+	@Value("${egov.ws.service.feedback}")
+	private String saveFeedback;
+	
+	@Value("${ws.feedback.survey.link}")
+	private String feedbackLink;
+
+	
+	@Value("${egov.mgramseva.ui.path}")
+	private String webUiPath;
+	
+	@Value("${egov.ui.path}")
+	private String uiPath;
+	
+
+    @Value("${egov.url.shortner.host}")
+    private String urlShortnerHost;
+    @Value("${egov.url.shortner.endpoint}")
+    private String urlShortnerEndpoint;
+
+	
+
+	@Value("${egov.month.revenue.dashboard.link}")
+	private String monthRevenueDashboardLink;
+	
+	@Value("${egov.month.dashboard.link}")
+	private String monthDashboardLink;
+	
+	
+	@Value("${egov.demand.generation.link}")
+	private String demanGenerationLink;
+	
+	
+	@Value("${egov.day.collection.link}")
+	private String dayCollectionLink;
+	
+	
+// adding Event notification paths.
+	
+	@Value("${egov.pending.collection.link}")
+	private String pendingCollectionLink;
+	
+	@Value("${egov.monthly.summary.link}")
+	private String monthlySummary;
+
+	@Value("${egov.bilk.demand.failed.link}")
+	private String bulkDemandFailedLink;
+
+	@Value("${egov.today.collection.link}")
+	private String todayCollectionLink;
+	
+    //MDMS
+    @Value("${egov.mdms.host}")
+    private String mdmsHost;
+
+    @Value("${egov.mdms.search.endpoint}")
+    private String mdmsEndPoint;
+    
+    // ES Config
+
+    @Value("${egov.es.host}")
+    private String esHost;
+
+    @Value("${egov.waterservice.es.index}")
+    private String esWSIndex;
+
+    @Value("${egov.es.search.endpoint}")
+    private String esSearchEndpoint;
+
+    @Value("${egov.ws.search.name.fuziness}")
+    private String nameFuziness;
+    
+    @Value("${egov.ws.search.mobileNo.fuziness}")
+    private String MobileNoFuziness;
+
+    @Value("${egov.ws.fuzzy.searh.is.wildcard}")
+    private Boolean isSearchWildcardBased;
+    
+    @Value("${egov.ws.search.tenantId.fuziness}")
+    private String tenantFuziness;
+
+	@Value("${sms.pending.collection.enabled}")
+	private boolean isSMSForPendingCollectionEnabled;
+
+	@Value("${sms.todays.collection.enabled}")
+	private boolean isSMSForTodaysCollectionEnabled;
+
+	@Value("${sms.edit.water.connection.notification.enabled}")
+	private boolean isSMSForEditWaterConnectionEnabled;
+
+	@Value("${sms.payment.notification.enabled}")
+	private boolean isSMSforPaymentNotificationEnabled;
+
+	@Value("${sms.workflow.enabled}")
+	private boolean isSMSForWorkflowEnabled;
+
+	@Value("${sms.feedback.notification.enabled}")
+	private boolean isSMSForFeedbackNotificationEnabled;
+    
 }

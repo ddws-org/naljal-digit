@@ -1,21 +1,25 @@
 
 package org.egov.waterconnection.web.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import org.egov.waterconnection.web.models.workflow.ProcessInstance;
-import org.hibernate.validator.constraints.SafeHtml;
-import org.springframework.validation.annotation.Validated;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
+import org.egov.waterconnection.web.models.workflow.ProcessInstance;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * This is lightweight property object that can be used as reference by
@@ -84,6 +88,7 @@ public class Connection {
 	@JsonProperty("connectionNo")
 	private String connectionNo = null;
 
+	
 	@SafeHtml
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
@@ -114,6 +119,7 @@ public class Connection {
 	private String connectionCategory = null;
 
 	@SafeHtml
+	@NotNull
 	@JsonProperty("connectionType")
 	private String connectionType = null;
 
@@ -139,6 +145,64 @@ public class Connection {
 
 	@JsonProperty("oldApplication")
 	private Boolean oldApplication = false;
+	
+	 
+	@JsonProperty("previousReadingDate")
+	@NotNull
+	private Long previousReadingDate = null;
+	
+	@JsonProperty("arrears")
+	private BigDecimal arrears = null;
+	
+	@JsonProperty("paymentType")
+	private String paymentType = null;
+	
+	@JsonProperty("penalty")
+	private BigDecimal penalty = null;
+	
+	@JsonProperty("advance")
+	private BigDecimal advance = null;
+	
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public BigDecimal getPenalty() {
+		return penalty;
+	}
+
+	public void setPenalty(BigDecimal penalty) {
+		this.penalty = penalty;
+	}
+
+	public BigDecimal getAdvance() {
+		return advance;
+	}
+
+	public void setAdvance(BigDecimal advance) {
+		this.advance = advance;
+	}
+	
+	
+	public Long getPreviousReadingDate() {
+		return previousReadingDate;
+	}
+
+	public void setPreviousReadingDate(Long previousReadingDate) {
+		this.previousReadingDate = previousReadingDate;
+	}
+
+	public BigDecimal getArrears() {
+		return arrears;
+	}
+
+	public void setArrears(BigDecimal arrears) {
+		this.arrears = arrears;
+	}
 
 	public Connection id(String id) {
 		this.id = id;
@@ -309,7 +373,7 @@ public class Connection {
 	 **/
 	@ApiModelProperty(readOnly = true, value = "Mandatory if source is \"DATA_ENTRY\".")
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	public String getOldConnectionNo() {
 		return oldConnectionNo;
 	}

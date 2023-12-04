@@ -49,7 +49,7 @@ public class UserResultSetExtractor implements ResultSetExtractor<List<User>> {
                                 lastModifiedBy(rs.getLong("lastmodifiedby")).lastModifiedDate(rs.getTimestamp("lastmodifieddate"))
                         .pan(rs.getString("pan")).aadhaarNumber(rs.getString("aadhaarnumber")).createdBy(rs.getLong("createdby"))
                         .createdDate(rs.getTimestamp("createddate")).guardian(rs.getString("guardian")).signature(rs.getString("signature"))
-                        .accountLocked(rs.getBoolean("accountlocked")).photo(rs.getString("photo"))
+                        .accountLocked(rs.getBoolean("accountlocked")).photo(rs.getString("photo")).defaultPwdChgd(rs.getBoolean("defaultpwdchgd"))
                         .identificationMark(rs.getString("identificationmark")).uuid(rs.getString("uuid"))
                         .accountLockedDate(rs.getLong("accountlockeddate"))
                         .build();
@@ -72,8 +72,6 @@ public class UserResultSetExtractor implements ResultSetExtractor<List<User>> {
                 } else if (rs.getInt("gender") == 2) {
                     user.setGender(Gender.MALE);
                 } else if (rs.getInt("gender") == 3) {
-                    user.setGender(Gender.OTHERS);
-                } else if (rs.getInt("gender") == 4) {
                     user.setGender(Gender.TRANSGENDER);
                 }
                 for (GuardianRelation guardianRelation : GuardianRelation.values()) {

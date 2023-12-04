@@ -34,7 +34,7 @@ public class WCConstants {
 
 	public static final String INVALID_CONNECTION_CATEGORY = "Invalid Connection Category";
 
-	public static final String INVALID_CONNECTION_TYPE = "Invalid Connection Type";
+	public static final String INVALID_CONNECTION_TYPE = "INVALID_CONNECTION_TYPE";
 
 	public static final String METERED_CONNECTION = "Metered";
 
@@ -68,7 +68,9 @@ public class WCConstants {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+
+	public static final String MODULE = "mgramseva-ws,mgramseva-common";
+
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 
@@ -104,19 +106,18 @@ public class WCConstants {
 	public static final String APPROVE_CONNECTION_CONST = "APPROVE_FOR_CONNECTION";
 
 	public static final String ACTIVATE_CONNECTION_CONST = "ACTIVATE_CONNECTION";
-	
+
 	public static final String SUBMIT_APPLICATION_STATUS_CODE = "SUBMIT_APPLICATION_PENDING_FOR_APPROVAL";
 
 	public static final String APPROVE_CONNECTION_STATUS_CODE = "APPROVE_CONNECTION_APPROVED";
 
-	public static final List<String> NOTIFICATION_ENABLE_FOR_STATUS = Collections
-			.unmodifiableList(Arrays.asList(INITIATE_INITIATED, REJECT_REJECTED,
-					SEND_BACK_TO_CITIZEN_PENDING_FOR_CITIZEN_ACTION, SEND_BACK_FOR_DO_PENDING_FOR_DOCUMENT_VERIFICATION,
-					SEND_BACK_PENDING_FOR_FIELD_INSPECTION, VERIFY_AND_FORWORD_PENDING_FOR_FIELD_INSPECTION,
-					VERIFY_AND_FORWARD_PENDING_APPROVAL_FOR_CONNECTION, APPROVE_FOR_CONNECTION_PENDING_FOR_PAYMENT,
-					PAY_PENDING_FOR_CONNECTION_ACTIVATION, ACTIVATE_CONNECTION_CONNECTION_ACTIVATED,
-					EDIT_PENDING_FOR_DOCUMENT_VERIFICATION, EDIT_PENDING_FOR_FIELD_INSPECTION,
-					SUBMIT_APPLICATION_STATUS_CODE, APPROVE_CONNECTION_STATUS_CODE));
+	public static final List<String> NOTIFICATION_ENABLE_FOR_STATUS = Collections.unmodifiableList(
+			Arrays.asList(INITIATE_INITIATED, REJECT_REJECTED, SEND_BACK_TO_CITIZEN_PENDING_FOR_CITIZEN_ACTION,
+					SEND_BACK_FOR_DO_PENDING_FOR_DOCUMENT_VERIFICATION, SEND_BACK_PENDING_FOR_FIELD_INSPECTION,
+					VERIFY_AND_FORWORD_PENDING_FOR_FIELD_INSPECTION, VERIFY_AND_FORWARD_PENDING_APPROVAL_FOR_CONNECTION,
+					APPROVE_FOR_CONNECTION_PENDING_FOR_PAYMENT, PAY_PENDING_FOR_CONNECTION_ACTIVATION,
+					ACTIVATE_CONNECTION_CONNECTION_ACTIVATED, EDIT_PENDING_FOR_DOCUMENT_VERIFICATION,
+					EDIT_PENDING_FOR_FIELD_INSPECTION, SUBMIT_APPLICATION_STATUS_CODE, APPROVE_CONNECTION_STATUS_CODE));
 
 	public static final String USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
 
@@ -152,10 +153,10 @@ public class WCConstants {
 	public static final String DEFAULT_OBJECT_MODIFY_APP_MSG = "WS_DEFAULT_EDIT_MODIFY_CONNECTION_APP_MESSAGE";
 
 	public static final String WS_MODIFY_SMS = "WS_MODIFY_SMS_MESSAGE";
-	
+
 	public static final String WS_MODIFY_IN_APP = "WS_MODIFY_IN_APP_MESSAGE";
 
-	public static final String IDGEN_ERROR_CONST = "IDGEN ERROR";
+	public static final String IDGEN_ERROR_CONST = "IDGEN_NOTFOUND_ERROR";
 
 	public static final String ADHOC_PENALTY = "adhocPenalty";
 
@@ -221,31 +222,65 @@ public class WCConstants {
 
 	public static final String APPROVE_CONNECTION = "APPROVE_CONNECTION";
 
+	public static final String SUBMIT_CONNECTION = "SUBMIT";
+
 	// Used to differentiate the type of request which is processing
 	public static final int CREATE_APPLICATION = 0;
 	public static final int UPDATE_APPLICATION = 1;
-	public static final int MODIFY_CONNECTION =  2;
-	
+	public static final int MODIFY_CONNECTION = 2;
+
 	public static final String NEW_WATER_CONNECTION = "NEW_WATER_CONNECTION";
 	public static final String MODIFY_WATER_CONNECTION = "MODIFY_WATER_CONNECTION";
-	
+
 	public static final String WATER_SERVICE_BUSINESS_ID = "WS";
 
-	public static final String NEW_WATER_APP_STATUS ="NEW_WATER_APPLICATION";
+	public static final String NEW_WATER_APP_STATUS = "NEW_WATER_APPLICATION";
 
 	public static final String PAYMENT_NOTIFICATION_APP = "WS_PAYMENT_NOTIFICATION_APP";
+	
+	public static final String ON_BOARD_EMPLOYEE="SMS_ON_BOARD_EMPLOYEE";
 
-	public static final String PAYMENT_NOTIFICATION_SMS = "WS_PAYMENT_NOTIFICATION_SMS";
+	public static final String PAYMENT_NOTIFICATION_SMS = "mGram.Consumer.DownloadReceipt";
+	
+	public static final String FEEDBACK_NOTIFICATION_SMS = "mGram.Consumer.TakeSurvey";
 
 	public static final String MODIFIED_FINAL_STATE = "APPROVED";
 
 	public static final List<String> FINAL_CONNECTION_STATES = Collections
 			.unmodifiableList(Arrays.asList(MODIFIED_FINAL_STATE, STATUS_APPROVED));
-	
+
 	public static final String SEARCH_TYPE_CONNECTION = "CONNECTION";
 
 	public static final long INVALID_CONEECTION_EXECUTION_DATE = 0L;
 
-	public static final String PENDING_APPROVAL_FOR_CONNECTION_CODE ="PENDING_APPROVAL_FOR_CONNECTION";
+	public static final String PENDING_APPROVAL_FOR_CONNECTION_CODE = "PENDING_APPROVAL_FOR_CONNECTION";
+
+	public static final String MDMS_FEEDBACK = "CheckList";
+
+	public static final String JSONPATH_ROOT_FOR_CHECKLIST = "$.MdmsRes.ws-services-masters.CheckList";
+	public static final String CHECK_LIST_SINGLE_SELECT = "SINGLE_SELECT";
+	public static final String CHECK_LIST_MULTI_SELECT = "MULTI_SELECT";
+	public static final String MDMS_CHECKLIST = "CheckList";
+	public static final String REQ_CHECKLIST_PATH = "$.MdmsRes.ws-services-masters.CheckList[?(@.required==true)]";
+	public static final String INVALID_CHECKLIST = "INVALID_CHECKLIST";
+	public static final String MISSING_CHECKLIST = "MISSING_CHECKLIST";
+	public static final String INVALID_CHECKLIST_TYPE = "INVALID_CHECKLIST_TYPE";
+	public static final String INVALID_CHECKLIST_ANS = "INVALID_CHECKLIST_ANS";	
+	public static final String SUCCESSFUL_FEEDBACK_SUBMIT = "Successfully submitted feedback";
+
+  public static final String MDMS_EGFFINACIALYEAR_PATH = "$.MdmsRes.egf-master.FinancialYear[?(@.code==\"{}\")]";
+
+	public static final String AADHAR_KEY = "aadharNumber";
+	public static final String CATEGORY_KEY = "category";
+	public static final String SUBCATEGORY_KEY = "subCategory";
+	public static final String MDMS_WC_MIS_CATEGORY="Category";
+	public static final String MDMS_WC_MIS_SUBCATEGORY="SubCategory";
+	
+	 // Fuzzy Search
+    public static final String ES_DATA_PATH = "$..Data";
+    
+	public static final String PAYMENT_TYPE_ARREARS = "arrears";
+
+	public static final String PAYMENT_TYPE_ADVANCE = "advance";
 
 }

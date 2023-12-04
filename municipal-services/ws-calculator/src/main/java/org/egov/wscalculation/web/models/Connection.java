@@ -12,6 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -126,6 +128,64 @@ public class Connection {
 	@Valid
 	private List<OwnerInfo> connectionHolders;
 
+	@JsonProperty("previousReadingDate")
+	private Long previousReadingDate = null;
+	
+	@JsonProperty("arrears")
+	@NotNull
+	private BigDecimal arrears = null;
+
+	@JsonProperty("paymentType")
+	private String paymentType = null;
+	
+	@JsonProperty("penalty")
+	private BigDecimal penalty = null;
+	
+	@JsonProperty("advance")
+	private BigDecimal advance = null;
+	
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public BigDecimal getPenalty() {
+		return penalty;
+	}
+
+	public void setPenalty(BigDecimal penalty) {
+		this.penalty = penalty;
+	}
+
+	public BigDecimal getAdvance() {
+		return advance;
+	}
+
+	public void setAdvance(BigDecimal advance) {
+		this.advance = advance;
+	}
+		
+
+	public Long getPreviousReadingDate() {
+		return previousReadingDate;
+	}
+
+	public void setPreviousReadingDate(Long previousReadingDate) {
+		this.previousReadingDate = previousReadingDate;
+	}
+
+	public BigDecimal getArrears() {
+		return arrears;
+	}
+
+	public void setArrears(BigDecimal arrears) {
+		this.arrears = arrears;
+	}
+	
 	public Connection id(String id) {
 		this.id = id;
 		return this;

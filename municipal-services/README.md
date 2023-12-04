@@ -1,2 +1,1 @@
-# egov-java-template
-template
+mGramseva Municipal Services
