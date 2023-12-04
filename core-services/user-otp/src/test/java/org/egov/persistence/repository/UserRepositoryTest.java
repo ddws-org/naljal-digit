@@ -51,7 +51,7 @@ public class UserRepositoryTest {
                 .thenReturn(map);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
 
-        final User expectedUser = new User(1L, "test@gmail.com", "123456789");
+        final User expectedUser = new User(1L, "test@gmail.com", "123456789",false);
 
         assertEquals(expectedUser, actualUser);
     }
@@ -95,7 +95,7 @@ public class UserRepositoryTest {
                 .thenReturn(map);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
 
-        final User expectedUser = new User(2L, "test123@gmail.com", "123456789");
+        final User expectedUser = new User(2L, "test123@gmail.com", "123456789",false);
 
         assertNotEquals(expectedUser, actualUser);
     }

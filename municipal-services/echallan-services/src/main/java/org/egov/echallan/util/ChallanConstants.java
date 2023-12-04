@@ -49,7 +49,19 @@ public class ChallanConstants {
     public static final String BOUNDARY_TYPE  = "Locality";
 
     public static final String LOCALITY_CODE_PATH = "$.TenantBoundary.[*].boundary[?(@.label==\"Locality\")].code";
+    
+    public static final String EXPENSE_MODULE_CODE = "Expense";
+    
+    public static final String EXPENSETYPE_MASTER = "ExpenseType";
+    
+    
+    public static final String MDMS_EGFFINACIALYEAR_PATH = "$.MdmsRes.egf-master.FinancialYear[?(@.code==\"{}\")]";
 
+    public static final String MGRAMSEVA_TENANT_ID = "tenantId";
+    public static final String BILLING_SERVICE_CONSUMER_CODE = "consumerCode";
+    public static final String BILLING_SERVICE_PARAMETER = "service";
+    public static final String EXPENSE_ELECTRICITY_BILL = "EXPENSE.ELECTRICITY_BILL";
+    public static final String RETURN_ALL_BILL_PARAMETER = "returnAllBills";
 
     public ChallanConstants() {}
 

@@ -1,0 +1,49 @@
+Brief description of all the scripts step by step:
+*Please change all the input and output file paths as necessary.
+
+Step 1: Cleaning Script for each data sheet
+
+	Script: Master_Cleaning_Final_Zone.py
+	
+	Validates and cleans the data received from ground team in Punjab. 
+	Each sheet contains 4 main sheets names: Counsumer, Rate, User , Boundary. 
+	This code reads file from source directory and cleans it and places the cleaned data sheets into a new folder provided in the output path.
+	
+	Assumptions: Input file is in .xlsx format and not .xls
+		     Permission to the sheet is given (edit anyways should be active)
+		     A few of the input sheets require manual preprocessing because the input formats received from each zone is different.
+			For example, some sheet might require you to remove the hidden rows in the boundary sheet manually.
+
+Step 2: Create a new output sheet that contains all the boundary data and rate data for each village
+
+	Script: Boundary Rate Non_Metered.py
+
+	Extracts rate master and boundary data from each sheet and places them in one table.
+	Once this sheet is created we search for duplicate village names and other necessary preprocessing steps before going onto next.
+
+Step 3: We replace the names of all the GPWSC names with changed village names from previsous step.	
+
+	Script: Master_ReplacingVillage_Final_Zone-Stage 2.py
+	Input file: rate boundary merged file created from step 2
+
+	Replaces the names of all the GPWSC names with changed village namee by using find and replce definition in python.
+	For multiple villages in one sheet, first it takes distinct values of each village within a sheet, sorts it and then reaplces each of them in sorted manner.
+	
+	Assumption: this needs all the files to be placed in one single folder. Not a nested folder structure.
+
+Step 4: Step 2 is run again for final sheet for a merged rate-boundary data for each village.
+
+Step 5: Create pb folder structure to be uploaded in GitHub.
+
+	Script: pb_folder_structure_non_metered.py
+	Input file: rate boundary merged file created from step 4
+
+	Creates /egov-location/boundary-data.json and /ws-services-calculation/WCBillingSlab.json folders for each village using default values as discussed whenever applicable.
+
+Step 6: Create merged sheet for all consumers to be uploaded
+
+	Script: Merge Consumer Non_Metered.py
+
+Step 7: Create merged sheet for all users to be uploaded
+
+	Script: Merge User Non_Metered.py

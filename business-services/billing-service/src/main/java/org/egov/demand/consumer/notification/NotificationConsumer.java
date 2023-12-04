@@ -43,6 +43,9 @@ public class NotificationConsumer {
 	
 	@Value("${kafka.topics.notification.sms.key}")
 	private String smsTopickey;
+
+	@Value("${sms.bill.notification.enable}")
+	private boolean isSmsForBillNotificationEnabled;
 	
     @Autowired
     private ObjectMapper objectMapper;
@@ -111,8 +114,11 @@ public class NotificationConsumer {
 				Map<String, Object> request = new HashMap<>();
 				request.put("mobileNumber", phNo);
 				request.put("message", message);
+				request.put("tenantId", bill.getTenantId());
 				log.info("Msg sent to user : " + message);
-				producer.send(smsTopic, smsTopickey, request);
+				if(isSmsForBillNotificationEnabled) {
+					producer.send(smsTopic, smsTopickey, request);
+				}
 			} else {
 				log.error("No message configured! Notification will not be sent.");
 			}

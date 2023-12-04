@@ -209,7 +209,7 @@ serviceMaps:
 
       - jsonPath: $.Employees.*.serviceHistory.*.auditDetails.lastModifiedDate
 
-    -query: INSERT INTO eg_hrms_jurisdiction (uuid, employeeid, hierarchy, boundarytype, boundary, tenantid, createdby, createddate, lastmodifiedby, lastModifiedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    - query: INSERT INTO eg_hrms_jurisdiction (uuid, employeeid, hierarchy, boundarytype, boundary, tenantid, createdby, createddate, lastmodifiedby, lastModifiedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
       basePath: Employees.*.jurisdictions.*
       jsonMaps:

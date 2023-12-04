@@ -95,7 +95,7 @@ public class ApportionServiceV2 {
              */
 
             ApportionRequestV2 apportionRequestV2 = translationService.translate(bill);
-            List<TaxDetail> taxDetails = apportion.apportionPaidAmount(apportionRequestV2, masterData);
+            List<TaxDetail> taxDetails = apportion.apportionPaidAmount(apportionRequestV2, masterData, true);
             updateAdjustedAmountInBills(bill,taxDetails);
             addAdvanceIfExistForBill(billDetails,taxDetails);
         }
@@ -161,7 +161,7 @@ public class ApportionServiceV2 {
         else
             apportion = getApportion(DEFAULT);
 
-        List<TaxDetail> taxDetails = apportion.apportionPaidAmount(apportionRequestV2, masterData);
+        List<TaxDetail> taxDetails = apportion.apportionPaidAmount(apportionRequestV2, masterData, false);
         updateAdjustedAmountInDemands(demands,taxDetails);
         addAdvanceIfExistForDemand(demands,taxDetails);
 

@@ -11,5 +11,6 @@ public class User {
     private Long id;
     private String email;
     private String mobileNumber;
+    private boolean defaultPwdChgd;
 }
 

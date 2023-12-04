@@ -61,8 +61,8 @@ public class EstimationService {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Map<String, List> getEstimationMap(CalculationCriteria criteria, RequestInfo requestInfo,
-			Map<String, Object> masterData) {
-		String tenantId = requestInfo.getUserInfo().getTenantId();
+			Map<String, Object> masterData,boolean isconnectionCalculation, boolean isAdvanceCalculation) {
+		String tenantId = criteria.getTenantId();
 		if (criteria.getWaterConnection() == null && !StringUtils.isEmpty(criteria.getConnectionNo())) {
 			List<WaterConnection> waterConnectionList = calculatorUtil.getWaterConnection(requestInfo, criteria.getConnectionNo(), tenantId);
 			WaterConnection waterConnection = calculatorUtil.getWaterConnectionObject(waterConnectionList);
@@ -82,15 +82,29 @@ public class EstimationService {
 				(JSONArray) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
 		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST,
 				(JSONArray) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
-		timeBasedExemptionMasterMap.put(WSCalculationConstant.WC_WATER_CESS_MASTER,
-				(JSONArray) (masterData.getOrDefault(WSCalculationConstant.WC_WATER_CESS_MASTER, null)));
+//		timeBasedExemptionMasterMap.put(WSCalculationConstant.WC_WATER_CESS_MASTER,
+//				(JSONArray) (masterData.getOrDefault(WSCalculationConstant.WC_WATER_CESS_MASTER, null)));
 		// mDataService.setWaterConnectionMasterValues(requestInfo, tenantId,
 		// billingSlabMaster,
 		// timeBasedExemptionMasterMap);
-		BigDecimal taxAmt = getWaterEstimationCharge(criteria.getWaterConnection(), criteria, billingSlabMaster, billingSlabIds,
-				requestInfo);
+
+		 Map<String, BigDecimal> taxAmt = new HashMap<>();
+	
+		 if (!isconnectionCalculation) {
+			 if (isAdvanceCalculation) {
+				taxAmt.put("advance", criteria.getWaterConnection().getAdvance());
+			}else{
+				taxAmt.put("arrears", criteria.getWaterConnection().getArrears());
+			 }
+			if (criteria.getWaterConnection().getPenalty() != null && criteria.getWaterConnection().getPenalty().toString() != "0") {
+				taxAmt.put("penalty", criteria.getWaterConnection().getPenalty());
+			}
+			} else {
+				taxAmt.put("waterCharge", getWaterEstimationCharge(criteria.getWaterConnection(), criteria,
+						billingSlabMaster, billingSlabIds, requestInfo));
+			}
 		List<TaxHeadEstimate> taxHeadEstimates = getEstimatesForTax(taxAmt, criteria.getWaterConnection(),
-				timeBasedExemptionMasterMap, RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+				timeBasedExemptionMasterMap, RequestInfoWrapper.builder().requestInfo(requestInfo).build(),isconnectionCalculation,isAdvanceCalculation);
 
 		Map<String, List> estimatesAndBillingSlabs = new HashMap<>();
 		estimatesAndBillingSlabs.put("estimates", taxHeadEstimates);
@@ -107,20 +121,40 @@ public class EstimationService {
 	 * @param requestInfoWrapper - RequestInfo Wrapper object
 	 * @return - Returns list of TaxHeadEstimates
 	 */
-	private List<TaxHeadEstimate> getEstimatesForTax(BigDecimal waterCharge,
+	private List<TaxHeadEstimate> getEstimatesForTax(Map<String, BigDecimal> waterCharge,
 			WaterConnection connection,
-			Map<String, JSONArray> timeBasedExemptionsMasterMap, RequestInfoWrapper requestInfoWrapper) {
+			Map<String, JSONArray> timeBasedExemptionsMasterMap, RequestInfoWrapper requestInfoWrapper, boolean isconnectionCalculation,boolean isAdvanceCalculation) {
 		List<TaxHeadEstimate> estimates = new ArrayList<>();
 		// water_charge
-		estimates.add(TaxHeadEstimate.builder().taxHeadCode(WSCalculationConstant.WS_CHARGE)
-				.estimateAmount(waterCharge.setScale(2, 2)).build());
+
+		if(!isAdvanceCalculation) {
+			if(!isconnectionCalculation) {
+				if(connection.getArrears()!=null) {
+					estimates.add(TaxHeadEstimate.builder().taxHeadCode(WSCalculationConstant.WS_CHARGE_ARREAR)
+							.estimateAmount(waterCharge.get("arrears").setScale(2, 2)).build());
+				}
+				if(connection.getPenalty()!=null) {
+					estimates.add(TaxHeadEstimate.builder().taxHeadCode(WSCalculationConstant.WS_PENALTY)
+							.estimateAmount(waterCharge.get("penalty").setScale(2, 2)).build());
+				}
+			}
+			else {
+				estimates.add(TaxHeadEstimate.builder().taxHeadCode(WSCalculationConstant.WS_CHARGE )
+						.estimateAmount(waterCharge.get("waterCharge").setScale(2, 2)).build());
+			}
+		
+		
+		}else {
+			estimates.add(TaxHeadEstimate.builder().taxHeadCode(isconnectionCalculation ? WSCalculationConstant.WS_CHARGE :WSCalculationConstant.ADVANCE_COLLECTION)
+					.estimateAmount(isconnectionCalculation ? waterCharge.get("waterCharge") : waterCharge.get("advance").setScale(2, 2)).build());
+		}
 
 		// Water_cess
 		if (timeBasedExemptionsMasterMap.get(WSCalculationConstant.WC_WATER_CESS_MASTER) != null) {
 			List<Object> waterCessMasterList = timeBasedExemptionsMasterMap
 					.get(WSCalculationConstant.WC_WATER_CESS_MASTER);
 			BigDecimal waterCess;
-			waterCess = waterCessUtil.getWaterCess(waterCharge, WSCalculationConstant.Assessment_Year, waterCessMasterList);
+			waterCess = waterCessUtil.getWaterCess(waterCharge.get("waterCharge"), WSCalculationConstant.Assessment_Year, waterCessMasterList);
 			estimates.add(TaxHeadEstimate.builder().taxHeadCode(WSCalculationConstant.WS_WATER_CESS)
 					.estimateAmount(waterCess.setScale(2, 2)).build());
 		}
@@ -159,26 +193,46 @@ public class EstimationService {
 
 		// WaterCharge Calculation
 		Double totalUOM = getUnitOfMeasurement(waterConnection, calculationAttribute, criteria);
-		if (totalUOM == 0.0)
-			return waterCharge;
+//		if (totalUOM == 0.0)
+//			return waterCharge;
 		BillingSlab billSlab = billingSlabs.get(0);
 		// IF calculation type is flat then take flat rate else take slab and calculate the charge
 		//For metered connection calculation on graded fee slab
 		//For Non metered connection calculation on normal connection
+		BigDecimal totUOM = new BigDecimal(totalUOM);
+		log.debug("totalUOM" + totalUOM.toString());
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
 				for (Slab slab : billSlab.getSlabs()) {
-					if (totalUOM > slab.getTo()) {
-						waterCharge = waterCharge.add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) * slab.getCharge()));
-						totalUOM = totalUOM - ((slab.getTo()) - (slab.getFrom()));
-					} else if (totalUOM < slab.getTo()) {
-						waterCharge = waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge()));
-						totalUOM = ((slab.getTo()) - (slab.getFrom())) - totalUOM;
+
+					/*
+					 * if (totalUOM > slab.getTo()) { waterCharge = waterCharge
+					 * .add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) *
+					 * slab.getCharge())); totalUOM = totalUOM - ((slab.getTo()) -
+					 * (slab.getFrom())); } else if (totalUOM < slab.getTo()) { waterCharge =
+					 * waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge())); totalUOM =
+					 * ((slab.getTo()) - (slab.getFrom())) - totalUOM; break; }
+					 */
+
+//					if (totalUOM >= slab.getFrom() && totalUOM < slab.getTo()) {
+//						waterCharge = BigDecimal.valueOf((totalUOM * slab.getCharge()));
+//						if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
+//							waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+//						}
+//						break;
+//					}
+					BigDecimal unitsToDeduct = new BigDecimal(slab.getTo()).subtract(new BigDecimal(slab.getFrom()));
+					log.debug("unitsToDeduct" + unitsToDeduct.toString());
+					if (totUOM.compareTo(unitsToDeduct) > 0) {
+						BigDecimal runningUnit = totUOM.subtract(unitsToDeduct);
+						log.debug("runningUnit" + runningUnit.toString());
+						totUOM = runningUnit;
+					}else {
+						waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);	
 						break;
 					}
-				}
-				if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
-					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+					waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);
+
 				}
 			} else if (waterConnection.getConnectionType()
 					.equalsIgnoreCase(WSCalculationConstant.nonMeterdConnection)) {
@@ -195,6 +249,21 @@ public class EstimationService {
 		} else {
 			waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
 		}
+		return waterCharge;
+	}
+
+	private BigDecimal calculateTotalWaterCharge(BigDecimal waterCharge, BillingSlab billSlab, Slab slab,
+			BigDecimal totUOM) {
+		if (new BigDecimal(slab.getCharge()).compareTo(BigDecimal.ZERO) > 0) {
+			waterCharge = waterCharge.add(totUOM.multiply(new BigDecimal(slab.getCharge())));
+			log.debug("waterCharge when charge is NOT zero" + waterCharge.toString());
+
+		} else {
+			waterCharge = waterCharge.add(new BigDecimal(billSlab.getMinimumCharge()));
+			log.debug("waterCharge when charge is zero" + waterCharge.toString());
+
+		}
+		log.debug("final waterCharge returned" + waterCharge.toString());
 		return waterCharge;
 	}
 
@@ -279,6 +348,7 @@ public class EstimationService {
 		Date date = new Date();
 		Calendar fromDateCalendar = Calendar.getInstance();
 		fromDateCalendar.setTime(date);
+		
 		fromDateCalendar.set(Calendar.MONTH, fromDateCalendar.get(Calendar.MONTH)/3 * 3);
 		fromDateCalendar.set(Calendar.DAY_OF_MONTH, 1);
 		setTimeToBeginningOfDay(fromDateCalendar);
@@ -292,15 +362,26 @@ public class EstimationService {
 		return billingPeriod;
 	}
 	
-	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod){
+	public Map<String, Object> getMonthStartAndEndDate(Map<String, Object> billingPeriod,CalculationCriteria criteria){
 		Date date = new Date();
 		Calendar monthStartDate = Calendar.getInstance();
-		monthStartDate.setTime(date);
+		if(criteria.getFrom() ==null || criteria.getFrom() <=0) {
+			monthStartDate.setTime(date);
+		}else {
+			monthStartDate.setTimeInMillis(criteria.getFrom());
+		}
+		
+		
 		monthStartDate.set(Calendar.DAY_OF_MONTH, monthStartDate.getActualMinimum(Calendar.DAY_OF_MONTH));
 		setTimeToBeginningOfDay(monthStartDate);
 	    
 		Calendar monthEndDate = Calendar.getInstance();
-		monthEndDate.setTime(date);
+		if(criteria.getTo() ==null || criteria.getTo() <=0) {
+			monthEndDate.setTime(date);
+		}else {
+			monthEndDate.setTimeInMillis(criteria.getTo());
+		}
+		
 		monthEndDate.set(Calendar.DAY_OF_MONTH, monthEndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		setTimeToEndofDay(monthEndDate);
 		billingPeriod.put(WSCalculationConstant.STARTING_DATE_APPLICABLES, monthStartDate.getTimeInMillis());
@@ -308,14 +389,14 @@ public class EstimationService {
 		return billingPeriod;
 	}
 	
-	private static void setTimeToBeginningOfDay(Calendar calendar) {
+	public static void setTimeToBeginningOfDay(Calendar calendar) {
 	    calendar.set(Calendar.HOUR_OF_DAY, 0);
 	    calendar.set(Calendar.MINUTE, 0);
 	    calendar.set(Calendar.SECOND, 0);
 	    calendar.set(Calendar.MILLISECOND, 0);
 	}
 
-	private static void setTimeToEndofDay(Calendar calendar) {
+	public static void setTimeToEndofDay(Calendar calendar) {
 	    calendar.set(Calendar.HOUR_OF_DAY, 23);
 	    calendar.set(Calendar.MINUTE, 59);
 	    calendar.set(Calendar.SECOND, 59);
@@ -354,6 +435,12 @@ public class EstimationService {
 		return estimatesAndBillingSlabs;
 	}
 	
+	private List<TaxHeadEstimate> getTaxHeadForIntialCharge(CalculationCriteria criteria,
+			Map<String, Object> masterData, RequestInfo requestInfo){
+		
+		
+		return null;
+	}
 	
 	/**
 	 * 

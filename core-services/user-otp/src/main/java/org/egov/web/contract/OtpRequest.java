@@ -18,6 +18,7 @@ public class OtpRequest {
                 .tenantId(getTenantId())
                 .type(getType())
                 .userType(getUserType())
+                .locale(getLocale())
                 .build();
     }
 
@@ -35,6 +36,9 @@ public class OtpRequest {
 
     private String getTenantId() {
         return otp != null ? otp.getTenantId() : null;
+    }
+    private String getLocale() {
+        return otp != null ? otp.getLocale() : null;
     }
 }
 

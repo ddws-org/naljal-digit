@@ -66,7 +66,7 @@ public class UserTypeQueryBuilder {
             ".bloodgroup, u.photo, u.identificationmark,  u.tenantid, u.id, u.uuid, addr.id as addr_id, addr.type as " +
             "addr_type, addr .address as addr_address,  addr.city as addr_city, addr.pincode as addr_pincode, addr" +
             ".tenantid as " +
-            "addr_tenantid, addr.userid as addr_userid, ur.role_code as role_code, ur.role_tenantid as role_tenantid \n" +
+            "addr_tenantid, addr.userid as addr_userid, ur.role_code as role_code, ur.role_tenantid as role_tenantid,u.defaultpwdchgd \n" +
             "\tFROM eg_user u LEFT OUTER JOIN eg_user_address addr ON u.id = addr.userid AND u.tenantid = addr" +
             ".tenantid LEFT OUTER JOIN eg_userrole_v1 ur ON u.id = ur.user_id AND u.tenantid = ur.user_tenantid  ";
 
@@ -81,6 +81,8 @@ public class UserTypeQueryBuilder {
     public static final String SELECT_FAILED_ATTEMPTS_BY_USER_SQL = "select user_uuid, ip, attempt_date, active from " +
             "eg_user_login_failed_attempts WHERE user_uuid = :user_uuid AND attempt_date >= :attempt_date AND active " +
             "= 'true' ";
+    
+
 
     public static final String INSERT_FAILED_ATTEMPTS_SQL = " INSERT INTO eg_user_login_failed_attempts (user_uuid, " +
             "ip, attempt_date, active) VALUES ( :user_uuid, :ip , :attempt_date, :active ) ";
@@ -132,8 +134,8 @@ public class UserTypeQueryBuilder {
 
         if (userSearchCriteria.getTenantId() != null) {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
-            selectQuery.append(" u.tenantid = ?");
-            preparedStatementValues.add(userSearchCriteria.getTenantId().trim());
+            selectQuery.append(" u.tenantid like ?");
+            preparedStatementValues.add("%"+userSearchCriteria.getTenantId().trim()+"%");
         }
 
         if (userSearchCriteria.getUserName() != null) {
@@ -235,8 +237,8 @@ public class UserTypeQueryBuilder {
 
         if (userSearchCriteria.getTenantId() != null) {
             isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
-            selectQuery.append(" ur.role_tenantid = ?");
-            preparedStatementValues.add(userSearchCriteria.getTenantId().trim());
+            selectQuery.append(" ur.role_tenantid like ? ");
+            preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
         }
 
 
@@ -288,12 +290,12 @@ public class UserTypeQueryBuilder {
                 + "type=:Type,guardian=:Guardian,guardianrelation=:GuardianRelation,signature=:Signature," +
                 "accountlocked=:AccountLocked, accountlockeddate=:AccountLockedDate, bloodgroup=:BloodGroup," +
                 "photo=:Photo, identificationmark=:IdentificationMark,lastmodifieddate=:LastModifiedDate," +
-                "lastmodifiedby=:LastModifiedBy where username=:username and tenantid=:tenantid and type=:type";
+                "lastmodifiedby=:LastModifiedBy, defaultpwdchgd=:defaultpwdchgd where username=:username and tenantid=:tenantid and type=:type";
     }
 
 
     public String getUserPresentByUserNameAndTenant() {
-        return "select count(*) from eg_user where username =:userName and tenantId =:tenantId and type = :userType ";
+        return "select count(*) from eg_user where username =:userName and tenantId like :tenantId and type = :userType ";
     }
 
 }

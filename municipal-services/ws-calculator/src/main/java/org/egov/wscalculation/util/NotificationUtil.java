@@ -1,8 +1,10 @@
 package org.egov.wscalculation.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
@@ -19,10 +21,16 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ReadContext;
 
 import lombok.extern.slf4j.Slf4j;
+
+
 
 @Component
 @Slf4j
@@ -37,6 +45,9 @@ public class NotificationUtil {
 	@Autowired
 	private WSCalculationProducer producer;
 
+	@Autowired
+	private RestTemplate restTemplate;
+	
 	/**
 	 * Returns the uri for the localization call
 	 * 
@@ -85,7 +96,7 @@ public class NotificationUtil {
 	 * @param localizationMessage The localization messages
 	 * @return message for the specific code
 	 */
-	private String getMessageTemplate(String notificationCode, String localizationMessage) {
+	public String getMessageTemplate(String notificationCode, String localizationMessage) {
 		String path = "$..messages[?(@.code==\"{}\")].message";
 		path = path.replace("{}", notificationCode);
 		String message = null;
@@ -184,5 +195,35 @@ public class NotificationUtil {
 
 		Object response = serviceRequestRepository.getShorteningURL(new StringBuilder(url), obj);
 		return response.toString();
+	}
+
+	public HashMap<String, String> getLocalizationMessage(RequestInfo requestInfo, String code,String tenantId) {
+		HashMap<String, String> msgDetail = new HashMap<String, String>();
+		String locale = WSCalculationConstant.NOTIFICATION_LOCALE;
+		if (!StringUtils.isEmpty(requestInfo.getMsgId()) && requestInfo.getMsgId().split("|").length >= 2)
+			locale = requestInfo.getMsgId().split("\\|")[1];
+		
+		String templateId = null;
+		Object result = null;
+		StringBuilder uri = new StringBuilder();
+		uri.append(config.getLocalizationHost()).append(config.getLocalizationContextPath())
+				.append(config.getLocalizationSearchEndpoint()).append("?").append("locale=").append(locale)
+				.append("&tenantId=").append(tenantId,0,2).append("&module=").append("mgramseva-common")
+				.append("&codes=").append(code);
+
+		Map<String, Object> request = new HashMap<>();
+		request.put("RequestInfo", requestInfo);
+		try {
+			result = restTemplate.postForObject(uri.toString(), request, Map.class);
+			Configuration suppressExceptionConfiguration = Configuration.defaultConfiguration()
+					.addOptions(Option.SUPPRESS_EXCEPTIONS);
+			ReadContext jsonData = JsonPath.using(suppressExceptionConfiguration).parse(result);
+			String message = jsonData.read(WSCalculationConstant.LOCALIZATION_MSGS_JSONPATH);
+			msgDetail.put(WSCalculationConstant.MSG_KEY, message);
+			msgDetail.put(WSCalculationConstant.TEMPLATE_KEY, templateId);
+		} catch (Exception e) {
+			log.error("Exception while fetching from localization: " + e);
+		}
+		return msgDetail;
 	}
 }

@@ -17,6 +17,6 @@ public interface ApportionV2 {
 
 
 
-    List<TaxDetail> apportionPaidAmount(ApportionRequestV2 apportionRequestV2, Object masterData);
+    List<TaxDetail> apportionPaidAmount(ApportionRequestV2 apportionRequestV2, Object masterData, Boolean isBillApportion);
 
 }

@@ -87,11 +87,11 @@ public class NotificationService {
 							String mobilenumber = challan.getCitizen().getMobileNumber();
 							String[] users = new String[] {challan.getCitizen().getUuid()};
  							if(isSave)
-								msgDetail = util.getCustomizedMsg(challanRequest.getRequestInfo(), challan );
+								msgDetail = util.getCustomizedMsg(challanRequest.getRequestInfo(), challan, new HashMap<>() );
 							else if(challan.getApplicationStatus()==StatusEnum.ACTIVE)
-								msgDetail = util.getCustomizedMsgForUpdate(challanRequest.getRequestInfo(), challan );
+								msgDetail = util.getCustomizedMsgForUpdate(challanRequest.getRequestInfo(), challan, new HashMap<>() );
 							else if(challan.getApplicationStatus()==StatusEnum.CANCELLED)
-								msgDetail = util.getCustomizedMsgForCancel(challanRequest.getRequestInfo(), challan );
+								msgDetail = util.getCustomizedMsgForCancel(challanRequest.getRequestInfo(), challan, new HashMap<>() );
 							if (msgDetail!=null && !StringUtils.isEmpty(msgDetail.get(NotificationUtil.MSG_KEY))) {
 								SMSRequest smsRequest = SMSRequest.builder().
 										mobileNumber(mobilenumber).
@@ -122,19 +122,18 @@ public class NotificationService {
 		}
 	}
 	
-	
-	
 	private EventRequest getEventsForChallan(ChallanRequest request,boolean isSave) {
-    	List<Event> events = new ArrayList<>();
+		Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
+		List<Event> events = new ArrayList<>();
         String tenantId = request.getChallan().getTenantId();
  		Challan challan = request.getChallan();
 		HashMap<String, String> msgDetail =null; 
 		if(isSave)
-			msgDetail = util.getCustomizedMsg(request.getRequestInfo(), challan );
+			msgDetail = util.getCustomizedMsg(request.getRequestInfo(), challan, additionalDetailsMap );
 		else if(challan.getApplicationStatus()==StatusEnum.ACTIVE)
-			msgDetail = util.getCustomizedMsgForUpdate(request.getRequestInfo(), challan );
+			msgDetail = util.getCustomizedMsgForUpdate(request.getRequestInfo(), challan, additionalDetailsMap );
 		else if(challan.getApplicationStatus()==StatusEnum.CANCELLED)
-			msgDetail = util.getCustomizedMsgForCancel(request.getRequestInfo(), challan );
+			msgDetail = util.getCustomizedMsgForCancel(request.getRequestInfo(), challan, additionalDetailsMap );
 		else
 			return null;
         Map<String,String > mobileNumberToOwner = new HashMap<>();
@@ -154,7 +153,7 @@ public class NotificationService {
     	if(payTriggerList.contains(challan.getApplicationStatus().toString())) {
            List<ActionItem> items = new ArrayList<>();
            String actionLink = config.getPayLink().replace("$mobile", mobile)
-        						.replace("$applicationNo", challan.getChallanNo())
+        						.replace("$applicationNo", challan.getReferenceId())
         						.replace("$tenantId", challan.getTenantId())
         						.replace("$businessService", challan.getBusinessService());
            actionLink = config.getUiAppHost() + actionLink;
@@ -165,7 +164,7 @@ public class NotificationService {
     	events.add(Event.builder().tenantId(challan.getTenantId()).description(msgDetail.get(NotificationUtil.MSG_KEY))
 						.eventType(USREVENTS_EVENT_TYPE).name(USREVENTS_EVENT_NAME)
 						.postedBy(USREVENTS_EVENT_POSTEDBY).source(Source.WEBAPP).recepient(recepient)
-    					.eventDetails(null).actions(action).build());
+    					.eventDetails(null).actions(action).additionalDetails(additionalDetailsMap).build());
         if(!CollectionUtils.isEmpty(events)) {
     		return EventRequest.builder().requestInfo(request.getRequestInfo()).events(events).build();
         }else {

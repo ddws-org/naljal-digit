@@ -28,6 +28,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Response to the service request
@@ -40,7 +41,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ChallanResponse {
+	
+  @JsonProperty("totalCount")
+  private Integer totalCount =null;
+  
 
+  @JsonProperty("billData")
+  private Map<String, String> billData =null;
+  
   @JsonProperty("responseInfo")
 
   private ResponseInfo responseInfo = null;
@@ -66,6 +74,13 @@ public class ChallanResponse {
 	    return this;
 	  }
 
-  
+
+public Integer getTotalCount() {
+	return totalCount;
+}
+
+public void setTotalCount(Integer totalCount) {
+	this.totalCount = totalCount;
+} 
 
 }

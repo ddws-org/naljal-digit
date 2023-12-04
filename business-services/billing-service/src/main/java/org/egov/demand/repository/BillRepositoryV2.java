@@ -21,6 +21,7 @@ import org.egov.demand.repository.querybuilder.BillQueryBuilder;
 import org.egov.demand.repository.rowmapper.BillRowMapperV2;
 import org.egov.demand.util.Util;
 import org.egov.demand.web.contract.BillRequestV2;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,7 +60,7 @@ public class BillRepositoryV2 {
 		
 		List<BillV2> bills = billRequest.getBills();
 		
-		jdbcTemplate.batchUpdate(BillQueryBuilder.INSERT_BILL_QUERY, new BatchPreparedStatementSetter() {
+		int[] saveBill = jdbcTemplate.batchUpdate(BillQueryBuilder.INSERT_BILL_QUERY, new BatchPreparedStatementSetter() {
 			
 			@Override
 			public void setValues(PreparedStatement ps, int index) throws SQLException {
@@ -81,6 +82,9 @@ public class BillRepositoryV2 {
 				ps.setString(12, bill.getMobileNumber());
 				ps.setString(13, bill.getStatus().toString());
 				ps.setObject(14, util.getPGObject(bill.getAdditionalDetails()));
+				ps.setString(15, bill.getConsumerCode());
+				ps.setString(16, bill.getTenantId());
+
 			}
 			
 			@Override
@@ -88,6 +92,13 @@ public class BillRepositoryV2 {
 				return bills.size();
 			}
 		});
+		
+		for (int i = 0; i < saveBill.length; i++) {
+			if(0 == saveBill[i])
+				throw new CustomException("EG_BS_DUPLICATE_ACTIVE_BILL_INSERTION_ERROR",
+						"Insertion failed due to presence of ACTIVE bill in DB for consumer-code : "
+								+ bills.get(i).getConsumerCode());
+		}
 		saveBillDetails(billRequest);
 	}
 	
@@ -197,25 +208,36 @@ public class BillRepositoryV2 {
 		if(CollectionUtils.isEmpty(consumerCodes))
 			return 0;
 		
-		List<BillV2> bills =  findBill(BillSearchCriteria.builder()
-				.service(updateBillCriteria.getBusinessService())
-				.tenantId(updateBillCriteria.getTenantId())
-				.consumerCode(consumerCodes)
-				.build());
+		BillSearchCriteria billSearchCriteria = BillSearchCriteria.builder()
+							.service(updateBillCriteria.getBusinessService())
+							.tenantId(updateBillCriteria.getTenantId())
+							.consumerCode(consumerCodes)
+							.build();
+		
+		// only ACTIVE bill can be EXPIRED/UPDATED 
+		if (BillStatus.EXPIRED.equals(updateBillCriteria.getStatusToBeUpdated())) {
+			billSearchCriteria.setStatus(BillStatus.ACTIVE);
+			billSearchCriteria.setReturnAllBills(true);
+		}
+
+		List<BillV2> bills =  findBill(billSearchCriteria);
 		
 		if (CollectionUtils.isEmpty(bills))
 			return 0;
 
-		BillStatus status = bills.get(0).getStatus();
-		if (!status.equals(BillStatus.ACTIVE)) {
-			if (status.equals(BillStatus.PAID) || status.equals(BillStatus.PARTIALLY_PAID))
-				return -1;
-			else
-				return 0;
-		}
 
+		/*
+		 * In case of cancel flow, controller needs integer return type for error response 
+		 */
 		if (BillStatus.CANCELLED.equals(updateBillCriteria.getStatusToBeUpdated())) {
-
+			
+			BillStatus status = bills.get(0).getStatus();
+			if (!status.equals(BillStatus.ACTIVE)) {
+				if (status.equals(BillStatus.PAID) || status.equals(BillStatus.PARTIALLY_PAID))
+					return -1;
+				else
+					return 0;
+			}
 			updateBillCriteria.setBillIds(Stream.of(bills.get(0).getId()).collect(Collectors.toSet()));
 			updateBillCriteria.setAdditionalDetails(
 					util.jsonMerge(updateBillCriteria.getAdditionalDetails(), bills.get(0).getAdditionalDetails()));

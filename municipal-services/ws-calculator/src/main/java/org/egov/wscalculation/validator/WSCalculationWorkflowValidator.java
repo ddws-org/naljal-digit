@@ -6,6 +6,7 @@ import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.constants.MRConstants;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.util.CalculatorUtil;
+import org.egov.wscalculation.web.models.Connection.StatusEnum;
 import org.egov.wscalculation.web.models.Property;
 import org.egov.wscalculation.web.models.Status;
 import org.egov.wscalculation.web.models.WaterConnection;
@@ -40,12 +41,12 @@ public class WSCalculationWorkflowValidator {
 			 waterConnection = waterConnectionList.get(size-1);
 
 			 String waterApplicationNumber = waterConnection.getApplicationNo();
-			 waterConnectionValidation(requestInfo, tenantId, waterApplicationNumber, errorMap);
+			 waterConnectionValidation(requestInfo, tenantId, waterConnection, errorMap);
 
 			 String propertyId = waterConnection.getPropertyId();
 			 Property property = util.getProperty(requestInfo,tenantId,propertyId);
 			 //String propertyApplicationNumber = property.getAcknowldgementNumber();
-			 propertyValidation(requestInfo,tenantId,property,errorMap);
+//			 propertyValidation(requestInfo,tenantId,property,errorMap);
 		 }
 		 else{
 			 errorMap.put("WATER_CONNECTION_ERROR",
@@ -58,13 +59,18 @@ public class WSCalculationWorkflowValidator {
         return genratedemand;
 	}
 
-	public void waterConnectionValidation(RequestInfo requestInfo, String tenantId, String waterApplicationNumber,
+	public void waterConnectionValidation(RequestInfo requestInfo, String tenantId, WaterConnection waterConnection,
 			Map<String, String> errorMap) {
-		Boolean isApplicationApproved = workflowValidation(requestInfo, tenantId, waterApplicationNumber);
+		Boolean isApplicationApproved = workflowValidation(requestInfo, tenantId, waterConnection.getApplicationNo());
 		if (!isApplicationApproved)
 			errorMap.put("WATER_APPLICATION_ERROR",
 					"Demand cannot be generated as water connection application with application number "
-							+ waterApplicationNumber + " is in workflow and not approved yet");
+							+ waterConnection.getApplicationNo() + " is in workflow and not approved yet");
+		
+		if (waterConnection.getStatus().equals(StatusEnum.INACTIVE))
+			errorMap.put("WATER_APPLICATION_ERROR",
+					"Demand cannot be generated as water connection application with status as "
+							+ waterConnection.getStatus() );
 	}
 
 	public void propertyValidation(RequestInfo requestInfo, String tenantId, Property property,

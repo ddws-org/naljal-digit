@@ -1,6 +1,11 @@
 package org.egov.waterconnection.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
@@ -11,6 +16,7 @@ import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
+import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.web.models.AuditDetails;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.PropertyCriteria;
@@ -19,19 +25,20 @@ import org.egov.waterconnection.web.models.RequestInfoWrapper;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnectionRequest;
 import org.egov.waterconnection.web.models.workflow.BusinessService;
-import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONObject;
 
 @Component
+@Slf4j
 public class WaterServicesUtil {
 
 	@Autowired
@@ -95,6 +102,8 @@ public class WaterServicesUtil {
 		PropertyCriteria propertyCriteria = new PropertyCriteria();
 		HashSet<String> propertyIds = new HashSet<>();
 		propertyIds.add(waterConnectionRequest.getWaterConnection().getPropertyId());
+		log.debug("PropertyIds at the beginning of search" + propertyIds);
+
 		propertyCriteria.setPropertyIds(propertyIds);
 		if (waterConnectionRequest.getRequestInfo().getUserInfo() != null
 				&& "EMPLOYEE".equalsIgnoreCase(waterConnectionRequest.getRequestInfo().getUserInfo().getType())) {
@@ -119,7 +128,13 @@ public class WaterServicesUtil {
 				getPropertyURL(propertyCriteria),
 				RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build());
 		List<Property> propertyList = getPropertyDetails(result);
+		
+		log.debug("Result response from property service" + result);
+		log.debug("Property list" + propertyList);
+
 		if (CollectionUtils.isEmpty(propertyList)) {
+			log.debug("Tenantid" + propertyCriteria.getTenantId());
+			log.debug("PropertyIds" + propertyCriteria.getPropertyIds());
 			throw new CustomException("INCORRECT_PROPERTY_ID", "Incorrect Property Id. Water Connection cannot be created.");
 		}
 		return propertyList;
@@ -151,6 +166,9 @@ public class WaterServicesUtil {
 			propertyIds.add(waterConnectionSearchCriteria.getPropertyId());
 			propertyCriteria.setPropertyIds(propertyIds);
 		}
+		if (!StringUtils.isEmpty(waterConnectionSearchCriteria.getName())) {
+			propertyCriteria.setName(waterConnectionSearchCriteria.getName());
+		}
 		if (!StringUtils.isEmpty(waterConnectionSearchCriteria.getLocality())) {
 			propertyCriteria.setLocality(waterConnectionSearchCriteria.getLocality());
 		}
@@ -181,7 +199,7 @@ public class WaterServicesUtil {
 			PropertyResponse propertyResponse = objectMapper.convertValue(result, PropertyResponse.class);
 			return propertyResponse.getProperties();
 		} catch (Exception ex) {
-			throw new CustomException("PARSING_ERROR", "The property json cannot be parsed");
+			throw new CustomException("PROPERTY_PARSING_ERROR", "The property json cannot be parsed");
 		}
 	}
 
@@ -300,5 +318,16 @@ public class WaterServicesUtil {
 		StringBuilder builder = new StringBuilder();
 		return builder.append(config.getCollectionHost()).append(config.getPaymentSearch());
 	}
+	
+	public StringBuilder getMdmsSearchUrl() {
+	        return new StringBuilder().append(config.getMdmsHost()).append(config.getMdmsEndPoint());
+	}
+	
+	 public static void setTimeToBeginningOfDay(Calendar calendar) {
+		    calendar.set(Calendar.HOUR_OF_DAY, 0);
+		    calendar.set(Calendar.MINUTE, 0);
+		    calendar.set(Calendar.SECOND, 0);
+		    calendar.set(Calendar.MILLISECOND, 0);
+		}
 
 }

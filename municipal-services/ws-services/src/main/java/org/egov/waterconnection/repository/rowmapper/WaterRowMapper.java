@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,9 +34,20 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 	@Autowired
 	private ObjectMapper mapper;
 
+	private int full_count=0;
+
+	public int getFull_count() {
+		return full_count;
+	}
+
+	public void setFull_count(int full_count) {
+		this.full_count = full_count;
+	}
+	
 	@Override
 	public List<WaterConnection> extractData(ResultSet rs) throws SQLException, DataAccessException {
-		Map<String, WaterConnection> connectionListMap = new HashMap<>();
+		Map<String, WaterConnection> connectionListMap = new LinkedHashMap<String, WaterConnection>();
+		this.setFull_count(0);
 		WaterConnection currentWaterConnection = new WaterConnection();
 		while (rs.next()) {
 			String Id = rs.getString("connection_Id");
@@ -59,7 +71,13 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				currentWaterConnection.setProposedTaps(rs.getInt("proposedTaps"));
 				currentWaterConnection.setRoadCuttingArea(rs.getFloat("roadcuttingarea"));
 				currentWaterConnection.setRoadType(rs.getString("roadtype"));
+                currentWaterConnection.setPreviousReadingDate(rs.getLong("previousreadingdate"));
+                currentWaterConnection.setArrears(rs.getBigDecimal("arrears"));
+                currentWaterConnection.setPaymentType(rs.getString("paymentType"));
+                currentWaterConnection.setPenalty(rs.getBigDecimal("penalty"));
+                currentWaterConnection.setAdvance(rs.getBigDecimal("advance"));
 				PGobject pgObj = (PGobject) rs.getObject("additionaldetails");
+				this.setFull_count(rs.getInt("full_count"));
 				ObjectNode additionalDetails = null;
 				if (pgObj != null) {
 
@@ -67,7 +85,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 						additionalDetails = mapper.readValue(pgObj.getValue(), ObjectNode.class);
 					} catch (IOException ex) {
 						// TODO Auto-generated catch block
-						throw new CustomException("PARSING ERROR", "The additionalDetail json cannot be parsed");
+						throw new CustomException("CONNECTION_DETAILS_PARSE_ERROR", "The additionalDetail json cannot be parsed of Connection :"+rs.getString("connectionNo"));
 					}
 				} else {
 					additionalDetails = mapper.createObjectNode();
@@ -86,6 +104,10 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put(WCConstants.SANCTION_LETTER_FILESTORE_ID, rs.getString("sanctionfileStoreId"));
 				additionalDetails.put(WCConstants.ESTIMATION_DATE_CONST, rs.getBigDecimal("estimationLetterDate"));
 				additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
+				additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
+				additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
+				additionalDetails.put("totalamount",rs.getString("taxamount"));
+				additionalDetails.put("lastDemandGeneratedDate", rs.getString("taxperiodto"));
 
 				currentWaterConnection.setAdditionalDetails(additionalDetails);
 				currentWaterConnection

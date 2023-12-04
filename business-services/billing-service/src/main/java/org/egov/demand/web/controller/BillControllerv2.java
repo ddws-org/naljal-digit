@@ -7,10 +7,12 @@ import javax.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.response.ResponseInfo;
+import org.egov.demand.config.ApplicationProperties;
 import org.egov.demand.helper.BillHelperV2;
 import org.egov.demand.model.BillSearchCriteria;
 import org.egov.demand.model.GenerateBillCriteria;
 import org.egov.demand.model.UpdateBillRequest;
+import org.egov.demand.producer.Producer;
 import org.egov.demand.service.BillServicev2;
 import org.egov.demand.util.Constants;
 import org.egov.demand.web.contract.BillRequestV2;
@@ -46,6 +48,13 @@ public class BillControllerv2 {
 	@Autowired
 	private BillHelperV2 billHelper;
 	
+	@Autowired
+	ApplicationProperties properties;
+	
+	@Autowired
+	Producer producer;
+	
+	
 	@PostMapping("_search")
 	@ResponseBody
 	public ResponseEntity<?> search(@RequestBody @Valid final RequestInfoWrapper requestInfoWrapper,
@@ -63,6 +72,7 @@ public class BillControllerv2 {
 			@ModelAttribute @Valid GenerateBillCriteria generateBillCriteria){
 		
 		BillResponseV2 billResponse = billService.fetchBill(generateBillCriteria, requestInfoWrapper);
+		
 		return new ResponseEntity<>(billResponse, HttpStatus.CREATED);
 	}
 	

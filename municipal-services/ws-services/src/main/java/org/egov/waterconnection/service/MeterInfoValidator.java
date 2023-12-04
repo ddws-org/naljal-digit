@@ -31,6 +31,7 @@ public class MeterInfoValidator implements WaterActionValidator {
 			handleUpdateApplicationRequest(waterConnectionRequest, errorMap);
 			break;
 		default:
+			handleCreateConnectionRequest(waterConnectionRequest, errorMap);
 			break;
 		}
 		if (!errorMap.isEmpty())
@@ -41,6 +42,17 @@ public class MeterInfoValidator implements WaterActionValidator {
 	private void handleUpdateApplicationRequest(WaterConnectionRequest waterConnectionRequest,
 			Map<String, String> errorMap) {
 		if (WCConstants.ACTIVATE_CONNECTION_CONST
+				.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
+			if (WCConstants.METERED_CONNECTION
+					.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getConnectionType())) {
+				validateMeteredConnectionRequst(waterConnectionRequest, errorMap);
+			}
+		}
+	}
+	
+	private void handleCreateConnectionRequest(WaterConnectionRequest waterConnectionRequest,
+			Map<String, String> errorMap) {
+		if (WCConstants.SUBMIT_CONNECTION
 				.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getProcessInstance().getAction())) {
 			if (WCConstants.METERED_CONNECTION
 					.equalsIgnoreCase(waterConnectionRequest.getWaterConnection().getConnectionType())) {
@@ -75,17 +87,17 @@ public class MeterInfoValidator implements WaterActionValidator {
 		}
 		HashMap<String, Object> addDetail = mapper.convertValue(
 				waterConnectionRequest.getWaterConnection().getAdditionalDetails(), HashMap.class);
-		if (StringUtils.isEmpty(addDetail)
-				|| addDetail.getOrDefault(WCConstants.INITIAL_METER_READING_CONST, null) == null) {
-			errorMap.put("INVALID_INITIAL_METER_READING", "Initial meter reading can not be null");
-		} else {
-			BigDecimal initialMeterReading = BigDecimal.ZERO;
-			initialMeterReading = new BigDecimal(
-					String.valueOf(addDetail.get(WCConstants.INITIAL_METER_READING_CONST)));
-			if (initialMeterReading.compareTo(BigDecimal.ZERO) == 0 || initialMeterReading.compareTo(BigDecimal.ZERO) == -1 ) {
-				errorMap.put("INVALID_INITIAL_METER_READING", "Initial meter reading can not be zero or negative");
-			}
-		}
+//		if (StringUtils.isEmpty(addDetail)
+//				|| addDetail.getOrDefault(WCConstants.INITIAL_METER_READING_CONST, null) == null) {
+//			errorMap.put("INVALID_INITIAL_METER_READING", "Initial meter reading can not be null");
+//		} else {
+//			BigDecimal initialMeterReading = BigDecimal.ZERO;
+//			initialMeterReading = new BigDecimal(
+//					String.valueOf(addDetail.get(WCConstants.INITIAL_METER_READING_CONST)));
+//			if (initialMeterReading.compareTo(BigDecimal.ZERO) == 0 || initialMeterReading.compareTo(BigDecimal.ZERO) == -1 ) {
+//				errorMap.put("INVALID_INITIAL_METER_READING", "Initial meter reading can not be zero or negative");
+//			}
+//		}
 	}
 
 }

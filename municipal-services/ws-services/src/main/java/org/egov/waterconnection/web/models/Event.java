@@ -1,5 +1,7 @@
 package org.egov.waterconnection.web.models;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -53,6 +55,8 @@ public class Event {
 	private Action actions;
 	
 	private EventDetails eventDetails;
+	
+	private Map<String, Object> additionalDetails;
 		
 
 }

@@ -9,20 +9,11 @@ import javax.validation.Valid;
 import org.egov.vendor.service.VendorService;
 import org.egov.vendor.util.ResponseInfoFactory;
 import org.egov.vendor.util.VendorUtil;
-import org.egov.vendor.web.model.RequestInfoWrapper;
-import org.egov.vendor.web.model.Vendor;
-import org.egov.vendor.web.model.VendorRequest;
-import org.egov.vendor.web.model.VendorResponse;
-import org.egov.vendor.web.model.VendorSearchCriteria;
+import org.egov.vendor.web.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -75,4 +66,19 @@ public class VendorController {
 				.build();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+
+	@RequestMapping(value="/_vendorReport" ,method = RequestMethod.POST)
+	public ResponseEntity<VendorReportResponse> vendorReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+															 @RequestParam(value="monthStartDate" , required = true) String monthStartDate,
+															 @RequestParam ("tenantId") String tenantId,
+															 @RequestParam ("offset") Integer offset,
+															 @RequestParam ("limit") Integer limit)
+	{
+
+        List<VendorReportData> vendorReportData=vendorService.vendorReport(monthStartDate,tenantId,offset,limit,requestInfoWrapper.getRequestInfo());
+		VendorReportResponse vendorReportResponse= VendorReportResponse.builder().VendorReportData(vendorReportData).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
+
+		return new ResponseEntity<>(vendorReportResponse,HttpStatus.OK);
+    }
+
 }

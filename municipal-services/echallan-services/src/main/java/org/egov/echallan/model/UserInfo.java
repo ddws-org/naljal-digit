@@ -67,6 +67,10 @@ public class UserInfo extends User {
   @JsonProperty("additionalroles")
 
   private List<TenantRole> additionalroles;
+  
+  @JsonProperty("mobileNumber")
+  private String mobileNumber;
+  
   public UserInfo tenantId(String tenantId) {
     this.tenantId = tenantId;
     return this;

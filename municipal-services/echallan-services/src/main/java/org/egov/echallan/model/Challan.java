@@ -12,13 +12,16 @@
 
 package org.egov.echallan.model;
 
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.List;
 
-import org.egov.common.contract.response.ResponseInfo;
+import javax.validation.Valid;
+
 import org.egov.echallan.web.models.calculation.Calculation;
+import org.hibernate.validator.constraints.SafeHtml;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -26,11 +29,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.SafeHtml;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Capture the challan details 
@@ -44,50 +42,49 @@ import java.util.List;
 public class Challan {
 
   @JsonProperty("citizen")
-  @Valid
-  private UserInfo citizen = null;
+  private UserInfo citizen ;
 
   @JsonProperty("id")
   @SafeHtml
-  private String id = null;
+  private String id ;
 
   @JsonProperty("tenantId")
   @SafeHtml
-  private String tenantId = null;
+  private String tenantId ;
 
   @JsonProperty("businessService")
   @SafeHtml
-  private String businessService = null;
+  private String businessService ;
 
   @JsonProperty("challanNo")
   @SafeHtml
-  private String challanNo = null;
+  private String challanNo ;
 
   @JsonProperty("referenceId")
   @SafeHtml
-  private String referenceId = null;
+  private String referenceId ;
 
   @JsonProperty("description")
   @SafeHtml
-  private String description = null;
+  private String description ;
 
   @JsonProperty("accountId")
   @SafeHtml
-  private String accountId = null;
+  private String accountId ;
 
   @JsonProperty("additionalDetail")
 
-  private Object additionalDetail = null;
+  private Object additionalDetail ;
 
   @JsonProperty("source")
   @SafeHtml
-  private String source = null;
+  private String source ;
   
   @JsonProperty("taxPeriodFrom")
-  private Long taxPeriodFrom = null;
+  private Long taxPeriodFrom ;
 
   @JsonProperty("taxPeriodTo")
-  private Long taxPeriodTo = null;
+  private Long taxPeriodTo ;
 
   @JsonProperty("calculation")
   private Calculation calculation;
@@ -97,15 +94,15 @@ public class Challan {
 
   @JsonProperty("address")
 
-  private Address address = null;
+  private Address address ;
   
   @JsonProperty("filestoreid")
   @SafeHtml
-  private String filestoreid = null;
+  private String filestoreid ;
 
   @JsonProperty("auditDetails")
 
-  private AuditDetails auditDetails = null;
+  private AuditDetails auditDetails;
   public Challan citizen(UserInfo citizen) {
     this.citizen = citizen;
     return this;
@@ -142,5 +139,32 @@ public class Challan {
   }
 
   @JsonProperty("applicationStatus")
-  private StatusEnum applicationStatus = null;
+  private StatusEnum applicationStatus;
+  
+	// Expense fields
+	@JsonProperty("vendor")
+	@SafeHtml
+	private String vendor ;
+
+	@JsonProperty("typeOfExpense")
+	@SafeHtml
+	private String typeOfExpense ;
+
+	@JsonProperty("billDate")
+	private Long billDate ;
+
+	@JsonProperty("billIssuedDate")
+	private Long billIssuedDate;
+
+	@JsonProperty("paidDate")
+	private Long paidDate ;
+
+	@JsonProperty("isBillPaid")
+	private Boolean isBillPaid;
+	
+	@JsonProperty("vendorName")
+	private String vendorName;
+	
+	@JsonProperty("totalAmount")
+	private BigDecimal totalAmount;
 }

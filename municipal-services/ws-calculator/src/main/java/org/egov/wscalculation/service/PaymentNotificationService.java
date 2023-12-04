@@ -2,6 +2,7 @@ package org.egov.wscalculation.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -173,6 +174,8 @@ public class PaymentNotificationService {
 				log.error("No UUID/SMS for mobile {} skipping event", mobile);
 				continue;
 			}
+			HashMap<String, Object> additionals = new HashMap<String, Object>();
+
 			List<String> toUsers = new ArrayList<>();
 			toUsers.add(mapOfPhoneNoAndUUIDs.get(mobile));
 			Recipient recepient = Recipient.builder().toUsers(toUsers).toRoles(null).build();
@@ -180,6 +183,14 @@ public class PaymentNotificationService {
 			String actionLink = config.getPayLink().replace("$mobile", mobile)
 					.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
 					.replace("$tenantId", property.getTenantId());
+			
+			
+			additionals.put("localizationCode", WSCalculationConstant.WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE);
+			HashMap<String, String> attributes = new HashMap<String, String>();
+			attributes.put("$mobile", mobile);
+			attributes.put("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo());
+			attributes.put("$tenantId", property.getTenantId());
+			additionals.put("attributes", attributes);
 			actionLink = config.getNotificationUrl() + actionLink;
 			ActionItem item = ActionItem.builder().actionUrl(actionLink).code(config.getPayCode()).build();
 			items.add(item);
@@ -189,7 +200,7 @@ public class PaymentNotificationService {
 					.eventType(WSCalculationConstant.USREVENTS_EVENT_TYPE)
 					.name(WSCalculationConstant.USREVENTS_EVENT_NAME)
 					.postedBy(WSCalculationConstant.USREVENTS_EVENT_POSTEDBY).source(Source.WEBAPP).recepient(recepient)
-					.eventDetails(null).actions(action).build());
+					.eventDetails(null).additionalDetails(additionals).actions(action).build());
 		}
 		if (!CollectionUtils.isEmpty(events)) {
 			return EventRequest.builder().requestInfo(waterConnectionRequest.getRequestInfo()).events(events).build();

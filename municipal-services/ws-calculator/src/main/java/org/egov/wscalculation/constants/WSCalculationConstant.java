@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.egov.wscalculation.web.models.DemandStatus;
 
+import com.jayway.jsonpath.JsonPath;
+
 public class WSCalculationConstant {
 
 	public static final String TAXPERIOD_MASTER_KEY = "TAXPERIOD";
@@ -77,10 +79,29 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_INTEREST = "WS_TIME_INTEREST";
 
 	public static final String WS_TIME_PENALTY = "WS_TIME_PENALTY";
+	
+	public static final String PENALTY_OUTSTANDING = "outstanding";
+	
+	public static final String OUTSTANDING = "outstandingWithoutPenalty";
+
+
+	public static final String PENALTY_CURRENT_MONTH = "currentMonth";
+
+	public static final String FIXED = "FIXED";
+
+	public static final String FLAT = "FLAT";
+
 
 	public static final String WS_WATER_CESS = "WS_WATER_CESS";
 
-	public static final String WS_CHARGE = "WS_CHARGE";
+	public static final String WS_CHARGE = "10101";
+	
+	public static final String ADVANCE_COLLECTION = "WS_ADVANCE_CARRYFORWARD";
+
+
+	public static final String WS_CHARGE_ARREAR = "10102";
+
+	public static final String WS_PENALTY = "10201";
 
 	/**
 	 * data fields
@@ -99,7 +120,15 @@ public class WSCalculationConstant {
 
 	public static final String RATE_FIELD_NAME = "rate";
 
-	public static final String DAYA_APPLICABLE_NAME = "applicableAfterDays";
+	public static final String DAYS_APPLICABLE_NAME = "applicableAfterDays";
+	
+	public static final String AMOUNT_FIELD_NAME = "amount";
+
+	public static final String TYPE_FIELD_NAME = "type";
+	
+	public static final String SUBTYPE_FIELD_NAME = "subType";
+
+
 
 	/*
 	 * bigdecimal values
@@ -132,13 +161,13 @@ public class WSCalculationConstant {
 	public static final List<String> WS_BILLING_SLAB_MASTERS = Collections
 			.unmodifiableList(Arrays.asList(WC_BILLING_SLAB_MASTER));
 
-	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE));
+	public static final List<String> TAX_APPLICABLE = Collections.unmodifiableList(Arrays.asList(WS_CHARGE,WS_CHARGE_ARREAR,WS_PENALTY));
 
 	public static final String flatRateCalculationAttribute = "Flat";
 
 	public static final String meteredConnectionType = "Metered";
 
-	public static final String nonMeterdConnection = "Non Metered";
+	public static final String nonMeterdConnection = "Non_Metered";
 
 	public static final String noOfTapsConst = "No. of taps";
 
@@ -150,11 +179,21 @@ public class WSCalculationConstant {
 
 	public static final String JSONPATH_ROOT_FOR_BilingPeriod = "$.MdmsRes.ws-services-masters.billingPeriod";
 
+
+	public static final String JSONPATH_ROOT_FOR_mdmsRes = "$.MdmsRes";
+
+	public static final String JSONPATH_ROOT_FOR_billingService = "$.MdmsRes.BillingService";
+	public static final String JSONPATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.PaymentService";
+
+	public static final String JSON_PATH_ROOT_FOR_Allowed_PAyment = "$.MdmsRes.BillingService.BusinessService";
+
 	public static final String Quaterly_Billing_Period = "quarterly";
 
 	public static final String Monthly_Billing_Period = "monthly";
 
 	public static final String Billing_Cycle_String = "billingCycle";
+
+	public static final String Payment_Modes_Not_Allowed = "collectionModesNotAllowed";
 
 	public static final String Demand_End_Date_String = "demandEndDateMillis";
 
@@ -164,7 +203,7 @@ public class WSCalculationConstant {
 
 	public static final String NOTIFICATION_LOCALE = "en_IN";
 
-	public static final String MODULE = "rainmaker-ws";
+	public static final String MODULE = "mgramseva-ws";
 
 	public static final String SMS_RECIEVER_MASTER = "SMSReceiver";
 
@@ -178,11 +217,16 @@ public class WSCalculationConstant {
 
 	public static final String WATER_CONNECTION_BILL_GENERATION_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_SMS_MESSAGE";
 	
+	
 	public static final String WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_APP_MESSAGE";
 	
 	public static final String  USREVENTS_EVENT_TYPE = "SYSTEMGENERATED";
-	
+
+	public static final String  FILTER_PAYMENT_METHOD_SEARCH = "[?(@.code=='WS')]";
+
 	public static final String  USREVENTS_EVENT_NAME = "WATER BILL GENERATION";
+	
+	public static final String  MONTHLY_DEMAND_GENERATED = "MONTHLY_DEMAND_GENERATED";
 	
 	public static final String  USREVENTS_EVENT_POSTEDBY = "SYSTEM-WS";
 	
@@ -248,7 +292,38 @@ public class WSCalculationConstant {
 	public static final String WS_TIME_ADHOC_PENALTY = "WS_TIME_ADHOC_PENALTY";
 	
 	public static final String WS_TIME_ADHOC_REBATE = "WS_TIME_ADHOC_REBATE";
-
-
 	
+	public static final String WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE = "WATER_CONNECTION_BILL_GENERATION_CONSUMER_SMS_MESSAGE";
+
+	public static final String mGram_Consumer_NewBill = "mGram.Consumer.NewBill";
+
+	public static final String mGram_Consumer_NewDemand = "mGram.GP.MonthlyDemandGenerated";
+
+	public static final String NEW_BULK_DEMAND_EVENT = "NEW_BULK_DEMAND_EVENT";
+
+	public static final String NEW_BULK_DEMAND_EVENT_NM = "NEW_BULK_DEMAND_EVENT_NM";
+
+	public static final String NEW_BULK_DEMAND_EVENT_M = "NEW_BULK_DEMAND_EVENT_M";
+
+	public static final String MSG_KEY = "message";
+
+	public static final String LOCALIZATION_CODES_JSONPATH = "$.messages[0].code";
+	public static final String LOCALIZATION_MSGS_JSONPATH = "$.messages[0].message";
+
+	public static final String TEMPLATE_KEY = "templateId";
+
+	public static final String MONTHLY_DEMAND_FAILED = "MONTHLY_DEMAND_FAILED";
+
+	public static final String GENERATE_DEMAND_EVENT = "GENERATE_DEMAND_EN_REMINDER";
+
+	public static final String mGram_Consumer_Bill = "mGram.Consumer.NewBill";
+
+	public static final String mGram_Consumer_Payment = "mGram.consumer.payment.message";
+
+	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
+
+
+
+
+
 }

@@ -2,6 +2,8 @@ package org.egov.wscalculation;
 
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
+
 import org.egov.tracer.config.TracerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +25,10 @@ public class WsCalculationApplication {
 	@Value("${app.timezone}")
 	private String timeZone;
 
+	@PostConstruct
+	public void initialize() {
+		TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(WsCalculationApplication.class, args);
 	}

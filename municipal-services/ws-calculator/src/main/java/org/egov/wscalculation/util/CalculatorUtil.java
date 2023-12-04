@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.mdms.model.MasterDetail;
@@ -37,6 +38,7 @@ import lombok.Getter;
 
 @Component
 @Getter
+@Slf4j
 public class CalculatorUtil {
 
 	@Autowired
@@ -369,5 +371,28 @@ public class CalculatorUtil {
 		url.append("tenantId=").append(tenantId).append("&");
 		url.append("businessIds=").append(businessIds);
 		return url.toString();
+	}
+
+	public Map<String, Object> getAllowedPaymentForTenantId(String tenantId, MdmsCriteria mdmsCriteria, RequestInfo requestInfo) {
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
+		Object res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		if (res == null) {
+			throw new CustomException("MDMS_ERROR_FOR_BILLING_FREQUENCY", "ERROR IN FETCHING THE ALLOWED PAYMENT FOR TENANTID " + tenantId);
+		}
+		log.info("Response", res);
+		Map<String, Object> mdmsres = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_mdmsRes);
+		Map<String, Object> mdmsBillingServiceres = JsonPath.read(res,WSCalculationConstant.JSONPATH_ROOT_FOR_billingService);
+		if(mdmsres.isEmpty() || mdmsBillingServiceres.isEmpty()) {
+			log.info("Inside No MDMS response found for tenantId::::" +tenantId);
+			String stateLevelTenantId = tenantId.split("\\.")[0];
+			mdmsCriteriaReq.getMdmsCriteria().setTenantId(stateLevelTenantId);
+			res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		}
+
+		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSON_PATH_ROOT_FOR_Allowed_PAyment);
+		return jsonOutput.get(0);
+
+
+
 	}
 }

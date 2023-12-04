@@ -29,4 +29,3 @@ To run the th-services locally, update below listed properties in `application.p
 egov.mdms.host = http://localhost:8084
 egov.localisation.host = http://localhost:8085
 ```
-

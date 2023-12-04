@@ -226,6 +226,22 @@ public class UserService {
         StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
         return userCall(userSearchRequest,uri);
     }
+	 /**
+     * Searches if the owner is already created. Search is based on name of owner, uuid and mobileNumber
+     * @param owner Owner which is to be searched
+     * @param requestInfo RequestInfo from the propertyRequest
+     * @return UserDetailResponse containing the user if present and the responseInfo
+     */
+	private UserDetailResponse userExistsForMgram(OwnerInfo owner, RequestInfo requestInfo) {
+
+		UserSearchRequest userSearchRequest = getBaseUserSearchRequest(owner.getTenantId(), requestInfo);
+		userSearchRequest.setMobileNumber(owner.getMobileNumber());
+		userSearchRequest.setUserType(owner.getType());
+		userSearchRequest.setUserName(owner.getUserName());
+		
+        StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
+        return userCall(userSearchRequest,uri);
+    }
 
 
     /**
@@ -408,6 +424,27 @@ public class UserService {
 			setOwnerFields(owner, userDetailResponse, requestInfo);
 		});
 	}
+    /**
+     * Updates user if present else creates new user
+     * @param request PropertyRequest received from update
+     */
+    public void updateUserForMgram(PropertyRequest request) {
+
+		Property property = request.getProperty();
+		RequestInfo requestInfo = request.getRequestInfo();
+
+		property.getOwners().forEach(owner -> {
+
+			UserDetailResponse userDetailResponse = userExistsForMgram(owner, requestInfo);
+			StringBuilder uri = new StringBuilder(userHost);
+			
+			if (!CollectionUtils.isEmpty(userDetailResponse.getUser())) {
+				uri = uri.append(userContextPath).append(userUpdateEndpoint);
+			} 
+			userDetailResponse = userCall(new CreateUserRequest(requestInfo, owner), uri);
+			setOwnerFields(owner, userDetailResponse, requestInfo);
+		});
+	}
 
     /**
      * provides a user search request with basic mandatory parameters
@@ -463,7 +500,82 @@ public class UserService {
 	private String getStateLevelTenant(String tenantId){
 		return tenantId.split("\\.")[0];
 	}
+	
+    public void createUserForAlternateNumber(PropertyRequest request){
+    
+        Property property = request.getProperty();
+		RequestInfo requestInfo = request.getRequestInfo();
+		Role role = getCitizenRole();
 
+		List <OwnerInfo> owners = property.getOwners();
 
+		for (OwnerInfo owner: owners) {
+			OwnerInfo ownerFromRequest = new OwnerInfo();
+
+			ownerFromRequest.setUuid(owner.getUuid());
+			ownerFromRequest.setName(owner.getName());
+			ownerFromRequest.setMobileNumber(owner.getMobileNumber());
+
+			addUserDefaultFields(property.getTenantId(), role, ownerFromRequest);
+			UserDetailResponse userDetailResponse = userExists(ownerFromRequest, requestInfo);
+			List<OwnerInfo> existingUsersFromService = userDetailResponse.getUser();
+
+			if (CollectionUtils.isEmpty(existingUsersFromService)) {
+
+				throw new CustomException("USER DOES NOT EXIST", "The owner to be updated does not exist");
+				
+			} 
+			
+			for (OwnerInfo existingUser : existingUsersFromService) {
+				if(existingUser.getUuid().equals(ownerFromRequest.getUuid())) {
+					ownerFromRequest.setAlternatemobilenumber(owner.getAlternatemobilenumber());
+					userDetailResponse = updateExistingUser(property, requestInfo, role, ownerFromRequest, existingUser);
+					break;
+				}
+			}
+
+			// Assigns value of fields from user got from userDetailResponse to owner object
+			setOwnerFields(ownerFromRequest, userDetailResponse, requestInfo);
+		}
+	}
+
+    /*
+		Method to update user mobile number
+	*/
+    
+	public void updateUserMobileNumber(PropertyRequest request,Map <String, String> uuidToMobileNumber) {
+		
+		Property property = request.getProperty();
+		RequestInfo requestInfo = request.getRequestInfo();
+
+		property.getOwners().forEach(owner -> {
+
+			UserDetailResponse userDetailResponse = searchedSingleUserExists(owner, requestInfo);
+			StringBuilder uri = new StringBuilder(userHost);
+			 
+				owner.setId(userDetailResponse.getUser().get(0).getId());
+				uri = uri.append(userContextPath).append(userUpdateEndpoint);
+			
+			userDetailResponse = userCall(new CreateUserRequest(requestInfo, owner), uri);
+			setOwnerFields(owner, userDetailResponse, requestInfo);
+		});
+				
+	}
+	
+	/*
+	 	Method to check if the searched user exists
+	*/
+
+	private UserDetailResponse searchedSingleUserExists(OwnerInfo owner, RequestInfo requestInfo) {
+		
+		UserSearchRequest userSearchRequest = getBaseUserSearchRequest(owner.getTenantId(), requestInfo);
+		userSearchRequest.setUserType(owner.getType());
+		Set <String> uuids = new HashSet<String>();
+		uuids.add(owner.getUuid());
+		userSearchRequest.setUuid(uuids);
+		
+        StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
+        return userCall(userSearchRequest,uri);
+	}
 
 }

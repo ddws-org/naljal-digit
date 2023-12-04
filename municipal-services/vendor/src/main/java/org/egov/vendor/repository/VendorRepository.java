@@ -9,8 +9,10 @@ import org.egov.tracer.model.CustomException;
 import org.egov.vendor.config.VendorConfiguration;
 import org.egov.vendor.producer.Producer;
 import org.egov.vendor.repository.querybuilder.VendorQueryBuilder;
+import org.egov.vendor.repository.rowmapper.VendorReportRowMapper;
 import org.egov.vendor.repository.rowmapper.VendorRowMapper;
 import org.egov.vendor.web.model.Vendor;
+import org.egov.vendor.web.model.VendorReportData;
 import org.egov.vendor.web.model.VendorRequest;
 import org.egov.vendor.web.model.VendorSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class VendorRepository {
 
 	@Autowired
 	private VendorRowMapper vendorrowMapper;
+
+	@Autowired
+	private VendorReportRowMapper vendorReportRowMapper;
 
 	public void save(VendorRequest vendorRequest) {
 		producer.push(configuration.getSaveTopic(), vendorRequest);
@@ -100,13 +105,50 @@ public class VendorRepository {
 		return jdbcTemplate.query(query, preparedStmtList.toArray(), vendorrowMapper);
 	}
 
-	public int getExistingVenodrsCount(List<String> ownerIdList) {
+	public int getExistingVenodrsCount(List<String> ownerIdList, String tenantId) {
 		List<Object> preparedStmtList = new ArrayList<>();
 
-		String query = vendorQueryBuilder.getvendorCount(ownerIdList, preparedStmtList);
+		String query = vendorQueryBuilder.getvendorCount(ownerIdList, tenantId,preparedStmtList);
 
+		log.info("vendor exists query ===="+tenantId+"----"+ownerIdList.toString()+query);
+		log.debug("vendor exists query ===="+tenantId+"----"+ownerIdList.toString()+query);
 		return jdbcTemplate.queryForObject(query, preparedStmtList.toArray(), Integer.class);
 
 	}
 
+	public List<VendorReportData> getVendorReportData(Long monthStartDateTime, String tenantId, Integer offset, Integer limit)
+	{
+		StringBuilder vendor_report_query=new StringBuilder(vendorQueryBuilder.VENDOR_REPORT_QUERY);
+
+		List<Object> preparedStatement=new ArrayList<>();
+		preparedStatement.add(tenantId);
+		preparedStatement.add(monthStartDateTime);
+//		preparedStatement.add(monthEndDateTime);
+
+
+		Integer newlimit=configuration.getDefaultLimit();
+		Integer newoffset= configuration.getDefaultOffset();
+
+		if(limit==null && offset==null)
+			newlimit=configuration.getMaxSearchLimit();
+		if(limit!=null && limit<=configuration.getMaxSearchLimit())
+			newlimit=limit;
+		if(limit!=null && limit>=configuration.getMaxSearchLimit())
+			newlimit=configuration.getMaxSearchLimit();
+
+		if(offset!=null)
+			newoffset=offset;
+
+		if (newlimit>0){
+			vendor_report_query.append(" offset ?  limit ? ;");
+			preparedStatement.add(newoffset);
+			preparedStatement.add(newlimit);
+		}
+
+		log.info("Query of vendor report : "+vendor_report_query.toString()+" prepared statement of vendor report "+ preparedStatement);
+
+		List<VendorReportData> vendorReportDataList=jdbcTemplate.query(vendor_report_query.toString() , preparedStatement.toArray(), vendorReportRowMapper);
+
+		return vendorReportDataList;
+	}
 }

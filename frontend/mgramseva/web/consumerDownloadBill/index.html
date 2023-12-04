@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+    <base href="/mgramseva/withoutAuth/mgramseva-common/consumerDownloadBill/" />
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="mgramseva" />
+
+    <title>mGramSeva</title>
+    <style>
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin-top: 20px; /* Add margin at the top */
+      }
+      .loader {
+        border: 10px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 10px solid rgba(244, 119, 56, 1);
+        border-right: 10px solid white;
+        border-bottom: 10px solid rgba(244, 119, 56, 1);
+        border-left: 10px solid rgba(244, 119, 56, 1);
+        width: 60px;
+        height: 60px;
+        animation: spin 2s linear infinite;
+        margin-bottom: 25px; /* Add margin at the bottom */
+      }
+
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      /* Additional CSS styles */
+      #loadingMessage {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px; /* Add margin at the bottom */
+      }
+    </style>
+    <script>
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+      const payMode = params.mode;
+      const status = params.status;
+      const consumerCode = params.consumerCode;
+      const tenantId = params.tenantId;
+      const businessService = params.businessService;
+      const billNumber = params.billNumber;
+      const key = params.key;
+      const receiptNumber = params.receiptNumber;
+      const url = window.location.origin;
+      const headers = {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json; charset= utf-8",
+        },
+      };
+      const searchBillOptions = {
+        ...headers,
+        body: JSON.stringify({
+          RequestInfo: {},
+        }),
+      };
+
+      async function getPDF() {
+        try {
+          const searchBill = await fetch(
+            `${url}/billing-service/bill/v2/_search?tenantId=${tenantId}&consumerCode=${consumerCode}&service=${businessService}&billNumber=${billNumber}`,
+            searchBillOptions
+          );
+          const searchBillRes = await searchBill.json();
+          const createPDFOptions = {
+            ...headers,
+            body: JSON.stringify({
+              Bill: searchBillRes["Bill"],
+              RequestInfo: {
+                action: "_create",
+                apiId: "mgramseva",
+                authToken: "",
+                did: 1,
+                key: "",
+                msgId: "20170310130900|pn_IN",
+                ts: "",
+                userInfo: null,
+                ver: 1,
+              },
+            }),
+          };
+          const createPdf = await fetch(
+            `${url}/pdf-service/v1/_create?key=${key}&tenantId=${tenantId}`,
+            createPDFOptions
+          );
+          const createPDFRes = await createPdf.json();
+          const getFileLink = await fetch(
+            `${url}/filestore/v1/files/url?tenantId=${tenantId}&fileStoreIds=${createPDFRes["filestoreIds"][0]}`,
+            {
+              ...headers,
+              method: "GET",
+            }
+          );
+          const getFileLinkRes = await getFileLink.json();
+          var pdfURL = getFileLinkRes["fileStoreIds"][0]["url"];
+          window.location.replace(pdfURL);
+        } catch (e) {
+          console.log(e);
+          document.getElementById("loadingMessage").textContent =
+            "ਬਿੱਲ ਨੂੰ ਡਾਊਨਲੋਡ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ।";
+        }
+      }
+      getPDF();
+    </script>
+  </head>
+
+  <body style="background: rgba(214, 213, 212, 1)">
+    <script></script>
+    <div class="loading-container">
+      <div class="loader"></div>
+      <div id="loadingMessage">ਬਿੱਲ ਪ੍ਰਾਪਤ ਕਰਨਾ...</div>
+    </div>
+  </body>
+</html>

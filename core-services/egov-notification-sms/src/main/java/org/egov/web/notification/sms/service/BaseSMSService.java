@@ -1,15 +1,13 @@
 package org.egov.web.notification.sms.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.jayway.jsonpath.*;
 import lombok.extern.slf4j.*;
 import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.*;
+import org.egov.web.notification.sms.repository.builder.SmsNotificationRepository;
 import org.egov.web.notification.sms.config.*;
 import org.egov.web.notification.sms.models.*;
-import org.springframework.asm.*;
+import org.egov.web.notification.sms.producer.Producer;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.core.*;
 import org.springframework.core.env.*;
 import org.springframework.http.*;
 import org.springframework.http.client.*;
@@ -40,6 +38,13 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
     @Autowired
     protected Environment env;
 
+    @Autowired
+    private Producer producer;
+
+    @Autowired
+    private SmsNotificationRepository smsNotificationRepository;
+
+
     @PostConstruct
     public void init() {
         List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
@@ -58,6 +63,7 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 
     @Override
     public void sendSMS(Sms sms) {
+    	log.info("sendSMS() start: "+sms);
         if (!sms.isValid()) {
             log.error(String.format("Sms %s is not valid", sms));
             return;
@@ -72,28 +78,71 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
             log.error(String.format("Sms to %s is not in whitelist", sms.getMobileNumber()));
             return;
         }
-
+        log.info("calling submitToExternalSmsService() method");
+        if(smsProperties.isSaveSmsEnable()) {
+            Long id = smsNotificationRepository.getNextSequence();
+            String mobileNumber = sms.getMobileNumber();
+            mobileNumber = mobileNumber.substring(0, 2) +"XXXX"+ mobileNumber.substring(6);
+            SmsSaveRequest smsSaveRequest = SmsSaveRequest.builder().id(id).mobileNumber(mobileNumber).message(sms.getMessage())
+                    .category(sms.getCategory()).templateId(sms.getTemplateId()).tenantId(sms.getTenantId()).createdtime(System.currentTimeMillis()).build();
+            SmsSaveRequestPersister smsSaveRequestPersister =SmsSaveRequestPersister.builder().smsSaveRequest(smsSaveRequest).build();
+            producer.push(smsProperties.getSaveSmsTopic(), smsSaveRequestPersister);
+        }
         submitToExternalSmsService(sms);
     }
 
     protected abstract void submitToExternalSmsService(Sms sms);
 
     protected <T> ResponseEntity<T> executeAPI(URI uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> type) {
-        ResponseEntity<T> res = (ResponseEntity<T>) restTemplate.exchange(uri, method, requestEntity, String.class);
-        String responseString = res.getBody().toString();
-        if (!isResponseValidated(res)) {
-            log.error("Response from API - " + responseString);
-            throw new RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL);
-        }
-
-        if (smsProperties.getSmsErrorCodes().size() > 0 && isResponseCodeInKnownErrorCodeList(res)) {
-            throw new RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL);
-        }
-
-        if (smsProperties.getSmsSuccessCodes().size() > 0 && !isResponseCodeInKnownSuccessCodeList(res)) {
-            throw new RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL);
-        }
-
+        log.info("executeAPI() start");
+    	
+        log.info("calling third party api with url: "+uri+"  method:"+method);
+        @SuppressWarnings("unchecked")
+		ResponseEntity<T> res = (ResponseEntity<T>) restTemplate.exchange(uri, method, requestEntity, String.class);
+        log.info("third part api call done");
+        
+    	String responseString = res.getBody().toString();
+    	
+    	//String dummyResponse = "Message Accepted For Request ID=1231457859641254687954~code=API00 & info=Sms platform accepted & Time = 2007/10/04/09/58";
+        
+		/*
+		 * if (!isResponseValidated(res)) { log.error("Response from API - " +
+		 * responseString); throw new RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
+		 * 
+		 * if (smsProperties.getSmsErrorCodes().size() > 0 &&
+		 * isResponseCodeInKnownErrorCodeList(res)) { throw new
+		 * RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
+		 * 
+		 * if (smsProperties.getSmsSuccessCodes().size() > 0 &&
+		 * !isResponseCodeInKnownSuccessCodeList(res)) { throw new
+		 * RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
+		 */
+    	
+    	StringTokenizer tokenizer = new StringTokenizer(responseString, "&");
+		HashMap<String,String> responseMap = new HashMap<String, String>();
+		String pair = null, pname = null, pvalue = null;
+		while (tokenizer.hasMoreTokens()) {
+			pair = (String)tokenizer.nextToken();
+			if(pair!=null) {
+				StringTokenizer strTok = new StringTokenizer(pair, "=");
+				pname = ""; pvalue = "";
+				if(strTok.hasMoreTokens()) {
+					pname = (String)strTok.nextToken().trim();
+					if(strTok.hasMoreTokens())
+						pvalue=(String)strTok.nextToken().trim();
+					responseMap.put(pname, pvalue);
+				}
+		
+			}
+		}
+		boolean status = responseString.contains("API000");
+  
+		if(!status) {
+			log.error("error response from third party api: info:"+responseMap.get("info"));
+    		throw new RuntimeException(responseMap.get("info"));
+    	}
+    	
+		log.info("executeAPI() end");
         return res;
     }
 
@@ -122,10 +171,10 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
             if (value.startsWith("$")) {
                 switch (value) {
                     case "$username":
-                        map.add(key, smsProperties.getUsername());
+                        map.add(key, /*smsProperties.getUsername()*/"pbdwss.sms");
                         break;
                     case "$password":
-                        map.add(key, smsProperties.getPassword());
+                        map.add(key, /*smsProperties.getPassword()*/"Nkyf%403254");
                         break;
                     case "$senderid":
                         map.add(key, smsProperties.getSenderid());

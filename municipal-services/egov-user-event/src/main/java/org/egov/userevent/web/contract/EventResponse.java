@@ -65,11 +65,10 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventResponse {
-
+	private int totalCount;
 	@JsonProperty("ResponseInfo")
 	private ResponseInfo responseInfo;
 		
 	private List<Event> events;
-
 
 }
