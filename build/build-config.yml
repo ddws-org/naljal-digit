@@ -460,7 +460,12 @@ config:
         image-name: "certificate-verification"
 
 # Frontend
-
+  - name: "builds/mGramSeva/frontend/frontend-mgramseva"
+    build:
+      - work-dir: "frontend/mgramseva"
+        image-name: "frontend-mgramseva"
+        dockerfile: "frontend/mgramseva/docker/Dockerfile"
+        
   - name: builds/naljal-digit/frontend/mono-ui/citizen
     build:
       - work-dir: frontend/mono-ui/web/rainmaker/
