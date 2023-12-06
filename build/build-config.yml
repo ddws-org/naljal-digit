@@ -465,7 +465,7 @@ config:
       - work-dir: "frontend/mgramseva"
         image-name: "frontend-mgramseva"
         dockerfile: "frontend/mgramseva/docker/Dockerfile"
-- name: "builds/naljal-digit/frontend/mgramseva-web"
+  - name: "builds/naljal-digit/frontend/mgramseva-web"
     build:
       - work-dir: "frontend/micro-ui"
         image-name: "mgramseva-web"
