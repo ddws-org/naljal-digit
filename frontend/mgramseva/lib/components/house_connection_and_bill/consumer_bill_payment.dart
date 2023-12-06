@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -11,7 +12,7 @@ import 'package:mgramseva/utils/common_styles.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/widgets/bluetooth_printer.dart';
+import 'package:mgramseva/utils/print_bluetooth.dart';
 import 'package:mgramseva/widgets/list_label_text.dart';
 import 'package:number_to_words/number_to_words.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: kIsWeb ? 5 : 9,
-                    fontWeight: FontWeight.w500))),
+                    fontWeight: FontWeight.w400))),
         SizedBox(
           width: 5,
         ),
@@ -70,7 +71,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
               style: TextStyle(
                   color: Colors.black,
                   fontSize: kIsWeb ? 5 : 9,
-                  fontWeight: FontWeight.w500),
+                  fontWeight: FontWeight.w400),
             )),
       ],
     );
@@ -261,10 +262,8 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
               kIsWeb
                   ? js.onButtonClick(
                       value, stateProvider.stateInfo!.stateLogoURL.toString())
-              :showDialog(
-                  context: context,
-                  builder: (_) => BluetoothPrinterScreen(imageData: value)
-                )
+                  : PrintBluetooth.printTicket(
+                      value, navigatorKey.currentContext!)
             });
     return null;
   }
