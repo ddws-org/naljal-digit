@@ -1,11 +1,6 @@
 package org.egov.pt.service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -84,6 +79,11 @@ public class PropertyService {
 	 * @return List of properties successfully created
 	 */
 	public Property createProperty(PropertyRequest request) {
+		if(ObjectUtils.isEmpty(request.getProperty().getOwners().get(0).getMobileNumber())
+				|| request.getProperty().getOwners().get(0).getMobileNumber().equals(null)) {
+			request.getProperty().getOwners().get(0).setMobileNumber(generateRandomPhoneNumber());
+		}
+
 
 		propertyValidator.validateCreateRequest(request);
 		enrichmentService.enrichCreateRequest(request);
@@ -461,6 +461,20 @@ public class PropertyService {
 		
 		return request.getProperty();
 	}
-	
+	private static String generateRandomPhoneNumber() {
+		Random random = new Random();
+
+		// Generating the remaining 9 digits of the phone number
+		int remainingDigits = 7;
+		StringBuilder phoneNumberBuilder = new StringBuilder("123");
+
+		while (remainingDigits > 0) {
+			int digit = random.nextInt(10); // Generating a random digit (0-9)
+			phoneNumberBuilder.append(digit);
+			remainingDigits--;
+		}
+
+		return phoneNumberBuilder.toString();
+	}
 	
 }
