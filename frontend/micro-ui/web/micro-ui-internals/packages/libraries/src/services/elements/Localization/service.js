@@ -27,9 +27,9 @@ const LocalizationStore = {
     const cacheSetting = ApiCacheService.getSettingByServiceUrl(Urls.localization);
     PersistantStorage.set(key, value, cacheSetting.cacheTimeInSecs);
   },
-  getList: (locale) => LocalizationStore.getCaheData(LOCALE_LIST(locale)) || [],
+  getList: (locale) => LocalizationStore?.getCaheData(LOCALE_LIST(locale)) || [],
   setList: (locale, namespaces) => LocalizationStore.setCacheData(LOCALE_LIST(locale), namespaces),
-  getAllList: () => LocalizationStore.getCaheData(LOCALE_ALL_LIST()) || [],
+  getAllList: () => LocalizationStore?.getCaheData(LOCALE_ALL_LIST()) || [],
   setAllList: (namespaces) => LocalizationStore.setCacheData(LOCALE_ALL_LIST(), namespaces),
   store: (locale, modules, messages) => {
     const AllNamespaces = LocalizationStore.getAllList();
@@ -48,8 +48,8 @@ const LocalizationStore = {
     const storedModules = LocalizationStore.getList(locale);
     const newModules = modules.filter((module) => !storedModules.includes(module));
     const messages = [];
-    storedModules.forEach((module) => {
-      messages.push(...LocalizationStore.getCaheData(LOCALE_MODULE(locale, module)));
+    storedModules?.forEach((module) => {
+      messages.push(...LocalizationStore?.getCaheData(LOCALE_MODULE(locale, module)));
     });
     return [newModules, messages];
   },

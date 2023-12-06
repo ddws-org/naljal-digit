@@ -29,7 +29,7 @@ const Button = (props) => {
       style={props.style ? props.style : null}
     >
       {props?.icon && props.icon}
-      <h2 style={{ ...props?.textStyles, ...{ width: "100%" } }}>{props.label}</h2>
+      <h2 style={{ ...props?.textStyles, ...{ width: "100%", margin: 0 } }}>{props.label}</h2>
     </button>
   );
 };

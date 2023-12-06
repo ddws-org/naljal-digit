@@ -2,18 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { initLibraries } from "@egovernments/digit-ui-libraries";
-import { paymentConfigs, PaymentLinks, PaymentModule } from "@egovernments/digit-ui-module-common";
 import { DigitUI } from "@egovernments/digit-ui-module-core";
 import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
 import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
-import { initUtilitiesComponents } from "@egovernments/digit-ui-module-utilities";
-import { initSampleComponents } from "@egovernments/digit-ui-module-sample";
-import {initWorkbenchComponents} from "@egovernments/digit-ui-module-workbench";
-
-import { initMuktaCustomisations } from "@egovernments/digit-ui-customisation-mukta";
-
-import "@egovernments/digit-ui-custom-css/example/index.css";
+import { initPGRComponents, PGRReducers } from "@egovernments/digit-ui-module-pgr";
+import "@egovernments/digit-ui-css/example/index.css";
 
 import { pgrCustomizations } from "./pgr";
 import { UICustomizations } from "./UICustomizations";
@@ -21,15 +15,13 @@ import { UICustomizations } from "./UICustomizations";
 var Digit = window.Digit || {};
 
 const enabledModules = [
+  "DSS",
   "HRMS",
+  "PGR",
   //  "Engagement", "NDSS","QuickPayLinks", "Payment",
-  "Utilities",
+  // "Utilities",
   //added to check fsm
   // "FSM"
-  "Mukta",
-  "Sample",
-  // "Workbench"
-
 ];
 
 const initTokens = (stateCode) => {
@@ -59,35 +51,32 @@ const initTokens = (stateCode) => {
 };
 
 const initDigitUI = () => {
-  window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
+  window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "mgramseva-web";
 
-  window?.Digit.ComponentRegistryService.setupRegistry({
-    PaymentModule,
-    ...paymentConfigs,
-    PaymentLinks,
-  });
+  // window?.Digit.ComponentRegistryService.setupRegistry({
+  //   PaymentModule,
+  //   ...paymentConfigs,
+  //   PaymentLinks,
+  // });
 
   initDSSComponents();
   initHRMSComponents();
   initEngagementComponents();
-  initUtilitiesComponents();
-  initSampleComponents();
-  initWorkbenchComponents();
+  initPGRComponents();
 
-  const moduleReducers = (initData) => initData;
+  const moduleReducers = (initData) => ({
+    pgr: PGRReducers(initData),
+  });
 
   window.Digit.Customizations = {
     PGR: pgrCustomizations,
     commonUiConfig: UICustomizations,
   };
 
-  const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || "pg";
+  const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || "pb";
   initTokens(stateCode);
-  initMuktaCustomisations();
-  ReactDOM.render(
-    <DigitUI stateCode={stateCode} enabledModules={enabledModules} moduleReducers={moduleReducers} defaultLanding="employee" />,
-    document.getElementById("root")
-  );
+
+  ReactDOM.render(<DigitUI stateCode={stateCode} enabledModules={enabledModules} moduleReducers={moduleReducers} />, document.getElementById("root"));
 };
 
 initLibraries().then(() => {
