@@ -53,6 +53,7 @@ import 'package:url_strategy/url_strategy.dart';
 import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
@@ -72,6 +73,7 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
+    await dotenv.load(fileName: 'assets/.env');
     if(kIsWeb){
       await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
     }else{
