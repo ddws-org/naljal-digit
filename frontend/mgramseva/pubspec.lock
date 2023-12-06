@@ -313,14 +313,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  esc_pos_utils_plus:
-    dependency: "direct main"
-    description:
-      name: esc_pos_utils_plus
-      sha256: dca660e2bf5622c3b9bc54ce098128606a8942ff07f1e2d2f4c88e483df3fe74
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -454,6 +446,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: "9357883bdd153ab78cbf9ffa07656e336b8bbb2b5a3ca596b0b27e119f7c7d77"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -1373,10 +1373,10 @@ packages:
     dependency: "direct main"
     description:
       name: thermal_printer
-      sha256: "887ad5be1d3db42a2259fd0ad636fa6f873db30669fa7eaebcb57c446ff09344"
+      sha256: d04fd0ade194df0143bcef57af18cad59fa053be6e7102c5d341f378325c7508
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.4"
   timing:
     dependency: transitive
     description:
