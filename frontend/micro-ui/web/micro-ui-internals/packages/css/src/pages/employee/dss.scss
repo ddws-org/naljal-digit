@@ -247,3 +247,20 @@ border-color: rgba(244, 119, 56, var(--border-opacity));
     width:100%;
   }
 }
+
+.dss-metric-horizontal{
+  width: 48%;
+  max-width: 48%;
+}
+.dss-primary{
+  display: inline;
+  margin-right: 10px;
+  path{
+    fill:theme(colors.primary.main);
+  }
+}
+
+.dss-horizontal-v2{
+  width: 22.7%;
+  max-width: 22.7%;
+}

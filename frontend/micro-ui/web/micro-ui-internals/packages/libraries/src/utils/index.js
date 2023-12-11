@@ -91,9 +91,18 @@ const getPattern = (type) => {
       return /^[a-zA-z0-9\s\\/\-]$/i;
   }
 };
-
+/*  
+Digit.Utils.getUnique()
+get unique elements from an array */
 const getUnique = (arr) => {
   return arr.filter((value, index, self) => self.indexOf(value) === index);
+};
+
+/*  
+Digit.Utils.createFunction()
+get function from a string */
+const createFunction = (functionAsString) => {
+  return Function("return " + functionAsString)();
 };
 
 const getStaticMapUrl = (latitude, longitude) => {
@@ -107,23 +116,6 @@ const detectDsoRoute = (pathname) => {
   return employeePages.some((url) => pathname.split("/").includes(url));
 };
 
-
-/* to check the employee (loggedin user ) has given role  */
-const didEmployeeHasRole = (role = "") => {
-  const tenantId = Digit.ULBService.getCurrentTenantId();
-  const userInfo = Digit.UserService.getUser();
-  const rolearray = userInfo?.info?.roles.filter((item) => {
-    if (item.code === role && item.tenantId === tenantId) return true;
-  });
-  return rolearray?.length > 0;
-};
-
-
-/* to check the employee (loggedin user ) has given roles  */
-const didEmployeeHasAtleastOneRole = (roles = []) => {
-  return roles.some((role) => didEmployeeHasRole(role));
-};
-
 const routeSubscription = (pathname) => {
   let classname = "citizen";
   const isEmployeeUrl = detectDsoRoute(pathname);
@@ -134,6 +126,14 @@ const routeSubscription = (pathname) => {
   }
 };
 
+const didEmployeeHasRole = (role) => {
+  const tenantId = Digit.ULBService.getCurrentTenantId();
+  const userInfo = Digit.UserService.getUser();
+  const rolearray = userInfo?.info?.roles.filter((item) => {
+    if (item.code == role && item.tenantId === tenantId) return true;
+  });
+  return rolearray?.length;
+};
 
 const pgrAccess = () => {
   const userInfo = Digit.UserService.getUser();
@@ -287,20 +287,9 @@ const swAccess = () => {
 const getConfigModuleName = () => {
   return window?.globalConfigs?.getConfig("UICONFIG_MODULENAME") || "commonUiConfig";
 };
-
-
-/*  
-Digit.Utils.createFunction()
-get function from a string */
-const createFunction = (functionAsString) => {
-  return Function("return " + functionAsString)();
-};
-
-
-
 export default {
-  createFunction,
   pdf: PDFUtil,
+  createFunction,
   downloadReceipt,
   downloadBill,
   downloadPDFFromLink,
@@ -326,7 +315,6 @@ export default {
   mCollectAccess,
   receiptsAccess,
   didEmployeeHasRole,
-  didEmployeeHasAtleastOneRole,
   hrmsAccess,
   getPattern,
   hrmsRoles,

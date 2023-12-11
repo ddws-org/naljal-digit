@@ -3,13 +3,19 @@ import PropTypes from "prop-types";
 
 const Menu = (props) => {
   const keyPrefix = props.localeKeyPrefix || "CS_ACTION";
-
+  debugger;
   return (
     <div className="menu-wrap" style={props.style}>
       {props.options.map((option, index) => {
         return (
           <div key={index} onClick={() => props.onSelect(option)}>
-            <p>{props.t ? props.t(Digit.Utils.locale.getTransformedLocale(option.forcedName || `${keyPrefix}_${props.optionKey ? option[props.optionKey] : option}`)) : option}</p>
+            <p style={{ margin: 0 }}>
+              {props.t
+                ? props.t(
+                    Digit.Utils.locale.getTransformedLocale(option.forcedName || `${keyPrefix}_${props.optionKey ? option[props.optionKey] : option}`)
+                  )
+                : option}
+            </p>
           </div>
         );
       })}

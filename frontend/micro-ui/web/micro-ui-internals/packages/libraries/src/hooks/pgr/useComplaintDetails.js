@@ -18,9 +18,9 @@ const getDetailsRow = ({ id, service, complaintType }) => ({
   CS_COMPLAINT_ADDTIONAL_DETAILS: service.description,
   CS_COMPLAINT_FILED_DATE: Digit.DateUtils.ConvertTimestampToDate(service.auditDetails.createdTime),
   ES_CREATECOMPLAINT_ADDRESS: [
-    service.address.landmark,
-    Digit.Utils.locale.getLocalityCode(service.address.locality, service.tenantId),
     service.address.city,
+    Digit.Utils.locale.getLocalityCode(service.address.locality, service.tenantId),
+    service.address.landmark,
     service.address.pincode,
   ],
 });

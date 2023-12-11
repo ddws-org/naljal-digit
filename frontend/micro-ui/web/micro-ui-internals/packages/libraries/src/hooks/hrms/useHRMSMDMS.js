@@ -13,6 +13,10 @@ const useHrmsMDMS = (tenantId, moduleCode, type, config = {}) => {
     return useQuery(["HRMS_EMP_REASON", tenantId], () => MdmsService.getHrmsEmployeeReason(tenantId, moduleCode, type), config);
   };
 
+  const useHrmsData = () => {
+    return useQuery(["HRMS_EMP_REASON", tenantId], () => MdmsService.getHrmsEmployeeData(tenantId, moduleCode, type), config);
+  };
+
   switch (type) {
     case "HRMSRolesandDesignation":
       return useHrmsRolesandDesignations();
@@ -20,6 +24,8 @@ const useHrmsMDMS = (tenantId, moduleCode, type, config = {}) => {
       return useHrmsEmployeeTypes();
     case "DeactivationReason":
       return useHrmsEmployeeReasons();
+    case "HRMSConfig":
+      return useHrmsData();
   }
 };
 export default useHrmsMDMS;
