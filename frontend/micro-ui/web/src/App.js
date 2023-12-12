@@ -16,16 +16,16 @@ import { TLCustomisations } from "./Customisations/tl/TLCustomisation";
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
 const enabledModules = ["DSS", "NDSS", "Utilities", "HRMS", "Engagement"];
-window.Digit.ComponentRegistryService.setupRegistry({
-  PaymentModule,
-  ...paymentConfigs,
-  PaymentLinks,
-});
+// window.Digit.ComponentRegistryService.setupRegistry({
+//   PaymentModule,
+//   ...paymentConfigs,
+//   PaymentLinks,
+// });
 
-initDSSComponents();
-initHRMSComponents();
-initEngagementComponents();
-initUtilitiesComponents();
+// initDSSComponents();
+// initHRMSComponents();
+// initEngagementComponents();
+// initUtilitiesComponents();
 
 const moduleReducers = (initData) => ({
   initData,
