@@ -12,6 +12,7 @@ import { initUtilitiesComponents } from  "@egovernments/digit-ui-module-utilitie
 
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
+<<<<<<< Updated upstream
 const enabledModules = ["DSS", "NDSS",  "Utilities",
 "HRMS", "Engagement"
 ];
@@ -20,11 +21,19 @@ window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
   PaymentLinks,
 });
+=======
+const enabledModules = ["DSS", "NDSS", "Utilities", "HRMS", "Engagement"];
+// window.Digit.ComponentRegistryService.setupRegistry({
+//   PaymentModule,
+//   ...paymentConfigs,
+//   PaymentLinks,
+// });
+>>>>>>> Stashed changes
 
-initDSSComponents();
-initHRMSComponents();
-initEngagementComponents();
-initUtilitiesComponents();
+// initDSSComponents();
+// initHRMSComponents();
+// initEngagementComponents();
+// initUtilitiesComponents();
 
 const moduleReducers = (initData) => ({
   initData,
