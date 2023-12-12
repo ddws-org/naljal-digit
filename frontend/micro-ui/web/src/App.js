@@ -15,27 +15,12 @@ import { TLCustomisations } from "./Customisations/tl/TLCustomisation";
 
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-const enabledModules = ["DSS", "NDSS",  "Utilities",
-"HRMS", "Engagement"
-];
-=======
-const enabledModules = ["DSS", "NDSS", "Utilities", "HRMS", "Engagement"];
->>>>>>> 4c11163bcbb6e165b9655e249ae89bcecf7d8a15
-window.Digit.ComponentRegistryService.setupRegistry({
-  PaymentModule,
-  ...paymentConfigs,
-  PaymentLinks,
-});
-=======
 const enabledModules = ["DSS", "NDSS", "Utilities", "HRMS", "Engagement"];
 // window.Digit.ComponentRegistryService.setupRegistry({
 //   PaymentModule,
 //   ...paymentConfigs,
 //   PaymentLinks,
 // });
->>>>>>> Stashed changes
 
 // initDSSComponents();
 // initHRMSComponents();
