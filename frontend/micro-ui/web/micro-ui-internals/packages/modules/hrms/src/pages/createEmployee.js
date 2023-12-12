@@ -218,7 +218,7 @@ const CreateEmployee = () => {
     roles.push({
       name: "EMPLOYEE",
       code: "EMPLOYEE",
-      tenantId: "pb",
+      tenantId: "ka",
     });
     const mappedroles = [].concat.apply([], roles);
     let dateOfAppointment = new Date();

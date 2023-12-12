@@ -50,14 +50,14 @@ const ChangeCity = (prop) => {
 
     unique?.forEach((uniCode) => {
       data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
-        if (items?.code !== "pb" && items?.code === uniCode) {
+        if (items?.code !== "ka" && items?.code === uniCode) {
           filteredArray.push({
             label: `${prop?.t(Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"))} - ${prop?.t(
               `TENANT_TENANTS_${stringReplaceAll(uniCode, ".", "_")?.toUpperCase()}`
             )}`,
             value: uniCode,
           });
-        } else if (items?.code === "pb" && items?.code === uniCode) {
+        } else if (items?.code === "ka" && items?.code === uniCode) {
           filteredArray.push({
             label: `TENANT_TENANTS_${stringReplaceAll(uniCode, ".", "_")?.toUpperCase()}`,
             value: uniCode,
