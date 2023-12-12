@@ -47,10 +47,14 @@ public class EmployeeSearchCriteria {
 	
 	public Boolean isActive;
 
+	public Boolean isStateLevelSearch;
+
 	@Size(max = 250)
 	public String tenantId;
 	
 	public String phone;
+
+	public List<String> tenantIds;
 
 	public Integer offset;
 	

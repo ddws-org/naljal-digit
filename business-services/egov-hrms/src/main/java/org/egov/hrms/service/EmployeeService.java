@@ -62,6 +62,7 @@ import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -149,6 +150,10 @@ public class EmployeeService {
                 userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_MOBILENO,criteria.getPhone());
             if( !CollectionUtils.isEmpty(criteria.getRoles()) )
                 userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
+			if(!ObjectUtils.isEmpty(criteria.isStateLevelSearch))
+				userSearchCriteria.put(HRMSConstants.HRMS_IS_STATE_LEVEL_SEARCH_CODE, criteria.getIsStateLevelSearch());
+			if(!ObjectUtils.isEmpty(criteria.getIsActive()))
+				userSearchCriteria.put(HRMSConstants.HRMS_IS_ACTIVE_SEARCH_CODE, criteria.getIsActive());
             UserResponse userResponse = userService.getUser(requestInfo, userSearchCriteria);
 			userChecked =true;
             if(!CollectionUtils.isEmpty(userResponse.getUser())) {
@@ -561,4 +566,87 @@ public class EmployeeService {
 		return  response;
 	}
 
+	public Map<String,Object> getEmployeeCountResponseV1(RequestInfo requestInfo, List<String> roles, String tenantId, boolean isStateLevelSearch){
+		EmployeeSearchCriteria activeEmployeeCriteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).isActive(true).build();
+		EmployeeResponse activeEmployeeResponse = search(activeEmployeeCriteria, requestInfo);
+		EmployeeSearchCriteria inActiveEmployeeCriteria= EmployeeSearchCriteria.builder().roles(roles).tenantId(tenantId).isStateLevelSearch(isStateLevelSearch).isActive(false).build();
+		EmployeeResponse inActiveEmployeeResponse = search(inActiveEmployeeCriteria, requestInfo);
+		Integer activeEmployeeCount= activeEmployeeResponse.getEmployees().size();
+		Integer inActiveEmployeeCount = inActiveEmployeeResponse.getEmployees().size();
+		Integer totalcount = activeEmployeeCount + inActiveEmployeeCount;
+		Map<String,String> results = new HashMap<>();
+		Map<String,Object> response = new HashMap<>();
+		ResponseInfo responseInfo = factory.createResponseInfoFromRequestInfo(requestInfo, true);
+
+		response.put("ResponseInfo",responseInfo);
+
+		if(totalcount == 0){
+			Map<String,String> error = new HashMap<>();
+			error.put("NO_RECORDS","No records found for the tenantId: "+tenantId);
+			throw new CustomException(error);
+		}
+		results.put("totalEmployee",totalcount.toString());
+		results.put("activeEmployee",activeEmployeeCount.toString());
+		results.put("inactiveEmployee",inActiveEmployeeCount.toString());
+
+		response.put("EmployeCount",results);
+		return  response;
+	}
+
+	public EmployeeResponse searchListOfEmployee(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
+		boolean  userChecked = false;
+		/*if(null == criteria.getIsActive() || criteria.getIsActive())
+			criteria.setIsActive(true);
+		else
+			criteria.setIsActive(false);*/
+		log.info("criteria :" + criteria.getRoles());
+		Map<String, User> mapOfUsers = new HashMap<String, User>();
+		if((!CollectionUtils.isEmpty(criteria.getRoles())) && !CollectionUtils.isEmpty(criteria.getTenantIds())) {
+			Map<String, Object> userSearchCriteria = new HashMap<>();
+			userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_TENANTIDS,criteria.getTenantIds());
+			if( !CollectionUtils.isEmpty(criteria.getRoles()) )
+				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
+			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
+			log.info("user responsesize:"+userResponse.getUser().size() );
+			userChecked =true;
+			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+				mapOfUsers.putAll(userResponse.getUser().stream()
+						.collect(Collectors.toMap(User::getUuid, Function.identity())));
+			}
+			log.info("Map of User length:"+mapOfUsers.size());
+			List<String> userUUIDs = userResponse.getUser().stream().map(User :: getUuid).collect(Collectors.toList());
+			if(!CollectionUtils.isEmpty(criteria.getUuids()))
+				criteria.setUuids(criteria.getUuids().stream().filter(userUUIDs::contains).collect(Collectors.toList()));
+			else
+				criteria.setUuids(userUUIDs);
+		}
+		log.info("criteria:"+criteria.getUuids().size());
+		log.info("criteria list :"+criteria);
+		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
+		List <Employee> employees = new ArrayList<>();
+		log.info("Employe search boolean:"+(!((!CollectionUtils.isEmpty(criteria.getRoles())))));
+		employees = repository.fetchEmployees(criteria, requestInfo);
+		log.info("innside fetch employee if true:"+ employees.size());
+		List<String> uuids = employees.stream().map(Employee :: getUuid).collect(Collectors.toList());
+		log.info("uuids:" +uuids.size());
+		if(!CollectionUtils.isEmpty(uuids)){
+			Map<String, Object> UserSearchCriteria = new HashMap<>();
+			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,uuids);
+			if(mapOfUsers.isEmpty()){
+				UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
+				log.info("mapOfUsers not empty:"+userResponse.getUser().size());
+				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+					log.info("mapOfUsers not empty and user reponse size:"+userResponse.getUser().size());
+					mapOfUsers = userResponse.getUser().stream()
+							.collect(Collectors.toMap(User :: getUuid, Function.identity()));
+				}
+			}
+			for(Employee employee: employees){
+				log.info("employee uuid:"+employee.getUuid());
+				employee.setUser(mapOfUsers.get(employee.getUuid()));
+			}
+		}
+		return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
+				.employees(employees).build();
+	}
 }

@@ -85,7 +85,7 @@ public class Employee {
 
     @Valid
     @NotEmpty
-    @Size(min = 1,max = 50)
+    @Size(min = 1,max = 5000)
     private List<Jurisdiction> jurisdictions = new ArrayList<>();
 
 

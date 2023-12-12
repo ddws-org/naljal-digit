@@ -45,6 +45,7 @@ import org.egov.user.persistence.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -235,13 +236,30 @@ public class UserTypeQueryBuilder {
         selectQuery.append(" WHERE");
         boolean isAppendAndClause = false;
 
-        if (userSearchCriteria.getTenantId() != null) {
-            isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
-            selectQuery.append(" ur.role_tenantid like ? ");
-            preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
+        if (userSearchCriteria.getTenantId() != null ) {
+            if(ObjectUtils.isEmpty(userSearchCriteria.getIsStateLevelSearch()) ){
+                isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
+                selectQuery.append(" ur.role_tenantid like ? ");
+                preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
+            } else {
+                if(!userSearchCriteria.getIsStateLevelSearch()) {
+                    isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
+                    selectQuery.append(" ur.role_tenantid = ?");
+                    preparedStatementValues.add(userSearchCriteria.getTenantId());
+                } else {
+                    isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
+                    selectQuery.append(" ur.role_tenantid like ? ");
+                    preparedStatementValues.add( '%' +  userSearchCriteria.getTenantId().trim() + '%');
+                }
+
+            }
         }
 
-
+        if (userSearchCriteria.getTenantIds() != null) {
+            isAppendAndClause = addAndClauseIfRequired(false, selectQuery);
+            selectQuery.append(" ur.role_tenantid IN (").append(getQueryForCollection(userSearchCriteria.getTenantIds(),
+                    preparedStatementValues)).append(" )");
+        }
         if (!isEmpty(userSearchCriteria.getRoleCodes())) {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
             selectQuery.append(" ur.role_code IN (").append(getQueryForCollection(userSearchCriteria.getRoleCodes(),

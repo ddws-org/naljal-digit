@@ -64,6 +64,9 @@ public class PropertiesManager {
 	
 	@Value("${egov.user.search.endpoint}")
 	public String userSearchEndpoint;
+
+	@Value("${egov.user.search.tenant.endpoint}")
+	public String userSearchByTenantEndpoint;
 	
 	@Value("${egov.user.create.endpoint}")
 	public String userCreateEndpoint;
