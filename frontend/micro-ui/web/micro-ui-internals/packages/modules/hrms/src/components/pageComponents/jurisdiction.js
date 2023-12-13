@@ -55,12 +55,12 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
 
   let divisions = [];
   divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    ?.filter((items) => items?.divisionCode)
+    ?.filter((items) => items?.city?.blockcode)
     ?.map((item) => {
       return {
-        code: item.divisionCode,
-        name: item.divisionName,
-        i18text: Digit.Utils.locale.getCityLocale(item.divisionCode),
+        code: item?.city?.blockcode,
+        name: item?.city.blockname,
+        i18text: Digit.Utils.locale.getCityLocale(item?.city?.blockcode),
       };
     });
   const uniqueDivisions = divisions?.reduce((unique, obj) => {
@@ -387,12 +387,14 @@ function Jurisdiction({
 
   const selectDivision = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
-    const finalProjects = project?.map((project) => ({
-      name: project.name,
-      code: project.code,
-      i18text: Digit.Utils.locale.getCityLocale(project.code),
-    }));
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value.code);
+    const finalProjects = project
+      ?.filter((item) => item?.code === "ka.testing")
+      ?.map((project) => ({
+        name: project.name,
+        code: project.code,
+        i18text: Digit.Utils.locale.getCityLocale(project.code),
+      }));
     setDivisionBoundary(finalProjects);
     if (isEdit && STATE_ADMIN) {
       setJuristictionsData((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, division: value, divisionBoundary: [] } : item)));
@@ -543,13 +545,13 @@ function Jurisdiction({
         {STATE_ADMIN ? (
           <React.Fragment>
             <LabelFieldPair>
-              <CardLabel className="card-label-smaller">{`${t("HR_DIVISIONS_LABEL")} * `}</CardLabel>
+              <CardLabel className="card-label-smaller">{`${t("HR_BLOCK_LABEL")} * `}</CardLabel>
               <Dropdown
                 className="form-field"
                 isMandatory={true}
                 selected={jurisdiction?.division}
                 disable={Division?.length === 0}
-                option={Division}
+                option={Division?.filter((items) => items?.code === "2595")}
                 select={selectDivision}
                 optionKey="i18text"
                 t={t}

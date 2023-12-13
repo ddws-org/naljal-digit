@@ -18,7 +18,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
         validation: {
           maxLength: 10,
           required: true,
-          pattern: /^[6-9]\d{9}$/,
+          pattern: /^[6789][0-9]{9}$/,
         },
         componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
         error: t("CORE_COMMON_MOBILE_ERROR"),
@@ -30,7 +30,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
     onSelect(config.key, { ...formData[config.key], [input]: value });
   }
   function validate(value, input) {
-    setError(!input.populators.validation.pattern.test(value));
+    setError(!input.populators?.validation?.pattern?.test(value));
   }
 
   return (
