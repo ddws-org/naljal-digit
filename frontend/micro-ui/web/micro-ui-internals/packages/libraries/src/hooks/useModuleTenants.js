@@ -13,10 +13,7 @@ const useModuleTenants = (module, config = {}) => {
           ...tenant,
           ulbKey: t(`TENANT_TENANTS_${tenant?.code?.toUpperCase?.()?.replace(".", "_")}`),
           ddrKey: t(
-            `DDR_${data.tenants
-              .filter((t) => t.code === tenant.code)?.[0]
-              .city?.districtTenantCode?.toUpperCase?.()
-              .replace(".", "_")}`
+            `DDR_${data.tenants?.filter((t) => t.code === tenant?.code)?.[0]?.city?.districtTenantCode?.toUpperCase?.().replace(".", "_")}`
           ),
         }))
         .filter((item, i, arr) => i === arr.findIndex((t) => t.ddrKey === item.ddrKey)),
@@ -26,10 +23,7 @@ const useModuleTenants = (module, config = {}) => {
           ...tenant,
           ulbKey: t(`TENANT_TENANTS_${tenant?.code?.toUpperCase?.()?.replace(".", "_")}`),
           ddrKey: t(
-            `DDR_${data.tenants
-              .filter((t) => t.code === tenant.code)?.[0]
-              .city?.districtTenantCode?.toUpperCase?.()
-              .replace(".", "_")}`
+            `DDR_${data?.tenants?.filter((t) => t.code === tenant?.code)?.[0]?.city?.districtTenantCode?.toUpperCase?.().replace(".", "_")}`
           ),
         })),
     }),

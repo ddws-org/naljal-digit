@@ -374,7 +374,7 @@
 @media (min-width: 640px) {
   .employee {
     .ground-container {
-      @apply block ml-md;
+      @apply block;
     }
     .breadcrumb {
       @apply mb-lg;
@@ -395,7 +395,6 @@
       display: flex;
       flex-direction: column;
       padding-top: 80px;
-      margin-left: 72px;
       width: calc(100%-83px);
     }
     .citizen-home-container {
@@ -495,4 +494,30 @@
     margin-left: 16px;
     margin-right: 16px;
   }
+}
+
+.link {
+  a{
+    color: inherit;
+    text-decoration: inherit
+    }
+}
+
+.breadcrumb {
+  a{
+    color: inherit;
+    text-decoration: inherit
+    }
+}
+
+.sidebar-link.active{
+.custom-link{
+  text-decoration: none;
+  div{
+    span{
+    color: #f47738;
+    text-decoration: none;
+    }
+  }
+}
 }

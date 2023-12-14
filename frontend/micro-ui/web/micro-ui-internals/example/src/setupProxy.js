@@ -12,14 +12,9 @@ const assetsProxy = createProxyMiddleware({
   changeOrigin: true,
   secure:false
 });
-const mdmsProxy = createProxyMiddleware({
-  target: process.env.REACT_APP_PROXY_ASSETS || "http://localhost:8080",
-  changeOrigin: true,
-  secure:false
-});
 module.exports = function (app) {
-  ["/mdms-v2/v2/_create"].forEach((location) => app.use(location, mdmsProxy));
-   [ "/access/v1/actions/mdms",
+  [
+    "/access/v1/actions/mdms",
     "/egov-mdms-service",
     "/egov-location",
     "/localization",
@@ -75,8 +70,7 @@ module.exports = function (app) {
     "/works-inbox-service/v2/_search",
     "/egov-pdf/download/WORKSESTIMATE/estimatepdf",
     "/muster-roll",
-    "/individual",
-    "/mdms-v2"
+    "/individual"
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));
 };
