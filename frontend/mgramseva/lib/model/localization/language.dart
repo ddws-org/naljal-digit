@@ -29,7 +29,8 @@ class LanguageList {
     return data;
   }
 }
-class PSPCLIntegration{
+
+class PSPCLIntegration {
   List<AccountNumberGpMapping>? accountNumberGpMapping;
 
   PSPCLIntegration({this.accountNumberGpMapping});
@@ -52,6 +53,7 @@ class PSPCLIntegration{
     return data;
   }
 }
+
 class AccountNumberGpMapping {
   String? accountNumber;
   String? departmentEntityName;
@@ -59,8 +61,8 @@ class AccountNumberGpMapping {
 
   AccountNumberGpMapping(
       {this.accountNumber,
-        this.departmentEntityName,
-        this.departmentEntityCode});
+      this.departmentEntityName,
+      this.departmentEntityCode});
 
   AccountNumberGpMapping.fromJson(Map<String, dynamic> json) {
     accountNumber = json['accountNumber'];
@@ -76,6 +78,7 @@ class AccountNumberGpMapping {
     return data;
   }
 }
+
 class MdmsRes {
   CommonMasters? commonMasters;
   BillingService? billingService;
@@ -166,19 +169,23 @@ class CommonMasters {
 
 class AppVersion {
   String? latestAppVersion;
+  String? latestAppVersionIos;
   // List<LocalizationModules>? localizationModules;
 
   AppVersion({
     this.latestAppVersion,
+    this.latestAppVersionIos
   });
 
   AppVersion.fromJson(Map<String, dynamic> json) {
     latestAppVersion = json['latestAppVersion'];
+    latestAppVersionIos = json['latestAppVersionIos'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['latestAppVersion'] = this.latestAppVersion;
+    data['latestAppVersionIos'] = this.latestAppVersionIos;
 
     return data;
   }

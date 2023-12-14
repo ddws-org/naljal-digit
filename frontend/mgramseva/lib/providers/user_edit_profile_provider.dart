@@ -36,7 +36,6 @@ class UserEditProfileProvider with ChangeNotifier {
         ..loginCredentials = Provider.of<CommonProvider>(context, listen: false).userDetails;
       }
       Navigator.pop(context);
-      Navigator.pop(context);
         } catch (e, s) {
       Navigator.pop(context);
       ErrorHandler().allExceptionsHandler(context, e, s);

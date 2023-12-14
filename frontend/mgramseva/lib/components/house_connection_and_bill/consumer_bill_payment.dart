@@ -123,7 +123,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                       navigatorKey.currentContext!)
                                   .translate(i18.consumerReciepts
                                       .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
-                              textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                              textScaleFactor: kIsWeb ? 3 : 1,
                               maxLines: 3,
                               style: TextStyle(
                                   color: Colors.black,
@@ -146,7 +146,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               ApplicationLocalizations.of(
                                       navigatorKey.currentContext!)
                                   .translate(i18.consumerReciepts.WATER_RECEIPT),
-                              textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                              textScaleFactor: kIsWeb ? 3 : 1,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 10,
@@ -238,7 +238,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                         height: 8,
                       ),
                       Text('- - *** - -',
-                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textScaleFactor: kIsWeb ? 3 : 1,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Colors.black,
@@ -246,7 +246,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                               fontWeight: FontWeight.bold)),
                       Text(
                           "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textScaleFactor: kIsWeb ? 3 : 1,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Colors.black,

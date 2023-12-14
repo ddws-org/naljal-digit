@@ -40,7 +40,6 @@ dependencies:
   flutter_spinkit: ^5.0.0
   json_annotation: ^4.8.0
   url_strategy: ^0.2.0
-  charset_converter: ^2.1.1
   screenshot: ^2.1.0
   number_to_words: ^1.0.0
   flutter_localizations:
@@ -112,6 +111,7 @@ flutter:
     - assets/icons/
     - assets/svg/
     - assets/.env
+
   # To add assets to your application, add an assets section, like this:
 
   #   - images/a_dot_ham.jpeg

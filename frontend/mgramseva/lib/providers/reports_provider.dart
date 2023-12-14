@@ -17,7 +17,8 @@ import '../utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import '../utils/date_formats.dart';
 import '../utils/error_logging.dart';
-import 'package:mgramseva/utils/excel_download/save_file_mobile.dart';
+import 'package:mgramseva/utils/excel_download/save_file_mobile.dart'
+    if (dart.library.html) 'package:mgramseva/utils/excel_download/save_file_web.dart';
 import '../utils/global_variables.dart';
 import '../utils/localization/application_localizations.dart';
 import '../utils/models.dart';

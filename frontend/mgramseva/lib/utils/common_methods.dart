@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -57,56 +58,63 @@ class CommonMethods {
   *
   * */
 
-  static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd,{bool showCurrentMonth = false}) {
+  static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd,
+      {bool showCurrentMonth = false}) {
     var monthList = <DateTime>[];
     final currentTime = DateTime.now();
-    if(currentTime.year < ytd.startDate.year){
+    if (currentTime.year < ytd.startDate.year) {
       return <DatePeriod>[];
     }
     if (currentTime.year == ytd.startDate.year) {
       //when current year is same as start year of financial year
-      for (int i = ytd.startDate.month; i <= (showCurrentMonth?currentTime.month:currentTime.month-1); i++) {
+      for (int i = ytd.startDate.month;
+          i <= (showCurrentMonth ? currentTime.month : currentTime.month - 1);
+          i++) {
         monthList.add(DateTime(currentTime.year, i));
       }
-    } else if(currentTime.year == ytd.endDate.year){
+    } else if (currentTime.year == ytd.endDate.year) {
       //when current year is same as end year of financial year
       for (int i = ytd.startDate.month; i <= 12; i++) {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-      i <= (currentTime.month <= ytd.endDate.month ? showCurrentMonth?currentTime.month:currentTime.month-1: ytd.endDate.month);
-      /*
+          i <=
+              (currentTime.month <= ytd.endDate.month
+                  ? showCurrentMonth
+                      ? currentTime.month
+                      : currentTime.month - 1
+                  : ytd.endDate.month);
+          /*
           * if current month is less than or equal to end month of financial year
           * we are using months less than current month and if it is more than
           * end month of financial year we are using till end month of financial
           * year
           */
-      i++) {
+          i++) {
         monthList.add(DateTime(ytd.endDate.year, i));
       }
-    }else{
+    } else {
       for (int i = ytd.startDate.month; i <= 12; i++) {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
-      for (int i = 1;
-      i <= ytd.endDate.month;
-      i++) {
-        monthList.add(DateTime(ytd.endDate.year , i));
+      for (int i = 1; i <= ytd.endDate.month; i++) {
+        monthList.add(DateTime(ytd.endDate.year, i));
       }
     }
     var list = monthList
         .map((e) => DatePeriod(DateTime(e.year, e.month, 1),
-        DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
+            DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
         .toList()
         .reversed
         .toList();
     return list;
   }
 
-  static List<DatePeriod> getPastMonthIncludingCurrentMonthUntilFinancialYTD(DatePeriod ytd) {
+  static List<DatePeriod> getPastMonthIncludingCurrentMonthUntilFinancialYTD(
+      DatePeriod ytd) {
     var monthList = <DateTime>[];
     final currentTime = DateTime.now();
-    if(currentTime.year < ytd.startDate.year){
+    if (currentTime.year < ytd.startDate.year) {
       return <DatePeriod>[];
     }
     if (currentTime.year == ytd.startDate.year) {
@@ -114,35 +122,36 @@ class CommonMethods {
       for (int i = ytd.startDate.month; i <= currentTime.month; i++) {
         monthList.add(DateTime(currentTime.year, i));
       }
-    } else if(currentTime.year == ytd.endDate.year){
+    } else if (currentTime.year == ytd.endDate.year) {
       //when current year is same as end year of financial year
       for (int i = ytd.startDate.month; i <= 12; i++) {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
       for (int i = 1;
-      i <= (currentTime.month <= ytd.endDate.month ? currentTime.month: ytd.endDate.month);
-      /*
+          i <=
+              (currentTime.month <= ytd.endDate.month
+                  ? currentTime.month
+                  : ytd.endDate.month);
+          /*
           * if current month is less than or equal to end month of financial year
           * we are using months less than current month and if it is more than
           * end month of financial year we are using till end month of financial
           * year
           */
-      i++) {
+          i++) {
         monthList.add(DateTime(ytd.endDate.year, i));
       }
-    }else{
+    } else {
       for (int i = ytd.startDate.month; i <= 12; i++) {
         monthList.add(DateTime(ytd.startDate.year, i));
       }
-      for (int i = 1;
-      i <= ytd.endDate.month;
-      i++) {
-        monthList.add(DateTime(ytd.endDate.year , i));
+      for (int i = 1; i <= ytd.endDate.month; i++) {
+        monthList.add(DateTime(ytd.endDate.year, i));
       }
     }
     var list = monthList
         .map((e) => DatePeriod(DateTime(e.year, e.month, 1),
-        DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
+            DateTime(e.year, e.month + 1, 0, 23, 59, 59, 999), DateType.MONTH))
         .toList()
         .reversed
         .toList();
@@ -178,7 +187,9 @@ class CommonMethods {
     }
     return yearWithMonths;
   }
-  static List<YearWithMonths> getFinancialYearListWithCurrentMonthForCurrentYear([int count = 5]) {
+
+  static List<YearWithMonths>
+      getFinancialYearListWithCurrentMonthForCurrentYear([int count = 5]) {
     var yearWithMonths = <YearWithMonths>[];
 
     if (DateTime.now().month >= 4) {
@@ -283,8 +294,11 @@ class CommonMethods {
     }
   }
 
-  void checkVersion(BuildContext context, String? latestAppVersion) async {
+  void checkVersion(BuildContext context, AppVersion appVersion) async {
     try {
+      String? latestAppVersion = Platform.isAndroid
+          ? appVersion.latestAppVersion
+          : appVersion.latestAppVersionIos;
       if (latestAppVersion != null && !kIsWeb) {
         if (int.parse(packageInfo!.version.split('.').join("").toString()) <
             int.parse(latestAppVersion.split('.').join("").toString())) {

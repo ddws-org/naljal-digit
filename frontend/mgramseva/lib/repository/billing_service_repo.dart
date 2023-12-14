@@ -13,7 +13,7 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class BillingServiceRepository extends BaseService {
-  RequestInfo getRequestInfo(CRITERIA) {
+  getRequestInfo(CRITERIA) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);

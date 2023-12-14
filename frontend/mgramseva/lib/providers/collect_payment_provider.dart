@@ -406,7 +406,7 @@ class CollectPaymentProvider with ChangeNotifier {
                         height: 8,
                       ),
                       Text('- - *** - -',
-                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textScaleFactor: kIsWeb ? 3 : 1,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Colors.black,
@@ -414,7 +414,7 @@ class CollectPaymentProvider with ChangeNotifier {
                               fontWeight: FontWeight.bold)),
                       Text(
                           "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                          textScaler: TextScaler.linear(kIsWeb ? 3 : 1),
+                          textScaleFactor: kIsWeb ? 3 : 1,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Colors.black,

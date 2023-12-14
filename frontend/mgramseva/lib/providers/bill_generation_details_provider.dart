@@ -176,7 +176,13 @@ class BillGenerationProvider with ChangeNotifier {
     billGenerateDetails.billYear = selectedBillYear;
     notifyListeners();
   }
-
+  void clearBillYear() {
+    selectedBillYear = null;
+    billGenerateDetails.billYear = null;
+    selectedBillCycle = null;
+    billGenerateDetails.billCycle = null;
+    notifyListeners();
+  }
   void onChangeOfBillCycle(cycle) {
     var val = cycle['code'];
     DateTime result = DateTime.parse(val.toString());

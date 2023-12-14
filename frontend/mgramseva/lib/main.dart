@@ -287,7 +287,7 @@ class _LandingPageState extends State<LandingPage> {
     await commonProvider.getAppVersionDetails();
     if (!kIsWeb)
       CommonMethods()
-          .checkVersion(context, commonProvider.appVersion!.latestAppVersion);
+          .checkVersion(context, commonProvider.appVersion!);
   }
 
   @override

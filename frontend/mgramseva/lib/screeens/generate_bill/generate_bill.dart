@@ -40,6 +40,11 @@ class _GenerateBillState extends State<GenerateBill> {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
   }
+  @override
+  void dispose() {
+    Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
+    super.dispose();
+  }
 
   afterViewBuild() {
     Provider.of<BillGenerationProvider>(context, listen: false)
@@ -64,7 +69,10 @@ class _GenerateBillState extends State<GenerateBill> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          HomeBack(),
+          HomeBack(callback: (){
+            Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
+            Navigator.pop(context);
+          },),
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
