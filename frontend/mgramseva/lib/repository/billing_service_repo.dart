@@ -13,7 +13,7 @@ import 'package:mgramseva/utils/models.dart';
 import 'package:provider/provider.dart';
 
 class BillingServiceRepository extends BaseService {
-  getRequestInfo(CRITERIA) {
+  RequestInfo getRequestInfo(CRITERIA) {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
@@ -56,9 +56,9 @@ class BillingServiceRepository extends BaseService {
     late UpdateDemandList demandList;
     var res = await makeRequest(
         url: Url.FETCH_UPDATE_DEMAND,
-        body: {'RequestInfo': {}, ...body},
+        body: body,
         queryParameters: queryparams,
-        // requestInfo: getRequestInfo('_search'),
+        requestInfo: getRequestInfo('_search'),
         method: RequestType.POST);
     if (res != null) {
       demandList = UpdateDemandList.fromJson({
