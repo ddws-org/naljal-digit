@@ -68,6 +68,7 @@ class Common {
   String get BACK => 'BACK';
   String get DEAR => 'DEAR';
   String get VIEW_ALL => 'VIEW_ALL';
+  String get VIEW => 'VIEW';
   String get ALL_NOTIFICATIONS => 'ALL_NOTIFICATIONS';
   String get CORE_FATHER_NAME => 'CORE_FATHER_NAME';
 

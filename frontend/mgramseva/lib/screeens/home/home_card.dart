@@ -40,13 +40,14 @@ class _HomeCard extends State<HomeCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(item.iconData, size: 35),
+                    Icon(item.iconData, size: 30),
                     Container(
                       margin: EdgeInsets.all(10),
                       child: Center(
                           child: new Text(
                         ApplicationLocalizations.of(context)
                             .translate(item.label),
+                            textScaleFactor: MediaQuery.of(context).size.width<400 ? 0.90 : 1,
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,

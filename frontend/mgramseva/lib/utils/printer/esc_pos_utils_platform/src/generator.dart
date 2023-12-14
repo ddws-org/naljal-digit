@@ -325,12 +325,12 @@ class Generator {
   }
 
   List<int> text(
-      String text, {
-        PosStyles styles = const PosStyles(),
-        int linesAfter = 0,
-        bool containsChinese = false,
-        int? maxCharsPerLine,
-      }) {
+    String text, {
+    PosStyles styles = const PosStyles(),
+    int linesAfter = 0,
+    bool containsChinese = false,
+    int? maxCharsPerLine,
+  }) {
     List<int> bytes = [];
     if (!containsChinese) {
       bytes += _text(
@@ -720,12 +720,12 @@ class Generator {
   ///
   /// [image] is an instanse of class from [Image library](https://pub.dev/packages/image)
   List<int> imageRaster(
-      img.Image image, {
-        PosAlign align = PosAlign.center,
-        bool highDensityHorizontal = true,
-        bool highDensityVertical = true,
-        PosImageFn imageFn = PosImageFn.bitImageRaster,
-      }) {
+    img.Image image, {
+    PosAlign align = PosAlign.center,
+    bool highDensityHorizontal = true,
+    bool highDensityVertical = true,
+    PosImageFn imageFn = PosImageFn.bitImageRaster,
+  }) {
     List<int> bytes = [];
     // Image alignment
     bytes += setStyles(PosStyles().copyWith(align: align));
@@ -770,13 +770,13 @@ class Generator {
   /// [height] range: 1 - 255. The units depend on the printer model.
   /// Width, height, font, text position settings are effective until performing of ESC @, reset or power-off.
   List<int> barcode(
-      Barcode barcode, {
-        int? width,
-        int? height,
-        BarcodeFont? font,
-        BarcodeText textPos = BarcodeText.below,
-        PosAlign align = PosAlign.center,
-      }) {
+    Barcode barcode, {
+    int? width,
+    int? height,
+    BarcodeFont? font,
+    BarcodeText textPos = BarcodeText.below,
+    PosAlign align = PosAlign.center,
+  }) {
     List<int> bytes = [];
     // Set alignment
     bytes += setStyles(PosStyles().copyWith(align: align));
@@ -812,11 +812,11 @@ class Generator {
 
   /// Print a QR Code
   List<int> qrcode(
-      String text, {
-        PosAlign align = PosAlign.center,
-        QRSize size = QRSize.Size4,
-        QRCorrection cor = QRCorrection.L,
-      }) {
+    String text, {
+    PosAlign align = PosAlign.center,
+    QRSize size = QRSize.Size4,
+    QRCorrection cor = QRCorrection.L,
+  }) {
     List<int> bytes = [];
     // Set alignment
     bytes += setStyles(PosStyles().copyWith(align: align));
@@ -847,11 +847,11 @@ class Generator {
   }
 
   List<int> textEncoded(
-      Uint8List textBytes, {
-        PosStyles styles = const PosStyles(),
-        int linesAfter = 0,
-        int? maxCharsPerLine,
-      }) {
+    Uint8List textBytes, {
+    PosStyles styles = const PosStyles(),
+    int linesAfter = 0,
+    int? maxCharsPerLine,
+  }) {
     List<int> bytes = [];
     bytes += _text(textBytes, styles: styles, maxCharsPerLine: maxCharsPerLine);
     // Ensure at least one line break after the text
@@ -865,13 +865,13 @@ class Generator {
   ///
   /// [colInd] range: 0..11. If null: do not define the position
   List<int> _text(
-      Uint8List textBytes, {
-        PosStyles styles = const PosStyles(),
-        int? colInd = 0,
-        bool isKanji = false,
-        int colWidth = 12,
-        int? maxCharsPerLine,
-      }) {
+    Uint8List textBytes, {
+    PosStyles styles = const PosStyles(),
+    int? colInd = 0,
+    bool isKanji = false,
+    int colWidth = 12,
+    int? maxCharsPerLine,
+  }) {
     List<int> bytes = [];
     if (colInd != null) {
       double charWidth = _getCharWidth(styles, maxCharsPerLine: maxCharsPerLine);
@@ -910,11 +910,11 @@ class Generator {
 
   /// Prints one line of styled mixed (chinese and latin symbols) text
   List<int> _mixedKanji(
-      String text, {
-        PosStyles styles = const PosStyles(),
-        int linesAfter = 0,
-        int? maxCharsPerLine,
-      }) {
+    String text, {
+    PosStyles styles = const PosStyles(),
+    int linesAfter = 0,
+    int? maxCharsPerLine,
+  }) {
     List<int> bytes = [];
     final list = _getLexemes(text);
     final List<String> lexemes = list[0];

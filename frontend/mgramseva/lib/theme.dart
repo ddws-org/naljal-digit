@@ -8,7 +8,7 @@ ThemeData get theme => ThemeData(
     primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
     primaryColor: Color.fromRGBO(244, 119, 56, 1),
     disabledColor: Colors.grey,
-    cardTheme: CardTheme(surfaceTintColor: Colors.white),
+    cardTheme: CardTheme(surfaceTintColor: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
     datePickerTheme: DatePickerThemeData(
       surfaceTintColor: Colors.white
     ),

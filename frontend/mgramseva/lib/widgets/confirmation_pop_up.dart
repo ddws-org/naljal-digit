@@ -39,7 +39,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
                   minHeight: 160,
-                  maxHeight: 180
+                  maxHeight: 190
                 ),
                 width: MediaQuery.of(context).size.width > 720 ? MediaQuery.of(context).size.width / 3.5 : MediaQuery.of(context).size.width ,
                 padding: EdgeInsets.only(right: 8.0, left: 8.0),

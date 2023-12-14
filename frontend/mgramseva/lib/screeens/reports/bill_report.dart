@@ -26,11 +26,13 @@ class _BillReport extends State<BillReport>
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
+      final isWideScreen = constraints.maxWidth > 700;
+      final containerMargin = isWideScreen
+          ? const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 10)
+          : const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8);
       return Consumer<ReportsProvider>(builder: (_, reportProvider, child) {
         return Container(
-          margin: constraints.maxWidth > 700
-              ? const EdgeInsets.only(top: 5.0, bottom: 5, right: 20, left: 10)
-              : const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),
+          margin: containerMargin,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -40,24 +42,33 @@ class _BillReport extends State<BillReport>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Text("1. ",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w700)),
-                      Text(
-                          ApplicationLocalizations.of(context)
-                              .translate(i18.dashboard.BILL_REPORT),
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w700)),
-                    ],
+                  Container(
+                    width: constraints.maxWidth > 344?constraints.maxWidth / 2.5:constraints.maxWidth / 3,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "1. ",
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
+                        Expanded(
+                          child: Text(
+                            ApplicationLocalizations.of(context)
+                                .translate(i18.dashboard.BILL_REPORT),
+                            maxLines: 3,
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
                       Container(
                         width: 50,
                         child: Button(
-                          "View",
+                          ApplicationLocalizations.of(context)
+                              .translate(i18.common.VIEW),
                           () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
