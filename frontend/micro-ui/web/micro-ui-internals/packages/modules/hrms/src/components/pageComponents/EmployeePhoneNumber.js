@@ -12,16 +12,16 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
     {
       label: t("HR_MOB_NO_LABEL"),
       isMandatory: true,
-      type: "text",
+      type: "mobileNumber",
       name: "mobileNumber",
       populators: {
         validation: {
           maxLength: 10,
           required: true,
-          pattern: /^[6789][0-9]{9}$/,
+          // pattern: /^[6789][0-9]{9}$/,
         },
-        componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
-        error: t("CORE_COMMON_MOBILE_ERROR"),
+        // componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
+        // error: t("CORE_COMMON_MOBILE_ERROR"),
       },
     },
   ];
