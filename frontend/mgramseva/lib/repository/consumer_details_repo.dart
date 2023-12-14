@@ -106,7 +106,7 @@ class ConsumerRepository extends BaseService {
       method: RequestType.POST,
       queryParameters: query,
       requestInfo: getRequestInfo("_search"),
-      body: {'RequestInfo': {}},
+      body: {},
     );
 
     if (res != null) {
