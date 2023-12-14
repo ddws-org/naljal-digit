@@ -37,9 +37,9 @@ class BillingServiceRepository extends BaseService {
     late DemandList demandList;
     var res = await makeRequest(
         url: Url.FETCH_DEMAND,
-        body: {'RequestInfo': {}},
+        body: {},
         queryParameters: queryparams,
-        // requestInfo: getRequestInfo('_search'),
+        requestInfo: getRequestInfo('_search'),
         method: RequestType.POST);
     if (res != null) {
       demandList = DemandList.fromJson({"Demands": res['Demands']});
