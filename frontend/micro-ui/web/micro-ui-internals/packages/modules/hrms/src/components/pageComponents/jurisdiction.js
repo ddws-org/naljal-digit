@@ -95,8 +95,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
           if (items?.code === jurisdiction?.boundary?.code) {
             res["division"] = {
-              code: items?.divisionCode,
-              i18text: Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"),
+              code: items?.city?.blockcode,
+              i18text: Digit.Utils.locale.convertToLocale(items?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
             };
             res["divisionBoundary"] = [
               {

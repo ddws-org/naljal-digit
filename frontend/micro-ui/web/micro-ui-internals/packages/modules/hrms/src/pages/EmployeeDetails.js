@@ -38,7 +38,7 @@ const Details = () => {
   mdmsData?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
     data?.Employees[0]?.jurisdictions?.map((jurisdiction) => {
       if (items?.code === jurisdiction?.boundary) {
-        jurisdiction["division"] = items?.divisionCode;
+        jurisdiction["division"] = items?.city?.blockcode;
       }
     });
   });
@@ -106,7 +106,7 @@ const Details = () => {
                     <div className="sla-cell-error">{t("INACTIVE")}</div>
                   )
                 }
-                textStyle={{ fontWeight: "bold", maxWidth: "7rem" }}
+                textStyle={{ fontWeight: "bold", maxWidth: "7.5rem" }}
               />
             </StatusTable>
             <CardSubHeader className="card-section-header">{t("HR_PERSONAL_DETAILS_FORM_HEADER")} </CardSubHeader>
@@ -154,7 +154,7 @@ const Details = () => {
 
             {data?.Employees?.[0]?.documents ? (
               <StatusTable style={{ marginBottom: "40px" }}>
-                <Row label={t("TL_APPROVAL_UPLOAD_HEAD")} text={""} />
+                {/* <Row label={t("TL_APPROVAL_UPLOAD_HEAD")} text={""} /> */}
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {data?.Employees?.[0]?.documents?.map((document, index) => {
                     return (
