@@ -251,6 +251,7 @@ public class EmployeeService {
 		pwdParams.add(employee.getTenantId());
 		pwdParams.add(employee.getUser().getName().toUpperCase());
 		employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
+		log.info("password:"+employee.getUser().getPassword());
 		employee.getUser().setUserName(employee.getCode());
 		employee.getUser().setActive(true);
 		employee.getUser().setType(UserType.EMPLOYEE.toString());
