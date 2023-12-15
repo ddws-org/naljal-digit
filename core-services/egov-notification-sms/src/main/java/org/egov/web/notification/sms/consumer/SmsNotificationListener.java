@@ -67,6 +67,7 @@ public class SmsNotificationListener {
         SMSRequest request = null;
         try {
             request = objectMapper.convertValue(consumerRecord, SMSRequest.class);
+            log.info("REQUEST:"+ request);
             if(!startsWithOneToFive(request.getMobileNumber())) {
                 if (request.getExpiryTime() != null && request.getCategory() == Category.OTP) {
                     Long expiryTime = request.getExpiryTime();
