@@ -19,6 +19,7 @@ const MultiSelectDropdown = ({
   const [active, setActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState();
   const [optionIndex, setOptionIndex] = useState(-1);
+  const [isSelected, setIsSelected] = useState(false);
   const dropdownRef = useRef();
   const { t } = useTranslation();
 
@@ -162,6 +163,7 @@ const MultiSelectDropdown = ({
 
   const handleSelectAll = (...data) => {
     const isChecked = data[0].target.checked;
+    setIsSelected(isChecked);
     isChecked
       ? dispatch({ type: "ADD_TO_SELECTED_EVENT_QUEUE", payload: data })
       : dispatch({ type: "REMOVE_FROM_SELECTED_EVENT_QUEUE", payload: data });
@@ -206,7 +208,7 @@ const MultiSelectDropdown = ({
           <div>
             <input
               type="checkbox"
-              checked={selected.length === filteredOptions.length}
+              checked={isSelected}
               onChange={(e) => handleSelectAll(e, filteredOptions)} // Create this function
               style={{ minWidth: "24px", width: "100%" }}
             />

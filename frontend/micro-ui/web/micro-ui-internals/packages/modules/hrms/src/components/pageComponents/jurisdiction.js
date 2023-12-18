@@ -42,7 +42,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
             hierarchy: null,
             boundaryType: null,
             boundary: null,
-            division: [],
+            division: {},
             divisionBoundary: [],
             roles: [],
           },
@@ -147,32 +147,15 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           };
           finalData.push(obj);
         });
-      finalData?.map((items, index) => {
-        if (items?.division == undefined && items?.divisionBoundary?.length == 0 && jurisdictionsData[index]?.divisionBoundary?.length > 0) {
-          finalData[index] = jurisdictionsData[index] !== undefined && jurisdictionsData[index];
-        } else if (
-          finalData?.length > jurisdictionsData?.length &&
-          jurisdictionsData[index]?.division == undefined &&
-          items?.division != undefined &&
-          jurisdictionsData?.length + 1 == finalData?.length
-        ) {
-          finalData = jurisdictionsData;
-        }
-        // else if (finalData?.length > jurisdictionsData?.length && jurisdictionsData?.length + 1 !== finalData?.length) {
-        //   finalData.splice(jurisdictionsData?.length, 1);
-        // }
-      });
+
       jurisdictionData = finalData;
     }
+    setJuristictionsData(jurisdictionData);
     onSelect(
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
   }, [jurisdictions, data?.MdmsRes, data?.MdmsRes?.tenant]);
-
-  useEffect(() => {
-    setJuristictionsData(formData?.Jurisdictions);
-  }, [formData?.Jurisdictions]);
 
   const reviseIndexKeys = () => {
     setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
