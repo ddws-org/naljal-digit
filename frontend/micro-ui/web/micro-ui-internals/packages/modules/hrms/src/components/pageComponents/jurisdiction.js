@@ -168,7 +168,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-  }, [jurisdictions, data?.MdmsRes]);
+  }, [jurisdictions, data?.MdmsRes, data?.MdmsRes?.tenant]);
 
   useEffect(() => {
     setJuristictionsData(formData?.Jurisdictions);
@@ -422,12 +422,14 @@ function Jurisdiction({
 
   const getboundarydata = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value?.code);
-    const finalProjects = project?.map((project) => ({
-      name: project.name,
-      code: project.code,
-      i18text: Digit.Utils.locale.getCityLocale(project.code),
-    }));
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value?.code);
+    const finalProjects = project
+      ?.filter((item) => item?.code === "ka.testing")
+      ?.map((project) => ({
+        name: project.name,
+        code: project.code,
+        i18text: Digit.Utils.locale.getCityLocale(project.code),
+      }));
     return finalProjects;
   };
   const selectrole = (e) => {
