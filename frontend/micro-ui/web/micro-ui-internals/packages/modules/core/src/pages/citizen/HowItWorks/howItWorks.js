@@ -1,6 +1,4 @@
-import {
-  BackButton, CloseSvg, CustomButton, DownloadImgIcon, Header, Loader, PDFSvg
-} from "@egovernments/digit-ui-react-components";
+import { BackButton, CloseSvg, CustomButton, DownloadImgIcon, Header, Loader, PDFSvg } from "@egovernments/digit-ui-react-components";
 import React, { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -13,8 +11,8 @@ const HowItWorks = ({ module }) => {
   const selectedLanguage = Digit.StoreData.getCurrentLanguage();
   const [selected, setselected] = useState(selectedLanguage);
   const handleChangeLanguage = (language) => {
-    setselected(language.value);
-    Digit.LocalizationService.changeLanguage(language.value, stateInfo.code);
+    setselected(language?.value);
+    Digit.LocalizationService.changeLanguage(language?.value, stateInfo.code);
   };
   const [videoPlay, setVideoPlay] = useState(false);
   const [vidSrc, setVidSrc] = useState("");
@@ -64,17 +62,17 @@ const HowItWorks = ({ module }) => {
           <Header>{t("HOW_IT_WORKS")}</Header>
         </div>
         <div className="language-selector" style={{ margin: "10px" }}>
-          {languages.map((language, index) => (
+          {languages?.map((language, index) => (
             <div className="language-button-container" key={index}>
               <CustomButton
-                selected={language.value === selected}
+                selected={language?.value === selected}
                 text={language.label}
                 onClick={() => handleChangeLanguage(language)}
               ></CustomButton>
             </div>
           ))}
         </div>
-        {mdmsConfigResult.videosJson.map((videos, index) => (
+        {mdmsConfigResult?.videosJson.map((videos, index) => (
           <div>
             <div className="WhatsNewCard" style={{ float: "left", position: "relative", width: "100%", marginBottom: 10 }}>
               <div className="video-icon" onClick={() => onClickVideo(videos)}>
