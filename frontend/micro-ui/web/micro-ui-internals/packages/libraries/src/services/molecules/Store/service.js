@@ -70,7 +70,7 @@ export const StoreService = {
         logoUrlWhite: stateInfo.logoUrlWhite,
         bannerUrl: stateInfo.bannerUrl,
       },
-      localizationModules: stateInfo.localizationModules,
+      localizationModules: stateInfo?.localizationModules,
       modules: MdmsRes?.tenant?.citymodule
         .filter((module) => module?.active)
         .filter((module) => enabledModules?.includes(module?.code))
@@ -78,11 +78,12 @@ export const StoreService = {
       uiHomePage: uiHomePage,
     };
 
-    initData.selectedLanguage = Digit.SessionStorage.get("locale") || initData.languages[2].value;
+    initData.selectedLanguage =
+      Digit.SessionStorage.get("locale") || initData?.languages[2] ? initData?.languages[2]?.value : initData?.languages[1]?.value;
 
     ApiCacheService.saveSetting(MdmsRes["DIGIT-UI"]?.ApiCachingSettings);
 
-    const moduleTenants = initData.modules
+    const moduleTenants = initData?.modules
       .map((module) => module.tenants)
       .flat()
       .reduce((unique, ele) => (unique.find((item) => item.code === ele.code) ? unique : [...unique, ele]), []);
