@@ -349,7 +349,7 @@ function Jurisdiction({
           return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
         })
     );
-  }, [jurisdiction?.hierarchy, data?.MdmsRes]);
+  }, [jurisdiction?.hierarchy, data?.MdmsRes, userDetails]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
