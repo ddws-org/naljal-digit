@@ -218,7 +218,7 @@ const MultiSelectDropdown = ({
             <p className="label">{t("SELECT_ALL")}</p>
           </div>
         )}
-        {filteredOptions.map((option, index) => (
+        {filteredOptions?.map((option, index) => (
           <MenuItem option={option} key={index} index={index} />
         ))}
       </div>

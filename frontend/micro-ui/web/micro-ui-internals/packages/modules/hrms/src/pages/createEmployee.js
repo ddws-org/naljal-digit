@@ -118,7 +118,6 @@ const CreateEmployee = () => {
   const navigateToAcknowledgement = (Employees) => {
     history.replace(`/${window?.contextPath}/employee/hrms/response`, { Employees, key: "CREATE", action: "CREATE" });
   };
-
   const onSubmit = (data) => {
     if (!STATE_ADMIN && data.Jurisdictions?.filter((juris) => juris.tenantId == tenantId).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
@@ -197,10 +196,10 @@ const CreateEmployee = () => {
       });
 
       // Map the data and add tenantId to roles array
-      const mappedData = jurisdictions.map((jurisdiction) => {
+      const mappedData = jurisdictions?.map((jurisdiction) => {
         return {
           ...jurisdiction,
-          roles: jurisdiction.roles.map((role) => ({
+          roles: jurisdiction?.roles?.map((role) => ({
             ...role,
             tenantId: jurisdiction.tenantId,
           })),
