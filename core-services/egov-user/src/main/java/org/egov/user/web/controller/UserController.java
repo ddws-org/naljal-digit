@@ -219,4 +219,26 @@ public class UserController {
         return true;
     }
 
+    @PostMapping("/_searchByTenant")
+    public UserSearchResponse getUserBytenant(@RequestBody @Valid UserSearchByTenantsRequest request, @RequestHeader HttpHeaders headers) {
+
+        log.info("Received User search Request  " + request);
+        return searchUsersBytenant(request, headers);
+    }
+
+    private UserSearchResponse searchUsersBytenant(UserSearchByTenantsRequest request, HttpHeaders headers) {
+        UserSearchCriteria searchCriteria = request.toDomain();
+
+        if (!isInterServiceCall(headers)) {
+            if ((isEmpty(searchCriteria.getId()) && isEmpty(searchCriteria.getUuid())) && (searchCriteria.getLimit() > defaultSearchSize
+                    || searchCriteria.getLimit() == 0))
+                searchCriteria.setLimit(defaultSearchSize);
+        }
+
+        List<User> userModels = userService.searchUsersByTenants(searchCriteria, request.getRequestInfo());
+        List<UserSearchResponseContent> userContracts = userModels.stream().map(UserSearchResponseContent::new)
+                .collect(Collectors.toList());
+        ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
+        return new UserSearchResponse(responseInfo, userContracts);
+    }
 }

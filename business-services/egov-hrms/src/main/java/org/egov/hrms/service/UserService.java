@@ -78,6 +78,9 @@ public class UserService {
 	@Value("${egov.user.search.endpoint}")
 	private String userSearchEndpoint;
 
+	@Value("${egov.user.search.tenant.endpoint}")
+	private String userSearchByTenantEndpoint;
+
 	@Value("${egov.user.update.endpoint}")
 	private String userUpdateEndpoint;
 	
@@ -124,7 +127,23 @@ public class UserService {
 
 		return userResponse;
 	}
+	public UserResponse getUserByTenantids(RequestInfo requestInfo, Map<String, Object> UserSearchCriteria ) {
+		StringBuilder uri = new StringBuilder();
+		Map<String, Object> userSearchReq = new HashMap<>();
+		userSearchReq.put("RequestInfo", requestInfo);
+		userSearchReq.put(HRMSConstants.HRMS_USER_SERACH_CRITERIA_USERTYPE_CODE,HRMSConstants.HRMS_USER_SERACH_CRITERIA_USERTYPE);
+		for( String key: UserSearchCriteria.keySet())
+			userSearchReq.put(key, UserSearchCriteria.get(key));
+		uri.append(propertiesManager.getUserHost()).append(propertiesManager.getUserSearchByTenantEndpoint());
+		UserResponse userResponse = new UserResponse();
+		try {
+			userResponse = userCall(userSearchReq,uri);
+		}catch(Exception e) {
+			log.error("User search failed: ",e);
+		}
 
+		return userResponse;
+	}
 
 	/**
 	 * Returns UserDetailResponse by calling user service with given uri and object
@@ -135,7 +154,7 @@ public class UserService {
 	@SuppressWarnings("all")
 	private UserResponse userCall(Object userRequest, StringBuilder uri) {
 		String dobFormat = null;
-		if(uri.toString().contains(userSearchEndpoint) || uri.toString().contains(userUpdateEndpoint))
+		if(uri.toString().contains(userSearchEndpoint) || uri.toString().contains(userUpdateEndpoint) || uri.toString().contains(userSearchByTenantEndpoint))
 			dobFormat="yyyy-MM-dd";
 		else if(uri.toString().contains(userCreateEndpoint))
 			dobFormat = "dd/MM/yyyy";

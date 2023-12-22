@@ -70,6 +70,7 @@ public class UserRepository {
             RoleSearchHappend = true;
         }
         List<User> users = new ArrayList<>();
+        log.info("User role serach Count:"+userIds.size());
         if (RoleSearchHappend) {
             if (!CollectionUtils.isEmpty(userIds)) {
                 if (CollectionUtils.isEmpty(userSearch.getId()))
@@ -86,7 +87,7 @@ public class UserRepository {
             }
         }
         String queryStr = userTypeQueryBuilder.getQuery(userSearch, preparedStatementValues);
-        log.debug(queryStr);
+        log.info(queryStr);
 
         users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
         enrichRoles(users);
@@ -105,7 +106,7 @@ public class UserRepository {
         final List<Object> preparedStatementValues = new ArrayList<>();
         List<Long> usersIds = new ArrayList<>();
         String queryStr = userTypeQueryBuilder.getQueryUserRoleSearch(userSearch, preparedStatementValues);
-        log.debug(queryStr);
+        log.info("ROLE SEARCH QUERY:" + queryStr);
 
         usersIds = jdbcTemplate.queryForList(queryStr, preparedStatementValues.toArray(), Long.class);
 
@@ -573,5 +574,37 @@ public class UserRepository {
     private String getStateLevelTenant(String tenantId) {
         return tenantId.split("\\.")[0];
     }
+    public List<User> findUserByTenant(UserSearchCriteria userSearch) {
+        final List<Object> preparedStatementValues = new ArrayList<>();
+        boolean RoleSearchHappend = false;
+        List<Long> userIds = new ArrayList<>();
+        if (!isEmpty(userSearch.getRoleCodes()) && userSearch.getTenantIds() != null) {
+            userIds = findUsersWithRole(userSearch);
+            log.info("USER IDS:" + userIds);
+            RoleSearchHappend = true;
+        }
+        List<User> users = new ArrayList<>();
+        if (RoleSearchHappend) {
+            if (!CollectionUtils.isEmpty(userIds)) {
+                if (CollectionUtils.isEmpty(userSearch.getId()))
+                    userSearch.setId(userIds);
+                else {
+                    userSearch.setId(userSearch.getId().stream().filter(userIds::contains).collect(Collectors.toList()));
+                    if (CollectionUtils.isEmpty(userSearch.getId()))
+                        return users;
+                }
+                userSearch.setTenantId(null);
+                userSearch.setRoleCodes(null);
+            } else {
 
+                return users;
+            }
+        }
+        String queryStr = userTypeQueryBuilder.getQuery(userSearch, preparedStatementValues);
+        log.info("SEARCH USER QUERY"+queryStr);
+
+        users = jdbcTemplate.query(queryStr, preparedStatementValues.toArray(), userResultSetExtractor);
+        enrichRoles(users);
+        return users;
+    }
 }
