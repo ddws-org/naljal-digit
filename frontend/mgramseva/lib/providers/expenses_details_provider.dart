@@ -556,6 +556,9 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if(res!=null && res.isNotEmpty){
         isSearch?{}:tempList!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
       }
+      if(tempList!=null && tempList.isNotEmpty){
+        tempList.removeWhere((element) => element.isActive== false);
+      }
       return (tempList ?? <ExpenseType>[])
           .map((value) {
         return value.code;

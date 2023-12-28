@@ -22,7 +22,7 @@ ExpenseType _$ExpenseTypeFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String?
     ..code = json['code'] as String?
     ..taxHeadCode = json['taxHeadCode'] as String?
-    ..isActive = json['isActive'] as bool?;
+    ..isActive = json['active'] as bool?;
 }
 
 Map<String, dynamic> _$ExpenseTypeToJson(ExpenseType instance) =>
@@ -30,5 +30,5 @@ Map<String, dynamic> _$ExpenseTypeToJson(ExpenseType instance) =>
       'name': instance.name,
       'code': instance.code,
       'taxHeadCode': instance.taxHeadCode,
-      'isActive': instance.isActive,
+      'active': instance.isActive,
     };

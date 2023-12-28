@@ -28,7 +28,7 @@ class ExpenseType {
   @JsonKey(name: "taxHeadCode")
   String? taxHeadCode;
 
-  @JsonKey(name: "isActive")
+  @JsonKey(name: "active")
   bool? isActive;
 
   ExpenseType();
