@@ -402,7 +402,7 @@ class BillGenerationProvider with ChangeNotifier {
         ),
         actions: [
           TextButton(onPressed: () async{
-            if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.minimumCharge==0).length == 0 ){
+            if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 ){
               Navigator.pop(context);
               Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_SERVICE_PRESENT_WITH_RATE_MORE_THAN_0)}', 'ERROR'); //No Service type present with rate more than 0.
               return;
