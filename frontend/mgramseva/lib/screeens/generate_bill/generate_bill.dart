@@ -22,6 +22,7 @@ import 'package:mgramseva/widgets/text_field_builder.dart';
 import 'package:mgramseva/widgets/footer.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/ifix_hierarchy_provider.dart';
 import '../../utils/localization/application_localizations.dart';
 
 class GenerateBill extends StatefulWidget {
@@ -53,6 +54,9 @@ class _GenerateBillState extends State<GenerateBill> {
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
       ..formKey = GlobalKey<FormState>();
+
+    Provider.of<IfixHierarchyProvider>(context,listen: false)
+      ..getBillingSlabs();
   }
 
   var metVal = "";

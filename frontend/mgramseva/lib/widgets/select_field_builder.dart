@@ -124,6 +124,11 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                         items: widget.options,
                         onChanged: widget.widget,
                         enabled: !widget.readOnly!,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                            baseStyle: TextStyle(
+                                color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
+                            )
+                        ),
                         popupProps: PopupProps.menu(
                           showSearchBox: widget.showSearchBox,
                           fit: FlexFit.loose,
