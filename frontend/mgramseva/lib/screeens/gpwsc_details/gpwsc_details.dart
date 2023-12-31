@@ -40,7 +40,7 @@ class _GpwscDetails extends State<GPWSCDetails>
     var departmentProvider = Provider.of<IfixHierarchyProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    departmentProvider.getDepartments();
+    // departmentProvider.getDepartments();
     departmentProvider.getBillingSlabs();
   }
 
@@ -71,12 +71,12 @@ class _GpwscDetails extends State<GPWSCDetails>
           Container(
             color: Color.fromRGBO(238, 238, 238, 1),
             padding: EdgeInsets.only(left: 8, right: 8),
-            height: constraints.maxHeight - 50,
+            height: constraints.maxHeight - 52,
             child: SingleChildScrollView(
               controller: scrollController,
               child: Column(
                 children: [
-                  GPWSCBoundaryDetailCard(),
+                  // GPWSCBoundaryDetailCard(),
                   SizedBox(
                     height: 10,
                   ),
