@@ -55,7 +55,7 @@ public class EmployeeValidator {
 	 */
 	public void validateCreateEmployee(EmployeeRequest request) {
 		Map<String, String> errorMap = new HashMap<>();
-		validateExistingDuplicates(request ,errorMap);
+//		validateExistingDuplicates(request ,errorMap);
 		if(!CollectionUtils.isEmpty(errorMap.keySet()))
 			throw new CustomException(errorMap);
 		Map<String, List<String>> boundaryMap = getBoundaryList(request.getRequestInfo(),request.getEmployees().get(0));
@@ -153,9 +153,9 @@ public class EmployeeValidator {
 	 */
 	private void validateExistingDuplicates(EmployeeRequest request, Map<String, String> errorMap) {
 		List<Employee> employees = request.getEmployees();
-		validateDataUniqueness(employees,errorMap);
-        validateUserMobile(employees,errorMap,request.getRequestInfo());
-        validateUserName(employees,errorMap,request.getRequestInfo());
+//		validateDataUniqueness(employees,errorMap);
+//        validateUserMobile(employees,errorMap,request.getRequestInfo());
+//        validateUserName(employees,errorMap,request.getRequestInfo());
 	}
 
 	/**
