@@ -532,7 +532,7 @@ function Jurisdiction({
                 isMandatory={true}
                 selected={jurisdiction?.division}
                 disable={Division?.length === 0}
-                option={Division?.filter((items) => items?.code === "2595")}
+                option={Division}
                 select={selectDivision}
                 optionKey="i18text"
                 t={t}
