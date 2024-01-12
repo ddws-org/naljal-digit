@@ -504,12 +504,14 @@ class ConsumerProvider with ChangeNotifier {
 
   void onChangeOfCategory(val) {
     waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.categoryCtrl.text = val;
     waterconnection.additionalDetails?.category = val;
     notifyListeners();
   }
 
   void onChangeOfSubCategory(val) {
     waterconnection.additionalDetails ??= addition.AdditionalDetails();
+    waterconnection.subCategoryCtrl.text = val;
     waterconnection.additionalDetails?.subCategory = val;
     notifyListeners();
   }
