@@ -371,13 +371,11 @@ function Jurisdiction({
   const selectDivision = (value) => {
     // Extract projects using array methods
     const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value.code);
-    const finalProjects = project
-      ?.filter((item) => item?.code === "ka.testing")
-      ?.map((project) => ({
-        name: project.name,
-        code: project.code,
-        i18text: Digit.Utils.locale.getCityLocale(project.code),
-      }));
+    const finalProjects = project?.map((project) => ({
+      name: project.name,
+      code: project.code,
+      i18text: Digit.Utils.locale.getCityLocale(project.code),
+    }));
     setDivisionBoundary(finalProjects);
     if (isEdit && STATE_ADMIN) {
       setJuristictionsData((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, division: value, divisionBoundary: [] } : item)));
@@ -406,13 +404,11 @@ function Jurisdiction({
   const getboundarydata = (value) => {
     // Extract projects using array methods
     const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value?.code);
-    const finalProjects = project
-      ?.filter((item) => item?.code === "ka.testing")
-      ?.map((project) => ({
-        name: project.name,
-        code: project.code,
-        i18text: Digit.Utils.locale.getCityLocale(project.code),
-      }));
+    const finalProjects = project?.map((project) => ({
+      name: project.name,
+      code: project.code,
+      i18text: Digit.Utils.locale.getCityLocale(project.code),
+    }));
     return finalProjects;
   };
   const selectrole = (e) => {
@@ -536,7 +532,7 @@ function Jurisdiction({
                 isMandatory={true}
                 selected={jurisdiction?.division}
                 disable={Division?.length === 0}
-                option={Division?.filter((items) => items?.code === "2595")}
+                option={Division}
                 select={selectDivision}
                 optionKey="i18text"
                 t={t}
