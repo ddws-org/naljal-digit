@@ -26,9 +26,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  thermal_printer: ^1.0.4
+  gbk_codec: ^0.4.0
+  hex: ^0.2.0
   flutter_dotenv: ^5.1.0
-#  dart_ping_ios: ^4.0.2 //uncomment iOS
+  #  dart_ping_ios: ^4.0.2 //uncomment iOS
   universal_html: ^2.0.8
   flutter_secure_storage: ^9.0.0
   flutter_svg: ^2.0.7
@@ -111,6 +112,7 @@ flutter:
     - assets/icons/
     - assets/svg/
     - assets/.env
+    - assets/json/
 
   # To add assets to your application, add an assets section, like this:
 
