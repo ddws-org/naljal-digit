@@ -5,6 +5,7 @@ import 'package:mgramseva/widgets/footer_banner.dart';
 
 class MobileView extends StatelessWidget {
   final Widget widget;
+
   MobileView(this.widget);
 
   @override

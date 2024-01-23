@@ -18,6 +18,10 @@ class Constants {
       'naljal-uat-s3/logo/digit-footer.png';
   static const String DIGIT_FOOTER_WHITE_ENDPOINT =
       'naljal-uat-s3/logo/digit-footer-bw.png';
+  static const String NALJAL_FOOTER_ENDPOINT =
+      'naljal-uat-s3/logo/nic-footer.png';
+  static const String NATIONAL_EMBLEM_INDIA =
+      'naljal-uat-s3/logo/national-emblem-india.png';
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';

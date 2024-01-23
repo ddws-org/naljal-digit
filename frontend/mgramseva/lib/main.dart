@@ -38,6 +38,8 @@ import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/home/home.dart';
+import 'package:mgramseva/screeens/landing_page/Header.dart';
+import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -74,14 +76,13 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
-    if(kIsWeb){
-      await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
-    }else{
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+          options: FirebaseConfigurations.firebaseOptions);
+    } else {
       await Firebase.initializeApp();
     }
-    if (Firebase.apps.length == 0) {
-
-    }
+    if (Firebase.apps.length == 0) {}
 
     if (!kIsWeb) {
       await FlutterDownloader.initialize(
@@ -98,17 +99,54 @@ void main() {
     ErrorHandler.logError(error.toString(), stack);
     // exit(1); /// to close the app smoothly
   });
-
-  // runApp(new MyApp());
 }
 
 _MyAppState myAppstate = '' as _MyAppState;
+HeaderAll my = '' as HeaderAll;
+StateContainerWidget list = '' as StateContainerWidget;
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() {
-    myAppstate = _MyAppState();
-    return myAppstate;
+  HeaderAll createState() {
+    my = HeaderAll();
+    return my;
+  }
+}
+
+class ToggleItem {
+  String text;
+  bool isSelected;
+
+  ToggleItem(this.text, this.isSelected);
+
+  void toggleColor() {
+    isSelected = !isSelected;
+  }
+}
+
+class MyList extends StatelessWidget {
+  final List<String> items = ['KARNATAKA', 'ASSAM', 'GUJRAT', 'STATE', 'STATE'];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(items[index]),
+          // Add more customization or functionality here
+        );
+      },
+    );
+  }
+}
+
+class _NewMyAppState extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    //throw UnimplementedError();
+    return _MyAppState();
   }
 }
 
@@ -136,9 +174,9 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
+
   @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, int status, int progress) {
+  static void downloadCallback(String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
@@ -153,10 +191,11 @@ class _MyAppState extends State<MyApp> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      print("Download progress: "+progress.toString());
+      print("Download progress: " + progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null)
+            OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -166,7 +205,7 @@ class _MyAppState extends State<MyApp> {
         }
       }
       setState(() {
-        print("Download progress: "+progress.toString());
+        print("Download progress: " + progress.toString());
       });
     });
     FlutterDownloader.registerCallback(downloadCallback);
@@ -217,37 +256,37 @@ class _MyAppState extends State<MyApp> {
                   }
                 },
                 child: MaterialApp(
-                  title: 'mGramSeva',
-                  supportedLocales: [
-                    Locale('en', 'IN'),
-                    Locale('hi', 'IN'),
-                    Locale.fromSubtags(languageCode: 'pn')
-                  ],
-                  locale: _locale,
-                  localizationsDelegates: [
-                    ApplicationLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  localeResolutionCallback: (locale, supportedLocales) {
-                    for (var supportedLocaleLanguage in supportedLocales) {
-                      if (supportedLocaleLanguage.languageCode ==
-                              locale?.languageCode &&
-                          supportedLocaleLanguage.countryCode ==
-                              locale?.countryCode) {
-                        return supportedLocaleLanguage;
+                    title: 'mGramSeva',
+                    supportedLocales: [
+                      Locale('en', 'IN'),
+                      Locale('hi', 'IN'),
+                      Locale.fromSubtags(languageCode: 'pn')
+                    ],
+                    locale: _locale,
+                    localizationsDelegates: [
+                      ApplicationLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    localeResolutionCallback: (locale, supportedLocales) {
+                      for (var supportedLocaleLanguage in supportedLocales) {
+                        if (supportedLocaleLanguage.languageCode ==
+                                locale?.languageCode &&
+                            supportedLocaleLanguage.countryCode ==
+                                locale?.countryCode) {
+                          return supportedLocaleLanguage;
+                        }
                       }
-                    }
-                    return supportedLocales.first;
-                  },
-                  navigatorKey: navigatorKey,
-                  navigatorObservers: <NavigatorObserver>[observer],
-                  initialRoute: Routes.LANDING_PAGE,
-                  onGenerateRoute: Routing.generateRoute,
-                  theme: theme,
-                  // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-                ))));
+                      return supportedLocales.first;
+                    },
+                    navigatorKey: navigatorKey,
+                    navigatorObservers: <NavigatorObserver>[observer],
+                    initialRoute: Routes.LANDING_PAGE,
+                    onGenerateRoute: Routing.generateRoute,
+                    theme: theme,
+                    home: //SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
+                        LandingPage()))));
   }
 }
 
@@ -267,27 +306,12 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
-  //   super.dispose();
-  // }
-  //
-  // static void downloadCallback(
-  //     String id, DownloadTaskStatus status, int progress) {
-  //   final SendPort send =
-  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
-  //
-  //   send.send([id, status, progress]);
-  // }
-  //
   afterViewBuild() async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
     if (!kIsWeb)
-      CommonMethods()
-          .checkVersion(context, commonProvider.appVersion!);
+      CommonMethods().checkVersion(context, commonProvider.appVersion!);
   }
 
   @override
@@ -311,8 +335,14 @@ class _LandingPageState extends State<LandingPage> {
                   if (snapshot.data != null &&
                       commonProvider.userDetails!.isFirstTimeLogin == true) {
                     return Home();
+                    //return MyApp();
+                    //return FigmaToCodeApp();
+                    //return Test();
                   }
                   return SelectLanguage();
+                  //  return MyApp();
+                  //return FigmaToCodeApp();
+                  //return Test();
                 }
             }
           }),
