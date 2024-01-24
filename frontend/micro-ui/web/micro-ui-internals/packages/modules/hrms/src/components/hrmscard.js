@@ -55,10 +55,10 @@ const HRMSCard = () => {
         label: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
         link: `/${window?.contextPath}/employee/hrms/create`,
       },
-      {
-        label: t("HR_STATE_ REPORTS"),
-        link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
-      },
+      // {
+      //   label: t("HR_STATE_ REPORTS"),
+      //   link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
+      // },
       ...moduleForSomeDIVAdmin,
     ],
   };
