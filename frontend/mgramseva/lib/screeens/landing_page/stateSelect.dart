@@ -168,7 +168,7 @@ class ItemState extends State {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SelectLanguage()));
+                                    builder: (context) => NewMyAppState()));
                           else {
                             final snackBar = SnackBar(
                               content: Text('work in progress'),
