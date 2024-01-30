@@ -621,8 +621,7 @@ public class EmployeeService {
 			else
 				criteria.setUuids(userUUIDs);
 		}
-		log.info("criteria:"+criteria.getUuids().size());
-		log.info("criteria list :"+criteria);
+
 		//checks if above criteria met and result is not  null will check for name search if list of names are given as user search on name is not bulk api
 		List <Employee> employees = new ArrayList<>();
 		log.info("Employe search boolean:"+(!((!CollectionUtils.isEmpty(criteria.getRoles())))));
