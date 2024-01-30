@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mgramseva/main.dart';
+import 'package:mgramseva/screeens/landing_page/appstate.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
-import 'dart:convert';
 
-import '../main.dart';
 import 'State.dart';
 
 class ToggleItem {
@@ -96,7 +94,7 @@ class ItemState extends State {
 
   fetchData() async {
     final response = await http.get(
-        Uri.parse('https://mocki.io/v1/deb26881-b163-4499-b26b-9b7a8da7279d'));
+        Uri.parse('https://mocki.io/v1/fc9f2da5-c25f-4022-9152-85a8e1bb8ef3'));
 
     if (response.statusCode == 200) {
       states = statesFromJson(response.body);
@@ -119,7 +117,6 @@ class ItemState extends State {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.only(top: 10),
       width: 370,
@@ -171,10 +168,10 @@ class ItemState extends State {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LandingPage()));
+                                    builder: (context) => SelectLanguage()));
                           else {
                             final snackBar = SnackBar(
-                              content: Text('No id available!'),
+                              content: Text('work in progress'),
                               duration: Duration(
                                   seconds: 3), // You can customize the duration
                             );
@@ -183,15 +180,16 @@ class ItemState extends State {
                                 .showSnackBar(snackBar);
                           }
                         },
-                        child: //*Text("data")*//*
-                            Card(
-                          color: Colors.white,
+                        child: Card(
                           shape: RoundedRectangleBorder(
+                            side:
+                                BorderSide(color: Color(0xff6f93ef), width: 1),
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           child: Container(
                             width: 300,
                             height: 50,
+                            color: Color(0xa3f8e1d5),
                             child: Align(
                               alignment: Alignment.center,
                               child: Text(
@@ -200,7 +198,7 @@ class ItemState extends State {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.0,
-                                    color: Colors.blue,
+                                    color: Colors.black,
                                     letterSpacing: 1.0),
                               ),
                             ),

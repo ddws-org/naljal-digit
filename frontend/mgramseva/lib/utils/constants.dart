@@ -20,6 +20,8 @@ class Constants {
       'naljal-uat-s3/logo/digit-footer-bw.png';
   static const String NALJAL_FOOTER_ENDPOINT =
       'naljal-uat-s3/logo/nic-footer.png';
+  static const String NALJAL_FOOTER_WHITE_ENDPOINT =
+      'naljal-uat-s3/logo/nic-footer-bw.png';
   static const String NATIONAL_EMBLEM_INDIA =
       'naljal-uat-s3/logo/national-emblem-india.png';
   static const String LOGIN_KEY = 'login_key';
@@ -103,10 +105,7 @@ class Constants {
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
         HomeIcons.gpwscdetails,
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
-    HomeItem(
-        "CORE_REPORTS",
-        (i18.dashboard.CORE_REPORTS),
-        Icons.assessment,
+    HomeItem("CORE_REPORTS", (i18.dashboard.CORE_REPORTS), Icons.assessment,
         Routes.REPORTS, {}),
   ];
 

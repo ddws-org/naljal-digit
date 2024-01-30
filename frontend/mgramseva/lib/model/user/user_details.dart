@@ -8,11 +8,11 @@ part 'user_details.g.dart';
 class UserDetails {
   @JsonKey(name: "access_token")
   String? accessToken;
-  @JsonKey(name: "tokenType")
+  @JsonKey(name: "token_type")
   String? tokenType;
-  @JsonKey(name: "refreshToken")
+  @JsonKey(name: "refresh_token")
   String? refreshToken;
-  @JsonKey(name: "expiresIn")
+  @JsonKey(name: "expires_in")
   int? expiresIn;
   @JsonKey(name: "scope")
   String? scope;
@@ -63,6 +63,7 @@ class UserRequest {
   String? permanentCity;
 
   UserRequest();
+
   factory UserRequest.fromJson(Map<String, dynamic> json) =>
       _$UserRequestFromJson(json);
 
@@ -77,6 +78,7 @@ class Roles {
   String? code;
   @JsonKey(name: "tenantId")
   String? tenantId;
+
   Roles();
 
   factory Roles.fromJson(Map<String, dynamic> json) => _$RolesFromJson(json);

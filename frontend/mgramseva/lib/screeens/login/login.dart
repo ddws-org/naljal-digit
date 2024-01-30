@@ -65,6 +65,7 @@ class _LoginState extends State<Login> {
       authProvider.validateLogin(context, userNamecontroller.text.trim(),
           passwordcontroller.text.trim());
     } else {
+      print('did not get the data');
       autoValidation = true;
       authProvider.callNotifier();
     }

@@ -9,10 +9,10 @@ import 'package:mgramseva/widgets/button.dart';
 import 'package:mgramseva/widgets/language_card.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
 
-
 class LanguageSelectionDesktopView extends StatelessWidget {
   final StateInfo stateInfo;
   final Function changeLanguage;
+
   LanguageSelectionDesktopView(this.stateInfo, this.changeLanguage);
 
   @override
@@ -28,10 +28,10 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 child: Card(
                     child: (Column(
-                        mainAxisAlignment:MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                       Container(
-                          width:MediaQuery.of(context).size.width*0.9,
+                          width: MediaQuery.of(context).size.width * 0.9,
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -48,12 +48,14 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                           )),
                                     ),
                                     Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
                                         child: Text(
                                           " | ",
                                           style: TextStyle(
                                               fontSize: 19,
-                                              color: Color.fromRGBO(0, 0, 0, 1)),
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 1)),
                                         )),
                                   ],
                                 ),
@@ -65,13 +67,15 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Padding(
-                                          padding: const EdgeInsets.only(left: 0.0),
+                                          padding:
+                                              const EdgeInsets.only(left: 0.0),
                                           child: Text(
                                             ApplicationLocalizations.of(context)
                                                 .translate(stateInfo.code!),
                                             style: TextStyle(
                                                 fontSize: 19,
-                                                color: Color.fromRGBO(0, 0, 0, 1),
+                                                color:
+                                                    Color.fromRGBO(0, 0, 0, 1),
                                                 fontWeight: FontWeight.w400),
                                           )),
                                     ],
@@ -83,21 +87,23 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  for (var language in stateInfo.languages ?? [])
-                                    LanguageCard(
-                                        language, stateInfo.languages ?? [], 120, 10, 10)
+                                  for (var language
+                                      in stateInfo.languages ?? [])
+                                    LanguageCard(language,
+                                        stateInfo.languages ?? [], 120, 10, 10)
                                 ]),
                           )),
                       Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Button(
-                              i18.common.CONTINUE,
-                                  () => Navigator.pushNamed(context, Routes.LOGIN),
-                              key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
-                            ),
-                          )
+                        padding: EdgeInsets.all(15),
+                        child: Button(
+                          i18.common.CONTINUE,
+                          () => Navigator.pushNamed(context, Routes.LOGIN),
+                          key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
+                        ),
+                      )
                     ]))))),
         SizedBox(height: 140),
         FooterBanner()

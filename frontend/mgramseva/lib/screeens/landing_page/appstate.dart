@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -8,10 +6,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
+import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -29,7 +27,6 @@ import 'package:mgramseva/providers/ifix_hierarchy_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notification_screen_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
-import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/providers/reset_password_provider.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
@@ -37,94 +34,21 @@ import 'package:mgramseva/providers/transaction_update_provider.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
-import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/screeens/home/home.dart';
-import 'package:mgramseva/screeens/landing_page/landing_page.dart';
-import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
-import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-import 'providers/collect_payment_provider.dart';
-import 'providers/dashboard_provider.dart';
-import 'providers/revenue_dashboard_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  HttpOverrides.global = new MyHttpOverrides();
-  setPathUrlStrategy();
-  //configureApp();
-  setEnvironment(Environment.dev);
-  // Register DartPingIOS
-  // if (Platform.isIOS) {
-  //   DartPingIOS.register();
-  // }
-
-  runZonedGuarded(() async {
-    FlutterError.onError = (FlutterErrorDetails details) {
-      FlutterError.dumpErrorToConsole(details);
-      ErrorHandler.logError(details.exception.toString(), details.stack);
-      // exit(1); /// to close the app smoothly
-    };
-
-    WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load(fileName: 'assets/.env');
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-          options: FirebaseConfigurations.firebaseOptions);
-    } else {
-      await Firebase.initializeApp();
-    }
-    if (Firebase.apps.length == 0) {}
-
-    if (!kIsWeb) {
-      await FlutterDownloader.initialize(
-          debug: true // optional: set false to disable printing logs to console
-          );
-    }
-
-    await CommonMethods.fetchPackageInfo();
-
-    runApp(
-      MyApp(),
-    );
-  }, (Object error, StackTrace stack) {
-    ErrorHandler.logError(error.toString(), stack);
-    // exit(1); /// to close the app smoothly
-  });
-}
-
-_MyAppState myAppstate = '' as _MyAppState;
-LandingPageNew my = '' as LandingPageNew;
-StateContainerWidget list = '' as StateContainerWidget;
-
-class MyApp extends StatefulWidget {
-  @override
-  LandingPageNew createState() {
-    my = LandingPageNew();
-    return my;
-  }
-}
-
-class ToggleItem {
-  String text;
-  bool isSelected;
-
-  ToggleItem(this.text, this.isSelected);
-
-  void toggleColor() {
-    isSelected = !isSelected;
-  }
-}
-
-class MyAppState extends StatefulWidget {
+class NewMyAppState extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -133,7 +57,7 @@ class MyAppState extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<NewMyAppState> {
   late Locale _locale = Locale('en', 'IN');
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
@@ -215,14 +139,11 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => TenantsProvider()),
           ChangeNotifierProvider(create: (_) => HouseHoldProvider()),
           ChangeNotifierProvider(create: (_) => SearchConnectionProvider()),
-          ChangeNotifierProvider(create: (_) => CollectPaymentProvider()),
-          ChangeNotifierProvider(create: (_) => DashBoardProvider()),
           ChangeNotifierProvider(create: (_) => BillPaymentsProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
           ChangeNotifierProvider(create: (_) => DemandDetailProvider()),
           ChangeNotifierProvider(create: (_) => FetchBillProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
-          ChangeNotifierProvider(create: (_) => RevenueDashboard()),
           ChangeNotifierProvider(create: (_) => HouseholdRegisterProvider()),
           ChangeNotifierProvider(create: (_) => NotificationScreenProvider()),
           ChangeNotifierProvider(create: (_) => TransactionUpdateProvider()),
@@ -269,7 +190,7 @@ class _MyAppState extends State<MyApp> {
                     onGenerateRoute: Routing.generateRoute,
                     theme: theme,
                     home: //SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-                        SelectLanguage()))));
+                        LandingPage()))));
   }
 }
 
@@ -289,6 +210,20 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
   }
 
+  // @override
+  // void dispose() {
+  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
+  //   super.dispose();
+  // }
+  //
+  // static void downloadCallback(
+  //     String id, DownloadTaskStatus status, int progress) {
+  //   final SendPort send =
+  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  //
+  //   send.send([id, status, progress]);
+  // }
+  //
   afterViewBuild() async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
@@ -330,14 +265,5 @@ class _LandingPageState extends State<LandingPage> {
             }
           }),
     );
-  }
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
   }
 }

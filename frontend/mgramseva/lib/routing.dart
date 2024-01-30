@@ -10,6 +10,9 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/add_expense/expense_details.dart';
 import 'package:mgramseva/screeens/change_password/change_password.dart';
+import 'package:mgramseva/screeens/common/common_download.dart';
+import 'package:mgramseva/screeens/common/consumer_collect_payment.dart';
+import 'package:mgramseva/screeens/common/payment_success.dart';
 import 'package:mgramseva/screeens/connection_results/connection_results.dart';
 import 'package:mgramseva/screeens/connection_results/search_connection.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details.dart';
@@ -28,9 +31,6 @@ import 'package:mgramseva/screeens/reports/reports.dart';
 import 'package:mgramseva/screeens/reset_password/reset_password.dart';
 import 'package:mgramseva/screeens/reset_password/update_password.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
-import 'package:mgramseva/screeens/common/consumer_collect_payment.dart';
-import 'package:mgramseva/screeens/common/payment_success.dart';
-import 'package:mgramseva/screeens/common/common_download.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/role_actions.dart';
@@ -39,11 +39,11 @@ import 'package:provider/provider.dart';
 
 import 'model/success_handler.dart';
 import 'model/user/user_details.dart';
-import 'screeens/forgot_password/forgot_password.dart';
 import 'screeens/common/collect_payment.dart';
 import 'screeens/dashboard/dashboard.dart';
 import 'screeens/expense/expense_results.dart';
 import 'screeens/expense/search_expense.dart';
+import 'screeens/forgot_password/forgot_password.dart';
 import 'widgets/common_success_page.dart';
 
 class Routing {
@@ -56,16 +56,22 @@ class Routing {
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
     if (kIsWeb) {
-      if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: q),
+      if (settings.name == Routes.PRIVACY_POLICY ||
+          settings.name == Routes.PRIVACY_POLICY_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: q),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       }
-      if (settings.name == Routes.TERMS_OF_USE || settings.name == Routes.TERMS_OF_USE_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.TERMS_OF_USE,showLeading: q),
+      if (settings.name == Routes.TERMS_OF_USE ||
+          settings.name == Routes.TERMS_OF_USE_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) =>
+                PrivacyAndTerms(pageType: Routes.TERMS_OF_USE, showLeading: q),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
       }
       if (Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null) {
@@ -159,7 +165,9 @@ class Routing {
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
-          Routes.RESET_PASSWORD == settings.name || Routes.PRIVACY_POLICY == settings.name || Routes.TERMS_OF_USE == settings.name) {
+          Routes.RESET_PASSWORD == settings.name ||
+          Routes.PRIVACY_POLICY == settings.name ||
+          Routes.TERMS_OF_USE == settings.name) {
         path = settings.name;
       } else if (path == '/') {
         path = Routes.HOME;
@@ -371,14 +379,18 @@ class Routing {
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
       case Routes.PRIVACY_POLICY:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.TERMS_OF_USE, showLeading: args),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:

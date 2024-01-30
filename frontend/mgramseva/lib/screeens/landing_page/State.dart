@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-List<States> statesFromJson(String str) =>
+List<States>  statesFromJson(String str) =>
     List<States>.from(json.decode(str).map((x) => States.fromJson(x)));
 
 String statesToJson(List<States> data) =>

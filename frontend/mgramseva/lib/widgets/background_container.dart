@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/screeens/landing_page/AppHeader.dart';
 import 'package:provider/provider.dart';
 
 class BackgroundContainer extends StatelessWidget {
   final Widget widget;
+
   BackgroundContainer(this.widget);
+
   @override
   Widget build(BuildContext context) {
     var languageProvider =
@@ -19,6 +22,8 @@ class BackgroundContainer extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: widget);
+        child: Stack(
+          children: [AppHeader(), widget],
+        ));
   }
 }

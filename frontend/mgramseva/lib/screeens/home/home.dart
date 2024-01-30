@@ -77,6 +77,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+    print('tenant data------ ${tenantProvider.tenants}');
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     return Scaffold(
