@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mgramseva/screeens/landing_page/appstate.dart';
-import 'package:mgramseva/screeens/select_language/select_language.dart';
 
+import '../../main.dart';
+import '../../routers/routers.dart';
 import 'State.dart';
 
 class ToggleItem {
@@ -168,7 +168,8 @@ class ItemState extends State {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SelectLanguage()));
+                                    builder: (context) => LandingPage(),
+                                    settings: RouteSettings(name: Routes.SELECT_LANGUAGE)));
                           else {
                             final snackBar = SnackBar(
                               content: Text('work in progress'),

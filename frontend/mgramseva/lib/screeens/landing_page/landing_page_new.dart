@@ -5,8 +5,11 @@ import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import '../../env/app_config.dart';
 import '../../main.dart';
 import '../../utils/constants.dart';
-
-class LandingPageNew extends State<MyApp> {
+class LandingPageNew extends StatefulWidget {
+  @override
+  _LandingPageNewState createState() => _LandingPageNewState();
+}
+class _LandingPageNewState extends State<LandingPageNew> {
   bool? expanded = false;
   int selectedId = -1;
   double? card_Height = 200;
@@ -107,10 +110,7 @@ class LandingPageNew extends State<MyApp> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return
-        /*GestureDetector( behavior: HitTestBehavior.opaque,child:*/
-        MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: true,
         body: Stack(children: [
           Image.asset(
@@ -217,7 +217,7 @@ class LandingPageNew extends State<MyApp> {
             ),
           )
         ]),
-      ),
+
     );
   }
 }

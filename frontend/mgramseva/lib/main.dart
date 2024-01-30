@@ -39,7 +39,7 @@ import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/screeens/home/home.dart';
-import 'package:mgramseva/screeens/landing_page/landing_page.dart';
+import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
 import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
@@ -103,13 +103,12 @@ void main() {
 
 _MyAppState myAppstate = '' as _MyAppState;
 LandingPageNew my = '' as LandingPageNew;
-StateContainerWidget list = '' as StateContainerWidget;
 
 class MyApp extends StatefulWidget {
   @override
-  LandingPageNew createState() {
-    my = LandingPageNew();
-    return my;
+  _MyAppState createState() {
+    myAppstate = _MyAppState();
+    return myAppstate;
   }
 }
 
@@ -268,8 +267,8 @@ class _MyAppState extends State<MyApp> {
                     initialRoute: Routes.LANDING_PAGE,
                     onGenerateRoute: Routing.generateRoute,
                     theme: theme,
-                    home: //SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
-                        SelectLanguage()))));
+                  // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
+                ))));
   }
 }
 
