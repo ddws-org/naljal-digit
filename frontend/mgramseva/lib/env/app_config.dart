@@ -28,7 +28,7 @@ dynamic get apiBaseUrl {
 
 Map<String, dynamic> devConstants = {
   _baseUrl: kIsWeb
-      ? (window.location.origin) + "/" +window.location.origin.split('/')[4] == 'mgramseva'?window.location.origin.split('/')[3]+"/":''
+      ? (window.location.origin) + "/"
       : const String.fromEnvironment('BASE_URL'),
 };
 
