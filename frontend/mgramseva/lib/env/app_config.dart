@@ -42,8 +42,8 @@ Future<Map<String, dynamic>> get devConstants async {
       Constants.STATE_CODE = stateCode;
     }
     return {
-      _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
-      // _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
+      // _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
+      _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
     };
   }
   return {
