@@ -26,7 +26,7 @@ class LanguageProvider with ChangeNotifier {
   Future<void> getLocalizationData(BuildContext context) async {
     try {
       var res = await getLanguages();
-      if (res != null) {
+      if (res != null && res.code!=null && res.code==Constants.STATE_CODE) {
         stateInfo ??= res;
         setSelectedState(res);
         await ApplicationLocalizations(
