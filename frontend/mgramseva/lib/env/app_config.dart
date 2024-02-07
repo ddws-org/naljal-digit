@@ -12,7 +12,7 @@ enum Environment { dev, stage, prod }
 
 late Map<String, dynamic> _config;
 
-void setEnvironment(Environment env) async{
+Future<void> setEnvironment(Environment env) async{
   switch (env) {
     case Environment.dev:
       _config = await devConstants;
@@ -37,12 +37,13 @@ Future<Map<String, dynamic>> get devConstants async {
     final content = await rootBundle.loadString('assets/json/states.json');
     Map states = json.decode(content);
     if(state.isNotEmpty && states.containsKey(state)){
-      print(states);
+      print("States: "+states.toString());
       var stateCode = states[state]['code'];
       Constants.STATE_CODE = stateCode;
     }
     return {
-      _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
+      _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
+      // _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
     };
   }
   return {
