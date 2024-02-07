@@ -169,4 +169,5 @@ class Constants {
     i18.householdRegister.PDF,
     i18.householdRegister.EXCEL
   ];
+  static String STATE_CODE = '';
 }

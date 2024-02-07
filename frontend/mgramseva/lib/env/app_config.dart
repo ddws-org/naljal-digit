@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:universal_html/html.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 const _baseUrl = "baseUrl";
 
@@ -8,10 +12,10 @@ enum Environment { dev, stage, prod }
 
 late Map<String, dynamic> _config;
 
-void setEnvironment(Environment env) {
+Future<void> setEnvironment(Environment env) async{
   switch (env) {
     case Environment.dev:
-      _config = devConstants;
+      _config = await devConstants;
       break;
     case Environment.stage:
       _config = stageConstants;
@@ -26,11 +30,26 @@ dynamic get apiBaseUrl {
   return _config[_baseUrl];
 }
 
-Map<String, dynamic> devConstants = {
-  _baseUrl: kIsWeb
-      ? window.location.origin + "/" +(window.location.href.split('/')[4] == 'mgramseva'?window.location.href.split('/')[3]+"/":'')
-      : const String.fromEnvironment('BASE_URL'),
-};
+Future<Map<String, dynamic>> get devConstants async {
+
+  if(kIsWeb){
+    var state = (window.location.href.split('/')[4] == 'mgramseva'?window.location.href.split('/')[3]:'');
+    final content = await rootBundle.loadString('assets/json/states.json');
+    Map states = json.decode(content);
+    if(state.isNotEmpty && states.containsKey(state)){
+      print("States: "+states.toString());
+      var stateCode = states[state]['code'];
+      Constants.STATE_CODE = stateCode;
+    }
+    return {
+      // _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
+      _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
+    };
+  }
+  return {
+    _baseUrl: const String.fromEnvironment('BASE_URL'),
+  };
+}
 
 Map<String, dynamic> stageConstants = {
   _baseUrl: "https://api.stage.com/",

@@ -263,7 +263,7 @@ class CommonProvider with ChangeNotifier {
   Future<void> getAppVersionDetails() async {
     try {
       var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+          await CoreRepository().getMdms(initRequestBody({"tenantId": Constants.STATE_CODE}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
