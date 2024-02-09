@@ -34,7 +34,7 @@ class _HrmsWebviewState extends State<HrmsWebview> {
             //         isLoading = false;
             //       });
             //     }
-            // ),
+            // ),//TODO: Uncomment this code on mobile
             isLoading ? Center(child: CircularProgressIndicator(),):Stack()
           ],
         ),
