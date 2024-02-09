@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:universal_html/html.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -40,6 +41,8 @@ Future<Map<String, dynamic>> get devConstants async {
       print("States: "+states.toString());
       var stateCode = states[state]['code'];
       Constants.STATE_CODE = stateCode;
+    }else{
+      Constants.STATE_CODE = dotenv.env['STATE_LEVEL_TENANT_ID']??'';
     }
     return {
       // _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
