@@ -271,13 +271,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 0),
-              child: Image.asset("assets/png/svgg.png",
+              child: Image.asset("assets/png/svgg.png", //TODO add to MDMS
                 height: kToolbarHeight-5,
                 fit: BoxFit.fill,),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 18),
-              child: Image.asset("assets/png/jal_jeevan.png",
+              child: Image.asset("assets/png/jal_jeevan.png",//TODO add to MDMS
               height: kToolbarHeight-5,
               fit: BoxFit.fill,),
             ),
