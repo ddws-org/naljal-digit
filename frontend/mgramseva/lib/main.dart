@@ -73,8 +73,8 @@ void main() async{
     };
 
     WidgetsFlutterBinding.ensureInitialized();
-    await setEnvironment(Environment.dev);
     await dotenv.load(fileName: 'assets/.env');
+    await setEnvironment(Environment.dev);
     if(kIsWeb){
       await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
     }else{
