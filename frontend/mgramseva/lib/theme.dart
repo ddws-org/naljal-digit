@@ -18,7 +18,7 @@ ThemeData get theme => ThemeData(
     // accentColor:  Color(0xff0B4B66),
 
     appBarTheme: AppBarTheme(
-      backgroundColor: Color(0xff0B4B66),
+      backgroundColor: Color(0xffffffff),
       centerTitle: false,
     ),
     textTheme: TextTheme(

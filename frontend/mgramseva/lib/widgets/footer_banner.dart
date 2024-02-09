@@ -11,7 +11,7 @@ class FooterBanner extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: Image(
             image: NetworkImage(
-          "$apiBaseUrl${Constants.NALJAL_FOOTER_WHITE_ENDPOINT}",
+          "$apiBaseUrl${Constants.NALJAL_FOOTER_ENDPOINT}",
         )),
       ),
     );

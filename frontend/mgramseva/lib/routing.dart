@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mgramseva/main.dart';
 import 'package:mgramseva/model/bill/billing.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
@@ -22,6 +21,8 @@ import 'package:mgramseva/screeens/gpwsc_details/gpwsc_details.dart';
 import 'package:mgramseva/screeens/home/home.dart';
 import 'package:mgramseva/screeens/household_detail/household_detail.dart';
 import 'package:mgramseva/screeens/household_register/household_register.dart';
+import 'package:mgramseva/screeens/hrms/hrms_webview.dart';
+import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
 import 'package:mgramseva/screeens/login/login.dart';
 import 'package:mgramseva/screeens/notifications/notification_screen.dart';
 import 'package:mgramseva/screeens/password_success/password_success.dart';
@@ -160,8 +161,9 @@ class Routing {
           Routes.DEFAULT_PASSWORD_UPDATE != settings.name &&
           Routes.RESET_PASSWORD != settings.name &&
           Routes.PRIVACY_POLICY != settings.name &&
-          Routes.TERMS_OF_USE != settings.name) {
-        path = Routes.SELECT_LANGUAGE;
+          Routes.TERMS_OF_USE != settings.name &&
+          Routes.SELECT_LANGUAGE != settings.name) {
+        path = Routes.LANDING_PAGE;
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
@@ -189,7 +191,7 @@ class Routing {
     currentRoute = settings.name;
     switch (path) {
       case Routes.LANDING_PAGE:
-        return MaterialPageRoute(builder: (_) => LandingPage());
+        return MaterialPageRoute(builder: (_) => LandingPageNew());
       case Routes.LOGIN:
         return MaterialPageRoute(
             builder: (_) => Login(),
@@ -378,6 +380,11 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
+      case Routes.HRMS:
+        return MaterialPageRoute(
+            builder: (_) => HrmsWebview(),
+            settings: RouteSettings(name: Routes.HRMS));
+
       case Routes.PRIVACY_POLICY:
         bool args =
             settings.arguments == null ? false : settings.arguments as bool;

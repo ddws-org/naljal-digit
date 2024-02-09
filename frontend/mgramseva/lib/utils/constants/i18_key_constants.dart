@@ -689,6 +689,7 @@ class _DashBoard {
   String get COLLECTION_REPORT => 'COLLECTION_REPORT';
   String get INACTIVE_CONSUMER_REPORT => 'INACTIVE_CONSUMER_REPORT';
   String get GPWSC_RATE_INFO => 'GPWSC_RATE_INFO';
+  String get HRMS_DASHBOARD => 'HRMS_DASHBOARD';
 }
 
 class _ExpenseWalkThroughMsg {

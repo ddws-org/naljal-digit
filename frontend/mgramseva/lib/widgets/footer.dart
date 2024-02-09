@@ -10,10 +10,9 @@ class Footer extends StatelessWidget {
     return Container(
       padding: padding ?? EdgeInsets.all(25),
       child: Image(
-          width: 140,
           image: NetworkImage(
-            "$apiBaseUrl${Constants.DIGIT_FOOTER_ENDPOINT}",
-          )),
+            "$apiBaseUrl${Constants.NALJAL_FOOTER_ENDPOINT}",
+      )),
     );
   }
 }

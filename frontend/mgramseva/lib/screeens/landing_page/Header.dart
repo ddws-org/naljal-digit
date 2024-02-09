@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/landing_page/AppHeader.dart';
 import 'package:mgramseva/screeens/landing_page/stateSelect.dart';

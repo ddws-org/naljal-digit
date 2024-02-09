@@ -107,6 +107,8 @@ class Constants {
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
     HomeItem("CORE_REPORTS", (i18.dashboard.CORE_REPORTS), Icons.assessment,
         Routes.REPORTS, {}),
+    HomeItem("CORE_HRMS_DASHBOARD", (i18.dashboard.HRMS_DASHBOARD), HomeIcons.gpwscdetails,
+        Routes.HRMS, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mgramseva/screeens/landing_page/appstate.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 
 import 'State.dart';
@@ -25,36 +24,6 @@ class StateContainerWidget extends StatefulWidget {
   int selectedId = -1;
 
   //will used in future
-/*  var state = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-  ];*/
   final List<ToggleItem> items = [
     ToggleItem('KARNATAKA', false, 0),
     ToggleItem('ASSAM', false, 1),
@@ -129,7 +98,7 @@ class ItemState extends State {
           ),
           child: Column(children: [
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 5),
+              padding: EdgeInsets.all(20),
               child: Container(
                 height: 60,
                 padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -148,6 +117,10 @@ class ItemState extends State {
                       //labelText:  _isTyping ? null : 'Search State',
                       prefixIcon: Icon(Icons.search),
                       border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
                     ),
                     onChanged: (value) {
                       typedText = value;
@@ -168,7 +141,7 @@ class ItemState extends State {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => NewMyAppState()));
+                                    builder: (context) => SelectLanguage()));
                           else {
                             final snackBar = SnackBar(
                               content: Text('work in progress'),

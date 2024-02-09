@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/landing_page/AppHeader.dart';
 import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
+import 'package:mgramseva/widgets/footer.dart';
 
-import '../../env/app_config.dart';
-import '../../main.dart';
-import '../../utils/constants.dart';
+class LandingPageNew extends StatefulWidget {
+  @override
+  _LandingPageNewState createState() => _LandingPageNewState();
+}
 
-class LandingPageNew extends State<MyApp> {
+class _LandingPageNewState extends State<LandingPageNew> {
   bool? expanded = false;
   int selectedId = -1;
   double? card_Height = 200;
@@ -107,24 +109,20 @@ class LandingPageNew extends State<MyApp> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return
-        /*GestureDetector( behavior: HitTestBehavior.opaque,child:*/
-        MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: Stack(children: [
-          Image.asset(
-            'assets/png/bg_mgramseva.png',
-            // Replace with the path to your image asset
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.fill,
-          ),
-          SingleChildScrollView(
-            child: Column(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Stack(children: [
+        Image.asset(
+          'assets/png/bg_mgramseva.png',
+          // Replace with the path to your image asset
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.fill,
+        ),
+        SingleChildScrollView(
+          child: Column(
               children: [
                 AppHeader(),
-
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: Text("Jal Jeevan Mission-Nal Jal Seva",
@@ -194,20 +192,22 @@ class LandingPageNew extends State<MyApp> {
                                   text =
                                       "To meet JJM objectives, ‘Nal Jal Seva’ an IT Platform for the Operation and Maintenance of Drinking Water Supply Schemes for GPs/VWSCs has been developed by DDWS.";
 
-                                setState(() {});
-                              })
-                        ]),
-                      ),
+                              setState(() {});
+                            })
+                      ]),
                     ),
                   ),
                 ),
+              ),
 
-                //list container
-                StateContainerWidget(),
-              ],
-            ),
+              //list container
+              StateContainerWidget(),
+              Footer()
+            ],
           ),
-          Align(
+        ),
+        //Footer()
+        /*     Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -215,9 +215,8 @@ class LandingPageNew extends State<MyApp> {
                 "$apiBaseUrl${Constants.NALJAL_FOOTER_ENDPOINT}",
               ),
             ),
-          )
-        ]),
-      ),
+          )*/
+      ]),
     );
   }
 }

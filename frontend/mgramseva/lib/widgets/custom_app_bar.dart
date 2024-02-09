@@ -3,12 +3,10 @@ import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
-import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/notifiers.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -23,7 +21,6 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   Tenants? tenants;
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
@@ -272,44 +269,29 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
       titleSpacing: 0,
-      iconTheme: IconThemeData(color: Colors.white),
-      title: Image(
+      iconTheme: IconThemeData(color: Colors.black),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Image.asset(
+            'assets/png/head_naljal.png',
+            width: 130,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Image.asset(
+              'assets/png/national-emblem-india.png',
+              width: 30,
+            ),
+          ),
+        ],
+      ) /* Image(
           width: 130,
           image: NetworkImage(
             languageProvider.stateInfo!.logoUrlWhite!,
-          )),
-      actions: [
-        Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width / 3,
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  tenantProvider.tenants != null
-                      ? buildTenantsView(tenantProvider.tenants!)
-                      : StreamBuilder(
-                          stream: tenantProvider.streamController.stream,
-                          builder: (context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              return buildTenantsView(snapshot.data);
-                            } else if (snapshot.hasError) {
-                              return Notifiers.networkErrorPage(context, () {});
-                            } else {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.waiting:
-                                  return Loaders.circularLoader();
-                                case ConnectionState.active:
-                                  return Loaders.circularLoader();
-                                default:
-                                  return Container(
-                                    child: Text(""),
-                                  );
-                              }
-                            }
-                          })
-                ]))
-      ],
+          ))*/
+      ,
+      actions: [],
     );
   }
 }

@@ -73,6 +73,9 @@ class _LoginState extends State<Login> {
 
   Widget getLoginCard() {
     return Card(
+        shape: RoundedRectangleBorder(
+            side: new BorderSide(color: Color(0xfffa7a39), width: 1.5),
+            borderRadius: BorderRadius.circular(4.0)),
         child: Form(
             key: formKey,
             onChanged: onChangeOfInput,
