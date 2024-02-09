@@ -16,9 +16,9 @@ class PrivacyWidget extends StatelessWidget {
             Text('Last updated: Nov 24th, 2023', style: TextStyle(fontSize: 12)),
             SizedBox(height: 16),
             Text(
-              'This privacy policy ("Privacy Policy") is in this context governs the access and usage of the mGramSeva mobile application and web portal (https://mgramseva-dwss.punjab.gov.in), an initiative of the DWSS,'
-                  '\n Department of Water Supply and Sanitation, Government of Punjab, Bharat.'
-                  '\n This policy outlines how mGramSeva handles personal and usage information in accordance with applicable Indian laws.',
+              'This privacy policy ("Privacy Policy") is in this context governs the access and usage of the NalJalSeva mobile application and web portal (https://naljalseva.jjm.gov.in/), an initiative of the Government of Bharat,'
+                  '\n Department of Water Supply and Sanitation, Government of Bharat.'
+                  '\n This policy outlines how NalJalSeva handles personal and usage information in accordance with applicable Indian laws.',
               style: TextStyle(fontSize: 12),
             ),
             SizedBox(height: 16),
@@ -41,7 +41,7 @@ class PrivacyWidget extends StatelessWidget {
               children: [
                 Text('   • Personal Information is used to customize service offerings and enhance user experience.'),
                 Text('   • Device and location information helps in adapting content/display based on user preferences and recommending relevant services.'),
-                Text('   • Aadhaar-related information provided for Department Services is not stored at mGramSeva.'),
+                Text('   • Aadhaar-related information provided for Department Services is not stored at NalJalSeva.'),
               ],
             ),
             SizedBox(height: 16),
@@ -82,7 +82,7 @@ class PrivacyWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('   • Personal information may be used for providing services and facilitating service deliveries.'),
-                Text('   • Sending promotional features/materials regarding mGramSeva and services offered by government and private organizations.'),
+                Text('   • Sending promotional features/materials regarding NalJalSeva and services offered by government and private organizations.'),
                 Text('   • Enhancing the efficiency/quality of services.'),
                 Text('   • Resolving disputes, monitoring user activity, and preventing unlawful activities.'),
                 Text('   • Conducting research or analyzing user preferences and demographics.'),
@@ -103,15 +103,6 @@ class PrivacyWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16),
-            Text(
-              '7. Grievance Redressal:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text('In case of grievances, complaints can be sent to miscell.dwss@punjab.gov.in.'),
-            Text('Or write us at:'),
-            Text('   Head Office, Department of Water Supply & Sanitation, Punjab'),
-            Text('   Phase 2, Sector 54, S.A.S. Nagar (Mohali), PIN: 160055'),
           ],
         ),
       );
