@@ -85,18 +85,14 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
     if (!_numberFocus.hasFocus) {
       Provider.of<ExpensesDetailsProvider>(context, listen: false)
         ..phoneNumberAutoValidation = true
-        ..callNotifyer();
+      ..callNotifyer();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     var expensesDetailsProvider =
-    Provider.of<ExpensesDetailsProvider>(context, listen: false);
-    /*visiFactor = false;
-    setState(() {
-
-    });*/
+        Provider.of<ExpensesDetailsProvider>(context, listen: false);
     return KeyboardFocusWatcher(
         child: Scaffold(
             appBar: CustomAppBar(),
@@ -165,11 +161,11 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
   Widget _buildUserView() {
     return FormWrapper(Consumer<ExpensesDetailsProvider>(
         builder: (_, expenseProvider, child) => Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomeBack(
-                  widget: Help(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HomeBack(
+                      widget: Help(
                     callBack: () => showGeneralDialog(
                       barrierLabel: "Label",
                       barrierDismissible: false,
@@ -186,16 +182,16 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                       transitionBuilder: (context, anim1, anim2, child) {
                         return SlideTransition(
                           position:
-                          Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                              .animate(anim1),
+                              Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                                  .animate(anim1),
                           child: child,
                         );
                       },
                     ),
                     walkThroughKey: Constants.ADD_EXPENSE_KEY,
                   )),
-              Card(
-                  child: Consumer<ExpensesDetailsProvider>(
+                  Card(
+                      child: Consumer<ExpensesDetailsProvider>(
                     builder: (_, expensesDetailsProvider, child) => Form(
                       key: expensesDetailsProvider.formKey,
                       autovalidateMode: expensesDetailsProvider.autoValidation
@@ -226,9 +222,9 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               true,
                               readOnly: !expensesDetailsProvider.expenditureDetails.allowEdit!,
                               requiredMessage:
-                              i18.expense.SELECT_EXPENDITURE_CATEGORY,
+                                  i18.expense.SELECT_EXPENDITURE_CATEGORY,
                               contextKey:
-                              expenseProvider.expenseWalkthrougList[0].key,
+                                  expenseProvider.expenseWalkthrougList[0].key,
                               controller: expensesDetailsProvider.expenditureDetails.expenseTypeController,
                               key: Keys.expense.EXPENSE_TYPE,
                               itemAsString: (i) =>'${ApplicationLocalizations.of(context)
@@ -241,20 +237,20 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               suggestionsBoxController: expensesDetailsProvider
                                   .suggestionsBoxController,
                               onSuggestionSelected:
-                              expensesDetailsProvider.onSuggestionSelected,
+                                  expensesDetailsProvider.onSuggestionSelected,
                               callBack:
-                              expensesDetailsProvider.onSearchVendorList,
+                                  expensesDetailsProvider.onSearchVendorList,
                               listTile: buildTile,
                               isRequired: true,
                               isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                               requiredMessage:
-                              i18.expense.MENTION_NAME_OF_VENDOR,
+                                  i18.expense.MENTION_NAME_OF_VENDOR,
                               inputFormatter: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp("[a-zA-Z ]"))
                               ],
                               contextKey:
-                              expenseProvider.expenseWalkthrougList[1].key,
+                                  expenseProvider.expenseWalkthrougList[1].key,
                               key: Keys.expense.VENDOR_NAME,
                             ),
                             if (expensesDetailsProvider.expenditureDetails.vendorNameCtrl.text.trim().isNotEmpty)
@@ -293,10 +289,10 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   ? false
                                   : true,
                               requiredMessage:
-                              i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
+                                  i18.expense.AMOUNT_MENTIONED_IN_THE_BILL,
                               validator: Validators.amountValidator,
                               contextKey:
-                              expenseProvider.expenseWalkthrougList[2].key,
+                                  expenseProvider.expenseWalkthrougList[2].key,
                               key: Keys.expense.EXPENSE_AMOUNT,
                             ),
                             Visibility(
@@ -424,24 +420,24 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                                   }
                               ),),
                             BasicDateField(
-                              'Invoice Date'/*i18.expense.PARTY_BILL_DATE*/,
+                              i18.expense.INVOICE_DATE/*i18.expense.PARTY_BILL_DATE*/,
                               false,
                               expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl,
                               initialDate:
-                              DateFormats.getFormattedDateToDateTime(
+                                  DateFormats.getFormattedDateToDateTime(
                                 expensesDetailsProvider.expenditureDetails.billIssuedDateCtrl.text.trim(),
                               ),
                               lastDate: expensesDetailsProvider.expenditureDetails.billDateCtrl.text
-                                  .trim()
-                                  .isEmpty
+                                      .trim()
+                                      .isEmpty
                                   ? DateTime.now()
                                   : DateFormats.getFormattedDateToDateTime(
-                                  expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim()),
+                                      expensesDetailsProvider.expenditureDetails.billDateCtrl.text.trim()),
                               onChangeOfDate:
-                              expensesDetailsProvider.onChangeOfDate,
+                                  expensesDetailsProvider.onChangeOfDate,
                               isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit,
                               contextKey:
-                              expenseProvider.expenseWalkthrougList[4].key,
+                                  expenseProvider.expenseWalkthrougList[4].key,
                               key: Keys.expense.EXPENSE_PARTY_DATE,
                             ),
                             RadioButtonFieldBuilder(
@@ -458,16 +454,16 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               BasicDateField(i18.expense.PAYMENT_DATE, true,
                                   expensesDetailsProvider.expenditureDetails.paidDateCtrl,
                                   firstDate:
-                                  DateFormats.getFormattedDateToDateTime(
-                                      expensesDetailsProvider.expenditureDetails.billDateCtrl.text
-                                          .trim()),
+                                      DateFormats.getFormattedDateToDateTime(
+                                          expensesDetailsProvider.expenditureDetails.billDateCtrl.text
+                                              .trim()),
                                   lastDate: DateTime.now(),
                                   initialDate:
-                                  DateFormats.getFormattedDateToDateTime(
-                                      expensesDetailsProvider.expenditureDetails.paidDateCtrl.text
-                                          .trim()),
+                                      DateFormats.getFormattedDateToDateTime(
+                                          expensesDetailsProvider.expenditureDetails.paidDateCtrl.text
+                                              .trim()),
                                   onChangeOfDate:
-                                  expensesDetailsProvider.onChangeOfDate,
+                                      expensesDetailsProvider.onChangeOfDate,
                                   isEnabled: expensesDetailsProvider.expenditureDetails.allowEdit),
                             if (isUpdate &&
                                 expensesDetailsProvider.expenditureDetails.fileStoreList != null &&
@@ -521,7 +517,7 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                               FilePickerDemo(
                                 key: expensesDetailsProvider.filePickerKey,
                                 callBack:
-                                expensesDetailsProvider.fileStoreIdCallBack,
+                                    expensesDetailsProvider.fileStoreIdCallBack,
                                 extensions: ['jpg', 'pdf', 'png', 'jpeg'],
                                 contextKey: expenseProvider
                                     .expenseWalkthrougList[5].key,
@@ -564,22 +560,22 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
                           ]),
                     ),
                   ))
-            ])));
+                ])));
   }
 
   Widget buildTile(context, vendor) {
     var style = TextStyle(fontSize: 18);
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
-        child:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${vendor?.name}', style: style),
-            Text('${vendor.owner.mobileNumber}', style : style.apply(fontSizeDelta: -2))
-          ],
-        ));
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+      child:
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${vendor?.name}', style: style),
+          Text('${vendor.owner.mobileNumber}', style : style.apply(fontSizeDelta: -2))
+        ],
+      ));
   }
 
   bool get isUpdate => widget.id != null || widget.expensesDetails != null ;

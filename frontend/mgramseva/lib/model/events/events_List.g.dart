@@ -38,7 +38,7 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
     ..actions = json['actions'] == null
         ? null
         : Actions.fromJson(json['actions'] as Map<String, dynamic>)
-    ..eventDetails = json['eventDetails'] as dynamic
+    ..eventDetails = json['eventDetails'] as dynamic?
     ..auditDetails = json['auditDetails'] == null
         ? null
         : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)

@@ -21,6 +21,8 @@ import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -63,9 +65,17 @@ class CommonProvider with ChangeNotifier {
           key: languageProvider.selectedLanguage?.value ?? '');
     }
     if (localLabelResponse != null && localLabelResponse.trim().isNotEmpty) {
-      return localizedStrings = jsonDecode(localLabelResponse)
+      var localizedString = jsonDecode(localLabelResponse)
           .map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e))
           .toList();
+      var states = await storage.read(key:Constants.STATES_KEY);
+      if(states != null && states.trim().isNotEmpty){
+        var stateInfo = StateInfo.fromJson(jsonDecode(states));
+        if(stateInfo.code == Constants.STATE_CODE){
+          localizedStrings = localizedString;
+          return localizedString;
+        }
+      }
     }
 
     try {
@@ -263,7 +273,7 @@ class CommonProvider with ChangeNotifier {
   Future<void> getAppVersionDetails() async {
     try {
       var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+          await CoreRepository().getMdms(initRequestBody({"tenantId": Constants.STATE_CODE}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());

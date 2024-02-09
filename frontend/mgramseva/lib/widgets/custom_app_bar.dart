@@ -3,10 +3,12 @@ import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
-import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/common_methods.dart';
+import 'package:mgramseva/utils/global_variables.dart';
+import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -168,8 +170,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     children: [
                                       Text(
                                         ApplicationLocalizations.of(context)
-                                            .translate(
-                                                visibleTenants[index].code!),
+                                            .translate(visibleTenants[index].code!),
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -181,9 +182,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                                             .selectedtenant!
                                                             .city!
                                                             .code ==
-                                                        visibleTenants[index]
-                                                            .city!
-                                                            .code!
+                                                        visibleTenants[index].city!.code!
                                                 ? Theme.of(context).primaryColor
                                                 : Colors.black),
                                       ),
@@ -199,11 +198,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                                               .selectedtenant!
                                                               .city!
                                                               .code ==
-                                                          visibleTenants[index]
-                                                              .city!
-                                                              .code!
-                                                  ? Theme.of(context)
-                                                      .primaryColor
+                                                          visibleTenants[index].city!.code!
+                                                  ? Theme.of(context).primaryColor
                                                   : Colors.black))
                                     ]),
                               ),

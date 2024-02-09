@@ -23,7 +23,7 @@ class Constants {
   static const String NALJAL_FOOTER_WHITE_ENDPOINT =
       'naljal-uat-s3/logo/nic-footer-bw.png';
   static const String NATIONAL_EMBLEM_INDIA =
-      'naljal-uat-s3/logo/national-emblem-india.png';
+      'naljal-uat-s3/logo/national-emblem-india.png'; // TODO add in StateInfo in MDMS
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
@@ -105,9 +105,15 @@ class Constants {
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
         HomeIcons.gpwscdetails,
         Routes.GPWSC_DETAILS_AND_RATE_INFO, {}),
-    HomeItem("CORE_REPORTS", (i18.dashboard.CORE_REPORTS), Icons.assessment,
+    HomeItem(
+        "CORE_REPORTS",
+        (i18.dashboard.CORE_REPORTS),
+        Icons.assessment,
         Routes.REPORTS, {}),
-    HomeItem("CORE_HRMS_DASHBOARD", (i18.dashboard.HRMS_DASHBOARD), HomeIcons.gpwscdetails,
+    HomeItem(
+        "CORE_HRMS_DASHBOARD",
+        (i18.dashboard.HRMS_DASHBOARD),
+        HomeIcons.gpwscdetails,
         Routes.HRMS, {}),
   ];
 
@@ -174,4 +180,5 @@ class Constants {
     i18.householdRegister.PDF,
     i18.householdRegister.EXCEL
   ];
+  static String STATE_CODE = '';
 }

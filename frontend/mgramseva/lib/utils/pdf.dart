@@ -61,8 +61,12 @@ class PdfUtils {
       languageProvider.stateInfo?.logoUrlWhite ?? '');
   }
 
-  static Future<pw.ImageProvider> get powerdByDigit async => await networkImage(
-      "$apiBaseUrl${Constants.DIGIT_FOOTER_ENDPOINT}");
+  static Future<pw.ImageProvider> get powerdByDigit async  {
+    var languageProvider =
+    Provider.of<LanguageProvider>(navigatorKey.currentContext!, listen: false);
+      return await networkImage(
+          languageProvider.stateInfo?.digitFooterColor??'');
+  }
 
   static pw.Widget pdfFooter(pw.ImageProvider image){
     return pw.Container(

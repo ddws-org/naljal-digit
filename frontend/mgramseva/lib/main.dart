@@ -8,10 +8,11 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
+import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
 import 'package:mgramseva/providers/bill_generation_details_provider.dart';
 import 'package:mgramseva/providers/bill_payments_provider.dart';
@@ -29,7 +30,6 @@ import 'package:mgramseva/providers/ifix_hierarchy_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/providers/notification_screen_provider.dart';
 import 'package:mgramseva/providers/notifications_provider.dart';
-import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/providers/reset_password_provider.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/providers/tenants_provider.dart';
@@ -37,17 +37,16 @@ import 'package:mgramseva/providers/transaction_update_provider.dart';
 import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
-import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/screeens/home/home.dart';
 import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
 import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
@@ -56,12 +55,13 @@ import 'package:url_strategy/url_strategy.dart';
 import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async{
   HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   //configureApp();
-  setEnvironment(Environment.dev);
+
   // Register DartPingIOS
   // if (Platform.isIOS) {
   //   DartPingIOS.register();
@@ -76,13 +76,15 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-          options: FirebaseConfigurations.firebaseOptions);
-    } else {
+    await setEnvironment(Environment.dev);
+    if(kIsWeb){
+      await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
+    }else{
       await Firebase.initializeApp();
     }
-    if (Firebase.apps.length == 0) {}
+    if (Firebase.apps.length == 0) {
+
+    }
 
     if (!kIsWeb) {
       await FlutterDownloader.initialize(
@@ -99,36 +101,17 @@ void main() {
     ErrorHandler.logError(error.toString(), stack);
     // exit(1); /// to close the app smoothly
   });
+
+  // runApp(new MyApp());
 }
 
 _MyAppState myAppstate = '' as _MyAppState;
-LandingPageNew my = '' as LandingPageNew;
 
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() {
     myAppstate = _MyAppState();
     return myAppstate;
-  }
-}
-
-class ToggleItem {
-  String text;
-  bool isSelected;
-
-  ToggleItem(this.text, this.isSelected);
-
-  void toggleColor() {
-    isSelected = !isSelected;
-  }
-}
-
-class MyAppState extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    //throw UnimplementedError();
-    return _MyAppState();
   }
 }
 
@@ -156,9 +139,9 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
-
   @pragma('vm:entry-point')
-  static void downloadCallback(String id, int status, int progress) {
+  static void downloadCallback(
+      String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
@@ -173,11 +156,9 @@ class _MyAppState extends State<MyApp> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      print("Download progress: " + progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (CommonProvider.downloadUrl[id] != null)
-            OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -187,7 +168,6 @@ class _MyAppState extends State<MyApp> {
         }
       }
       setState(() {
-        print("Download progress: " + progress.toString());
       });
     });
     FlutterDownloader.registerCallback(downloadCallback);
@@ -238,35 +218,35 @@ class _MyAppState extends State<MyApp> {
                   }
                 },
                 child: MaterialApp(
-                    title: 'mGramSeva',
-                    supportedLocales: [
-                      Locale('en', 'IN'),
-                      Locale('hi', 'IN'),
-                      Locale.fromSubtags(languageCode: 'pn')
-                    ],
-                    locale: _locale,
-                    localizationsDelegates: [
-                      ApplicationLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    localeResolutionCallback: (locale, supportedLocales) {
-                      for (var supportedLocaleLanguage in supportedLocales) {
-                        if (supportedLocaleLanguage.languageCode ==
-                                locale?.languageCode &&
-                            supportedLocaleLanguage.countryCode ==
-                                locale?.countryCode) {
-                          return supportedLocaleLanguage;
-                        }
+                  title: 'NalJalSeva',
+                  supportedLocales: [
+                    Locale('en', 'IN'),
+                    Locale('hi', 'IN'),
+                    Locale.fromSubtags(languageCode: 'pn')
+                  ],
+                  locale: _locale,
+                  localizationsDelegates: [
+                    ApplicationLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  localeResolutionCallback: (locale, supportedLocales) {
+                    for (var supportedLocaleLanguage in supportedLocales) {
+                      if (supportedLocaleLanguage.languageCode ==
+                              locale?.languageCode &&
+                          supportedLocaleLanguage.countryCode ==
+                              locale?.countryCode) {
+                        return supportedLocaleLanguage;
                       }
-                      return supportedLocales.first;
-                    },
-                    navigatorKey: navigatorKey,
-                    navigatorObservers: <NavigatorObserver>[observer],
-                    initialRoute: Routes.LANDING_PAGE,
-                    onGenerateRoute: Routing.generateRoute,
-                    theme: theme,
+                    }
+                    return supportedLocales.first;
+                  },
+                  navigatorKey: navigatorKey,
+                  navigatorObservers: <NavigatorObserver>[observer],
+                  initialRoute: Routes.LANDING_PAGE,
+                  onGenerateRoute: Routing.generateRoute,
+                  theme: theme,
                   // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
                 ))));
   }
@@ -288,12 +268,27 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
   }
 
+  // @override
+  // void dispose() {
+  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
+  //   super.dispose();
+  // }
+  //
+  // static void downloadCallback(
+  //     String id, DownloadTaskStatus status, int progress) {
+  //   final SendPort send =
+  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  //
+  //   send.send([id, status, progress]);
+  // }
+  //
   afterViewBuild() async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
     if (!kIsWeb)
-      CommonMethods().checkVersion(context, commonProvider.appVersion!);
+      CommonMethods()
+          .checkVersion(context, commonProvider.appVersion!);
   }
 
   @override
@@ -317,14 +312,8 @@ class _LandingPageState extends State<LandingPage> {
                   if (snapshot.data != null &&
                       commonProvider.userDetails!.isFirstTimeLogin == true) {
                     return Home();
-                    //return MyApp();
-                    //return FigmaToCodeApp();
-                    //return Test();
                   }
                   return SelectLanguage();
-                  //  return MyApp();
-                  //return FigmaToCodeApp();
-                  //return Test();
                 }
             }
           }),

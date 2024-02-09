@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
   final StateInfo stateInfo;
-
   LanguageSelectMobileView(this.stateInfo);
 
   @override

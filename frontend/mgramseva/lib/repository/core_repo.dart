@@ -176,16 +176,34 @@ class CoreRepository extends BaseService {
     var postUri = Uri.parse("$apiBaseUrl${Url.FILE_UPLOAD}");
     var request = new http.MultipartRequest("POST", postUri);
     if (_paths != null && _paths.isNotEmpty) {
-      for (var i = 0; i < _paths.length; i++) {
-        var path = _paths[i];
-        var fileName = '${path.name}.${path.extension?.toLowerCase()}';
-        http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
-            'file', path.bytes!,
-            contentType: CommonMethods().getMediaType(fileName),
-            filename: fileName);
-        request.files.add(multipartFile);
+      if (_paths is List<PlatformFile>) {
+        for (var i = 0; i < _paths.length; i++) {
+          var path = _paths[i];
+          var fileName = '${path.name}.${path.extension?.toLowerCase()}';
+          http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
+              'file', path.bytes!,
+              contentType: CommonMethods().getMediaType(fileName),
+              filename: fileName);
+          request.files.add(multipartFile);
+        }
+      } else if (_paths is List<File>) {
+        _paths.forEach((file) async {
+          request.files.add(await http.MultipartFile.fromPath('file', file.path,
+              contentType: CommonMethods().getMediaType(file.path),
+              filename: '${file.path.split('/').last}'));
+        });
+      } else if (_paths is List<CustomFile>) {
+        for (var i = 0; i < _paths.length; i++) {
+          var path = _paths[i];
+          var fileName = '${path.name}.${path.extension.toLowerCase()}';
+          http.MultipartFile multipartFile = http.MultipartFile.fromBytes(
+              'file', path.bytes,
+              contentType: CommonMethods().getMediaType(fileName),
+              filename: fileName);
+          request.files.add(multipartFile);
+        }
       }
-          request.fields['tenantId'] =
+      request.fields['tenantId'] =
           commonProvider.userDetails!.selectedtenant!.code!;
       request.fields['module'] = moduleName;
       await request.send().then((response) async {
@@ -259,8 +277,9 @@ class CoreRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             "string|" + languageProvider.selectedLanguage!.value!,
-            commonProvider.userDetails!.accessToken),
-      );
+            commonProvider.userDetails!.accessToken,
+            commonProvider.userDetails?.userRequest?.toJson()
+        ));
 
       if (res != null) {
         pdfServiceResponse = PDFServiceResponse.fromJson(res);
@@ -292,7 +311,9 @@ class CoreRepository extends BaseService {
               APIConstants.API_DID,
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
-              commonProvider.userDetails!.accessToken));
+              commonProvider.userDetails!.accessToken,
+              commonProvider.userDetails?.userRequest?.toJson()
+          ));
 
       if (res != null) {
         eventsResponse = EventsList.fromJson((res));
@@ -323,7 +344,9 @@ class CoreRepository extends BaseService {
               APIConstants.API_DID,
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
-              commonProvider.userDetails!.accessToken));
+              commonProvider.userDetails!.accessToken,
+              commonProvider.userDetails?.userRequest?.toJson()
+      ));
 
       if (res != null) {
         return true;

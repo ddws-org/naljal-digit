@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 
 class LanguageSelectMobileView extends StatelessWidget {
   final StateInfo stateInfo;
-
   LanguageSelectMobileView(this.stateInfo);
 
   @override
@@ -40,17 +39,12 @@ class LanguageSelectMobileView extends StatelessWidget {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset(
-                                      'assets/png/logo_main.png',
-                                      width: 150,
-                                      fit: BoxFit.fill,
-                                    ) /*Image(
+                                    child: Image(
                                         width: 150,
                                         fit: BoxFit.fill,
                                         image: NetworkImage(
                                           stateInfo.logoUrl ?? '',
-                                        ))*/
-                                    ,
+                                        )), //add logo_main.png in s3
                                   ),
                                   Padding(
                                       padding:

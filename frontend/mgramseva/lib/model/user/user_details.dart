@@ -8,11 +8,11 @@ part 'user_details.g.dart';
 class UserDetails {
   @JsonKey(name: "access_token")
   String? accessToken;
-  @JsonKey(name: "token_type")
+  @JsonKey(name: "tokenType")
   String? tokenType;
-  @JsonKey(name: "refresh_token")
+  @JsonKey(name: "refreshToken")
   String? refreshToken;
-  @JsonKey(name: "expires_in")
+  @JsonKey(name: "expiresIn")
   int? expiresIn;
   @JsonKey(name: "scope")
   String? scope;

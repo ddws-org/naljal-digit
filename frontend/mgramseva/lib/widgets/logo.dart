@@ -17,16 +17,11 @@ class Logo extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 15),
                 child: Center(
-                  child: Image.asset(
-                    'assets/png/logo_main.png',
-                    width: 150,
-                    fit: BoxFit.fill,
-                  ) /* Image(
+                  child: Image(
                       width: 150,
                       image: NetworkImage(
                         languageProvider.stateInfo!.logoUrl!,
-                      ))*/
-                  ,
+                      )),
                 )),
             Padding(
                 padding: const EdgeInsets.only(left: 15), child: Text(" | ", style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),)),
@@ -35,16 +30,12 @@ class Logo extends StatelessWidget {
                 child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    ApplicationLocalizations.of(context)
-                        .translate(languageProvider.stateInfo!.name!),
-                    style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromRGBO(0, 0, 0, 1)),
-                    textAlign: TextAlign.left,
-                  ),
-                )))
+                      child: Text(
+                        ApplicationLocalizations.of(context).translate(languageProvider.stateInfo!.code!),
+                        style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400, color: Color.fromRGBO(0,0,0,1)),
+                        textAlign: TextAlign.left,
+                      ),
+                    )))
           ],
         )));
   }

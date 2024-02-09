@@ -9,6 +9,7 @@ import '../../widgets/drawer_wrapper.dart';
 import '../../widgets/home_back.dart';
 import '../../widgets/side_bar.dart';
 import '../../widgets/footer.dart';
+import 'gpwsc_boundary_detail_card.dart';
 
 class GPWSCDetails extends StatefulWidget {
   const GPWSCDetails({Key? key}) : super(key: key);

@@ -24,11 +24,10 @@ class TenantsProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var userResponse = await TenantRepo().fetchTenants(getTenantsMDMS(
-          commonProvider.userDetails!.userRequest!.tenantId.toString()));
+      var userResponse = await TenantRepo().fetchTenants(getTenantsMDMS(commonProvider.userDetails!.userRequest!.tenantId.toString()));
       tenants = userResponse;
       streamController.add(userResponse);
-    } catch (e, s) {
+        } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }
@@ -37,4 +36,5 @@ class TenantsProvider with ChangeNotifier {
   void callNotifyer() {
     notifyListeners();
   }
+
 }
