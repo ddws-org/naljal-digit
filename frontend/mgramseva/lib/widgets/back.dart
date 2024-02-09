@@ -5,13 +5,12 @@ class Back extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Positioned(
       top: 30.0,
-      left: 10,
       child: IconButton(
           icon: Icon(
             Icons.arrow_back,
           ),
           iconSize: 25,
-          color: Colors.white,
+          color: Color(0xfffa7a39),
           splashColor: Colors.purple,
           onPressed: () =>
               Navigator.of(context, rootNavigator: true).maybePop()),

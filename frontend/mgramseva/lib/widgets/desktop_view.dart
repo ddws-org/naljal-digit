@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/widgets/back.dart';
 import 'package:mgramseva/widgets/background_container.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
 
@@ -12,21 +13,13 @@ class DesktopView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Align(
+          Center(
+            child: Container(
               alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width / 4),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                    ),
-                    iconSize: 25,
-                    color: Colors.white,
-                    splashColor: Colors.purple,
-                    onPressed: () =>
-                        Navigator.of(context, rootNavigator: true).maybePop()),
-              )),
+            width: 500,
+              child: Back(),
+            ),
+          ),
           (Center(
               child: new Container(
                   width: 500,

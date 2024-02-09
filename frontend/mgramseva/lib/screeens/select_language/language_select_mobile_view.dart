@@ -38,10 +38,10 @@ class LanguageSelectMobileView extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(left:8.0,top: 8.0,bottom: 8.0),
                                     child: Image(
-                                        width: 150,
-                                        fit: BoxFit.fill,
+                                        width: 120,
+                                        fit: BoxFit.contain,
                                         image: NetworkImage(
                                           stateInfo.logoUrl ?? '',
                                         )), //add logo_main.png in s3
@@ -50,7 +50,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
                                       child: Text(
-                                        " | ",
+                                        " |",
                                         style: TextStyle(
                                             fontSize: 19,
                                             color: Color.fromRGBO(0, 0, 0, 1)),
@@ -58,6 +58,7 @@ class LanguageSelectMobileView extends StatelessWidget {
                                 ],
                               ),
                               Container(
+                                alignment: Alignment.center,
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   textDirection: TextDirection.rtl,
@@ -65,14 +66,16 @@ class LanguageSelectMobileView extends StatelessWidget {
                                   children: [
                                     Padding(
                                         padding:
-                                            const EdgeInsets.only(right: 4.0),
-                                        child: Text(
-                                          ApplicationLocalizations.of(context)
-                                              .translate(stateInfo.name!),
-                                          style: TextStyle(
-                                              fontSize: 19,
-                                              color: Color.fromRGBO(0, 0, 0, 1),
-                                              fontWeight: FontWeight.w400),
+                                            const EdgeInsets.only(left:4.0,right: 4.0),
+                                        child: FittedBox(
+                                          child: Text(
+                                            ApplicationLocalizations.of(context)
+                                                .translate(stateInfo.code!),
+                                            style: TextStyle(
+                                                fontSize: 19,
+                                                color: Color.fromRGBO(0, 0, 0, 1),
+                                                fontWeight: FontWeight.w400),
+                                          ),
                                         )),
                                   ],
                                 ),
@@ -104,10 +107,17 @@ class LanguageSelectMobileView extends StatelessWidget {
                           ),
                         ))
                   ])))))),
-      (new Positioned(
+      Positioned(
           bottom: 0.0,
-          left: MediaQuery.of(context).size.width / 4,
-          child: FooterBanner()))
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FooterBanner(),
+              ],
+            ),
+          ))
     ]));
   }
 }

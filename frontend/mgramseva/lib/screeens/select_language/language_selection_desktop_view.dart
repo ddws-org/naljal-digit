@@ -58,7 +58,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                   ],
                                 ),
                                 Container(
-                                  width: 55,
+                                  alignment: Alignment.center,
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     textDirection: TextDirection.rtl,

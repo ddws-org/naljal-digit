@@ -266,28 +266,34 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       titleSpacing: 0,
       iconTheme: IconThemeData(color: Colors.black),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Image.asset(
-            'assets/png/head_naljal.png',
-            width: 130,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Image.asset(
-              'assets/png/national-emblem-india.png',
-              width: 30,
+      title:  Container(
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: Image.asset("assets/png/svgg.png",
+                height: kToolbarHeight-5,
+                fit: BoxFit.fill,),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 18),
+              child: Image.asset("assets/png/jal_jeevan.png",
+              height: kToolbarHeight-5,
+              fit: BoxFit.fill,),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Image.asset(
+            'assets/png/national-emblem-india.png',
+            width: 30,
           ),
-        ],
-      ) /* Image(
-          width: 130,
-          image: NetworkImage(
-            languageProvider.stateInfo!.logoUrlWhite!,
-          ))*/
-      ,
-      actions: [],
+        ),
+      ],
     );
   }
 }

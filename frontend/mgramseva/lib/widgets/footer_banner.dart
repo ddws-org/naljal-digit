@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -16,7 +17,8 @@ class FooterBanner extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Image(
-            width: 140,
+            width: MediaQuery.of(context).size.width>760?MediaQuery.of(context).size.width * 0.15:MediaQuery.of(context).size.width * 0.5,
+            fit: BoxFit.fill,
             image: NetworkImage(
               languageProvider.stateInfo?.digitFooterColor??'',
             )),
