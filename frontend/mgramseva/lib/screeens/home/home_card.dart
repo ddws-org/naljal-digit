@@ -1,10 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../routers/routers.dart';
 
 final String assetName = 'assets/svg/HHRegister.svg';
 
@@ -28,8 +34,14 @@ class _HomeCard extends State<HomeCard> {
     return RoleActionsFiltering().getFilteredModules().map((item) {
       return GridTile(
         child: new GestureDetector(
-            onTap: () => Navigator.pushNamed(context, item.link,
-                arguments: item.arguments),
+            onTap: () {
+                if(kIsWeb && item.link == Routes.HRMS){
+                  launchUrl(Uri.parse('${'$apiBaseUrl'+Url.HRMS}'));
+                }else{
+                  Navigator.pushNamed(context, item.link,
+                      arguments: item.arguments);
+                }
+              },
             child: new Card(
                 color: Color(0xfffff6f6),
                 shape: RoundedRectangleBorder(

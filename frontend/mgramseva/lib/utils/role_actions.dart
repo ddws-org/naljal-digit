@@ -139,6 +139,8 @@ class RoleActionsFiltering {
 
       case Routes.GPWSC_DETAILS_AND_RATE_INFO:
         return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN', 'DIV_ADMIN', 'CHAIRMEN'];
+      case Routes.HRMS:
+        return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN', 'DIV_ADMIN', 'CHAIRMEN'];
       case Routes.REPORTS:
         return ['SUPERUSER', 'DASHBOARD_VIEWER', 'GP_ADMIN', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
       default:
