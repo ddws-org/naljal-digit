@@ -10,18 +10,25 @@ class BackgroundContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     var languageProvider =
     Provider.of<LanguageProvider>(context, listen: false);
-    return Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-           // colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
-            image: AssetImage("assets/png/bg_mgramseva.png"),
-            fit: BoxFit.fill,
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/png/bg_mgramseva.png"),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
-        child: Stack(
-          children: [
-            AppHeader(),widget
-          ],
-        ));
+        SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppHeader(),widget
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

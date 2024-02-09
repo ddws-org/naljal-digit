@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/widgets/back.dart';
 import 'package:mgramseva/widgets/background_container.dart';
+import 'package:mgramseva/widgets/desktop_view.dart';
 import 'package:mgramseva/widgets/footer_banner.dart';
 
 class MobileView extends StatelessWidget {
@@ -9,6 +10,26 @@ class MobileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return (BackgroundContainer(Container(
+      height: MediaQuery.of(context).size.height-80,
+      child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Center(
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Back(),
+              ),
+            ),
+            (Center(
+                child: new Container(
+                    padding: EdgeInsets.all(15),
+                    child: new Container(
+                        padding: EdgeInsets.all(8), child: widget)))),
+            FooterBanner()
+          ]),
+    )));
     return SingleChildScrollView(
         child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -18,7 +39,7 @@ class MobileView extends StatelessWidget {
               (BuildContext context, BoxConstraints viewportConstraints) {
             return ConstrainedBox(
                 constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height),
+                    minHeight: MediaQuery.of(context).size.height-80),
                 child: IntrinsicHeight(
                     child: Column(children: <Widget>[
                   Expanded(
@@ -26,7 +47,7 @@ class MobileView extends StatelessWidget {
                       // still be at least as big as necessary to fit its contents.
                       child: Container(
                           //height: 120.0,
-                          child: BackgroundContainer(new Container(
+                          child: new Container(
                               child: new Stack(
                                   // // fit: StackFit.expand,
                                   // clipBehavior: Clip.antiAlias,
@@ -52,9 +73,16 @@ class MobileView extends StatelessWidget {
                                         )))),
                                 (new Positioned(
                                     bottom: 0.0,
-                                    left: MediaQuery.of(context).size.width / 4,
-                                    child: FooterBanner()))
-                              ])))))
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          FooterBanner(),
+                                        ],
+                                      ),
+                                    )))
+                              ]))))
                 ])));
           })))
         ]));
