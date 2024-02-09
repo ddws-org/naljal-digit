@@ -222,7 +222,8 @@ class _MyAppState extends State<MyApp> {
                   supportedLocales: [
                     Locale('en', 'IN'),
                     Locale('hi', 'IN'),
-                    Locale.fromSubtags(languageCode: 'pn')
+                    Locale.fromSubtags(languageCode: 'pn'),
+                    Locale.fromSubtags(languageCode: 'kn')
                   ],
                   locale: _locale,
                   localizationsDelegates: [
@@ -260,66 +261,55 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  ReceivePort _port = ReceivePort();
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
   }
 
-  // @override
-  // void dispose() {
-  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
-  //   super.dispose();
-  // }
-  //
-  // static void downloadCallback(
-  //     String id, DownloadTaskStatus status, int progress) {
-  //   final SendPort send =
-  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
-  //
-  //   send.send([id, status, progress]);
-  // }
-  //
-  afterViewBuild() async {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+  @override
+  void dispose() {
+    // Perform cleanup here if necessary
+    super.dispose();
+  }
+
+  void afterViewBuild() async {
+    final commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
-    if (!kIsWeb)
-      CommonMethods()
-          .checkVersion(context, commonProvider.appVersion!);
+    if (!kIsWeb) {
+      CommonMethods().checkVersion(context, commonProvider.appVersion!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
+    final commonProvider = Provider.of<CommonProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       body: StreamBuilder(
-          stream: commonProvider.userLoggedStreamCtrl.stream,
-          builder: (context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-
-                /// While waiting for the data to load, show a loading spinner.
-                return Loaders.circularLoader();
-              default:
-                if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(context, () {});
-                } else {
-                  if (snapshot.data != null &&
-                      commonProvider.userDetails!.isFirstTimeLogin == true) {
-                    return Home();
-                  }
-                  return SelectLanguage();
-                }
+        stream: commonProvider.userLoggedStreamCtrl.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Loaders.circularLoader();
+          } else {
+            if (snapshot.hasError) {
+              return Notifiers.networkErrorPage(context, () {});
+            } else {
+              if (snapshot.data != null &&
+                  commonProvider.userDetails!.isFirstTimeLogin == true) {
+                return Home();
+              }
+              return SelectLanguage();
             }
-          }),
+          }
+        },
+      ),
     );
   }
 }
+
 
 class MyHttpOverrides extends HttpOverrides {
   @override

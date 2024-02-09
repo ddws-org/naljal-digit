@@ -181,4 +181,5 @@ class Constants {
     i18.householdRegister.EXCEL
   ];
   static String STATE_CODE = '';
+  static String SELECTED_STATE = '';
 }

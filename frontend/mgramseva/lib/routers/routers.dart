@@ -1,11 +1,11 @@
 class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
-
+  static const String SELECT_STATE = '/selectState';
   static const String DEFAULT_PASSWORD_UPDATE = '/passwordupdated';
 
   static const String SELECT_LANGUAGE = '/selectLanguage';
-  static const String LOGIN = '$SELECT_LANGUAGE/login';
+  static const String LOGIN = '/login';
 
   static const String HOME = '/home';
 

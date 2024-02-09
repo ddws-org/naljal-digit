@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 
+import '../../routers/routers.dart';
+import '../../utils/constants.dart';
 import 'State.dart';
 
 class ToggleItem {
@@ -138,10 +140,10 @@ class ItemState extends State {
                       return GestureDetector(
                         onTap: () {
                           if (states?.elementAt(index).stateName == 'Karnatka')
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SelectLanguage()));
+                            {
+                              Constants.SELECTED_STATE = states!.elementAt(index).stateName.toLowerCase();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => SelectLanguage(),settings: RouteSettings(name: Routes.SELECT_LANGUAGE)));
+                            }
                           else {
                             final snackBar = SnackBar(
                               content: Text('work in progress'),

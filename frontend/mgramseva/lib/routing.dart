@@ -187,7 +187,8 @@ class Routing {
     currentRoute = settings.name;
     switch (path) {
       case Routes.LANDING_PAGE:
-        return MaterialPageRoute(builder: (_) => LandingPageNew());
+        return MaterialPageRoute(builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
+        // return MaterialPageRoute(builder: (_) => LandingPageNew());
       case Routes.LOGIN:
         return MaterialPageRoute(
             builder: (_) => Login(),
@@ -196,6 +197,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => SelectLanguage(),
             settings: RouteSettings(name: Routes.SELECT_LANGUAGE));
+      case Routes.SELECT_STATE:
+        return MaterialPageRoute(
+            builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),
+            settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
       case Routes.FORGOT_PASSWORD:
         return MaterialPageRoute(
             builder: (_) => ForgotPassword(),
@@ -387,9 +392,11 @@ class Routing {
             builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.TERMS_OF_USE, showLeading: args),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:
