@@ -43,12 +43,19 @@ const CreateEmployee = () => {
     const validEmail = email.length == 0 ? true : email.match(Digit.Utils.getPattern("Email"));
     return validEmail && name.match(Digit.Utils.getPattern("Name"));
   };
+
+  const closeToast = () => {
+    setTimeout(() => {
+      setShowToast(null);
+    }, 5000);
+  };
   useEffect(() => {
     if (mobileNumber && mobileNumber.length == 10 && mobileNumber.match(Digit.Utils.getPattern("MobileNo"))) {
       setShowToast(null);
       Digit.HRMSService.search(tenantId, null, { phone: mobileNumber }).then((result, err) => {
         if (result.Employees.length > 0) {
           setShowToast({ key: true, label: "ERR_HRMS_USER_EXIST_MOB" });
+          closeToast();
           setPhonecheck(false);
         } else {
           setPhonecheck(true);
@@ -121,6 +128,7 @@ const CreateEmployee = () => {
   const onSubmit = (data) => {
     if (!STATE_ADMIN && data.Jurisdictions?.filter((juris) => juris.tenantId == tenantId).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
+      closeToast();
       return;
     }
     if (
@@ -135,6 +143,7 @@ const CreateEmployee = () => {
       ).every((s) => s == 1)
     ) {
       setShowToast({ key: true, label: "ERR_INVALID_JURISDICTION" });
+      closeToast();
       return;
     } else if (
       !Object.values(
@@ -147,6 +156,7 @@ const CreateEmployee = () => {
       ).every((s) => s == 1)
     ) {
       setShowToast({ key: true, label: "ERR_INVALID_JURISDICTION" });
+      closeToast();
       return;
     }
     let roles = [];
@@ -168,6 +178,11 @@ const CreateEmployee = () => {
           code: "HRMS_ADMIN",
           name: "HRMS_ADMIN",
           labelKey: "ACCESSCONTROL_ROLES_ROLES_HRMS_ADMIN",
+        },
+        {
+          code: "MDMS_ADMIN",
+          name: "MDMS Admin",
+          description: "Mdms admin",
         },
       ];
       divisionBoundaryCodes &&
@@ -263,6 +278,7 @@ const CreateEmployee = () => {
       Digit.HRMSService.search(tenantId, null, { codes: data?.SelectEmployeeId?.code }).then((result, err) => {
         if (result.Employees.length > 0) {
           setShowToast({ key: true, label: "ERR_HRMS_USER_EXIST_ID" });
+          closeToast();
           return;
         } else {
           navigateToAcknowledgement(Employees);
