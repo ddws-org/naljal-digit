@@ -359,7 +359,7 @@ class BillGenerationProvider with ChangeNotifier {
       var rateProvider = Provider.of<IfixHierarchyProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var rate = rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).toList();
+      var rate = rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').toList();
       showDialog(context: context, builder: (context)=>AlertDialog(
         surfaceTintColor: Colors.white,
         title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
@@ -400,8 +400,14 @@ class BillGenerationProvider with ChangeNotifier {
             ],
           ),
         ),
-        actions: [
-          TextButton(onPressed: () async{
+        actions:
+          (rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 )
+              ?
+          [TextButton(onPressed: (){
+            Navigator.pop(context);
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}'))]
+              :
+          [TextButton(onPressed: () async{
             if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 ){
               Navigator.pop(context);
               Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_SERVICE_PRESENT_WITH_RATE_MORE_THAN_0)}', 'ERROR'); //No Service type present with rate more than 0.
@@ -438,11 +444,11 @@ class BillGenerationProvider with ChangeNotifier {
                     return ErrorPage(e.toString());
                   }));
             }
-          }, child: Text('Yes')),
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
           TextButton(onPressed: (){
             Navigator.pop(context);
-          }, child: Text('No')),
-        ],
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),]
+        ,
       ));
     } else {
       autoValidation = true;

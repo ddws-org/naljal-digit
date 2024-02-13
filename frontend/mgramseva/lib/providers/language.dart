@@ -26,7 +26,7 @@ class LanguageProvider with ChangeNotifier {
   Future<void> getLocalizationData(BuildContext context) async {
     try {
       var res = await getLanguages();
-      if (res != null) {
+      if (res != null && res.code!=null && res.code==Constants.STATE_CODE) {
         stateInfo ??= res;
         setSelectedState(res);
         await ApplicationLocalizations(
@@ -37,7 +37,7 @@ class LanguageProvider with ChangeNotifier {
         streamController.add(stateInfos);
       } else {
         var localizationList =
-            await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+            await CoreRepository().getMdms(initRequestBody({"tenantId": Constants.STATE_CODE}));
         stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
         if (stateInfo != null) {
           stateInfo?.languages?.first.isSelected = true;

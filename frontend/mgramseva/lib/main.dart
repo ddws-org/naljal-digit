@@ -55,11 +55,11 @@ import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async{
   HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   //configureApp();
-  setEnvironment(Environment.dev);
+
   // Register DartPingIOS
   // if (Platform.isIOS) {
   //   DartPingIOS.register();
@@ -74,6 +74,7 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
+    await setEnvironment(Environment.dev);
     if(kIsWeb){
       await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
     }else{
