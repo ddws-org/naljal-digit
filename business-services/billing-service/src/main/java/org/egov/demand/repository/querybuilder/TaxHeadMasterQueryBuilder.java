@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaxHeadMasterQueryBuilder {
 	
-	public static final String UPDATE_QUERY = "UPDATE public.egbs_taxheadmaster SET  category = ?, service = ?,"
+	public static final String UPDATE_QUERY = "UPDATE egbs_taxheadmaster SET  category = ?, service = ?,"
 			+ " name = ?, code=?, isdebit = ?, isactualdemand = ?, orderno = ?, validfrom = ?, validtill = ?,"
 			+ " lastmodifiedby = ?, lastmodifiedtime = ? WHERE tenantid = ? and id = ?";
 

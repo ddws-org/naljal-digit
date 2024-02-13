@@ -59,11 +59,11 @@ public class TaxPeriodQueryBuilder {
 
     private static final String BASE_QUERY = "SELECT * FROM EGBS_TAXPERIOD taxperiod ";
 
-    public final String insertQuery = "INSERT INTO public.egbs_taxperiod(id, service, code, fromdate, todate,"
+    public final String insertQuery = "INSERT INTO egbs_taxperiod(id, service, code, fromdate, todate,"
     		+ " financialyear, createddate,lastmodifieddate, createdby, lastmodifiedby, tenantid, periodcycle)"
     		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-    public final String updateQuery="UPDATE public.egbs_taxperiod SET service=?, code=?, fromdate=?, todate=?,"
+    public final String updateQuery="UPDATE egbs_taxperiod SET service=?, code=?, fromdate=?, todate=?,"
     		+ " financialyear=?, lastmodifieddate=?, lastmodifiedby=?, tenantid=?,"
     		+ " periodcycle=? WHERE tenantid = ? and id = ? ";
     

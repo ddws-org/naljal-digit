@@ -336,7 +336,7 @@ const uploadFiles = async (
   });
 };
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/pdf-service/v1/_create",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -383,7 +383,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/pdf-service/v1/_createnosave",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -447,7 +447,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/pdf-service/v1/_search",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -502,7 +502,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/pdf-service/v1/_getUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -525,7 +525,7 @@ app.post(
 
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/pdf-service/v1/_clearUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
