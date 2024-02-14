@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { GalleryIcon, RemoveIcon, UploadFile } from "@egovernments/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 
-function UploadDrawer({ setProfilePic, closeDrawer, userType, removeProfilePic ,showToast}) {
+function UploadDrawer({ setProfilePic, closeDrawer, userType, removeProfilePic ,showToast,closeFileUploadDrawer}) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [file, setFile] = useState("");
   const [error, setError] = useState(null);
@@ -18,6 +18,7 @@ function UploadDrawer({ setProfilePic, closeDrawer, userType, removeProfilePic ,
         if (file.size >= 1000000) {
           showToast("error", t("CORE_COMMON_PROFILE_MAXIMUM_UPLOAD_SIZE_EXCEEDED"))
           setError(t("CORE_COMMON_PROFILE_MAXIMUM_UPLOAD_SIZE_EXCEEDED"));
+          closeFileUploadDrawer();
         } else {
           try {
             const response = await Digit.UploadServices.Filestorage(`${userType}-profile`, file, Digit.ULBService.getStateId());

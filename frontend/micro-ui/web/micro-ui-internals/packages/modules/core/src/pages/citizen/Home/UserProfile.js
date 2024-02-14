@@ -70,7 +70,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const getUserInfo = async () => {
     const uuid = userInfo?.uuid;
     if (uuid) {
-      const usersResponse = await Digit.UserService.userSearch(tenant, { uuid: [uuid] }, {});
+      const usersResponse = await Digit.UserService.userSearch(window.localStorage.getItem("tenant-id"), { uuid: [uuid] }, {});
       usersResponse && usersResponse.user && usersResponse.user.length && setUserDetails(usersResponse.user[0]);
     }
   };
@@ -275,8 +275,12 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         showToast("success", t("CORE_COMMON_PROFILE_UPDATE_SUCCESS"), 5000);
       }
     } catch (error) {
-      const errorObj = JSON.parse(error);
-      showToast(errorObj.type, t(errorObj.message), 5000);
+      if (error?.response?.data?.Errors[0].message) {
+        showToast("error", error?.response?.data?.Errors[0].message);
+      } else {
+        const errorObj = JSON.parse(error);
+        showToast(errorObj.type, t(errorObj.message), 5000);
+      }
     }
 
     setLoading(false);
@@ -694,6 +698,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
           userType={userType}
           removeProfilePic={removeProfilePic}
           showToast={showToast}
+          closeFileUploadDrawer={closeFileUploadDrawer}
         />
       ) : (
         ""

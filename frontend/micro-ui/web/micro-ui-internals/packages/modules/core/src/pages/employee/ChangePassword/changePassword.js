@@ -6,7 +6,6 @@ import Background from "../../../components/Background";
 import Header from "../../../components/Header";
 import SelectOtp from "../../citizen/Login/SelectOtp";
 
-
 const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   const [user, setUser] = useState(null);
   const { mobile_number: mobileNumber, tenantId } = Digit.Hooks.useQueryParams();
@@ -146,7 +145,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       <div className="EmployeeLoginFooter">
         <img
           alt="Powered by DIGIT"
-          src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
+          src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();
