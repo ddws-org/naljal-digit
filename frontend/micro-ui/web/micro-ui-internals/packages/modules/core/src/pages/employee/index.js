@@ -117,7 +117,7 @@ const EmployeeApp = ({
             <div className="employee-home-footer">
               <img
                 alt="Powered by DIGIT"
-                src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER")}
+                src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
                 style={{ height: "1.1em", cursor: "pointer" }}
                 onClick={() => {
                   window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();
