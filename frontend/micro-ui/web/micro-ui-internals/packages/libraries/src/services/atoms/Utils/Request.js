@@ -68,7 +68,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url =  `karnataka/${url}`;
+  url = url.replace("/mgramseva-web", "");
 
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
