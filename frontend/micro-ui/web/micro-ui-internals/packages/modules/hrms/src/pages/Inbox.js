@@ -8,6 +8,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { isLoading: isLoading, Errors, data: res } = Digit.Hooks.hrms.useHRMSCount(tenantId);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+  const DIVISION_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
 
   const { t } = useTranslation();
   const [pageOffset, setPageOffset] = useState(initialStates.pageOffset || 0);
@@ -17,6 +18,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
   });
+
   let isMobile = window.Digit.Utils.browser.isMobile();
   let paginationParams = isMobile
     ? { limit: 100, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
@@ -26,14 +28,6 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   let roles = STATE_ADMIN
     ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
     : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
-
-  const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
-    searchParams,
-    tenantId,
-    paginationParams,
-    isupdate,
-    roles
-  );
 
   let requestBody = {
     criteria: {
@@ -49,7 +43,25 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
       isActive: searchParams?.isActive,
     };
   }
-  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate);
+
+  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
+    enabled: (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
+  });
+
+  if (searchParams?.hasOwnProperty("roles")) {
+    roles.roles = searchParams?.roles;
+  }
+
+  const { isLoading: hookLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
+    searchParams,
+    tenantId,
+    paginationParams,
+    isupdate,
+    roles,
+    {
+      enabled: (!searchParams?.hasOwnProperty("isActive") && !searchParams?.hasOwnProperty("tenantIds")) || DIVISION_ADMIN ? true : false,
+    }
+  );
 
   useEffect(() => {
     // setTotalReacords(res?.EmployeCount?.totalEmployee);
