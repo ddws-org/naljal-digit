@@ -1,4 +1,5 @@
 import get from "lodash/get";
+import envVariables from "../EnvironmentVariables";
 import axios from "axios";
 import {
   getLocalisationkey,
@@ -25,12 +26,13 @@ function escapeRegex(string) {
 }
 
 export const externalAPIMapping = async function (
-  key,
+  pdfKey,
   req,
   dataconfig,
   variableTovalueMap,
   requestInfo,
-  unregisteredLocalisationCodes
+  unregisteredLocalisationCodes,
+  header
 ) {
   var jp = require("jsonpath");
   var objectOfExternalAPI = getValue(
@@ -57,13 +59,13 @@ export const externalAPIMapping = async function (
   var responsePromises = [];
 
   for (let i = 0; i < externalAPIArray.length; i++) {
-    var temp1 = "";
-    var temp2 = "";
-    var flag = 0;
+    let temp1 = "";
+    let temp2 = "";
+    let flag = 0;
     //to convert queryparam and uri into properURI
 
     //for PT module
-    if (key == "pt-receipt") {
+    if (pdfKey == "pt-receipt") {
       for (let j = 0; j < externalAPIArray[i].queryParams.length; j++) {
         if (externalAPIArray[i].queryParams[j] == "$") {
           flag = 1;
@@ -74,7 +76,7 @@ export const externalAPIMapping = async function (
         ) {
           if (flag == 1) {
             temp2 = temp1;
-            var temp3 = getValue(jp.query(req, temp1), "NA", temp1);
+            let temp3 = getValue(jp.query(req, temp1), "NA", temp1);
             externalAPIArray[i].queryParams = externalAPIArray[
               i
             ].queryParams.replace(temp2, temp3);
@@ -91,7 +93,7 @@ export const externalAPIMapping = async function (
         }
         if (j == externalAPIArray[i].queryParams.length - 1 && flag == 1) {
           temp2 = temp1;
-          var temp3 = getValue(jp.query(req, temp1), "NA", temp1);
+          let temp3 = getValue(jp.query(req, temp1), "NA", temp1);
 
           externalAPIArray[i].queryParams = externalAPIArray[
             i
@@ -123,7 +125,7 @@ export const externalAPIMapping = async function (
           if (flag == 1) {
             temp2 = temp1;
 
-            var temp3 = getValue(jp.query(req, temp1), "NA", temp1);
+            let temp3 = getValue(jp.query(req, temp1), "NA", temp1);
             externalAPIArray[i].queryParams = externalAPIArray[
               i
             ].queryParams.replace(temp2, temp3);
@@ -145,7 +147,7 @@ export const externalAPIMapping = async function (
         }
         if (j == externalAPIArray[i].queryParams.length - 1 && flag == 1) {
           temp2 = temp1;
-          var temp3 = getValue(jp.query(req, temp1), "NA", temp1);
+          let temp3 = getValue(jp.query(req, temp1), "NA", temp1);
 
           externalAPIArray[i].queryParams = externalAPIArray[
             i
@@ -161,19 +163,23 @@ export const externalAPIMapping = async function (
       /,/g,
       "&"
     );
-    let headers = {
+    /*let headers = {
       "content-type": "application/json;charset=UTF-8",
-      accept: "application/json, text/plain, */*"
+      accept: "application/json, text/plain"
+    };*/
+
+    header.TENANTID = envVariables.STATE_LEVEL_TENANT_ID;
+
+    let headerConfig = {
+      headers: header
     };
 
-    var resPromise;
+    let resPromise;
     if (externalAPIArray[i].requesttype == "POST") {
-      resPromise = axios.post(
+      resPromise = await axios.post(
         externalAPIArray[i].uri + "?" + externalAPIArray[i].queryParams, {
           RequestInfo: requestInfo
-        }, {
-          headers: headers
-        }
+        },headerConfig
       );
     } else {
       resPromise = axios.get(
@@ -182,12 +188,22 @@ export const externalAPIMapping = async function (
         }
       );
     }
+
     responsePromises.push(resPromise)
   }
 
-  responses = await Promise.all(responsePromises)
+
+  try {
+    responses = await Promise.all(responsePromises)
+  } catch (error) {
+    logger.error(error.stack || error);
+    throw{
+      message: `Error in external service call: ${error.Errors[0].message}`
+    }; 
+  }
+  
   for (let i = 0; i < externalAPIArray.length; i++) {
-    var res = responses[i].data
+    let res = responses[i].data
 
     //putting required data from external API call in format config
 
@@ -200,12 +216,12 @@ export const externalAPIMapping = async function (
       let loc = externalAPIArray[i].jPath[j].localisation;
       if (externalAPIArray[i].jPath[j].type == "image") {
         // default empty image
-        var imageData =
+        let imageData =
           "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=";
         if (replaceValue != "NA") {
           try {
-            var len = replaceValue[0].split(",").length;
-            var response = await axios.get(
+            let len = replaceValue[0].split(",").length;
+            let response = await axios.get(
               replaceValue[0].split(",")[len - 1], {
                 responseType: "arraybuffer"
               }
@@ -369,9 +385,9 @@ export const externalAPIMapping = async function (
     let resposnseMap = await findLocalisation(
       requestInfo,
       localisationModules,
-      localisationCodes
+      localisationCodes,
+      pdfKey+'-externalMapping'
     );
-  
     resposnseMap.messages.map((item) => {
       localisationMap[item.code + "_" + item.module] = item.message;
     });

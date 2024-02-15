@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.2.3 - 2023-09-13
+Central Instance Library Integration
+
+## 1.2.2 - 2023-03-15
+- Fixes bug where _create API creates duplicate PDF for each request.
+
+## 1.2.1 - 2022-08-09
+- Fixed localisation cache issue.
+
+## 1.2.0 - 2022-04-20
+- Enhance pdf service to support bulk pdf creation.
+
+## 1.1.6 - 2022-01-13
+- Updated to log4j2 version 2.17.1
+
+## 1.1.6 - 2021-12-03
+- Fixed Language switch isue.
+
+## 1.1.5 - 2021-09-24
+- Added support for punjabi and odiya language.
+
 ## 1.1.4 - 2021-05-11
 - Fixed security issue.
 
