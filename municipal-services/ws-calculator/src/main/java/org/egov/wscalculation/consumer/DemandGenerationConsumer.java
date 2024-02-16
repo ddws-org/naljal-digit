@@ -331,7 +331,7 @@ public class DemandGenerationConsumer {
 			 * + connectionNo ); continue; }
 			 */
 			try {
-					if(tenantId.equals(config.getSmsExcludeTenant())) {
+					if(!tenantId.equals(config.getSmsExcludeTenant())) {
 						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
 					}
 
