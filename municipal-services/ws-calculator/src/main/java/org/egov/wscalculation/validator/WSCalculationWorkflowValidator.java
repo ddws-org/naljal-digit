@@ -39,12 +39,14 @@ public class WSCalculationWorkflowValidator {
 		 if(waterConnectionList != null){
 			 int size = waterConnectionList.size();
 			 waterConnection = waterConnectionList.get(size-1);
+			 log.info("water connection"+waterConnection.getStatus());
 
-			 String waterApplicationNumber = waterConnection.getApplicationNo();
+			 //String waterApplicationNumber = waterConnection.getApplicationNo();
 			 waterConnectionValidation(requestInfo, tenantId, waterConnection, errorMap);
-
+             log.info("after waterConnectionValidation ");
 			 String propertyId = waterConnection.getPropertyId();
 			 Property property = util.getProperty(requestInfo,tenantId,propertyId);
+			 log.info("property", property.getPropertyId());
 			 //String propertyApplicationNumber = property.getAcknowldgementNumber();
 //			 propertyValidation(requestInfo,tenantId,property,errorMap);
 		 }
