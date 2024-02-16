@@ -200,10 +200,13 @@ public class DemandGenerationConsumer {
 	private void generateDemandInBatch(CalculationReq request, Map<String, Object> masterMap, String errorTopic,
 			boolean isSendMessage) throws Exception {
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
+			log.info("Calculation request" + criteria.getConnectionNo() );
 			Boolean genratedemand = true;
 			wsCalulationWorkflowValidator.applicationValidation(request.getRequestInfo(), criteria.getTenantId(),
 					criteria.getConnectionNo(), genratedemand);
+			log.info("Calculation request" + criteria.getConnectionNo() );
 		}
+
 		System.out.println("Calling Bulk Demand generation");
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
 		String connectionNoStrings = request.getCalculationCriteria().stream()
@@ -332,11 +335,15 @@ public class DemandGenerationConsumer {
 			 */
 			try {
 					if(!tenantId.equals(config.getSmsExcludeTenant())) {
+						log.info("inside if block");
 						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
 					}
 
 			} catch (Exception e) {
-				System.out.println("Got the exception while genating the demands:" + connectionNo);
+				System.out.println("Got the exception while genating the demands:" +e.getStackTrace());
+				System.out.println("Got the exception while genating the demands:" +e.getMessage());
+				System.out.println("Got the exception while genating the demands:" +e.getCause());
+
 				failedConnectionNos.add(connectionNo);
 			}
 		}
