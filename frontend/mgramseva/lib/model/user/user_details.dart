@@ -63,6 +63,7 @@ class UserRequest {
   String? permanentCity;
 
   UserRequest();
+
   factory UserRequest.fromJson(Map<String, dynamic> json) =>
       _$UserRequestFromJson(json);
 
@@ -77,6 +78,7 @@ class Roles {
   String? code;
   @JsonKey(name: "tenantId")
   String? tenantId;
+
   Roles();
 
   factory Roles.fromJson(Map<String, dynamic> json) => _$RolesFromJson(json);

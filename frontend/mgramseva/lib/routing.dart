@@ -10,6 +10,9 @@ import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/add_expense/expense_details.dart';
 import 'package:mgramseva/screeens/change_password/change_password.dart';
+import 'package:mgramseva/screeens/common/common_download.dart';
+import 'package:mgramseva/screeens/common/consumer_collect_payment.dart';
+import 'package:mgramseva/screeens/common/payment_success.dart';
 import 'package:mgramseva/screeens/connection_results/connection_results.dart';
 import 'package:mgramseva/screeens/connection_results/search_connection.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details.dart';
@@ -19,6 +22,8 @@ import 'package:mgramseva/screeens/gpwsc_details/gpwsc_details.dart';
 import 'package:mgramseva/screeens/home/home.dart';
 import 'package:mgramseva/screeens/household_detail/household_detail.dart';
 import 'package:mgramseva/screeens/household_register/household_register.dart';
+import 'package:mgramseva/screeens/hrms/hrms_webview.dart';
+import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
 import 'package:mgramseva/screeens/login/login.dart';
 import 'package:mgramseva/screeens/notifications/notification_screen.dart';
 import 'package:mgramseva/screeens/password_success/password_success.dart';
@@ -154,8 +159,9 @@ class Routing {
           Routes.DEFAULT_PASSWORD_UPDATE != settings.name &&
           Routes.RESET_PASSWORD != settings.name &&
           Routes.PRIVACY_POLICY != settings.name &&
-          Routes.TERMS_OF_USE != settings.name) {
-        path = Routes.SELECT_LANGUAGE;
+          Routes.TERMS_OF_USE != settings.name &&
+          Routes.SELECT_LANGUAGE != settings.name) {
+        path = Routes.LANDING_PAGE;
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
@@ -181,7 +187,8 @@ class Routing {
     currentRoute = settings.name;
     switch (path) {
       case Routes.LANDING_PAGE:
-        return MaterialPageRoute(builder: (_) => LandingPage());
+        return MaterialPageRoute(builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
+        // return MaterialPageRoute(builder: (_) => LandingPageNew());
       case Routes.LOGIN:
         return MaterialPageRoute(
             builder: (_) => Login(),
@@ -190,6 +197,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => SelectLanguage(),
             settings: RouteSettings(name: Routes.SELECT_LANGUAGE));
+      case Routes.SELECT_STATE:
+        return MaterialPageRoute(
+            builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),
+            settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
       case Routes.FORGOT_PASSWORD:
         return MaterialPageRoute(
             builder: (_) => ForgotPassword(),
@@ -370,15 +381,22 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => Reports(),
             settings: RouteSettings(name: Routes.REPORTS));
+      case Routes.HRMS:
+        return MaterialPageRoute(
+            builder: (_) => HrmsWebview(),
+            settings: RouteSettings(name: Routes.HRMS));
+
       case Routes.PRIVACY_POLICY:
         bool args = settings.arguments==null?false:settings.arguments as bool;
         return MaterialPageRoute(
             builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType: Routes.TERMS_OF_USE,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.TERMS_OF_USE, showLeading: args),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
 
       case Routes.SEARCH_CONSUMER_RESULT:
