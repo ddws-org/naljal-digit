@@ -16,7 +16,8 @@ late Map<String, dynamic> _config;
 Future<void> setEnvironment(Environment env) async{
   switch (env) {
     case Environment.dev:
-      _config = await devConstants;
+      _config =  (kIsWeb)?await devConstants: await devConstantsMobile;
+      // _config =   await devConstantsMobile;
       break;
     case Environment.stage:
       _config = stageConstants;
@@ -28,32 +29,41 @@ Future<void> setEnvironment(Environment env) async{
 }
 
 dynamic get apiBaseUrl {
+
   return _config[_baseUrl];
 }
 
 Future<Map<String, dynamic>> get devConstants async {
-
-  if(kIsWeb){
-    var state = (window.location.href.split('/')[4] == 'mgramseva'?window.location.href.split('/')[3]:'');
-    final content = await rootBundle.loadString('assets/json/states.json');
-    Map states = json.decode(content);
+  final content = await rootBundle.loadString('assets/json/states.json');
+  Map states = json.decode(content);
+    var state =  (window.location.href.split('/').length>4 && window.location.href.split('/')[4] == 'mgramseva'?window.location.href.split('/')[3]:'');
     if(state.isNotEmpty && states.containsKey(state)){
-      print("States: "+states.toString());
       var stateCode = states[state]['code'];
       Constants.STATE_CODE = stateCode;
     }else{
       Constants.STATE_CODE = dotenv.env['STATE_LEVEL_TENANT_ID']??'';
     }
     return {
-      // _baseUrl: "https://naljalseva.jjm.in/" + state + (state.isNotEmpty?"/":''),
+      // _baseUrl: "https://naljalseva.jjm.gov.in/" + state + (state.isNotEmpty?"/":''),
+      // _baseUrl: "https://naljal-uat.digit.org/" + state + (state.isNotEmpty?"/":''),
       _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
     };
-  }
-  return {
-    _baseUrl: const String.fromEnvironment('BASE_URL'),
-  };
 }
-
+Future<Map<String, dynamic>> get devConstantsMobile async {
+  final content = await rootBundle.loadString('assets/json/states.json');
+  Map states = json.decode(content);
+    var state =  Constants.SELECTED_STATE;
+    if(state.isNotEmpty && states.containsKey(state)){
+      var stateCode = states[state]['code'];
+      Constants.STATE_CODE = stateCode;
+    }else{
+      Constants.STATE_CODE = dotenv.env['STATE_LEVEL_TENANT_ID']??'';
+    }
+    return {
+      // _baseUrl: "https://naljalseva.jjm.gov.in/"+state+"/",
+      _baseUrl: "https://naljal-uat.digit.org/",
+    };
+}
 Map<String, dynamic> stageConstants = {
   _baseUrl: "https://api.stage.com/",
 };

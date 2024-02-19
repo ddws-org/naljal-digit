@@ -16,7 +16,8 @@ class Footer extends StatelessWidget {
     return Container(
       padding: padding ?? EdgeInsets.all(25),
       child: Image(
-          width: 140,
+          width: MediaQuery.of(context).size.width>760?MediaQuery.of(context).size.width * 0.15:MediaQuery.of(context).size.width * 0.5,
+          fit: BoxFit.fill,
           image: NetworkImage(
             languageProvider.stateInfo?.digitFooterColor??'',
           )),

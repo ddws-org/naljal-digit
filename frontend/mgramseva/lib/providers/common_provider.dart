@@ -19,6 +19,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -26,6 +27,7 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
@@ -334,7 +336,7 @@ class CommonProvider with ChangeNotifier {
 
   void onLogout() {
     navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
+        ?.pushNamedAndRemoveUntil(Routes.SELECT_STATE, (route) => false);
     loginCredentials = null;
   }
 

@@ -38,6 +38,8 @@ import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/home/home.dart';
+import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
+import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -154,7 +156,6 @@ class _MyAppState extends State<MyApp> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
           if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
@@ -167,7 +168,6 @@ class _MyAppState extends State<MyApp> {
         }
       }
       setState(() {
-        print("Download progress: "+progress.toString());
       });
     });
     FlutterDownloader.registerCallback(downloadCallback);
@@ -218,11 +218,12 @@ class _MyAppState extends State<MyApp> {
                   }
                 },
                 child: MaterialApp(
-                  title: 'mGramSeva',
+                  title: 'NalJalSeva',
                   supportedLocales: [
                     Locale('en', 'IN'),
                     Locale('hi', 'IN'),
-                    Locale.fromSubtags(languageCode: 'pn')
+                    Locale.fromSubtags(languageCode: 'pn'),
+                    Locale.fromSubtags(languageCode: 'kn')
                   ],
                   locale: _locale,
                   localizationsDelegates: [
@@ -260,66 +261,55 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  ReceivePort _port = ReceivePort();
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
   }
 
-  // @override
-  // void dispose() {
-  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
-  //   super.dispose();
-  // }
-  //
-  // static void downloadCallback(
-  //     String id, DownloadTaskStatus status, int progress) {
-  //   final SendPort send =
-  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
-  //
-  //   send.send([id, status, progress]);
-  // }
-  //
-  afterViewBuild() async {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
+  @override
+  void dispose() {
+    // Perform cleanup here if necessary
+    super.dispose();
+  }
+
+  void afterViewBuild() async {
+    final commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
-    if (!kIsWeb)
-      CommonMethods()
-          .checkVersion(context, commonProvider.appVersion!);
+    if (!kIsWeb) {
+      CommonMethods().checkVersion(context, commonProvider.appVersion!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    var languageProvider =
-        Provider.of<LanguageProvider>(context, listen: false);
+    final commonProvider = Provider.of<CommonProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       body: StreamBuilder(
-          stream: commonProvider.userLoggedStreamCtrl.stream,
-          builder: (context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-
-                /// While waiting for the data to load, show a loading spinner.
-                return Loaders.circularLoader();
-              default:
-                if (snapshot.hasError) {
-                  return Notifiers.networkErrorPage(context, () {});
-                } else {
-                  if (snapshot.data != null &&
-                      commonProvider.userDetails!.isFirstTimeLogin == true) {
-                    return Home();
-                  }
-                  return SelectLanguage();
-                }
+        stream: commonProvider.userLoggedStreamCtrl.stream,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Loaders.circularLoader();
+          } else {
+            if (snapshot.hasError) {
+              return Notifiers.networkErrorPage(context, () {});
+            } else {
+              if (snapshot.data != null &&
+                  commonProvider.userDetails!.isFirstTimeLogin == true) {
+                return Home();
+              }
+              return SelectLanguage();
             }
-          }),
+          }
+        },
+      ),
     );
   }
 }
+
 
 class MyHttpOverrides extends HttpOverrides {
   @override

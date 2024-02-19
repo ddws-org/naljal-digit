@@ -18,6 +18,12 @@ class Constants {
       'naljal-uat-s3/logo/digit-footer.png';
   static const String DIGIT_FOOTER_WHITE_ENDPOINT =
       'naljal-uat-s3/logo/digit-footer-bw.png';
+  static const String NALJAL_FOOTER_ENDPOINT =
+      'naljal-uat-s3/logo/nic-footer.png';
+  static const String NALJAL_FOOTER_WHITE_ENDPOINT =
+      'naljal-uat-s3/logo/nic-footer-bw.png';
+  static const String NATIONAL_EMBLEM_INDIA =
+      'naljal-uat-s3/logo/national-emblem-india.png'; // TODO add in StateInfo in MDMS
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
@@ -104,6 +110,11 @@ class Constants {
         (i18.dashboard.CORE_REPORTS),
         Icons.assessment,
         Routes.REPORTS, {}),
+    HomeItem(
+        "CORE_HRMS_DASHBOARD",
+        (i18.dashboard.HRMS_DASHBOARD),
+        HomeIcons.gpwscdetails,
+        Routes.HRMS, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
@@ -170,4 +181,5 @@ class Constants {
     i18.householdRegister.EXCEL
   ];
   static String STATE_CODE = '';
+  static String SELECTED_STATE = '';
 }
