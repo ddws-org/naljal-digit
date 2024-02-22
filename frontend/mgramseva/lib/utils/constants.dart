@@ -58,17 +58,17 @@ class Constants {
       {},
     ),
     HomeItem(
-        "CORE_COLLECT_PAYMENTS",
-        (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
-        HomeIcons.collectpayment,
-        Routes.HOUSEHOLD,
-        {'Mode': "collect"}),
+        "CORE_CONSUMER_CREATE",
+        (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
+        HomeIcons.createconsumer,
+        Routes.CONSUMER_CREATE, {}),
+
     HomeItem(
-        "DOWNLOAD_BILLS_AND_RECEIPTS",
-        (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
-        HomeIcons.printreciept,
-        Routes.HOUSEHOLDRECEIPTS,
-        {'Mode': "receipts"}),
+        "CORE_UPDATE_CONSUMER_DETAILS",
+        (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
+        HomeIcons.updateconsumer,
+        Routes.CONSUMER_SEARCH_UPDATE,
+        {'Mode': "update"}),
     HomeItem(
         "ADD_EXPENSES_RECORD",
         (i18.homeWalkThroughMSg.ADD_EXPENSE_RECORD_MSG),
@@ -79,27 +79,33 @@ class Constants {
         (i18.homeWalkThroughMSg.UPDATE_EXPENSE_MSG),
         HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
+
     HomeItem(
         "CORE_GENERATE_DEMAND",
         (i18.homeWalkThroughMSg.GENERATE_DEMAND_MSG),
         HomeIcons.generaedemand,
         Routes.MANUAL_BILL_GENERATE, {}),
+
     HomeItem(
-        "CORE_CONSUMER_CREATE",
-        (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
-        HomeIcons.createconsumer,
-        Routes.CONSUMER_CREATE, {}),
+        "DOWNLOAD_BILLS_AND_RECEIPTS",
+        (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
+        HomeIcons.printreciept,
+        Routes.HOUSEHOLDRECEIPTS,
+        {'Mode': "receipts"}),
+
     HomeItem(
-        "CORE_UPDATE_CONSUMER_DETAILS",
-        (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
-        HomeIcons.updateconsumer,
-        Routes.CONSUMER_SEARCH_UPDATE,
-        {'Mode': "update"}),
+        "CORE_COLLECT_PAYMENTS",
+        (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
+        HomeIcons.collectpayment,
+        Routes.HOUSEHOLD,
+        {'Mode': "collect"}),
+
     HomeItem(
         "CORE_GPWSC_DASHBOARD",
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
         Routes.DASHBOARD, {}),
+
     HomeItem(
         "CORE_GPWSC_DETAILS_AND_RATE_INFO",
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
