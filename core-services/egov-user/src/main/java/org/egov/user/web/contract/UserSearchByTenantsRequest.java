@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class UserSearchRequest {
+public class UserSearchByTenantsRequest {
 
     @JsonProperty("RequestInfo")
     private RequestInfo requestInfo;
@@ -64,14 +64,15 @@ public class UserSearchRequest {
     @JsonProperty("tenantId")
     private String tenantId;
 
+    @JsonProperty("tenantIds")
+    private List<String> tenantIds;
+
     @JsonProperty("pageSize")
     private int pageSize;
 
     @JsonProperty("pageNumber")
     private int pageNumber = 0;
 
-    @JsonProperty("isStateLevelSearch")
-    private Boolean isStateLevelSearch;
     @JsonProperty("sort")
     private List<String> sort = Collections.singletonList("name");
 
@@ -97,7 +98,7 @@ public class UserSearchRequest {
                 .sort(sort)
                 .type(UserType.fromValue(userType))
                 .tenantId(tenantId)
-                .isStateLevelSearch(isStateLevelSearch)
+                .tenantIds(tenantIds)
                 .roleCodes(roleCodes)
                 .uuid(uuid)
                 .build();
