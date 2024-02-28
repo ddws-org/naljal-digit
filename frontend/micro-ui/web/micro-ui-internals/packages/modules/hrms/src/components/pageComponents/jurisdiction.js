@@ -26,12 +26,13 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   const { data: data = {}, isLoading } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSRolesandDesignation") || {};
   const userDetails = Digit.UserService.getUser();
   const uuids = [userDetails?.info?.uuid];
-  const { data: userData } = Digit.Hooks.useUserSearch(Digit.ULBService.getStateId(), { uuid: uuids }, {});
+  const { data: userData, isUserDataLoading } = Digit.Hooks.useUserSearch(Digit.ULBService.getStateId(), { uuid: uuids }, {});
 
   const employeeCreateSession = Digit.Hooks.useSessionStorage("NEW_EMPLOYEE_CREATE", {});
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
   const isEdit = window.location.href?.includes("hrms/edit");
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+  const [Boundary, selectboundary] = useState([]);
   const [jurisdictions, setjurisdictions] = useState(
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
@@ -50,17 +51,17 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   );
   const [jurisdictionsData, setJuristictionsData] = useState([]);
   let hierarchylist = [];
-  const hierarchyData = data?.MdmsRes?.["egov-location"]["TenantBoundary"].filter((ele) => ele?.hierarchyType?.code == "REVENUE")[0]?.hierarchyType;
-  hierarchylist.push(hierarchyData);
+  // const hierarchyData = data?.MdmsRes?.["egov-location"]["TenantBoundary"].filter((ele) => ele?.hierarchyType?.code == "REVENUE")[0]?.hierarchyType;
+  // hierarchylist.push(hierarchyData);
 
   let divisions = [];
   divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    ?.filter((items) => items?.city?.blockcode)
+    ?.filter((items) => items?.divisionCode)
     ?.map((item) => {
       return {
-        code: item?.city?.blockcode,
-        name: item?.city.blockname,
-        i18text: Digit.Utils.locale.getCityLocale(item?.city?.blockcode),
+        code: item.divisionCode,
+        name: item.divisionName,
+        i18text: Digit.Utils.locale.getCityLocale(item.divisionCode),
       };
     });
   const uniqueDivisions = divisions?.reduce((unique, obj) => {
@@ -70,11 +71,24 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     }
     return unique;
   }, []);
+
+  useEffect(() => {
+    let cities = userData?.user[0]?.roles?.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
+
+    selectboundary(
+      data?.MdmsRes?.tenant?.tenants
+        ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
+        ?.map((city) => {
+          return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
+        })
+    );
+  }, [data, userData]);
+
   useEffect(() => {
     let jurisdictionData = jurisdictions?.map((jurisdiction) => {
       let res = {
         id: jurisdiction?.id,
-        hierarchy: hierarchylist[0]?.code,
+        hierarchy: jurisdiction?.boundary?.code,
         boundaryType: "City",
         boundary: jurisdiction?.boundary?.code,
         tenantId: STATE_ADMIN ? jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary[0]?.code : jurisdiction?.boundary?.code,
@@ -95,8 +109,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
           if (items?.code === jurisdiction?.boundary?.code) {
             res["division"] = {
-              code: items?.city?.blockcode,
-              i18text: Digit.Utils.locale.convertToLocale(items?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
+              code: items?.divisionCode,
+              i18text: Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"),
             };
             res["divisionBoundary"] = [
               {
@@ -155,7 +169,10 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-  }, [jurisdictions, data?.MdmsRes, data?.MdmsRes?.tenant]);
+  }, [jurisdictions, data?.MdmsRes]);
+  // useEffect(() => {
+  //   setJuristictionsData(formData?.Jurisdictions);
+  // }, [formData?.Jurisdictions, jurisdictions]);
 
   const reviseIndexKeys = () => {
     setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
@@ -230,7 +247,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       });
     }
   }
-  if (isLoading) {
+  if (isLoading && isUserDataLoading) {
     return <Loader />;
   }
   return (
@@ -260,6 +277,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
               boundaryTypeoption={boundaryTypeoption}
               getroledata={getroledata}
               handleRemoveUnit={handleRemoveUnit}
+              Boundary={Boundary}
             />
           ))}
         </React.Fragment>
@@ -283,6 +301,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
             boundaryTypeoption={boundaryTypeoption}
             getroledata={getroledata}
             handleRemoveUnit={handleRemoveUnit}
+            Boundary={Boundary}
           />
         ))
       )}
@@ -292,6 +311,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     </div>
   );
 };
+// -------------------------------------------------------------------------------------
 function Jurisdiction({
   t,
   formData,
@@ -310,26 +330,27 @@ function Jurisdiction({
   getroledata,
   roleoption,
   index,
+  Boundary,
 }) {
   const [BoundaryType, selectBoundaryType] = useState([]);
-  const [Boundary, selectboundary] = useState([]);
+  // const [Boundary, selectboundary] = useState([]);
   const [divisionBoundary, setDivisionBoundary] = useState([]);
   const [Division, setDivision] = useState([]);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
 
-  useEffect(() => {
-    selectBoundaryType(
-      data?.MdmsRes?.["egov-location"]["TenantBoundary"]
-        .filter((ele) => {
-          return ele?.hierarchyType?.code == hierarchylist[0]?.code;
-        })
-        .map((item) => {
-          return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
-        })
-    );
-  }, [jurisdiction?.hierarchy, data?.MdmsRes]);
+  // useEffect(() => {
+  //   selectBoundaryType(
+  //     data?.MdmsRes?.["egov-location"]["TenantBoundary"]
+  //       .filter((ele) => {
+  //         return ele?.hierarchyType?.code == hierarchylist[0]?.code;
+  //       })
+  //       .map((item) => {
+  //         return { ...item.boundary, i18text: Digit.Utils.locale.convertToLocale(item.boundary.label, "EGOV_LOCATION_BOUNDARYTYPE") };
+  //       })
+  //   );
+  // }, [jurisdiction?.hierarchy, data?.MdmsRes]);
 
   useEffect(() => {
     setDivision(
@@ -340,16 +361,17 @@ function Jurisdiction({
   }, [divisions]);
 
   const tenant = Digit.ULBService.getCurrentTenantId();
-  useEffect(() => {
-    let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
-    selectboundary(
-      data?.MdmsRes?.tenant?.tenants
-        ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
-        ?.map((city) => {
-          return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
-        })
-    );
-  }, [jurisdiction?.hierarchy, data?.MdmsRes, userDetails]);
+  // useEffect(() => {
+  //   console.log("ssss")
+  //   let cities = userDetails?.roles.map((role) => role.tenantId)?.filter((value, index, array) => array.indexOf(value) === index);
+  //   selectboundary(
+  //     data?.MdmsRes?.tenant?.tenants
+  //       ?.filter((city) => city.code != Digit.ULBService.getStateId() && cities?.includes(city.code))
+  //       ?.map((city) => {
+  //         return { ...city, i18text: Digit.Utils.locale.getCityLocale(city.code) };
+  //       })
+  //   );
+  // }, [data]);
 
   useEffect(() => {
     if (Boundary?.length > 0) {
@@ -370,7 +392,7 @@ function Jurisdiction({
 
   const selectDivision = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value.code);
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
     const finalProjects = project?.map((project) => ({
       name: project.name,
       code: project.code,
@@ -403,7 +425,7 @@ function Jurisdiction({
 
   const getboundarydata = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value?.code);
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value?.code);
     const finalProjects = project?.map((project) => ({
       name: project.name,
       code: project.code,
@@ -526,7 +548,7 @@ function Jurisdiction({
         {STATE_ADMIN ? (
           <React.Fragment>
             <LabelFieldPair>
-              <CardLabel className="card-label-smaller">{`${t("HR_BLOCK_LABEL")} * `}</CardLabel>
+              <CardLabel className="card-label-smaller">{`${t("HR_DIVISIONS_LABEL")} * `}</CardLabel>
               <Dropdown
                 className="form-field"
                 isMandatory={true}

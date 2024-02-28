@@ -5,12 +5,12 @@ const createProxy = createProxyMiddleware({
   // target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   target: process.env.REACT_APP_PROXY_API || "https://works-dev.digit.org",
   changeOrigin: true,
-  secure:false
+  secure: false,
 });
 const assetsProxy = createProxyMiddleware({
   target: process.env.REACT_APP_PROXY_ASSETS || "https://works-dev.digit.org",
   changeOrigin: true,
-  secure:false
+  secure: false,
 });
 module.exports = function (app) {
   [
@@ -70,7 +70,8 @@ module.exports = function (app) {
     "/works-inbox-service/v2/_search",
     "/egov-pdf/download/WORKSESTIMATE/estimatepdf",
     "/muster-roll",
-    "/individual"
+    "/individual",
+    // "/mdms-v2",
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));
 };

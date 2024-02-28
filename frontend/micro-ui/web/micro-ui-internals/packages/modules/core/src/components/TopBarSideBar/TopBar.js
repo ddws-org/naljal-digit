@@ -101,7 +101,7 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <img className="city" src={"https://naljalseva.jjm.gov.in/favicon.ico"} />
+      <img className="city" src={window?.globalConfigs?.getConfig?.("LOGO_URL")} />{" "}
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
@@ -110,7 +110,7 @@ const TopBar = ({
               {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()}
             </p>
           ) : (
-            <img className="state" style={{maxHeight:"44px", height:"44px"}} src={"https://naljal-uat.digit.org/mgramseva/assets/assets/png/jal_jeevan.png"} />
+            <img className="state" src={logoUrl} />
           ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
@@ -146,7 +146,11 @@ const TopBar = ({
                 />
               </div>
             )}
-            <img className="state"  style={{maxHeight:"44px", height:"44px"}} src={"https://naljal-uat.digit.org/mgramseva/assets/assets/png/national-emblem-india.png"} />
+            <img
+              className="state"
+              style={{ maxHeight: "44px", height: "44px" }}
+              src={"https://naljal-uat.digit.org/mgramseva/assets/assets/png/national-emblem-india.png"}
+            />
           </div>
         )}
       </span>

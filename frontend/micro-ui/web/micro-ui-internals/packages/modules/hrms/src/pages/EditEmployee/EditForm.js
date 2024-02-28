@@ -152,6 +152,9 @@ const EditForm = ({ tenantId, data }) => {
     if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => juris.tenantId == tenantId && juris.isActive !== false).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
       return;
+    } else if (!STATE_ADMIN && input.Jurisdictions.filter((juris) => !juris?.roles?.length).length > 0) {
+      setShowToast({ key: true, label: "Atleast one Role should be selected per Jurisdiction" });
+      return;
     }
     if (
       !Object.values(
@@ -261,6 +264,7 @@ const EditForm = ({ tenantId, data }) => {
   }
 
   const config = mdmsData?.config ? mdmsData.config : newConfig;
+
   return (
     <div>
       <FormComposer

@@ -55,8 +55,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     // if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "STADMIN")) {
     //   redirectPath = `/${window?.contextPath}/employee/dss/landing/home`;
     // }
-    console.log(user?.info?.roles);
-    console.log(redirectPath, "redirectPath");
+
     history.replace(redirectPath);
   }, [user]);
 

@@ -88,7 +88,10 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => ({ [optionsKey]: e?.[optionsKey], propsData: [null, e] }));
+    return selected?.map((e) => ({
+      [optionsKey]: `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+      propsData: [null, e],
+    }));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
