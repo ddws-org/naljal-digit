@@ -18,7 +18,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'build'),
-    publicPath: '/karnataka/mgramseva-web/',
+    publicPath: '/madhyapradesh/mgramseva-web/',
   },
   optimization: {
     splitChunks: {
