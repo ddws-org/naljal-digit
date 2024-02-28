@@ -43,10 +43,7 @@ package org.egov.hrms.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.hrms.service.EmployeeService;
-import org.egov.hrms.web.contract.EmployeeRequest;
-import org.egov.hrms.web.contract.EmployeeResponse;
-import org.egov.hrms.web.contract.EmployeeSearchCriteria;
-import org.egov.hrms.web.contract.RequestInfoWrapper;
+import org.egov.hrms.web.contract.*;
 import org.egov.hrms.web.validator.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,6 +53,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -119,7 +117,14 @@ public class EmployeeController {
 		EmployeeResponse employeeResponse = employeeService.search(criteria, requestInfoWrapper.getRequestInfo());
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
-
+	@PostMapping(value = "/_searchListOfEmployee")
+	@ResponseBody
+	public ResponseEntity<?> _searchListOfEmployee(@RequestBody @Valid EmployeeSearchByTenantRequestWrapper employeeSearchByTenantRequestWrapper) {
+		//validator.validateSearchRequest(requestInfoWrapper.getRequestInfo(), criteria);
+		log.info("criteria::"+ employeeSearchByTenantRequestWrapper.getCriteria());
+		EmployeeResponse employeeResponse = employeeService.searchListOfEmployee(employeeSearchByTenantRequestWrapper.getCriteria(), employeeSearchByTenantRequestWrapper.getRequestInfo());
+		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
+	}
 	@PostMapping("_count")
 	@ResponseBody
 	private ResponseEntity<?> count(@RequestParam("tenantId") String tenantId, @RequestBody RequestInfo requestInfo) {
@@ -129,6 +134,14 @@ public class EmployeeController {
 		response = employeeService.getEmployeeCountResponse(requestInfo,tenantId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
+	@PostMapping("v1/_count")
+	@ResponseBody
+	private ResponseEntity<?> countV1(@RequestParam("tenantId") String tenantId, @RequestParam("roles") List<String> roles , @RequestParam("isStateLevelSearch") boolean isStateLevelSearch, @RequestBody RequestInfo requestInfo) {
 
+		Map<String,Object> response = new HashMap<>();
+		validator.validateEmployeeCountRequest(tenantId);
+		response = employeeService.getEmployeeCountResponseV1(requestInfo,roles,tenantId,isStateLevelSearch);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 
 }

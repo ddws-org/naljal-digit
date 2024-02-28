@@ -29,6 +29,8 @@ public class UserSearchCriteria {
     private List<String> sort;
     private UserType type;
     private String tenantId;
+    private List<String> tenantIds;
+    private Boolean isStateLevelSearch;
     private List<String> roleCodes;
 
     public void validate(boolean isInterServiceCall) {
