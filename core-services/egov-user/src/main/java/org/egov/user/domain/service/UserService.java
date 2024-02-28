@@ -189,9 +189,6 @@ public class UserService {
             searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
         }
         /* encrypt here / encrypted searchcriteria will be used for search*/
-        log.info("Search Criteria:"+searchCriteria.getTenantId());
-        log.info("Search Criteria:"+searchCriteria);
-
 
         searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
         List<org.egov.user.domain.model.User> list = userRepository.findAll(searchCriteria);
@@ -659,7 +656,6 @@ public class UserService {
     }
 
     public List<User> searchUsersByTenants(UserSearchCriteria searchCriteria, RequestInfo requestInfo) {
-        log.info("INSIDE USER SEARCH BY TENANT");
         //searchCriteria.validate(isInterServiceCall);
         if(ObjectUtils.isEmpty(searchCriteria.getTenantIds())) {
             return null;
