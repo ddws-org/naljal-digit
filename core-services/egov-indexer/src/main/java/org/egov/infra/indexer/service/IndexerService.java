@@ -181,11 +181,13 @@ public class IndexerService {
 		StringBuilder urlForNonBulk = new StringBuilder();
 		//urlForNonBulk.append(esHostUrl).append(index.getName()).append("/").append(index.getType()).append("/").append("_index");
 		if(this.isLegacyVersionES) {
-			urlForNonBulk.append(esHostUrl).append(index.getName()).append("/")
-					.append("_index");
-		} else {
 			urlForNonBulk.append(esHostUrl).append(index.getName()).append("/").append(index.getType()).append("/")
 					.append("_index");
+
+		} else {
+			urlForNonBulk.append(esHostUrl).append(index.getName()).append("/")
+					.append("_index");
+
 		}
 		bulkIndexer.indexJsonOntoES(urlForNonBulk.toString(), finalJson, index);
 	}
