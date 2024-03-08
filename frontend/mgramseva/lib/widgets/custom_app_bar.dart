@@ -242,13 +242,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 ApplicationLocalizations.of(context).translate(
                                     commonProvider
                                         .userDetails!.selectedtenant!.code!),
-                                style: Theme.of(context).textTheme.labelMedium,
+                                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
                               ),
                               Text(
                                 ApplicationLocalizations.of(context).translate(
                                     commonProvider.userDetails!.selectedtenant!
                                         .city!.code!),
-                                style: Theme.of(context).textTheme.labelSmall,
+                                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),
                               )
                             ])),
               Icon(Icons.arrow_drop_down)
@@ -285,7 +285,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
       ),
       actions: [
-
+        Container(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  tenantProvider.tenants != null
+                      ? buildTenantsView(tenantProvider.tenants!)
+                      : StreamBuilder(
+                      stream: tenantProvider.streamController.stream,
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return buildTenantsView(snapshot.data);
+                        } else if (snapshot.hasError) {
+                          return Notifiers.networkErrorPage(
+                              context, () {});
+                        } else {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return Loaders.circularLoader();
+                            case ConnectionState.active:
+                              return Loaders.circularLoader();
+                            default:
+                              return Container(
+                                child: Text(""),
+                              );
+                          }
+                        }
+                      })
+                ])),
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: Image.asset(
