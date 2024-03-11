@@ -47,7 +47,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const stateId = Digit.ULBService.getStateId();
   const tenant = Digit.ULBService.getCurrentTenantId();
   const userInfo = Digit.UserService.getUser()?.info || {};
-  console.log(userInfo, "userInfo");
   const [userDetails, setUserDetails] = useState(null);
   const [name, setName] = useState(userInfo?.name ? userInfo.name : "");
   const [email, setEmail] = useState(userInfo?.emailId ? userInfo.emailId : "");
