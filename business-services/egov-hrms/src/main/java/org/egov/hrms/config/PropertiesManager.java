@@ -113,4 +113,7 @@ public class PropertiesManager {
 
 	@Value("${state.level.tenant.id}")
 	public String stateLevelTenantId;
+
+	@Value("${sms.user.creation.enabled}")
+	public boolean isSMSForUserCreationEnable;
 }

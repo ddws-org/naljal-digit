@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.hrms.config.PropertiesManager;
 import org.egov.hrms.model.Employee;
 import org.egov.hrms.model.SMSRequest;
 import org.egov.hrms.producer.HRMSProducer;
@@ -34,6 +35,8 @@ public class NotificationService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	private PropertiesManager propertiesManager;
 
 	@Value("${kafka.topics.notification.sms}")
     private String smsTopic;
@@ -65,15 +68,18 @@ public class NotificationService {
 	 * @param pwdMap
 	 */
 	public void sendNotification(EmployeeRequest request, Map<String, String> pwdMap) {
-		String message = getMessage(request,HRMSConstants.HRMS_EMP_CREATE_LOCLZN_CODE);
+		String message = getMessage(request,HRMSConstants.ON_BOARD_EMPLOYEE);
 		if(StringUtils.isEmpty(message)) {
 			log.info("SMS content has not been configured for this case");
 			return;
 		}
 		for(Employee employee: request.getEmployees()) {
 			message = buildMessage(employee, message, pwdMap);
-			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(employee.getUser().getMobileNumber()).message(message).build();
-			producer.push(smsTopic, smsRequest);
+			SMSRequest smsRequest = SMSRequest.builder().mobileNumber(employee.getUser().getMobileNumber()).message(message).tenantId(employee.getTenantId()).build();
+			if(propertiesManager.isSMSForUserCreationEnable())
+			{
+				producer.push(smsTopic, smsRequest);
+			}
 		}
 	}
 
@@ -149,9 +155,14 @@ public class NotificationService {
 	 * @return
 	 */
 	public String buildMessage(Employee employee, String message, Map<String, String> pwdMap) {
-		message = message.replace("$username", employee.getCode()).replace("$password", pwdMap.get(employee.getUuid()))
-				.replace("$employeename", employee.getUser().getName());
-		message = message.replace("$applink", appLink);
+//		message = message.replace("$username", employee.getCode()).replace("$password", pwdMap.get(employee.getUuid()))
+//				.replace("$employeename", employee.getUser().getName());
+//		message = message.replace("$applink", appLink);
+		message=message.replace("{USER}", employee.getUser().getName());
+		message=message.replace("{LINK}",appLink);
+		message=message.replace("{PHNO}",employee.getUser().getMobileNumber());
+		message=message.replace("{PASSWORD}",pwdMap.get(employee.getUuid()));
+		log.info("Message send to user at time of onboard "+message);
 		return message;
 	}
 	
