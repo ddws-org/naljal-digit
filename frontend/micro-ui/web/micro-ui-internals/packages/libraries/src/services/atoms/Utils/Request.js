@@ -68,7 +68,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/karnataka${url}`;
+  url = `/gujarat${url}`;
 
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {

@@ -13,7 +13,7 @@
     "micro-ui-internals/packages/react-components",
     "micro-ui-internals/packages/modules/*"
   ],
-  "homepage": "/karnataka/mgramseva-web",
+  "homepage": "/gujarat/mgramseva-web",
   "dependencies": {
     "@egovernments/digit-ui-libraries": "1.5.7",
     "@egovernments/digit-ui-module-dss": "1.5.33",
