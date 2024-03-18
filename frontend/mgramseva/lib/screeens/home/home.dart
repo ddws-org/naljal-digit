@@ -69,6 +69,7 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+/*
                 Container(
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -98,6 +99,7 @@ class _HomeState extends State<Home> {
                                 }
                               })
                     ])),
+*/
                 Help(
                   callBack: () => showGeneralDialog(
                     barrierLabel: "Label",

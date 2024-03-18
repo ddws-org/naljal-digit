@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:universal_html/html.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 const _baseUrl = "baseUrl";
 
