@@ -21,8 +21,8 @@ class RoleActionsFiltering {
       getRolesBasedOnModule(item.link).forEach((element) {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
-                e.code == element &&
-                commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
+        e.code == element &&
+            commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
 
         if (roles?.isEmpty ?? true) {
@@ -58,8 +58,8 @@ class RoleActionsFiltering {
       getRolesBasedOnModule(routerLink).forEach((element) {
         var roles = commonProvider.userDetails?.userRequest?.roles
             ?.where((e) =>
-                e.code == element &&
-                commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
+        e.code == element &&
+            commonProvider.userDetails?.selectedtenant?.code == e.tenantId)
             .toList();
         if (roles?.isEmpty ?? true) {
           isEligible = false;
@@ -87,9 +87,9 @@ class RoleActionsFiltering {
 
   List<String> getRolesBasedOnModule(String route) {
     switch (route) {
-      // GP Admin
+    // GP Admin
       case Routes.HOUSEHOLD:
-        return ['COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
+        return ['COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN','REVENUE_COLLECTOR', 'SECRETARY'];
 
       case Routes.CONSUMER_UPDATE:
         return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
@@ -98,7 +98,7 @@ class RoleActionsFiltering {
         return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
 
       case Routes.CONSUMER_CREATE:
-        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR', 'DIV_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
+        return ['GP_ADMIN', 'SUPERUSER', 'COLLECTION_OPERATOR', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
 
       case Routes.HOUSEHOLD_DETAILS:
         return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
@@ -115,7 +115,7 @@ class RoleActionsFiltering {
       case Routes.HOUSEHOLD_REGISTER:
         return ['COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'GP_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
 
-      // Expense Processing
+    // Expense Processing
       case Routes.EXPENSE_SEARCH:
         return ['EXPENSE_PROCESSING', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
       case Routes.EXPENSES_ADD:
@@ -123,12 +123,12 @@ class RoleActionsFiltering {
       case Routes.EXPENSE_UPDATE:
         return ['EXPENSE_PROCESSING', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
       case Routes.HOUSEHOLDRECEIPTS:
-        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
+        return ['BULK_DEMAND_PROCESSING', 'COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
 
       case Routes.MANUAL_BILL_GENERATE:
-        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'SECRETARY'];
+        return ['BULK_DEMAND_PROCESSING', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
 
-      // Collection Operator
+    // Collection Operator
       case Routes.CONSUMER_SEARCH:
         return ['COLLECTION_OPERATOR', 'SUPERUSER', 'DIV_ADMIN', 'CHAIRMEN', 'REVENUE_COLLECTOR', 'SECRETARY'];
       case Routes.BILL_GENERATE:
