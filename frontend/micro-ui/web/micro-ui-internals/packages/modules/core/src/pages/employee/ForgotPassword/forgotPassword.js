@@ -1,4 +1,4 @@
-import { BackButton, Dropdown, FormComposer, Loader, Toast,FormComposerV2 } from "@egovernments/digit-ui-react-components";
+import { BackButton, Dropdown, FormComposer, Loader, Toast, FormComposerV2 } from "@egovernments/digit-ui-react-components";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -29,13 +29,13 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   };
 
   const onForgotPassword = async (data) => {
-   
     const requestData = {
       otp: {
         mobileNumber: data.mobileNumber,
         userType: getUserType().toUpperCase(),
         type: "passwordreset",
-        tenantId: tenantId,      },
+        tenantId: tenantId,
+      },
     };
     try {
       await Digit.UserService.sendOtp(requestData, tenantId);
@@ -60,27 +60,6 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
           populators: {
             name: userId.name,
             componentInFront: "+91",
-          },
-          isMandatory: true,
-        },
-        {
-          label: t(city.label),
-          type: city.type,
-          populators: {
-            name: city.name,
-            customProps: {},
-            component: (props, customProps) => (
-              <Dropdown
-                option={cities}
-                optionKey="name"
-                id={city.name}
-                className="login-city-dd"
-                select={(d) => {
-                  props.onChange(d);
-                }}
-                {...customProps}
-              />
-            ),
           },
           isMandatory: true,
         },
