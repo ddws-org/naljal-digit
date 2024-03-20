@@ -68,8 +68,20 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
+
+  const extractStateValue = (url) => {
+    // Split the URL by '/'
+    const parts = url.split('/');
+    
+    return parts[3]; 
+  }
+
+  let statesValue = extractStateValue(url)
+  url = `/${statesValue}/${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
+
+
    
     data.RequestInfo = {
       apiId: "Rainmaker",
