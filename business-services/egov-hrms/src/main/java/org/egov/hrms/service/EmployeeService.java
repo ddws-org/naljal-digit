@@ -121,7 +121,8 @@ public class EmployeeService {
 		employeeRequest.getEmployees().stream().forEach(employee -> {
 			enrichCreateRequest(employee, requestInfo);
 			createUser(employee, requestInfo);
-			pwdMap.put(employee.getUuid(), employee.getUser().getPassword());
+			//pwdMap.put(employee.getUuid(), employee.getUser().getPassword());
+			pwdMap.put(employee.getUuid(), "nalJal@123");
 			employee.getUser().setPassword(null);
 		});
 		hrmsProducer.push(propertiesManager.getSaveEmployeeTopic(), employeeRequest);
