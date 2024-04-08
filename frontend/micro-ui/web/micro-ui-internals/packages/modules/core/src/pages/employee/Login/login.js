@@ -110,7 +110,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   }
   if (config && config[0].body && config[0].body[1].label === "CORE_LOGIN_PASSWORD") {
     config[0].body[1].populators.validation = {
-      maxlength: 30,
+      maxlength: 10,
     };
   }
   return isLoading || isStoreLoading ? (
