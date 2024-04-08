@@ -62,28 +62,7 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
             componentInFront: "+91",
           },
           isMandatory: true,
-        },
-        {
-          label: t(city.label),
-          type: city.type,
-          populators: {
-            name: city.name,
-            customProps: {},
-            component: (props, customProps) => (
-              <Dropdown
-                option={cities}
-                optionKey="name"
-                id={city.name}
-                className="login-city-dd"
-                select={(d) => {
-                  props.onChange(d);
-                }}
-                {...customProps}
-              />
-            ),
-          },
-          isMandatory: true,
-        },
+        }
       ],
     },
   ];
