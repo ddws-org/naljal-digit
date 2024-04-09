@@ -50,6 +50,23 @@ class _HomeState extends State<Home> {
     var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    final dashboardName = commonProvider.userDetails!.userRequest!.roles!
+        .map((e) => e.code)
+        .toSet()
+        .toList();
+    String loginUsername = "login user name";
+    if (dashboardName.contains('CHAIRMEN')) {
+      loginUsername = "Chairmen";
+    } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
+      loginUsername = "Revenue Collector";
+    } else if (dashboardName.contains('DIV_ADMIN')) {
+      loginUsername = "Division User";
+    } else if (dashboardName.contains('SECRETARY')) {
+      loginUsername = "Secretary";
+    }
     return Stack(
       children: [
         Container(
@@ -66,62 +83,44 @@ class _HomeState extends State<Home> {
           ),
           child: Column(children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-/*
+                Expanded(
+                    child:
+                        Center(child: Container(child: Text(loginUsername,style: TextStyle(fontSize: 18.0,color: Colors.black),)))),
                 Container(
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                      tenantProvider.tenants != null
-                          ? buildTenantsView(tenantProvider.tenants!)
-                          : StreamBuilder(
-                              stream: tenantProvider.streamController.stream,
-                              builder: (context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  return buildTenantsView(snapshot.data);
-                                } else if (snapshot.hasError) {
-                                  return Notifiers.networkErrorPage(
-                                      context, () {});
-                                } else {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.waiting:
-                                      return Loaders.circularLoader();
-                                    case ConnectionState.active:
-                                      return Loaders.circularLoader();
-                                    default:
-                                      return Container(
-                                        child: Text(""),
-                                      );
-                                  }
-                                }
-                              })
-                    ])),
-*/
-                Help(
-                  callBack: () => showGeneralDialog(
-                    barrierLabel: "Label",
-                    barrierDismissible: false,
-                    barrierColor: Colors.black.withOpacity(0.5),
-                    transitionDuration: Duration(milliseconds: 700),
-                    context: context,
-                    pageBuilder: (context, anim1, anim2) {
-                      return HomeWalkThroughContainer((index) =>
-                          homeProvider.incrementIndex(index,
-                              homeProvider.homeWalkthroughList[index + 1].key));
-                    },
-                    transitionBuilder: (context, anim1, anim2, child) {
-                      return SlideTransition(
-                        position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                            .animate(anim1),
-                        child: child,
-                      );
-                    },
+                  child: Column(
+                    children: [
+                      Help(
+                        callBack: () => showGeneralDialog(
+                          barrierLabel: "Label",
+                          barrierDismissible: false,
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          transitionDuration: Duration(milliseconds: 700),
+                          context: context,
+                          pageBuilder: (context, anim1, anim2) {
+                            return HomeWalkThroughContainer((index) =>
+                                homeProvider.incrementIndex(
+                                    index,
+                                    homeProvider
+                                        .homeWalkthroughList[index + 1].key));
+                          },
+                          transitionBuilder: (context, anim1, anim2, child) {
+                            return SlideTransition(
+                              position:
+                                  Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                                      .animate(anim1),
+                              child: child,
+                            );
+                          },
+                        ),
+                        walkThroughKey: Constants.HOME_KEY,
+                      ),
+                      Text('help')
+                    ],
                   ),
-                  walkThroughKey: Constants.HOME_KEY,
-                ),
+                )
               ],
             ),
             HomeCard(),
