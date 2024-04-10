@@ -88,7 +88,6 @@ export const StoreService = {
       .flat()
       .reduce((unique, ele) => (unique.find((item) => item.code === ele.code) ? unique : [...unique, ele]), []);
     initData.tenants = MdmsRes?.tenant?.tenants
-      ?.filter((x) => x.pgrEnabled)
       .map((tenant) => ({
         i18nKey: `TENANT_TENANTS_${tenant.code.replace(".", "_").toUpperCase()}`,
         ...tenant,
