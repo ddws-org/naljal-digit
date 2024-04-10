@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/landing_page/AppHeader.dart';
 import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
-import 'package:mgramseva/widgets/footer.dart';
 
 class LandingPageNew extends StatefulWidget {
   @override
@@ -12,7 +11,6 @@ class _LandingPageNewState extends State<LandingPageNew> {
   bool? expanded = false;
   int selectedId = -1;
   double? card_Height = 200;
-  bool _isTyping = false;
   String typedText = '';
   String? text =
       "To meet JJM objectives, ‘Nal Jal Seva’ an IT Platform for the Operation and Maintenance of Drinking Water Supply Schemes for GPs/VWSCs has been developed by DDWS. ";
@@ -28,82 +26,6 @@ class _LandingPageNewState extends State<LandingPageNew> {
       //_numberFocus.removeListener(_onFocusChange);
       super.dispose();
     }*/
-
-  var state = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-  ];
-
-/*  final List<ToggleItem> items =
-  [ToggleItem('KARNATAKA', false),ToggleItem('ASSAM', false),ToggleItem('GUJRAT', false)];
-  //['KARNATAKA', 'ASSAM', 'GUJRAT', 'STATE', 'STATE'];*/
-
-  void shuffeling() {
-    for (int i = 0; i < state.length; i++) {
-      var newVar = typedText;
-      typedText = typedText.toLowerCase();
-
-      if (state.elementAt(i).toLowerCase().contains(typedText)) {
-        typedText = state.elementAt(i);
-
-        state[i] = state[0];
-        state[0] = typedText;
-        //items.insert(i, typedText);
-        //items[i].text = typedText;
-        break;
-      }
-    }
-    //items.shuffle();
-    setState(() {});
-  }
-
-  void shuffleList() {
-    for (int i = 0; i < state.length; i++) {
-      if (state.elementAt(i).contains(typedText)) {
-        typedText = state.elementAt(i);
-
-        state[i] = state[0];
-        state[0] = typedText;
-        //items.insert(i, typedText);
-        //items[i].text = typedText;
-        break;
-      }
-    }
-
-    //items.shuffle();
-    setState(() {});
-  }
-
-  dynamic updateText(String newText, int selectedId) {
-    this.selectedId = selectedId;
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,20 +124,16 @@ class _LandingPageNewState extends State<LandingPageNew> {
 
               //list container
               StateContainerWidget(),
-              Footer()
+                Container(
+                  padding: EdgeInsets.all(25),
+                  child: Image(
+                      width: MediaQuery.of(context).size.width>760?MediaQuery.of(context).size.width * 0.15:MediaQuery.of(context).size.width * 0.5,
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/png/nic-footer.png')),
+                )
             ],
           ),
         ),
-        //Footer()
-        /*     Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Image.network(
-                "$apiBaseUrl${Constants.NALJAL_FOOTER_ENDPOINT}",
-              ),
-            ),
-          )*/
       ]),
     );
   }
