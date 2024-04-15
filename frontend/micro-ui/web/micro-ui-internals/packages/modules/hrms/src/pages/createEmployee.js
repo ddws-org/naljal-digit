@@ -228,9 +228,9 @@ const CreateEmployee = () => {
         // If the roles array contains an object with code 'CHAIRMEN', push the DIV Admin role into the roles array
         if (hasChairmen) {
           ele.roles.push({
-            code: "DIV_ADMIN",
-            name: "DIV_ADMIN",
-            labelKey: "CHAIRMEN__ROLES_ROLES_DIV_ADMIN",
+            code: "HRMS_ADMIN",
+            name: "HRMS_ADMIN",
+            labelKey: "HRMS_ADMIN",
             tenantId: data.testing,
           });
         }
