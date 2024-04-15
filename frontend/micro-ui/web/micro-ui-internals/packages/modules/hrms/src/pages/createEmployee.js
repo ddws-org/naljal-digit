@@ -223,6 +223,23 @@ const CreateEmployee = () => {
       jurisdictions = mappedData;
     } else {
       roles = data?.Jurisdictions?.map((ele) => {
+        roles = data?.Jurisdictions?.map((ele) => {
+          // Check if the roles array contains an object with code 'CHAIRMEN'
+          const hasChairmen = ele.roles.some((role) => role.code === "CHAIRMEN");
+          // If the roles array contains an object with code 'CHAIRMEN', push the DIV Admin role into the roles array
+          if (hasChairmen) {
+            ele.roles.push({
+              code: "DIV_ADMIN",
+              name: "DIV_ADMIN",
+              labelKey: "DIV_ADMIN",
+              tenantId: data.testing,
+            });
+          }
+          return ele.roles?.map((item) => {
+            item["tenantId"] = ele.boundary;
+            return item;
+          });
+        });
         return ele.roles?.map((item) => {
           item["tenantId"] = ele.boundary;
           return item;
@@ -234,6 +251,7 @@ const CreateEmployee = () => {
       code: "EMPLOYEE",
       tenantId: "ka",
     });
+    console.log("roles!!!!!", roles);
     const mappedroles = [].concat.apply([], roles);
     let dateOfAppointment = new Date();
     dateOfAppointment.setDate(dateOfAppointment.getDate() - 1);
