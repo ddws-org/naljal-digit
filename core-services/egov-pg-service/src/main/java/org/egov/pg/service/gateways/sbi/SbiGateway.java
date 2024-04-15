@@ -233,6 +233,8 @@ public class SbiGateway implements Gateway {
 
 		queryMap.put("EncryptTrans", singleParamResponse);
 		queryMap.put("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
+		String accountInfo = queryMap.get(MERCHANT_ORDER_NO_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + transaction.getTenantId().split("\\.")[1];
+		queryMap.put("MultiAccountInstructionDtls", accountInfo);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			urlData = mapper.writeValueAsString(queryMap);
@@ -326,13 +328,16 @@ public class SbiGateway implements Gateway {
 			HashMap<String, String> params = new HashMap<String, String>();
 
 			String merchantCode = MERCHANT_ID;
-
-			String messageData = SEPERATOR + merchantCode + SEPERATOR + currentStatus.getTxnId() + SEPERATOR
+			String messageData;
+			if(currentStatus.getGatewayTxnId() != null)
+				messageData = currentStatus.getGatewayTxnId() + SEPERATOR + merchantCode + SEPERATOR + currentStatus.getTxnId() + SEPERATOR
 					+ currentStatus.getTxnAmount();
+			else
+				messageData = SEPERATOR + merchantCode + SEPERATOR + currentStatus.getTxnId() + SEPERATOR + currentStatus.getTxnAmount();
 			params.put("queryRequest", messageData);
 			params.put("aggregatorId", "SBIEPAY");
 			params.put("merchantId", merchantCode);
-
+			log.info("messageData:::"+ messageData);
 			URL url = new URL(GATEWAY_TRANSACTION_STATUS_URL);
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 			httpConn.setDoInput(true); // true indicates the server returns response
