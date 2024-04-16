@@ -37,7 +37,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -92,8 +91,6 @@ public class SbiGateway implements Gateway {
 
 	private final RequestInfo requestInfo;
 
-
-	private AES256Bit sbiUtils;
 
 	/**
 	 * Initialize by populating all required config parameters
@@ -303,15 +300,15 @@ public class SbiGateway implements Gateway {
 			log.error("tx input " + currentStatus);
 			log.error("Error code " + ex.getStatusCode());
 			log.error("Error getResponseBodyAsString code " + ex.getResponseBodyAsString());
-			log.error("Unable to fetch status from PayGov gateway ", ex);
+			log.error("Unable to fetch status from SBI gateway ", ex);
 			throw new CustomException(UNABLE_TO_FETCH_STATUS, UNABLE_TO_FETCH_STATUS_FROM_SBI_GATEWAY);
 		} catch (RestClientException e) {
-			log.error("Unable to fetch status from PayGov gateway ", e);
+			log.error("Unable to fetch status from SBI gateway ", e);
 			throw new CustomException(UNABLE_TO_FETCH_STATUS, UNABLE_TO_FETCH_STATUS_FROM_SBI_GATEWAY);
 		} catch (Exception e) {
-			log.error("PayGov Checksum validation failed ", e);
-			throw new CustomException("CHECKSUM_GEN_FAILED",
-					"Checksum generation failed, gateway redirect URI cannot be generated");
+			log.error("SBI Checksum validation failed ", e);
+			throw new CustomException("GATEWAY_CONN_FAILED",
+					"Error while connecting to SBI gateway");
 		}
 	}
 
