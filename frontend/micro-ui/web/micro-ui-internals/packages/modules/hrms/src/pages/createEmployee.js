@@ -231,7 +231,7 @@ const CreateEmployee = () => {
             code: "HRMS_ADMIN",
             name: "HRMS_ADMIN",
             labelKey: "HRMS_ADMIN",
-            tenantId: data.testing,
+            tenantId: ele.boundary,
           });
         }
         return ele.roles?.map((item) => {
