@@ -3,6 +3,7 @@ package org.egov.id.service;
 import java.io.IOException;
 import java.util.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.id.model.IdRequest;
 import org.egov.id.model.RequestInfo;
 import org.egov.mdms.model.MasterDetail;
@@ -22,6 +23,7 @@ import lombok.extern.log4j.Log4j;
 
 @Service
 @Log4j
+@Slf4j
 public class MdmsService {
 
     @Autowired
