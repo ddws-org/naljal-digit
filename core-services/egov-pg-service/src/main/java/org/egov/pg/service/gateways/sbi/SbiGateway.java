@@ -92,7 +92,6 @@ public class SbiGateway implements Gateway {
 
 	private final RequestInfo requestInfo;
 
-	private final RestTemplate restTemplate;
 
 	private AES256Bit sbiUtils;
 
@@ -103,8 +102,7 @@ public class SbiGateway implements Gateway {
 	 * @param environment  containing all required config parameters
 	 */
 	@Autowired
-	public SbiGateway(RestTemplate restTemplate, Environment environment, ObjectMapper objectMapper) {
-		this.restTemplate = restTemplate;
+	public SbiGateway(Environment environment, ObjectMapper objectMapper) {
 		ACTIVE = Boolean.valueOf(environment.getRequiredProperty("sbi.active"));
 		MERCHANT_ID = environment.getRequiredProperty("sbi.merchant.id");
 		AGRREGATOR_ID = environment.getRequiredProperty("sbi.aggregator.id");
@@ -234,7 +232,8 @@ public class SbiGateway implements Gateway {
 		queryMap.put("EncryptTrans", singleParamResponse);
 		queryMap.put("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
 		String accountInfo = queryMap.get(MERCHANT_ORDER_NO_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + transaction.getTenantId().split("\\.")[1];
-		queryMap.put("MultiAccountInstructionDtls", accountInfo);
+		String accountInfoEncrypt = AES256Bit.encrypt(accountInfo, key);
+		queryMap.put("MultiAccountInstructionDtls", accountInfoEncrypt);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			urlData = mapper.writeValueAsString(queryMap);
