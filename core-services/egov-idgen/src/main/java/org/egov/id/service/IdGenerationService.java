@@ -235,6 +235,7 @@ public class IdGenerationService {
         HashMap<String, List<String>> sequences = new HashMap<>();
         String idFormatTemplate = idFormat;
         String cityName = null;
+        String districtCode=null;
 
         for (int i = 0; i < count; i++) {
             idFormat = idFormatTemplate;
@@ -257,7 +258,15 @@ public class IdGenerationService {
                         cityName = mdmsService.getCity(requestInfo, idRequest);
                     }
                     idFormat = idFormat.replace("[" + attributeName + "]", cityName);
-                } else {
+                }
+                else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
+                {
+                    if(districtCode==null) {
+                        districtCode = mdmsService.getDistrict(requestInfo, idRequest);
+                    }
+                    idFormat=idFormat.replace("[" + attributeName + "]", districtCode);
+                }
+                else {
                     idFormat = idFormat.replace("[" + attributeName + "]", generateRandomText(attributeName, requestInfo));
                 }
             }
