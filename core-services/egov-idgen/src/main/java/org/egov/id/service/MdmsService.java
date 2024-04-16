@@ -158,7 +158,7 @@ public class MdmsService {
         masterDetails.put(tenantModule, masterDetailListCity);
         masterDetails.put(formatModule, masterDetailListFormat);
         MdmsResponse mdmsResponse = null;
-        log.info();
+        log.info("will go to try block");
         try {
             mdmsResponse = getMasterData(requestInfo, tenantId, masterDetails);
 
