@@ -223,6 +223,17 @@ const CreateEmployee = () => {
       jurisdictions = mappedData;
     } else {
       roles = data?.Jurisdictions?.map((ele) => {
+        // Check if the roles array contains an object with code 'CHAIRMEN'
+        const hasChairmen = ele.roles.some((role) => role.code === "CHAIRMEN");
+        // If the roles array contains an object with code 'CHAIRMEN', push the DIV Admin role into the roles array
+        if (hasChairmen) {
+          ele.roles.push({
+            code: "HRMS_ADMIN",
+            name: "HRMS_ADMIN",
+            labelKey: "HRMS_ADMIN",
+            tenantId: ele.boundary,
+          });
+        }
         return ele.roles?.map((item) => {
           item["tenantId"] = ele.boundary;
           return item;
