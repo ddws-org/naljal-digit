@@ -147,16 +147,22 @@ public class MdmsService {
         MasterDetail masterDetailForCity = MasterDetail.builder().name(tenantMaster)
                 .filter("[?(@.code=='" + tenantId + "')]").build();
 
+//        MasterDetail masterDetailForCity = MasterDetail.builder().name(tenantMaster)
+//                .filter("[?(@.code=='" + tenantId + "')]").build();
+
         masterDetailListCity.add(masterDetailForCity);
+//        masterDetailForCity.add()
 
         MasterDetail masterDetailForFormat = MasterDetail.builder().name(formatMaster)
                 .filter("[?(@.idname=='" + idname + "')]").build();
-
 
         masterDetailListFormat.add(masterDetailForFormat);
 
         masterDetails.put(tenantModule, masterDetailListCity);
         masterDetails.put(formatModule, masterDetailListFormat);
+
+        log.info(masterDetails.toString());
+
         MdmsResponse mdmsResponse = null;
         log.info("will go to try block");
         try {
@@ -172,7 +178,7 @@ public class MdmsService {
                 cityCodeFromMdms = documentContext.read("$.city.code");
                 districtCodeFromMdms=documentContext.read("$.city.districtCode");
 
-                log.info("Found city code and distirct code as - " + cityCodeFromMdms +" "+ districtCodeFromMdms);
+                log.info("Found city code and district code as - " + cityCodeFromMdms +" "+ districtCodeFromMdms);
 
             }
             if (mdmsResponse.getMdmsRes() != null && mdmsResponse.getMdmsRes().containsKey(formatModule)
@@ -182,6 +188,7 @@ public class MdmsService {
                 DocumentContext documentContext = JsonPath
                         .parse(mdmsResponse.getMdmsRes().get(formatModule).get(formatMaster).get(0));
                 idFormatFromMdms = documentContext.read("$.format");
+                log.info("Id format in mdms service->"+idFormatFromMdms);
             }
 
         } catch (Exception e) {
@@ -193,6 +200,7 @@ public class MdmsService {
         mdmsCallMap.put(formatMaster, idFormatFromMdms);
         mdmsCallMap.put(tenantMaster, cityCodeFromMdms);
         mdmsCallMap.put("districtCode",districtCodeFromMdms);
+        log.info(mdmsCallMap.toString());
 
         return mdmsCallMap;
     }
