@@ -19,10 +19,9 @@ import org.springframework.stereotype.Service;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
-import lombok.extern.log4j.Log4j;
+
 
 @Service
-@Log4j
 @Slf4j
 public class MdmsService {
 
@@ -114,6 +113,7 @@ public class MdmsService {
         try {
             if (getIdFormat != null) {
                 idFormat = getIdFormat.get(formatMaster);
+                log.info("id format is->"+idFormat);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

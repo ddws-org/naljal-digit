@@ -160,6 +160,7 @@ public class IdGenerationService {
             }
             log.error("Format returned NULL from both MDMS and DB",ex);
         }
+        log.info("ID format from getIdFormatFinal method->"+idFormat);
         return idFormat;
     }
 
@@ -264,6 +265,7 @@ public class IdGenerationService {
                 }
                 else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
                 {
+                    log.info("inside else part of district code");
                     if(districtCode==null) {
                         districtCode = mdmsService.getDistrict(requestInfo, idRequest);
                     }
