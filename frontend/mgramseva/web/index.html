@@ -362,8 +362,6 @@
         console.log("none");
         x.style.display = "none";
       }
-
-
       document.getElementById("merchIdVal").value = merchantId;
       document.getElementById("EncryptTrans").value = orderId;
 
@@ -376,51 +374,15 @@
   <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
-  <script>
-    //      // Your web app's Firebase configuration
-    // <!--    var firebaseConfig = {-->
-    // <!--      apiKey: "AIzaSyA9ZfXItmFcJU_lbGHGBp1DJv8kmRoPwWA",-->
-    // <!--      authDomain: "sample-mgramseva.firebaseapp.com",-->
-    // <!--      projectId: "sample-mgramseva",-->
-    // <!--      storageBucket: "sample-mgramseva.appspot.com",-->
-    // <!--      messagingSenderId: "1026518772539",-->
-    // <!--      appId: "1:1026518772539:web:fa821c49b5c270b089251e",-->
-    // <!--       measurementId: "G-H2F8HT25X1"-->
-    // <!--    };-->
 
-    //      // Initialize Firebase
-    // <!--    firebase.initializeApp(firebaseConfig);-->
-    // <!--    firebase.analytics();-->
-  </script>
   <div class="loading">
     <div class="loader"></div>
   </div>
   <div id="payGovHiddenForm">
-    <!-- <form id = 'frmData' name='frmData' role='form' method='post'>
-    <input type="hidden" id='checksum' name='checksum' />
-    <input type="text" id='messageType' class='form-control valid' name='messageType'/>
-    <input type="text" id='merchantId' class='form-control valid' name='merchantId' />
-    <input type="text" id='serviceId' class='form-control valid' name='serviceId' />
-    <input type="text" id='orderId' class='form-control' name='orderId' />
-    <input type="text" id='customerId' class='form-control valid' name='customerId'/>
-    <input type="text" id='transactionAmount' class='form-control valid' name='transactionAmount'/>
-    <input type="text" id='currencyCode' class='form-control' name='currencyCode'/>
-    <input type="text" id='requestDateTime' class='form-control hasDatePicker' name='requestDateTime'/>
-    <input type="text" id='successUrl' class='form-control' name='successUrl'/>
-    <input type="text" id='failUrl' class='form-control' name='failUrl' />
-    <input type="text" id='additionalField1' class='form-control valid' name='additionalField1'/>
-    <input type="text" id='additionalField2' class='form-control valid' name='additionalField2'/>
-    <input type="text" id='additionalField3' class='form-control valid' name='additionalField3'/>
-    <input type="text" id='additionalField4' class='form-control valid' name='additionalField4'/>
-    <input type="text" id='additionalField5' class='form-control valid' name='additionalField5'/>
-    <button type='submit' id='SubmitBtn'>Submit</button>
-  </form> -->
     <form name="frmData" method="post" id="frmData" action="https://test.sbiepay.sbi/secure/AggregatorHostedListener">
-
       <table>
         <tr>
           <td width="20px">
-
             <input type="hidden" name="EncryptTrans" id="EncryptTrans" value=ObjMulReq._single_Paramresponse>
 
             <input type="hidden" name="merchIdVal" id="merchIdVal" value="1000112">
