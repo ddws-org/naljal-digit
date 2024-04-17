@@ -93,7 +93,7 @@ public class IdGenerationService {
         }
         idGenerationResponse.setResponseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfo, true));
 
-        log.info(idGenerationResponse.toString());
+        log.info("idGenerationResponse is "+ idGenerationResponse.toString());
 
         return idGenerationResponse;
 
