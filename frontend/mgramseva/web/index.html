@@ -24,10 +24,10 @@
 
     // Set the base URL dynamically based on the state name
     if (stateName) {
-        document.querySelector('base').href = '/' + stateName + '/mgramseva/';
+      document.querySelector('base').href = '/' + stateName + '/mgramseva/';
     }
     console.log(document.querySelector('base').href);
-</script>
+  </script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="mobile-web-app-capable" content="yes">
@@ -52,6 +52,7 @@
   #payGovHiddenForm {
     display: none;
   }
+
   .loading {
     display: flex;
     justify-content: center;
@@ -100,26 +101,26 @@
 </style>
 
 <body style="background: rgba(214, 213, 212, 1);">
-<script>
-    window.addEventListener('load', function(ev) {
+  <script>
+    window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+        onEntrypointLoaded: function (engineInitializer) {
+          engineInitializer.initializeEngine().then(function (appRunner) {
             appRunner.runApp();
           });
         }
       });
     });
   </script>
-<image id="image1" alt="loading.." src="" onerror="this.style.display='none'" width="300px" height="640px"></image>
-<image id="image" alt="loading.." onload="loadImage()" onerror="this.style.display='none'" src="" width="520px"
-       height="640px"></image>
+  <image id="image1" alt="loading.." src="" onerror="this.style.display='none'" width="300px" height="640px"></image>
+  <image id="image" alt="loading.." onload="loadImage()" onerror="this.style.display='none'" src="" width="520px"
+    height="640px"></image>
 
-<script>
+  <script>
 
 
     let progress = document.querySelector('#progress');
@@ -150,9 +151,9 @@
           if (index < data.length) {
             console.log("ist completed");
             printCharacteristic.writeValueWithResponse(data.slice(index, data.length)).then(() => {
-                console.log(index, data.length);
-                printCharacteristic.writeValueWithResponse(data.slice(index, data.length))
-                resolve();
+              console.log(index, data.length);
+              printCharacteristic.writeValueWithResponse(data.slice(index, data.length))
+              resolve();
             })
               .catch(error => reject(error));
 
@@ -322,93 +323,80 @@
     };
 
   </script>
-<script>
+  <script>
 
     function getValueForKey(key, arr) {
-    for (var i = 0; i < arr.length; i++){
-        if(arr[i]["key"]==key){
-            return arr[i]["value"]
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i]["key"] == key) {
+          return arr[i]["value"]
         }
       }
     }
 
     function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-     }
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     async function onCollectPayment(txURL,
-     checksum,
-     messageType,
-     merchantId,
-     serviceId,
-     orderId,
-     customerId,
-     transactionAmount,
-     currencyCode,
-     requestDateTime,
-     successUrl,
-     failUrl,
-     additionalField1,
-     additionalField2,
-     additionalField3,
-     additionalField4,
-     additionalField5){
-        var x = document.getElementById("payGovHiddenForm");
+      checksum,
+      messageType,
+      merchantId,
+      serviceId,
+      orderId,
+      customerId,
+      transactionAmount,
+      currencyCode,
+      requestDateTime,
+      successUrl,
+      failUrl,
+      additionalField1,
+      additionalField2,
+      additionalField3,
+      additionalField4,
+      additionalField5) {
+      var x = document.getElementById("payGovHiddenForm");
       if (x.style.display === "none") {
-      console.log("block");
+        console.log("block");
         x.style.display = "block";
       } else {
-      console.log("none");
+        console.log("none");
         x.style.display = "none";
       }
-      document.getElementById("frmData").action = txURL;
-      document.getElementById("frmData").target = '_top' ;
-       document.getElementById("checksum").value = checksum;
-       document.getElementById("messageType").value = messageType;
-      document.getElementById("merchantId").value = merchantId;
-      document.getElementById("serviceId").value = serviceId ;
-      document.getElementById("orderId").value = orderId ;
-      document.getElementById("customerId").value = customerId ;
-      document.getElementById("transactionAmount").value = transactionAmount;
-      document.getElementById("currencyCode").value = currencyCode;
-      document.getElementById("requestDateTime").value = requestDateTime;
-      document.getElementById("successUrl").value = successUrl;
-      document.getElementById("failUrl").value = failUrl;
-      document.getElementById("additionalField1").value = additionalField1;
-      document.getElementById("additionalField2").value = additionalField2 ;
-      document.getElementById("additionalField3").value = additionalField3;
-      document.getElementById("additionalField4").value = additionalField4;
-      document.getElementById("additionalField5").value = additionalField5;
+
+
+      document.getElementById("merchIdVal").value = merchantId;
+      document.getElementById("EncryptTrans").value = orderId;
+
       await sleep(2000);
       document.forms["frmData"].submit();
 
     }
   </script>
-<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
-<!-- TODO: Add SDKs for Firebase products that you want to use
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
-<script>
-     // Your web app's Firebase configuration
-<!--    var firebaseConfig = {-->
-<!--      apiKey: "AIzaSyA9ZfXItmFcJU_lbGHGBp1DJv8kmRoPwWA",-->
-<!--      authDomain: "sample-mgramseva.firebaseapp.com",-->
-<!--      projectId: "sample-mgramseva",-->
-<!--      storageBucket: "sample-mgramseva.appspot.com",-->
-<!--      messagingSenderId: "1026518772539",-->
-<!--      appId: "1:1026518772539:web:fa821c49b5c270b089251e",-->
-<!--       measurementId: "G-H2F8HT25X1"-->
-<!--    };-->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+  <script>
+    //      // Your web app's Firebase configuration
+    // <!--    var firebaseConfig = {-->
+    // <!--      apiKey: "AIzaSyA9ZfXItmFcJU_lbGHGBp1DJv8kmRoPwWA",-->
+    // <!--      authDomain: "sample-mgramseva.firebaseapp.com",-->
+    // <!--      projectId: "sample-mgramseva",-->
+    // <!--      storageBucket: "sample-mgramseva.appspot.com",-->
+    // <!--      messagingSenderId: "1026518772539",-->
+    // <!--      appId: "1:1026518772539:web:fa821c49b5c270b089251e",-->
+    // <!--       measurementId: "G-H2F8HT25X1"-->
+    // <!--    };-->
 
-     // Initialize Firebase
-<!--    firebase.initializeApp(firebaseConfig);-->
-<!--    firebase.analytics();-->
-     </script>
-<div class="loading">
-  <div class="loader"></div>
-</div>
-<div id="payGovHiddenForm">
-  <form id = 'frmData' name='frmData' role='form' method='post'>
+    //      // Initialize Firebase
+    // <!--    firebase.initializeApp(firebaseConfig);-->
+    // <!--    firebase.analytics();-->
+  </script>
+  <div class="loading">
+    <div class="loader"></div>
+  </div>
+  <div id="payGovHiddenForm">
+    <!-- <form id = 'frmData' name='frmData' role='form' method='post'>
     <input type="hidden" id='checksum' name='checksum' />
     <input type="text" id='messageType' class='form-control valid' name='messageType'/>
     <input type="text" id='merchantId' class='form-control valid' name='merchantId' />
@@ -426,8 +414,24 @@
     <input type="text" id='additionalField4' class='form-control valid' name='additionalField4'/>
     <input type="text" id='additionalField5' class='form-control valid' name='additionalField5'/>
     <button type='submit' id='SubmitBtn'>Submit</button>
-  </form>
-</div>
+  </form> -->
+    <form name="frmData" method="post" id="frmData" action="https://test.sbiepay.sbi/secure/AggregatorHostedListener">
+
+      <table>
+        <tr>
+          <td width="20px">
+
+            <input type="hidden" name="EncryptTrans" id="EncryptTrans" value=ObjMulReq._single_Paramresponse>
+
+            <input type="hidden" name="merchIdVal" id="merchIdVal" value="1000112">
+
+          </td>
+
+        </tr>
+      </table>
+
+    </form>
+  </div>
 </body>
 
 </html>

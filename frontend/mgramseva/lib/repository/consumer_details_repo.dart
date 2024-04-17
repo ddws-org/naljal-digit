@@ -190,7 +190,7 @@ class ConsumerRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
-            null));
+            commonProvider.userDetails!.accessToken));
 
     if (res != null) {
       response = TransactionDetails.fromJson(res);
