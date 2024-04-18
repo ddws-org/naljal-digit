@@ -113,7 +113,6 @@ public class MdmsService {
         try {
             if (getIdFormat != null) {
                 idFormat = getIdFormat.get(formatMaster);
-                log.info("id format is->"+idFormat);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -181,7 +180,6 @@ public class MdmsService {
                 DocumentContext documentContext = JsonPath
                         .parse(mdmsResponse.getMdmsRes().get(formatModule).get(formatMaster).get(0));
                 idFormatFromMdms = documentContext.read("$.format");
-                log.info("Id format in mdms service->"+idFormatFromMdms);
             }
 
         } catch (Exception e) {
