@@ -337,9 +337,9 @@
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function onCollectPayment(txURL,
-      merchantId,
+    async function onCollectPayment(
       encryptyTrans,
+      merchantIdVal,
       successUrl,
       failUrl,) {
       var x = document.getElementById("payGovHiddenForm");
@@ -352,7 +352,7 @@
         console.log("none");
         x.style.display = "none";
       }
-      document.getElementById("merchIdVal").value = merchantId;
+      document.getElementById("merchIdVal").value = merchantIdVal;
       document.getElementById("EncryptTrans").value = encryptyTrans;
 
       await sleep(2000);
@@ -373,7 +373,7 @@
       <table>
         <tr>
           <td width="20px">
-            <input type="hidden" name="EncryptTrans" id="EncryptTrans" value=ObjMulReq._single_Paramresponse>
+            <input type="hidden" name="EncryptTrans" id="EncryptTrans" value="encryptyTrans">
             <input type="hidden" name="merchIdVal" id="merchIdVal" value="merchIdVal">
 
           </td>

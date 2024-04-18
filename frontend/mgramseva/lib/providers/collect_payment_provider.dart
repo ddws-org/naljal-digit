@@ -660,8 +660,9 @@ print('Value of merchIdVal: ${postUri.queryParameters['merchIdVal']}');
         var failUrl = '${postUri.queryParameters['failUrl']}';
 
         js.onCollectPayment(
+                    '${postUri.queryParameters['EncryptTrans']}',
+
             '${postUri.queryParameters['merchIdVal']}',
-          '${postUri.queryParameters['EncryptTrans']}',
             
             successUrl,
             failUrl,

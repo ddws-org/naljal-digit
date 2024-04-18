@@ -10,8 +10,8 @@ external void onButtonClick(Uint8List value, String logo);
 
 @JS('onCollectPayment')
 external void onCollectPayment(
-    String merchIdVal,
     String encryptTrans,
+    String merchIdVal,
     String successUrl,
     String failUrl,
     
