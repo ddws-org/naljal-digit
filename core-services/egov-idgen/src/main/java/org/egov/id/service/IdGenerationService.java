@@ -82,7 +82,6 @@ public class IdGenerationService {
         IdGenerationResponse idGenerationResponse = new IdGenerationResponse();
 
         for (IdRequest idRequest : idRequests) {
-            log.info(idRequest.toString());
             List<String> generatedId = generateIdFromIdRequest(idRequest, requestInfo);
             for (String ListOfIds : generatedId) {
                 IdResponse idResponse = new IdResponse();
@@ -92,8 +91,6 @@ public class IdGenerationService {
             idGenerationResponse.setIdResponses(idResponses);
         }
         idGenerationResponse.setResponseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfo, true));
-
-        log.info("idGenerationResponse is "+ idGenerationResponse.toString());
 
         return idGenerationResponse;
 
@@ -149,10 +146,8 @@ public class IdGenerationService {
         String idFormat = null;
         try{
             if (idFormatFromMDMS == true) {
-                log.info("MDMS call");
                 idFormat = mdmsService.getIdFormat(requestInfo, idRequest); //from MDMS
             } else {
-                log.info("DB call");
                 idFormat = getIdFormatfromDB(idRequest, requestInfo); //from DB
             }
         }catch(Exception ex){
@@ -162,7 +157,6 @@ public class IdGenerationService {
             }
             log.error("Format returned NULL from both MDMS and DB",ex);
         }
-        log.info("ID format from getIdFormatFinal method->"+idFormat);
         return idFormat;
     }
 

@@ -147,11 +147,7 @@ public class MdmsService {
         MasterDetail masterDetailForCity = MasterDetail.builder().name(tenantMaster)
                 .filter("[?(@.code=='" + tenantId + "')]").build();
 
-//        MasterDetail masterDetailForCity = MasterDetail.builder().name(tenantMaster)
-//                .filter("[?(@.code=='" + tenantId + "')]").build();
-
         masterDetailListCity.add(masterDetailForCity);
-//        masterDetailForCity.add()
 
         MasterDetail masterDetailForFormat = MasterDetail.builder().name(formatMaster)
                 .filter("[?(@.idname=='" + idname + "')]").build();
@@ -161,10 +157,7 @@ public class MdmsService {
         masterDetails.put(tenantModule, masterDetailListCity);
         masterDetails.put(formatModule, masterDetailListFormat);
 
-        log.info(masterDetails.toString());
-
         MdmsResponse mdmsResponse = null;
-        log.info("will go to try block");
         try {
             mdmsResponse = getMasterData(requestInfo, tenantId, masterDetails);
 
@@ -200,7 +193,6 @@ public class MdmsService {
         mdmsCallMap.put(formatMaster, idFormatFromMdms);
         mdmsCallMap.put(tenantMaster, cityCodeFromMdms);
         mdmsCallMap.put("districtCode",districtCodeFromMdms);
-        log.info(mdmsCallMap.toString());
 
         return mdmsCallMap;
     }
