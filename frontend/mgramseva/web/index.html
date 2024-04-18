@@ -338,23 +338,14 @@
     }
 
     async function onCollectPayment(txURL,
-      checksum,
-      messageType,
       merchantId,
-      serviceId,
-      orderId,
-      customerId,
-      transactionAmount,
-      currencyCode,
-      requestDateTime,
+      encryptyTrans,
       successUrl,
-      failUrl,
-      additionalField1,
-      additionalField2,
-      additionalField3,
-      additionalField4,
-      additionalField5) {
+      failUrl,) {
       var x = document.getElementById("payGovHiddenForm");
+
+      console.log("helleoeooe", merchantId, orderId)
+
       if (x.style.display === "none") {
         console.log("block");
         x.style.display = "block";
@@ -363,7 +354,7 @@
         x.style.display = "none";
       }
       document.getElementById("merchIdVal").value = merchantId;
-      document.getElementById("EncryptTrans").value = orderId;
+      document.getElementById("EncryptTrans").value = encryptyTrans;
 
       await sleep(2000);
       document.forms["frmData"].submit();
@@ -384,8 +375,7 @@
         <tr>
           <td width="20px">
             <input type="hidden" name="EncryptTrans" id="EncryptTrans" value=ObjMulReq._single_Paramresponse>
-
-            <input type="hidden" name="merchIdVal" id="merchIdVal" value="1000112">
+            <input type="hidden" name="merchIdVal" id="merchIdVal" value="merchIdVal">
 
           </td>
 

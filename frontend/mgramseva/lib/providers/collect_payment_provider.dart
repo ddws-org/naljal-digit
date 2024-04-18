@@ -258,174 +258,183 @@ class CollectPaymentProvider with ChangeNotifier {
 
     screenshotController
         .captureFromWidget(
-          Container(
-              width: kIsWeb ? 375 : 195,
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              child: Row(
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          kIsWeb
-                              ? SizedBox(
-                                  width: 70,
-                                  height: 70,
-                                )
-                              : Image(
-                                  width: 40,
-                                  height: 40,
-                                  color: Colors.black,
-                                  image: NetworkImage(stateProvider
-                                      .stateInfo!.stateLogoURL
-                                      .toString())),
-                          Container(
-                            width: kIsWeb ? 290 : 90,
+            Container(
+                width: kIsWeb ? 375 : 195,
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            kIsWeb
+                                ? SizedBox(
+                                    width: 70,
+                                    height: 70,
+                                  )
+                                : Image(
+                                    width: 40,
+                                    height: 40,
+                                    color: Colors.black,
+                                    image: NetworkImage(stateProvider
+                                        .stateInfo!.stateLogoURL
+                                        .toString())),
+                            Container(
+                              width: kIsWeb ? 290 : 90,
+                              margin: EdgeInsets.all(5),
+                              child: Text(
+                                ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(i18.consumerReciepts
+                                        .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
+                                textScaleFactor: kIsWeb ? 3 : 1,
+                                maxLines: 3,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    height: 1,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
+                                textAlign: TextAlign.left,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                            width: kIsWeb ? 375 : 90,
                             margin: EdgeInsets.all(5),
                             child: Text(
-                              ApplicationLocalizations.of(
-                                      navigatorKey.currentContext!)
-                                  .translate(i18.consumerReciepts
-                                      .GRAM_PANCHAYAT_WATER_SUPPLY_AND_SANITATION),
-                              textScaleFactor: kIsWeb ? 3 : 1,
-                              maxLines: 3,
-                              style: TextStyle(
+                                ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(
+                                        i18.consumerReciepts.WATER_RECEIPT),
+                                textScaleFactor: kIsWeb ? 3 : 1,
+                                style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 10,
                                   height: 1,
                                   fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic),
-                              textAlign: TextAlign.left,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                          width: kIsWeb ? 375 : 90,
-                          margin: EdgeInsets.all(5),
-                          child: Text(
-                              ApplicationLocalizations.of(
-                                      navigatorKey.currentContext!)
-                                  .translate(i18.consumerReciepts.WATER_RECEIPT),
-                              textScaleFactor: kIsWeb ? 3 : 1,
-                              style: TextStyle(
+                                ))),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_GPWSC_NAME,
+                            ApplicationLocalizations.of(
+                                    navigatorKey.currentContext!)
+                                .translate(commonProvider
+                                    .userDetails!.selectedtenant!.code!)),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_CONSUMER_NO,
+                            '${fetchBill.consumerCode}'),
+                        getPrinterLabel(
+                          i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
+                          '${item.paidBy}',
+                        ),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
+                            item.mobileNumber),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
+                            ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(houseHoldProvider
+                                        .waterConnection!
+                                        .additionalDetails!
+                                        .doorNo
+                                        .toString()) +
+                                " " +
+                                ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(
+                                        '${houseHoldProvider.waterConnection?.additionalDetails?.street.toString()}') +
+                                " " +
+                                ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(
+                                        '${houseHoldProvider.waterConnection?.additionalDetails?.locality.toString()}') +
+                                " " +
+                                ApplicationLocalizations.of(
+                                        navigatorKey.currentContext!)
+                                    .translate(commonProvider
+                                        .userDetails!.selectedtenant!.code!)),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        getPrinterLabel(i18.consumer.SERVICE_TYPE,
+                            '${houseHoldProvider.waterConnection!.connectionType.toString()}'),
+                        getPrinterLabel(
+                            i18.consumerReciepts.CONSUMER_RECEIPT_NO,
+                            item.paymentDetails!.first.receiptNumber),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_ISSUE_DATE,
+                            DateFormats.timeStampToDate(item.transactionDate,
+                                    format: "dd/MM/yyyy")
+                                .toString()),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_BILL_PERIOD,
+                            DateFormats.timeStampToDate(
+                                    item.paymentDetails?.last.bill!.billDetails!
+                                        .first.fromPeriod,
+                                    format: "dd/MM/yyyy") +
+                                '-' +
+                                DateFormats.timeStampToDate(
+                                        item.paymentDetails?.last.bill
+                                            ?.billDetails!.first.toPeriod,
+                                        format: "dd/MM/yyyy")
+                                    .toString()),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        getPrinterLabel(
+                            i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
+                            ('₹' + (item.totalDue).toString())),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
+                            ('₹' + (item.totalAmountPaid).toString())),
+                        getPrinterLabel(
+                            i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
+                            ('Rupees ' +
+                                (NumberToWord()
+                                    .convert(
+                                        'en-in', item.totalAmountPaid!.toInt())
+                                    .toString()) +
+                                ' only')),
+                        getPrinterLabel(
+                            i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                            ('₹' +
+                                ((item.totalDue ?? 0) -
+                                        (item.totalAmountPaid ?? 0))
+                                    .toString())),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text('- - *** - -',
+                            textScaleFactor: kIsWeb ? 3 : 1,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 10,
-                                height: 1,
-                                fontWeight: FontWeight.bold,
-                              ))),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_GPWSC_NAME,
-                          ApplicationLocalizations.of(navigatorKey.currentContext!)
-                              .translate(commonProvider
-                                  .userDetails!.selectedtenant!.code!)),
-                      getPrinterLabel(i18.consumerReciepts.RECEIPT_CONSUMER_NO,
-                          '${fetchBill.consumerCode}'),
-                      getPrinterLabel(
-                        i18.consumerReciepts.RECEIPT_CONSUMER_NAME,
-                        '${item.paidBy}',
-                      ),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_CONSUMER_MOBILE_NO,
-                          item.mobileNumber),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_CONSUMER_ADDRESS,
-                          ApplicationLocalizations.of(navigatorKey.currentContext!)
-                                  .translate(houseHoldProvider
-                                      .waterConnection!.additionalDetails!.doorNo
-                                      .toString()) +
-                              " " +
-                              ApplicationLocalizations.of(
-                                      navigatorKey.currentContext!)
-                                  .translate(
-                                      '${houseHoldProvider.waterConnection?.additionalDetails?.street.toString()}') +
-                              " " +
-                              ApplicationLocalizations.of(
-                                      navigatorKey.currentContext!)
-                                  .translate(
-                                      '${houseHoldProvider.waterConnection?.additionalDetails?.locality.toString()}') +
-                              " " +
-                              ApplicationLocalizations.of(
-                                      navigatorKey.currentContext!)
-                                  .translate(commonProvider
-                                      .userDetails!.selectedtenant!.code!)),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      getPrinterLabel(i18.consumer.SERVICE_TYPE,
-                          '${houseHoldProvider.waterConnection!.connectionType.toString()}'),
-                      getPrinterLabel(i18.consumerReciepts.CONSUMER_RECEIPT_NO,
-                          item.paymentDetails!.first.receiptNumber),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_ISSUE_DATE,
-                          DateFormats.timeStampToDate(item.transactionDate,
-                                  format: "dd/MM/yyyy")
-                              .toString()),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_BILL_PERIOD,
-                          DateFormats.timeStampToDate(
-                                  item.paymentDetails?.last.bill!.billDetails!.first
-                                      .fromPeriod,
-                                  format: "dd/MM/yyyy") +
-                              '-' +
-                              DateFormats.timeStampToDate(
-                                      item.paymentDetails?.last.bill?.billDetails!
-                                          .first.toPeriod,
-                                      format: "dd/MM/yyyy")
-                                  .toString()),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      getPrinterLabel(
-                          i18.consumerReciepts.CONSUMER_ACTUAL_DUE_AMOUNT,
-                          ('₹' + (item.totalDue).toString())),
-                      getPrinterLabel(i18.consumerReciepts.RECEIPT_AMOUNT_PAID,
-                          ('₹' + (item.totalAmountPaid).toString())),
-                      getPrinterLabel(
-                          i18.consumerReciepts.RECEIPT_AMOUNT_IN_WORDS,
-                          ('Rupees ' +
-                              (NumberToWord()
-                                  .convert('en-in', item.totalAmountPaid!.toInt())
-                                  .toString()) +
-                              ' only')),
-                      getPrinterLabel(
-                          i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
-                          ('₹' +
-                              ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
-                                  .toString())),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text('- - *** - -',
-                          textScaleFactor: kIsWeb ? 3 : 1,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: kIsWeb ? 5 : 6,
-                              fontWeight: FontWeight.bold)),
-                      Text(
-                          "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
-                          textScaleFactor: kIsWeb ? 3 : 1,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: kIsWeb ? 5 : 6,
-                              fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ],
-              )),
-        pixelRatio: 16/9
-        )
+                                fontSize: kIsWeb ? 5 : 6,
+                                fontWeight: FontWeight.bold)),
+                        Text(
+                            "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.common.RECEIPT_FOOTER)}",
+                            textScaleFactor: kIsWeb ? 3 : 1,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: kIsWeb ? 5 : 6,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ],
+                )),
+            pixelRatio: 16 / 9)
         .then((value) => {
               kIsWeb
                   ? js.onButtonClick(
@@ -518,7 +527,7 @@ class CollectPaymentProvider with ChangeNotifier {
   }
 
   Future<void> updatePaymentInformation(
-      FetchBill fetchBill, Map query,BuildContext context) async {
+      FetchBill fetchBill, Map query, BuildContext context) async {
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
 
     var amount = fetchBill.customAmountCtrl.text;
@@ -568,8 +577,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": query['connectionType'] ==
-                          'Metered'
+                  "key": query['connectionType'] == 'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",
                   "tenantId": commonProvider.userDetails!.selectedtenant!.code,
@@ -584,8 +592,7 @@ class CollectPaymentProvider with ChangeNotifier {
                   "Payments": [paymentDetails.payments!.first]
                 },
                 {
-                  "key": query['connectionType'] ==
-                          'Metered'
+                  "key": query['connectionType'] == 'Metered'
                       ? "ws-receipt"
                       : "ws-receipt-nm",
                   "tenantId": commonProvider.userDetails!.selectedtenant!.code,
@@ -610,9 +617,12 @@ class CollectPaymentProvider with ChangeNotifier {
     }
   }
 
-  Future<void> createTransaction(
-      FetchBill fetchBill, String tenantId, BuildContext context,Map query) async {
+  Future<void> createTransaction(FetchBill fetchBill, String tenantId,
+      BuildContext context, Map query) async {
     var amount = fetchBill.customAmountCtrl.value.text;
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     var transaction = {
       "Transaction": {
         "tenantId": tenantId,
@@ -628,11 +638,13 @@ class CollectPaymentProvider with ChangeNotifier {
         "user": {
           "name": fetchBill.payerName,
           "mobileNumber": fetchBill.mobileNumber,
-          "tenantId": tenantId
+          "tenantId": tenantId,
         },
-        "callbackUrl":
-            "${apiBaseUrl}mgramseva/paymentSuccess",
-        "additionalDetails": {"isWhatsapp": false,"connectionType":query["connectionType"]}
+        "callbackUrl": "${apiBaseUrl}mgramseva/paymentSuccess",
+        "additionalDetails": {
+          "isWhatsapp": false,
+          "connectionType": query["connectionType"]
+        }
       }
     };
     try {
@@ -641,32 +653,20 @@ class CollectPaymentProvider with ChangeNotifier {
       if (transactionDetails != null &&
           transactionDetails.transaction?.redirectUrl != null) {
         var postUri = Uri.parse(transactionDetails.transaction!.redirectUrl!);
-        DateTime now = new DateTime.now();
-        var dateStringPrefix = '${postUri.queryParameters['requestDateTime']}'
-            .split('${now.year}');
-        var requestedDate =
-            '${dateStringPrefix[0]}${now.year} ${dateStringPrefix[1]}';
+
+print('Value of merchIdVal: ${postUri.queryParameters['merchIdVal']}');
+        
         var successUrl = '${postUri.queryParameters['successUrl']}';
         var failUrl = '${postUri.queryParameters['failUrl']}';
 
         js.onCollectPayment(
-            '${Uri.parse('${postUri.queryParameters['txURL']}')}',
-            '${postUri.queryParameters['checksum']}',
-            '${postUri.queryParameters['messageType']}',
-            '${postUri.queryParameters['merchantId']}',
-            '${postUri.queryParameters['serviceId']}',
-            '${postUri.queryParameters['orderId']}',
-            '${postUri.queryParameters['customerId']}',
-            '${postUri.queryParameters['transactionAmount']}',
-            '${postUri.queryParameters['currencyCode']}',
-            requestedDate,
+            '${postUri.queryParameters['merchIdVal']}',
+          '${postUri.queryParameters['EncryptTrans']}',
+            
             successUrl,
             failUrl,
-            '${postUri.queryParameters['additionalField1']}',
-            '${postUri.queryParameters['additionalField2']}',
-            '${postUri.queryParameters['additionalField3']}',
-            '${postUri.queryParameters['additionalField4']}',
-            '${postUri.queryParameters['additionalField5']}');
+            
+            );
       }
     } on CustomException catch (e, s) {
       Navigator.pop(context);
