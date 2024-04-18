@@ -185,7 +185,6 @@ public class EnrichmentService {
 	private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey, String idFormat) {
 		List<IdResponse> idResponses = idGenRepository.getId(requestInfo, tenantId, idKey, idFormat, 1)
 				.getIdResponses();
-		log.info(idResponses.toString());
 		if (CollectionUtils.isEmpty(idResponses))
 			throw new CustomException(WCConstants.IDGEN_ERROR_CONST, "No ids returned from idgen Service");
 
@@ -252,7 +251,6 @@ public class EnrichmentService {
      * @param request WaterConnectionRequest Object
      */
 	private void setConnectionNO(WaterConnectionRequest request) {
-		log.info("inside setConnectionNo->");
 		List<String> connectionNumbers = getIdList(request.getRequestInfo(), request.getWaterConnection().getTenantId(),
 				config.getWaterConnectionIdGenName(), config.getWaterConnectionIdGenFormat());
 		if (connectionNumbers.size() != 1) {
