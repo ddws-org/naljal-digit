@@ -173,6 +173,9 @@ public class SbiGateway implements Gateway {
 		queryMap.forEach(params::add);
 		params.add("EncryptTrans", singleParamResponse);
 		params.add("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
+		String accountInfo = queryMap.get(MERCHANT_ORDER_NO_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + transaction.getTenantId().split("\\.")[1];
+		String accountInfoEncrypt = AES256Bit.encrypt(accountInfo, key);
+		queryMap.put("MultiAccountInstructionDtls", accountInfoEncrypt);
 		queryMap.forEach(params::add);
 		UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(ecom).queryParams(params).build();
 
