@@ -340,6 +340,7 @@
     async function onCollectPayment(
       encryptyTrans,
       merchantIdVal,
+      multiAccountInstructionDtls,
       successUrl,
       failUrl,) {
       var x = document.getElementById("payGovHiddenForm");
@@ -354,6 +355,8 @@
       }
       document.getElementById("merchIdVal").value = merchantIdVal;
       document.getElementById("EncryptTrans").value = encryptyTrans;
+      document.getElementById("MultiAccountInstructionDtls").value = MultiAccountInstructionDtls;
+
 
       await sleep(2000);
       document.forms["frmData"].submit();
@@ -373,8 +376,11 @@
       <table>
         <tr>
           <td width="20px">
-            <input type="hidden" name="EncryptTrans" id="EncryptTrans" value="encryptyTrans">
+            <input type="hidden" name="EncryptTrans" id="EncryptTrans" value="encryptTrans">
             <input type="hidden" name="merchIdVal" id="merchIdVal" value="merchIdVal">
+            <input type="hidden" name="MultiAccountInstructionDtls" id="MultiAccountInstructionDtls"
+              value="MultiAccountInstructionDtls">
+
 
           </td>
 

@@ -12,6 +12,7 @@ external void onButtonClick(Uint8List value, String logo);
 external void onCollectPayment(
     String encryptTrans,
     String merchIdVal,
+    String multiAccountInstructionDtls,
     String successUrl,
     String failUrl,
     

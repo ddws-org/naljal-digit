@@ -663,6 +663,8 @@ print('Value of merchIdVal: ${postUri.queryParameters['merchIdVal']}');
                     '${postUri.queryParameters['EncryptTrans']}',
 
             '${postUri.queryParameters['merchIdVal']}',
+                        '${postUri.queryParameters['MultiAccountInstructionDtls']}',
+
             
             successUrl,
             failUrl,
