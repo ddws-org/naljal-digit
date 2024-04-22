@@ -173,7 +173,9 @@ public class SbiGateway implements Gateway {
 		queryMap.forEach(params::add);
 		params.add("EncryptTrans", singleParamResponse);
 		params.add("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
-		String accountInfo = queryMap.get(MERCHANT_ORDER_NO_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + transaction.getTenantId().split("\\.")[1];
+		//Sample format of MultiAccountInstructionDtls: Amount|Currency|Unique Identifier
+		//TODO: For PROD, the unique identifier should be change to village code
+		String accountInfo = queryMap.get(TOTAL_DUE_AMOUNT_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + "GRPT";
 		String accountInfoEncrypt = AES256Bit.encrypt(accountInfo, key);
 		queryMap.put("MultiAccountInstructionDtls", accountInfoEncrypt);
 		queryMap.forEach(params::add);
@@ -231,7 +233,9 @@ public class SbiGateway implements Gateway {
 
 		queryMap.put("EncryptTrans", singleParamResponse);
 		queryMap.put("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
-		String accountInfo = queryMap.get(MERCHANT_ORDER_NO_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + transaction.getTenantId().split("\\.")[1];
+		//Sample format of MultiAccountInstructionDtls: Amount|Currency|Unique Identifier
+		//TODO: For PROD, the unique identifier should be change to village code
+		String accountInfo = queryMap.get(TOTAL_DUE_AMOUNT_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + "GRPT";
 		String accountInfoEncrypt = AES256Bit.encrypt(accountInfo, key);
 		queryMap.put("MultiAccountInstructionDtls", accountInfoEncrypt);
 		ObjectMapper mapper = new ObjectMapper();
