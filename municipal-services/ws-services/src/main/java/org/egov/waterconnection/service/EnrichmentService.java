@@ -185,7 +185,6 @@ public class EnrichmentService {
 	private List<String> getIdList(RequestInfo requestInfo, String tenantId, String idKey, String idFormat) {
 		List<IdResponse> idResponses = idGenRepository.getId(requestInfo, tenantId, idKey, idFormat, 1)
 				.getIdResponses();
-
 		if (CollectionUtils.isEmpty(idResponses))
 			throw new CustomException(WCConstants.IDGEN_ERROR_CONST, "No ids returned from idgen Service");
 
