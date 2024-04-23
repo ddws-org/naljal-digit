@@ -85,8 +85,10 @@ public class TransactionService {
             paymentsService.registerPayment(transactionRequest);
         }
         else{
+            log.info("Inside Inntiate transactionn");
             URI uri = gatewayService.initiateTxn(transaction);
             transaction.setRedirectUrl(uri.toString());
+            log.info("Redirect URI:"+uri.toString());
 
             dump.setTxnRequest(uri.toString());
         }

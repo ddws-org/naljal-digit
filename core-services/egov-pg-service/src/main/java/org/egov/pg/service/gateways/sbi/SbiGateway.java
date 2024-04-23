@@ -164,21 +164,25 @@ public class SbiGateway implements Gateway {
 		fields.add(queryMap.get(TXN_SOURCE_KEY));
 
 		String message = String.join("|", fields);
-
+        log.info("Message:"+message);
 		SecretKeySpec key = AES256Bit.readKeyBytes(SECRET_KEY);
 
 		String singleParamResponse = AES256Bit.encrypt(message, key);
-
+        log.info("EncryptTrans:"+ singleParamResponse);
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		queryMap.forEach(params::add);
 		params.add("EncryptTrans", singleParamResponse);
 		params.add("merchIdVal", queryMap.get(MERCHANT_ID_KEY));
+		log.info("merchIdVal:"+ queryMap.get(MERCHANT_ID_KEY));
 		//Sample format of MultiAccountInstructionDtls: Amount|Currency|Unique Identifier
 		//TODO: For PROD, the unique identifier should be change to village code
-		String accountInfo = queryMap.get(TOTAL_DUE_AMOUNT_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + "GRPT";
+		String accountInfo = queryMap.get(TOTAL_DUE_AMOUNT_KEY) + SEPERATOR + queryMap.get(MERCHANT_CURRENCY_KEY) + SEPERATOR + "NEFT";
+		log.info("MultiAccountInstructionDtls:"+accountInfo);
 		String accountInfoEncrypt = AES256Bit.encrypt(accountInfo, key);
 		queryMap.put("MultiAccountInstructionDtls", accountInfoEncrypt);
 		queryMap.forEach(params::add);
+
+		log.info("Params:"+params);
 		UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(ecom).queryParams(params).build();
 
 		return uriComponents.toUri();
