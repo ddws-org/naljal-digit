@@ -653,23 +653,16 @@ class CollectPaymentProvider with ChangeNotifier {
       if (transactionDetails != null &&
           transactionDetails.transaction?.redirectUrl != null) {
         var postUri = Uri.parse(transactionDetails.transaction!.redirectUrl!);
-
-print('Value of merchIdVal: ${postUri.queryParameters['merchIdVal']}');
-        
         var successUrl = '${postUri.queryParameters['successUrl']}';
         var failUrl = '${postUri.queryParameters['failUrl']}';
 
         js.onCollectPayment(
-                    '${postUri.queryParameters['EncryptTrans']}',
-
-            '${postUri.queryParameters['merchIdVal']}',
-                        '${postUri.queryParameters['MultiAccountInstructionDtls']}',
-
-            
-            successUrl,
-            failUrl,
-            
-            );
+          '${postUri.queryParameters['EncryptTrans']}',
+          '${postUri.queryParameters['merchIdVal']}',
+          '${postUri.queryParameters['MultiAccountInstructionDtls']}',
+          successUrl,
+          failUrl,
+        );
       }
     } on CustomException catch (e, s) {
       Navigator.pop(context);

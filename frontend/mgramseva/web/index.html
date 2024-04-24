@@ -357,11 +357,6 @@
       document.getElementById("merchIdVal").value = merchantIdVal;
       document.getElementById("EncryptTrans").value = encryptyTrans.replace(/ /g, '+');
       document.getElementById("MultiAccountInstructionDtls").value = multiAccountInstructionDtls.replace(/ /g, '+');
-
-
-      console.log("multiAccountInstructionDtls", multiAccountInstructionDtls)
-
-
       await sleep(2000);
       document.forms["frmData"].submit();
 
