@@ -74,11 +74,14 @@ public class RedirectController {
         if(gateway != null && (gateway.equalsIgnoreCase("PAYGOV") || gateway.equalsIgnoreCase("SBIEPAY")) ) {
             StringBuilder redirectURL = new StringBuilder();
             redirectURL.append(citizenRedirectDomain).append(returnURL);
+            log.info("redirectURL:::"+redirectURL);
             formData.remove(returnUrlKey);
             formData.remove("msg");
             httpHeaders.setLocation(UriComponentsBuilder.fromHttpUrl(redirectURL.toString())
                     .queryParams(formData).build().encode().toUri());
+            log.info("HTTPHeaders:");
         } else {
+            log.info("Inside else");
             httpHeaders.setLocation(UriComponentsBuilder.fromHttpUrl(formData.get(returnUrlKey).get(0))
                     .queryParams(formData).build().encode().toUri());
         }
