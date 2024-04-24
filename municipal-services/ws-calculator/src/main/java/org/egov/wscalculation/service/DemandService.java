@@ -349,6 +349,15 @@ public class DemandService {
 		}
 	}
 	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate) {
+		log.info("RequestInfo is ->"+requestInfo);
+		log.info("tenantId is ->"+tenantId);
+		log.info("Owner details ->"+owner.toString());
+		log.info("waterConnectionRequest is ->"+waterConnectionRequest.toString());
+		log.info("property is ->"+property.toString());
+		log.info("demandDetails is ->"+demandDetails.toString());
+		log.info("isForConnectionNO is ->"+isForConnectionNO);
+		log.info("billCycle is ->"+billCycle);
+		log.info("billNumbers is ->"+billNumbers.toString());
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 		String actionLink = config.getNotificationUrl()
