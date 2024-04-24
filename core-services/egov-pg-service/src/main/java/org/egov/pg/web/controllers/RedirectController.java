@@ -71,7 +71,7 @@ public class RedirectController {
          * https://test.org/pg-service/transaction/v1/_redirect?originalreturnurl=/digit-ui/citizen/payment/success/PT/PG-PT-2022-03-10-006063/pg.citya?eg_pg_txnid=PB_PG_2022_07_12_002082_48
          * Here we are reading originalreturnurl value and then forming redirect URL with domain name.
          */
-        if(gateway != null && gateway.equalsIgnoreCase("PAYGOV")) {
+        if(gateway != null && (gateway.equalsIgnoreCase("PAYGOV") || gateway.equalsIgnoreCase("SBIEPAY")) ) {
             StringBuilder redirectURL = new StringBuilder();
             redirectURL.append(citizenRedirectDomain).append(returnURL);
             formData.remove(returnUrlKey);
