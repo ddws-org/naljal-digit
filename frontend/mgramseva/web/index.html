@@ -354,9 +354,14 @@
         x.style.display = "none";
       }
 
+      var m = multiAccountInstructionDtls.replace(/ /g, '+');
+      var en = encryptyTrans.replace(/ /g, '+')
+
       document.getElementById("merchIdVal").value = merchantIdVal;
-      document.getElementById("EncryptTrans").value = encryptyTrans.replace(/ /g, '+');
-      document.getElementById("MultiAccountInstructionDtls").value = multiAccountInstructionDtls.replace(/ /g, '+');
+      document.getElementById("EncryptTrans").value = en;
+      document.getElementById("MultiAccountInstructionDtls").value = m;
+      document.getElementById("SuccessURL").value = successUrl;
+      document.getElementById("FailURL").value = failUrl;
       await sleep(2000);
       document.forms["frmData"].submit();
 
@@ -379,6 +384,8 @@
             <input type="hidden" name="merchIdVal" id="merchIdVal" value="merchIdVal">
             <input type="hidden" name="MultiAccountInstructionDtls" id="MultiAccountInstructionDtls"
               value="MultiAccountInstructionDtls">
+            <input type="text" id='SuccessURL' class='form-control' name='SuccessURL' />
+            <input type="text" id='FailURL' class='form-control' name='FailURL' />
 
 
           </td>

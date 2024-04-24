@@ -653,8 +653,8 @@ class CollectPaymentProvider with ChangeNotifier {
       if (transactionDetails != null &&
           transactionDetails.transaction?.redirectUrl != null) {
         var postUri = Uri.parse(transactionDetails.transaction!.redirectUrl!);
-        var successUrl = '${postUri.queryParameters['successUrl']}';
-        var failUrl = '${postUri.queryParameters['failUrl']}';
+        var successUrl = '${postUri.queryParameters['SuccessURL']}';
+        var failUrl = '${postUri.queryParameters['FailURL']}';
 
         js.onCollectPayment(
           '${postUri.queryParameters['EncryptTrans']}',
