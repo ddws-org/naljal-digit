@@ -120,7 +120,7 @@ public class EmployeeService {
 		idGenService.setIds(employeeRequest);
 		employeeRequest.getEmployees().stream().forEach(employee -> {
 			enrichCreateRequest(employee, requestInfo);
-			createUser(employee, requestInfo);
+//			createUser(employee, requestInfo);
 			pwdMap.put(employee.getUuid(), employee.getUser().getPassword());
 			employee.getUser().setPassword(null);
 		});
