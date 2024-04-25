@@ -73,6 +73,9 @@ public class RedirectController {
          */
         if(gateway != null && (gateway.equalsIgnoreCase("PAYGOV") || gateway.equalsIgnoreCase("SBIEPAY")) ) {
             StringBuilder redirectURL = new StringBuilder();
+            log.info("Citizen domain:"+citizenRedirectDomain);
+            log.info("returnURL :"+returnURL);
+            log.info("redirectURLredirectURL:"+redirectURL);
             redirectURL.append(citizenRedirectDomain).append(returnURL);
             log.info("redirectURL:::"+redirectURL);
             formData.remove(returnUrlKey);
