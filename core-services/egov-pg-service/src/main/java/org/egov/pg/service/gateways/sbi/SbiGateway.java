@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import jdk.jpackage.internal.Log;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.pg.constants.PgConstants;
@@ -128,6 +129,8 @@ public class SbiGateway implements Gateway {
 		String returnUrl = transaction.getCallbackUrl().replace(CITIZEN_URL, "");
 		String domainName = returnUrl.replaceAll("http(s)?://|www\\.|/.*", "");
 		String citizenReturnURL = returnUrl.split(domainName)[1];
+		Log.info("citizen url:"+citizenReturnURL);
+		log.info("Redirect Before:"+REDIRECT_URL);
 		log.info("returnUrl::::" + getReturnUrl(citizenReturnURL, REDIRECT_URL));
 
 		HashMap<String, String> queryMap = new HashMap<>();
