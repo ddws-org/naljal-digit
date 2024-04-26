@@ -249,5 +249,8 @@ public class WSCalculationConfiguration {
 
 	@Value("${sms.exclude.tenant}")
 	private String smsExcludeTenant;
+
+	@Value("${mGram.Consumer.NewBill}")
+	private String billLocalizationCode;
 	
 }
