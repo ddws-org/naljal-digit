@@ -25,6 +25,9 @@ class TransactionRepository extends BaseService {
 
   Future<BillPayments?> createPayment(Map body) async {
     BillPayments? response;
+  var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
 
     var res = await makeRequest(
         url: Url.COLLECT_PAYMENT,
@@ -38,7 +41,7 @@ class TransactionRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
-            null));
+            commonProvider.userDetails!.accessToken));
 
     if (res != null) {
       response = BillPayments.fromJson(res);
