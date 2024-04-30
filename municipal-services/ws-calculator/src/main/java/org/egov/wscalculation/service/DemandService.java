@@ -376,6 +376,7 @@ public class DemandService {
 		BigDecimal arrears = totalAmount.subtract(demandAmount);
 
 		Instant currentTime = Instant.now();
+		//2592000 is 30 days , we are adding 30 days to current date for bill expiry.
 		Instant futureTime = currentTime.plusSeconds(2592000);
 		ZonedDateTime zonedDateTime = futureTime.atZone(ZoneId.systemDefault());
 		String formattedDate = zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM"));
