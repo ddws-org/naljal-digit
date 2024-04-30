@@ -376,7 +376,7 @@ public class DemandService {
 		BigDecimal arrears = totalAmount.subtract(demandAmount);
 
 		Instant currentTime = Instant.now();
-		Instant futureTime = currentTime.plusSeconds(2592000);
+		Instant futureTime = currentTime.plusSeconds(configs.getExpiriyTime());
 		ZonedDateTime zonedDateTime = futureTime.atZone(ZoneId.systemDefault());
 		String formattedDate = zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM"));
 
