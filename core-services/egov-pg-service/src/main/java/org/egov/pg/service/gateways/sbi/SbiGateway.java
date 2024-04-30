@@ -458,6 +458,7 @@ public class SbiGateway implements Gateway {
 
 			String[] splitArray = resp.split("[|]");
 			Transaction txStatus = null;
+			log.info("Size:"+splitArray.length);
 			SbiGatewayStatusResponse statusResponse = new SbiGatewayStatusResponse(splitArray[2]);
 			int index = 0;
 			statusResponse.setMerchantId(splitArray[++index]);
@@ -476,7 +477,7 @@ public class SbiGateway implements Gateway {
 			statusResponse.setCin(splitArray[++index]);
 			statusResponse.setMerchantId(splitArray[++index]);
 			statusResponse.setTotalFeeGST(splitArray[++index]);
-			statusResponse.setRef1(splitArray[++index]);
+		/*	statusResponse.setRef1(splitArray[++index]);
 			statusResponse.setRef2(splitArray[++index]);
 			statusResponse.setRef3(splitArray[++index]);
 			statusResponse.setRef4(splitArray[++index]);
@@ -485,7 +486,7 @@ public class SbiGateway implements Gateway {
 			statusResponse.setRef7(splitArray[++index]);
 			statusResponse.setRef8(splitArray[++index]);
 			statusResponse.setRef9(splitArray[++index]);
-			statusResponse.setRef10(splitArray[++index]);
+			statusResponse.setRef10(splitArray[++index]); 26*/
 			switch (statusResponse.getTxnStatus()) {
 			case "SUCCESS":
 				/*
