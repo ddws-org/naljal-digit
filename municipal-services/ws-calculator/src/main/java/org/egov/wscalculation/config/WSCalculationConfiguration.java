@@ -1,6 +1,7 @@
 package org.egov.wscalculation.config;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -249,5 +250,11 @@ public class WSCalculationConfiguration {
 
 	@Value("${sms.exclude.tenant}")
 	private String smsExcludeTenant;
+
+	@Value("${mGram.Consumer.NewBill}")
+	private String billLocalizationCode;
+
+	@Value("${bill.expriy.time}")
+	private Long expiriyTime;
 	
 }
