@@ -461,7 +461,7 @@ public class SbiGateway implements Gateway {
 			log.info("Size:"+splitArray.length);
 			SbiGatewayStatusResponse statusResponse = new SbiGatewayStatusResponse(splitArray[2]);
 			int index = 0;
-			statusResponse.setMerchantId(splitArray[++index]);
+			statusResponse.setMerchantId(splitArray[index]);
 			statusResponse.setSbiePayRefId(splitArray[++index]);
 			statusResponse.setTxnStatus(splitArray[++index]);
 			statusResponse.setCountry(splitArray[++index]);
