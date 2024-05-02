@@ -27,8 +27,6 @@ class PaymentSuccess extends StatefulWidget {
 class _PaymentSuccessState extends State<PaymentSuccess> {
   List<StateInfo>? stateList;
   Languages? selectedLanguage;
-  bool _transactionUpdateCalled = false;
-
 
   @override
   void initState() {
@@ -37,20 +35,16 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   }
 
   afterViewBuild() async {
-    if (!_transactionUpdateCalled) {
-      _transactionUpdateCalled = true;
-
-      var transactionUpdateProvider =
-      Provider.of<TransactionUpdateProvider>(context, listen: false);
-      var languageProvider =
-      Provider.of<LanguageProvider>(context, listen: false);
-      await languageProvider
-          .getLocalizationData(context)
-          .then((value) => callNotifyer());
-      await transactionUpdateProvider
-          .updateTransaction(widget.query, context)
-          .then((value) => callNotifyer());
-    }
+    var transactionUpdateProvider =
+        Provider.of<TransactionUpdateProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    await languageProvider
+        .getLocalizationData(context)
+        .then((value) => callNotifyer());
+    await transactionUpdateProvider
+        .updateTransaction(widget.query, context)
+        .then((value) => callNotifyer());
   }
 
   @override
@@ -59,6 +53,8 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+
+ 
     UpdateTransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(

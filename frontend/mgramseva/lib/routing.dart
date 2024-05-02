@@ -141,6 +141,10 @@ class Routing {
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
             localQuery = query;
+            localQuery.remove('encData');
+            localQuery.remove('Bank_Code');
+      localQuery.remove('merchIdVal');
+
           } else {
             return pageNotAvailable;
           }
