@@ -140,7 +140,6 @@ class Routing {
           localQuery = cloneQuery;
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-// Check if encDta exists in query parameters
             if (query.containsKey('encDta')) {
               query.remove('encDta'); // Remove encDta
             }
@@ -148,11 +147,7 @@ class Routing {
             return pageNotAvailable;
           }
         }
-        // List of query parameters to keep
-  List<String> parametersToKeep = ['eg_pg_txnid',];
-
-  // Remove all query parameters except those in parametersToKeep list
-  localQuery.removeWhere((key, value) => !parametersToKeep.contains(key));
+  
         return MaterialPageRoute(
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(
