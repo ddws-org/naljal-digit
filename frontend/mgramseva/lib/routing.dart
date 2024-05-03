@@ -140,15 +140,16 @@ class Routing {
           localQuery = cloneQuery;
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-            localQuery = query;
-            localQuery.remove('encData');
-            localQuery.remove('Bank_Code');
-      localQuery.remove('merchIdVal');
 
           } else {
             return pageNotAvailable;
           }
         }
+        // List of query parameters to keep
+  List<String> parametersToKeep = ['eg_pg_txnid',];
+
+  // Remove all query parameters except those in parametersToKeep list
+  localQuery.removeWhere((key, value) => !parametersToKeep.contains(key));
         return MaterialPageRoute(
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(
