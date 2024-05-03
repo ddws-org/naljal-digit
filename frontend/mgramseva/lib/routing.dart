@@ -140,7 +140,10 @@ class Routing {
           localQuery = cloneQuery;
         } else {
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-
+// Check if encDta exists in query parameters
+            if (query.containsKey('encDta')) {
+              query.remove('encDta'); // Remove encDta
+            }
           } else {
             return pageNotAvailable;
           }
