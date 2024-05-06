@@ -78,8 +78,10 @@ public class RedirectController {
             log.info("redirectURLredirectURL:"+redirectURL);
             redirectURL.append(citizenRedirectDomain).append(returnURL);
             log.info("redirectURL:::"+redirectURL);
+            log.info("formData:");
             formData.remove(returnUrlKey);
             formData.remove("msg");
+            formData.remove("encData");
             httpHeaders.setLocation(UriComponentsBuilder.fromHttpUrl(redirectURL.toString())
                     .queryParams(formData).build().encode().toUri());
             log.info("HTTPHeaders:");
