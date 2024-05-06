@@ -61,6 +61,10 @@ class Routing {
     Map<String, dynamic>? query =
         Map.from(uri.queryParameters); // Make a mutable copy
     String? path = uri.path;
+
+       query.remove("encData");
+                        query.remove("Bank_Code");
+            query.remove("merchIdVal");
     // if (query != null && query.containsKey("encData")) {
     //   query.remove("encData");
     //   print("Printing url++++ query: " + query.toString());
@@ -155,9 +159,9 @@ class Routing {
           //   query.remove('encData'); // Remove encDta
           // }
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-            query.remove("encData");
-                        query.remove("Bank_Code");
-            query.remove("merchIdVal");
+            // query.remove("encData");
+            //             query.remove("Bank_Code");
+            // query.remove("merchIdVal");
 
             
             localQuery = query;
