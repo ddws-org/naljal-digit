@@ -58,20 +58,30 @@ class Routing {
         listen: false);
 
     Uri uri = Uri.parse(settings.name ?? '');
-    Map<String, dynamic>? query = uri.queryParameters;
+Map<String, dynamic>? query = Map.from(uri.queryParameters); // Make a mutable copy
     String? path = uri.path;
-    
+    if (query != null && query.containsKey("encData")) {
+    query.remove("encData");
+    print("Printing url++++ query: " + query.toString());
+}
+
     if (kIsWeb) {
-      if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: q),
+      if (settings.name == Routes.PRIVACY_POLICY ||
+          settings.name == Routes.PRIVACY_POLICY_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: q),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       }
-      if (settings.name == Routes.TERMS_OF_USE || settings.name == Routes.TERMS_OF_USE_S) {
-        bool q = settings.arguments==null?false:settings.arguments as bool;
-       return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.TERMS_OF_USE,showLeading: q),
+      if (settings.name == Routes.TERMS_OF_USE ||
+          settings.name == Routes.TERMS_OF_USE_S) {
+        bool q =
+            settings.arguments == null ? false : settings.arguments as bool;
+        return MaterialPageRoute(
+            builder: (_) =>
+                PrivacyAndTerms(pageType: Routes.TERMS_OF_USE, showLeading: q),
             settings: RouteSettings(name: Routes.TERMS_OF_USE));
       }
       if (Routes.POST_PAYMENT_FEED_BACK == path && settings.arguments == null) {
@@ -135,21 +145,27 @@ class Routing {
                     '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
       } else if (Routes.PAYMENT_SUCCESS == path && settings.arguments == null) {
         late Map<String, dynamic> localQuery;
+
         if (settings.arguments != null) {
           var cloneQuery = <String, dynamic>{};
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
           localQuery = cloneQuery;
         } else {
-            // if (query.containsKey('encData')) {
-            //   query.remove('encData'); // Remove encDta
-            // }
+          // if (query.containsKey('encData')) {
+          //   query.remove('encData'); // Remove encDta
+          // }
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-          
+            var cloneQuery = <String, dynamic>{};
+            cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+
+            localQuery = cloneQuery;
+
+            print("printign locall" + localQuery.toString());
           } else {
             return pageNotAvailable;
           }
         }
-  
+
         return MaterialPageRoute(
             builder: (_) => PaymentSuccess(query: localQuery),
             settings: RouteSettings(
@@ -170,7 +186,9 @@ class Routing {
       } else if (Routes.LOGIN == settings.name ||
           Routes.FORGOT_PASSWORD == settings.name ||
           Routes.DEFAULT_PASSWORD_UPDATE == settings.name ||
-          Routes.RESET_PASSWORD == settings.name || Routes.PRIVACY_POLICY == settings.name || Routes.TERMS_OF_USE == settings.name) {
+          Routes.RESET_PASSWORD == settings.name ||
+          Routes.PRIVACY_POLICY == settings.name ||
+          Routes.TERMS_OF_USE == settings.name) {
         path = settings.name;
       } else if (path == '/') {
         path = Routes.HOME;
@@ -192,8 +210,11 @@ class Routing {
     currentRoute = settings.name;
     switch (path) {
       case Routes.LANDING_PAGE:
-        return MaterialPageRoute(builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
-        // return MaterialPageRoute(builder: (_) => LandingPageNew());
+        return MaterialPageRoute(
+            builder: (_) => (kIsWeb) ? LandingPage() : LandingPageNew(),
+            settings: RouteSettings(
+                name: (kIsWeb) ? Routes.LANDING_PAGE : Routes.SELECT_STATE));
+      // return MaterialPageRoute(builder: (_) => LandingPageNew());
       case Routes.LOGIN:
         return MaterialPageRoute(
             builder: (_) => Login(),
@@ -204,8 +225,9 @@ class Routing {
             settings: RouteSettings(name: Routes.SELECT_LANGUAGE));
       case Routes.SELECT_STATE:
         return MaterialPageRoute(
-            builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),
-            settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
+            builder: (_) => (kIsWeb) ? LandingPage() : LandingPageNew(),
+            settings: RouteSettings(
+                name: (kIsWeb) ? Routes.LANDING_PAGE : Routes.SELECT_STATE));
       case Routes.FORGOT_PASSWORD:
         return MaterialPageRoute(
             builder: (_) => ForgotPassword(),
@@ -392,9 +414,11 @@ class Routing {
             settings: RouteSettings(name: Routes.HRMS));
 
       case Routes.PRIVACY_POLICY:
-        bool args = settings.arguments==null?false:settings.arguments as bool;
+        bool args =
+            settings.arguments == null ? false : settings.arguments as bool;
         return MaterialPageRoute(
-            builder: (_) => PrivacyAndTerms(pageType:Routes.PRIVACY_POLICY,showLeading: args),
+            builder: (_) => PrivacyAndTerms(
+                pageType: Routes.PRIVACY_POLICY, showLeading: args),
             settings: RouteSettings(name: Routes.PRIVACY_POLICY));
       case Routes.TERMS_OF_USE:
         bool args =
