@@ -62,9 +62,9 @@ class Routing {
         Map.from(uri.queryParameters); // Make a mutable copy
     String? path = uri.path;
 
-       query.remove("encData");
-                        query.remove("Bank_Code");
-            query.remove("merchIdVal");
+    query.remove("encData");
+    query.remove("Bank_Code");
+    query.remove("merchIdVal");
     // if (query != null && query.containsKey("encData")) {
     //   query.remove("encData");
     //   print("Printing url++++ query: " + query.toString());
@@ -149,22 +149,21 @@ class Routing {
                 name:
                     '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
       } else if (Routes.PAYMENT_SUCCESS == path && settings.arguments == null) {
-        Map<String, dynamic> localQuery;
+        late Map<String, dynamic> localQuery;
+
         if (settings.arguments != null) {
           var cloneQuery = <String, dynamic>{};
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
           localQuery = cloneQuery;
         } else {
-          // if (query.containsKey('encData')) {
-          //   query.remove('encData'); // Remove encDta
-          // }
+           query.remove("encData");
+  query.remove("Bank_Code");
+  query.remove("merchIdVal");
+         
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-            // query.remove("encData");
-            //             query.remove("Bank_Code");
-            // query.remove("merchIdVal");
+                        localQuery = query;
 
-            
-            localQuery = query;
+          
           } else {
             return pageNotAvailable;
           }
