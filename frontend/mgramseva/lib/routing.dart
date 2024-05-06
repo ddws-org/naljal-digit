@@ -60,6 +60,7 @@ class Routing {
     Uri uri = Uri.parse(settings.name ?? '');
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
+    
     if (kIsWeb) {
       if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
         bool q = settings.arguments==null?false:settings.arguments as bool;
@@ -139,10 +140,11 @@ class Routing {
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
           localQuery = cloneQuery;
         } else {
+            // if (query.containsKey('encData')) {
+            //   query.remove('encData'); // Remove encDta
+            // }
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-            if (query.containsKey('encDta')) {
-              query.remove('encDta'); // Remove encDta
-            }
+          
           } else {
             return pageNotAvailable;
           }
