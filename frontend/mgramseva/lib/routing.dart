@@ -58,12 +58,13 @@ class Routing {
         listen: false);
 
     Uri uri = Uri.parse(settings.name ?? '');
-Map<String, dynamic>? query = Map.from(uri.queryParameters); // Make a mutable copy
+    Map<String, dynamic>? query =
+        Map.from(uri.queryParameters); // Make a mutable copy
     String? path = uri.path;
-    if (query != null && query.containsKey("encData")) {
-    query.remove("encData");
-    print("Printing url++++ query: " + query.toString());
-}
+    // if (query != null && query.containsKey("encData")) {
+    //   query.remove("encData");
+    //   print("Printing url++++ query: " + query.toString());
+    // }
 
     if (kIsWeb) {
       if (settings.name == Routes.PRIVACY_POLICY ||
@@ -144,8 +145,7 @@ Map<String, dynamic>? query = Map.from(uri.queryParameters); // Make a mutable c
                 name:
                     '${Routes.COMMON_PAYMENT}?${Uri(queryParameters: localQuery).query}'));
       } else if (Routes.PAYMENT_SUCCESS == path && settings.arguments == null) {
-        late Map<String, dynamic> localQuery;
-
+        Map<String, dynamic> localQuery;
         if (settings.arguments != null) {
           var cloneQuery = <String, dynamic>{};
           cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
@@ -155,12 +155,12 @@ Map<String, dynamic>? query = Map.from(uri.queryParameters); // Make a mutable c
           //   query.remove('encData'); // Remove encDta
           // }
           if (queryValidator(Routes.PAYMENT_SUCCESS, query)) {
-            var cloneQuery = <String, dynamic>{};
-            cloneQuery.addAll(settings.arguments as Map<String, dynamic>);
+            query.remove("encData");
+                        query.remove("Bank_Code");
+            query.remove("merchIdVal");
 
-            localQuery = cloneQuery;
-
-            print("printign locall" + localQuery.toString());
+            
+            localQuery = query;
           } else {
             return pageNotAvailable;
           }
