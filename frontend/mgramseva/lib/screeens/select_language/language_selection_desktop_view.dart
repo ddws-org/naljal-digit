@@ -98,7 +98,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
                                 i18.common.CONTINUE,
                                     () => Navigator.pushNamed(context, Routes.LOGIN),
                                 key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
-                              ),
+                            ),
                             )
                       ]))))),
           SizedBox(height: 140),

@@ -91,9 +91,9 @@ class _CollectionReport extends State<InactiveConsumerReport>
                           reportProvider.getInactiveConsumerReport(download: true);
                         }
                       },
-                      icon: Icon(Icons.download_sharp),
+                      icon: Icon(Icons.download_sharp,color: Color(0xff033ccf),),
                       label: Text(ApplicationLocalizations.of(context)
-                          .translate(i18.common.CORE_DOWNLOAD)),
+                          .translate(i18.common.CORE_DOWNLOAD),style: TextStyle(color: Color(0xff033ccf)),),
                     ),
                   ],
                 ),

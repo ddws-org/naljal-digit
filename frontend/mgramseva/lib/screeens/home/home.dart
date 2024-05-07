@@ -72,12 +72,12 @@ class _HomeState extends State<Home> {
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: FractionalOffset.topLeft,
-              end: FractionalOffset.bottomRight,
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
               colors: [
-                Color(0xffdbe4f4),
-                Color(0xfff9f3e8),
-                Color(0xfff4e4e3),
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
               ],
             ),
           ),

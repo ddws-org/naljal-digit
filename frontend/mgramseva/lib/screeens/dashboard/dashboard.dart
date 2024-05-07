@@ -276,7 +276,8 @@ class _Dashboard extends State<Dashboard> with SingleTickerProviderStateMixin {
       onPressed: takeScreenShotOfDashboard,
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE),style: TextStyle(color: Color(
+          0xff033ccf)),));
 
   void onTapOfMonthPicker() {
     var dashBoardProvider =

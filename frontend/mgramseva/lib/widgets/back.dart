@@ -8,7 +8,7 @@ class Back extends StatelessWidget {
           Icons.arrow_back,
         ),
         iconSize: 25,
-        color: Color(0xfffa7a39),
+        color: Color(0xff033ccf),
         splashColor: Colors.purple,
         onPressed: () =>
             Navigator.of(context, rootNavigator: true).maybePop());

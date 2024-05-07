@@ -98,14 +98,14 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
-                                color: Theme.of(context).primaryColorDark),
+                                ),
                           ),
                           Text(isRequired ? '*' : '',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
-                                  color: Theme.of(context).primaryColorDark)),
+                                  )),
                         ]))),
               ),
               Column(

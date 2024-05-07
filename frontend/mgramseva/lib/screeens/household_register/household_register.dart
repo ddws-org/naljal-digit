@@ -124,13 +124,13 @@ class _HouseholdRegister extends State<HouseholdRegister>
       },
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7))));
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
-      icon: Icon(Icons.download_sharp),
+      icon: Icon(Icons.download_sharp,color: Color.fromRGBO(3, 60, 207, 0.7),),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)));
+          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7)),));
 }
 
 showDownloadList(List<String> result, BuildContext context) {

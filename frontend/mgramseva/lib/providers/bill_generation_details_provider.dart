@@ -405,7 +405,8 @@ class BillGenerationProvider with ChangeNotifier {
               ?
           [TextButton(onPressed: (){
             Navigator.pop(context);
-          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}'))]
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}',style: TextStyle(color: Color(
+              0xff033ccf)),))]
               :
           [TextButton(onPressed: () async{
             if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 ){
