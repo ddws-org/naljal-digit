@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.egov.domain.model.OtpRequestType;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Getter
 @AllArgsConstructor
@@ -19,11 +18,10 @@ public class Otp {
     private String tenantId;
     private String type;
     private String userType;
-    private String locale;
 
     @JsonIgnore
     public OtpRequestType getTypeOrDefault() {
-        return isEmpty(type) ? OtpRequestType.REGISTER : mapToDomainType();
+        return (type == null || type.isEmpty()) ? OtpRequestType.REGISTER : mapToDomainType();
     }
 
     private OtpRequestType mapToDomainType() {
