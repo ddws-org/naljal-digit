@@ -18,7 +18,7 @@
 # -
 config:
 # Business Services
-  - name: "builds/naljal-digit/business-services/billing-service"
+  - name: "builds/Digit-Core/business-services/billing-service"
     build:
       - work-dir: "business-services/billing-service"
         image-name: "billing-service"
@@ -26,7 +26,7 @@ config:
       - work-dir: "business-services/billing-service/src/main/resources/db"
         image-name: "billing-service-db"
 
-  - name: "builds/naljal-digit/business-services/collection-services"
+  - name: "builds/Digit-Core/business-services/collection-services"
     build:
       - work-dir: "business-services/collection-services"
         image-name: "collection-services"
@@ -34,7 +34,7 @@ config:
       - work-dir: "business-services/collection-services/src/main/resources/db"
         image-name: "collection-services-db"
 
-  - name: "builds/naljal-digit/business-services/egf-instrument"
+  - name: "builds/Digit-Core/business-services/egf-instrument"
     build:
       - work-dir: "business-services/egf-instrument"
         image-name: "egf-instrument"
@@ -42,7 +42,7 @@ config:
       - work-dir: "business-services/egf-instrument/src/main/resources/db"
         image-name: "egf-instrument-db"
 
-  - name: "builds/naljal-digit/business-services/egf-master"
+  - name: "builds/Digit-Core/business-services/egf-master"
     build:
       - work-dir: "business-services/egf-master"
         image-name: "egf-master"
@@ -50,7 +50,7 @@ config:
       - work-dir: "business-services/egf-master/src/main/resources/db"
         image-name: "egf-master-db"
 
-  - name: "builds/naljal-digit/business-services/egov-apportion-service"
+  - name: "builds/Digit-Core/business-services/egov-apportion-service"
     build:
       - work-dir: "business-services/egov-apportion-service"
         image-name: "egov-apportion-service"
@@ -58,7 +58,7 @@ config:
       - work-dir: "business-services/egov-apportion-service/src/main/resources/db"
         image-name: "egov-apportion-service-db"
         
-  - name: "builds/naljal-digit/business-services/egov-hrms"
+  - name: "builds/Digit-Core/business-services/egov-hrms"
     build:
       - work-dir: "business-services/egov-hrms"
         image-name: "egov-hrms"
@@ -66,7 +66,7 @@ config:
       - work-dir: "business-services/egov-hrms/src/main/resources/db"
         image-name: "egov-hrms-db"
 
-  - name: "builds/naljal-digit/business-services/finance-collections-voucher-consumer"
+  - name: "builds/Digit-Core/business-services/finance-collections-voucher-consumer"
     build:
       - work-dir: "business-services/finance-collections-voucher-consumer"
         image-name: "finance-collections-voucher-consumer"
@@ -74,24 +74,31 @@ config:
       - work-dir: "business-services/finance-collections-voucher-consumer/src/main/resources/db"
         image-name: "finance-collections-voucher-consumer-db"
 
-  - name: "builds/naljal-digit/business-services/dashboard-analytics"
+  - name: "builds/Digit-Core/business-services/dashboard-analytics"
     build:
       - work-dir: "business-services/dashboard-analytics"
         image-name: "dashboard-analytics"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/business-services/dashboard-ingest"
+  - name: "builds/Digit-Core/business-services/dashboard-ingest"
     build:
       - work-dir: "business-services/dashboard-ingest"
         image-name: "dashboard-ingest"
         dockerfile: "build/maven/Dockerfile"
-  - name: "builds/naljal-digit/core-services/egov-accesscontrol"
+  - name: "builds/Digit-Core/core-services/egov-accesscontrol"
     build:
       - work-dir: "core-services/egov-accesscontrol"
         image-name: "egov-accesscontrol"
         dockerfile: "build/maven/Dockerfile"
 # Core Services
-  - name: "builds/naljal-digit/core-services/egov-common-masters"
+  - name: "builds/Digit-Core/core-services/audit-service"
+    build:
+      - work-dir: "core-services/audit-service"
+        image-name: "audit-service"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/audit-service/src/main/resources/db"
+        image-name: "audit-service-db"
+  - name: "builds/Digit-Core/core-services/egov-common-masters"
     build:
       - work-dir: "core-services/egov-common-masters"
         image-name: "egov-common-masters"
@@ -99,7 +106,7 @@ config:
       - work-dir: "core-services/egov-common-masters/src/main/resources/db"
         image-name: "egov-common-masters-db"
 
-  - name: "builds/naljal-digit/core-services/egov-data-uploader"
+  - name: "builds/Digit-Core/core-services/egov-data-uploader"
     build:
       - work-dir: "core-services/egov-data-uploader"
         image-name: "egov-data-uploader"
@@ -107,7 +114,7 @@ config:
       - work-dir: "core-services/egov-data-uploader/src/main/resources/db"
         image-name: "egov-data-uploader-db"
 
-  - name: "builds/naljal-digit/core-services/egov-enc-service"
+  - name: "builds/Digit-Core/core-services/egov-enc-service"
     build:
       - work-dir: "core-services/egov-enc-service"
         image-name: "egov-enc-service"
@@ -115,7 +122,7 @@ config:
       - work-dir: "core-services/egov-enc-service/src/main/resources/db"
         image-name: "egov-enc-service-db"
 
-  - name: "builds/naljal-digit/core-services/egov-filestore"
+  - name: "builds/Digit-Core/core-services/egov-filestore"
     build:
       - work-dir: "core-services/egov-filestore"
         image-name: "egov-filestore"
@@ -123,7 +130,7 @@ config:
       - work-dir: "core-services/egov-filestore/src/main/resources/db"
         image-name: "egov-filestore-db"
 
-  - name: "builds/naljal-digit/core-services/egov-idgen"
+  - name: "builds/Digit-Core/core-services/egov-idgen"
     build:
       - work-dir: "core-services/egov-idgen"
         image-name: "egov-idgen"
@@ -131,7 +138,7 @@ config:
       - work-dir: "core-services/egov-idgen/src/main/resources/db"
         image-name: "egov-idgen-db"
 
-  - name: "builds/naljal-digit/core-services/egov-indexer"
+  - name: "builds/Digit-Core/core-services/egov-indexer"
     build:
       - work-dir: "core-services/egov-indexer"
         image-name: "egov-indexer"
@@ -139,7 +146,7 @@ config:
       - work-dir: "core-services/egov-indexer/src/main/resources/db"
         image-name: "egov-indexer-db"
 
-  - name: "builds/naljal-digit/core-services/egov-localization"
+  - name: "builds/Digit-Core/core-services/egov-localization"
     build:
       - work-dir: "core-services/egov-localization"
         image-name: "egov-localization"
@@ -147,7 +154,7 @@ config:
       - work-dir: "core-services/egov-localization/src/main/resources/db"
         image-name: "egov-localization-db"
 
-  - name: "builds/naljal-digit/core-services/egov-location"
+  - name: "builds/Digit-Core/core-services/egov-location"
     build:
       - work-dir: "core-services/egov-location"
         image-name: "egov-location"
@@ -155,25 +162,41 @@ config:
       - work-dir: "core-services/egov-location/src/main/resources/db"
         image-name: "egov-location-db"
 
-  - name: "builds/naljal-digit/core-services/egov-mdms-service"
+  - name: "builds/Digit-Core/core-services/boundary-service"
+    build:
+      - work-dir: "core-services/boundary-service"
+        image-name: "boundary-service"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/boundary-service/src/main/resources/db"
+        image-name: "boundary-service-db"
+
+  - name: "builds/Digit-Core/core-services/egov-mdms-service"
     build:
       - work-dir: "core-services/egov-mdms-service"
         image-name: "egov-mdms-service"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-notification-mail"
+  - name: "builds/Digit-Core/core-services/mdms-v2"
+    build:
+      - work-dir: "core-services/egov-mdms-service"
+        image-name: "mdms-v2"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-mdms-service/src/main/resources/db"
+        image-name: "mdms-v2-db"
+
+  - name: "builds/Digit-Core/core-services/egov-notification-mail"
     build:
       - work-dir: "core-services/egov-notification-mail"
         image-name: "egov-notification-mail"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-notification-sms"
+  - name: "builds/Digit-Core/core-services/egov-notification-sms"
     build:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-otp"
+  - name: "builds/Digit-Core/core-services/egov-otp"
     build:
       - work-dir: "core-services/egov-otp"
         image-name: "egov-otp"
@@ -181,13 +204,13 @@ config:
       - work-dir: "core-services/egov-otp/src/main/resources/db"
         image-name: "egov-otp-db"
 
-  - name: "builds/naljal-digit/core-services/egov-persister"
+  - name: "builds/Digit-Core/core-services/egov-persister"
     build:
       - work-dir: "core-services/egov-persister"
         image-name: "egov-persister"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-pg-service"
+  - name: "builds/Digit-Core/core-services/egov-pg-service"
     build:
       - work-dir: "core-services/egov-pg-service"
         image-name: "egov-pg-service"
@@ -195,27 +218,27 @@ config:
       - work-dir: "core-services/egov-pg-service/src/main/resources/db"
         image-name: "egov-pg-service-db"
 
-  - name: "builds/naljal-digit/core-services/egov-searcher"
+  - name: "builds/Digit-Core/core-services/egov-searcher"
     build:
       - work-dir: "core-services/egov-searcher"
         image-name: "egov-searcher"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-telemetry"
+  - name: "builds/Digit-Core/core-services/egov-telemetry"
     build:
       - work-dir: "core-services/egov-telemetry"
         image-name: "egov-telemetry"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/egov-user"
+  - name: "builds/Digit-Core/core-services/egov-user"
     build:
       - work-dir: "core-services/egov-user"
         image-name: "egov-user"
-        dockerfile: "build/maven/Dockerfile"
+        dockerfile: "build/maven-java8/Dockerfile"
       - work-dir: "core-services/egov-user/src/main/resources/db"
         image-name: "egov-user-db"
 
-  - name: "builds/naljal-digit/core-services/egov-workflow-v2"
+  - name: "builds/Digit-Core/core-services/egov-workflow-v2"
     build:
       - work-dir: "core-services/egov-workflow-v2"
         image-name: "egov-workflow-v2"
@@ -223,13 +246,44 @@ config:
       - work-dir: "core-services/egov-workflow-v2/src/main/resources/db"
         image-name: "egov-workflow-v2-db"
 
-  - name: "builds/naljal-digit/core-services/report"
+  - name: "builds/Digit-Core/core-services/egov-document-uploader"
+    build:
+      - work-dir: "core-services/egov-document-uploader"
+        image-name: "egov-document-uploader"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-document-uploader/src/main/resources/db"
+        image-name: "egov-document-uploader-db"
+
+  - name: "builds/Digit-Core/core-services/national-dashboard-ingest"
+    build:
+      - work-dir: "core-services/national-dashboard-ingest"
+        image-name: "national-dashboard-ingest"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/national-dashboard-ingest/src/main/resources/db"
+        image-name: "national-dashboard-ingest-db"
+
+  - name: "builds/Digit-Core/core-services/national-dashboard-kafka-pipeline"
+    build:
+      - work-dir: "core-services/national-dashboard-kafka-pipeline"
+        image-name: "national-dashboard-kafka-pipeline"
+        dockerfile: "build/maven/Dockerfile"
+
+  - name: "builds/Digit-Core/core-services/egov-survey-services"
+    build:
+      - work-dir: "core-services/egov-survey-services"
+        image-name: "egov-survey-services"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-survey-services/src/main/resources/db"
+        image-name: "egov-survey-services-db"
+
+
+  - name: "builds/Digit-Core/core-services/report"
     build:
       - work-dir: "core-services/report"
         image-name: "report"
         dockerfile: "build/maven/Dockerfile"   
 
-  - name: "builds/naljal-digit/core-services/tenant"
+  - name: "builds/Digit-Core/core-services/tenant"
     build:
       - work-dir: "core-services/tenant"
         image-name: "tenant"
@@ -237,52 +291,63 @@ config:
       - work-dir: "core-services/tenant/src/main/resources/db"
         image-name: "tenant-db"
 
-  - name: "builds/naljal-digit/core-services/user-otp"
+  - name: "builds/Digit-Core/core-services/user-otp"
     build:
       - work-dir: "core-services/user-otp"
         image-name: "user-otp"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/zuul"
+  - name: "builds/Digit-Core/core-services/zuul"
     build:
       - work-dir: "core-services/zuul"
         image-name: "zuul"
+        dockerfile: "build/maven-java8/Dockerfile"
+
+  - name: "builds/Digit-Core/core-services/gateway"
+    build:
+      - work-dir: "core-services/gateway"
+        image-name: "gateway"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/internal-gateway"
+  - name: "builds/Digit-Core/core-services/internal-gateway"
     build:
       - work-dir: "core-services/internal-gateway"
         image-name: "internal-gateway"
         dockerfile: "build/maven/Dockerfile"
+
+  - name: "builds/Digit-Core/core-services/internal-gateway-scg"
+    build:
+      - work-dir: "core-services/internal-gateway-scg"
+        image-name: "internal-gateway-scg"
+        dockerfile: "build/maven/Dockerfile"
         
-  - name: "builds/naljal-digit/core-services/egov-user-event"
+  - name: "builds/Digit-Core/core-services/egov-user-event"
     build:
       - work-dir: "core-services/egov-user-event"
         image-name: "egov-user-event"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "core-services/egov-user-event/src/main/resources/db"
-        image-name: "egov-user-event-db"
-        dockerfile: "build/maven/Dockerfile"       
+        image-name: "egov-user-event-db"       
 
-  - name: "builds/naljal-digit/core-services/pdf-service"
+  - name: "builds/Digit-Core/core-services/pdf-service"
     build:
       - work-dir: "core-services/pdf-service"
         image-name: "pdf-service"
       - work-dir: "core-services/pdf-service/migration"
         image-name: "pdf-service-db"
         
-  - name: "builds/naljal-digit/core-services/telemetry/egov-telemetry-kafka-streams"
+  - name: "builds/Digit-Core/core-services/telemetry/egov-telemetry-kafka-streams"
     build:
       - work-dir: "core-services/egov-telemetry/egov-telemetry-kafka-streams"
         image-name: "egov-telemetry-kafka-streams"
 
-  - name: "builds/naljal-digit/core-services/telemetry/egov-telemetry-batch-process"
+  - name: "builds/Digit-Core/core-services/telemetry/egov-telemetry-batch-process"
     build:
       - work-dir: "core-services/egov-telemetry/egov-telemetry-batch-process"
         image-name: "egov-telemetry-batch-process"
         dockerfile: "build/maven/Dockerfile"
   
-  - name: "builds/naljal-digit/core-services/egov-url-shortening"
+  - name: "builds/Digit-Core/core-services/egov-url-shortening"
     build:
       - work-dir: "core-services/egov-url-shortening"
         image-name: "egov-url-shortening"
@@ -290,7 +355,7 @@ config:
       - work-dir: "core-services/egov-url-shortening/src/main/resources/db"
         image-name: "egov-url-shortening-db"
   
-  - name: "builds/naljal-digit/core-services/chatbot"
+  - name: "builds/Digit-Core/core-services/chatbot"
     build:
       - work-dir: "core-services/chatbot"
         image-name: "chatbot"
@@ -298,237 +363,110 @@ config:
       - work-dir: "core-services/chatbot/src/main/resources/db"
         image-name: "chatbot-db"
         
-  - name: "builds/naljal-digit/core-services/http-to-kafka-connector"
+  - name: "builds/Digit-Core/core-services/http-to-kafka-connector"
     build:
       - work-dir: "core-services/http-to-kafka-connector"
         image-name: "whatsapp-webhook"
 
-  - name: "builds/naljal-digit/core-services/egov-user-chatbot"
+  - name: "builds/Digit-Core/core-services/egov-user-chatbot"
     build:
       - work-dir: "core-services/egov-user"
         image-name: "egov-user-chatbot"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/mailbot"
+  - name: "builds/Digit-Core/core-services/mailbot"
     build:
       - work-dir: "core-services/mailbot"
         image-name: "mailbot"
         dockerfile: "build/maven/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/libraries/enc-client"
+  - name: "builds/Digit-Core/core-services/libraries/enc-client"
     build:
       - work-dir: "core-services/libraries/enc-client"
         image-name: "enc-client"
-        
-  - name: "builds/naljal-digit/core-services/libraries/tracer"
+
+  - name: "builds/Digit-Core/core-services/libraries/mdms-client"
+    build:
+      - work-dir: "core-services/libraries/mdms-client"
+        image-name: "mdms-client"
+
+  - name: "builds/Digit-Core/core-services/libraries/tracer"
     build:
       - work-dir: "core-services/libraries/tracer"
         image-name: "tracer"
 
-  - name: "builds/naljal-digit/core-services/nlp-engine"
+  - name: "builds/Digit-Core/core-services/libraries/digit-models"
+    build:
+      - work-dir: "core-services/libraries/digit-models"
+        image-name: "digit-models"
+
+  - name: "builds/Digit-Core/core-services/libraries/services-common"
+    build:
+      - work-dir: "core-services/libraries/services-common"
+        image-name: "services-common"
+
+  - name: "builds/Digit-Core/core-services/nlp-engine"
     build:
       - work-dir: "core-services/nlp-engine"
         image-name: "nlp-engine"
         dockerfile: "nlp-engine/Dockerfile"
 
-  - name: "builds/naljal-digit/core-services/xstate-chatbot"
+  - name: "builds/Digit-Core/core-services/xstate-chatbot"
     build:
       - work-dir: "core-services/xstate-chatbot/nodejs"
         image-name: "xstate-chatbot"
       - work-dir: "core-services/xstate-chatbot/nodejs/db"
         image-name: "xstate-chatbot-db"
+
+  - name: "builds/Digit-Core/core-services/xstate-webchat"
+    build:
+      - work-dir: "core-services/xstate-webchat/nodejs"
+        image-name: "xstate-webchat"
+      - work-dir: "core-services/xstate-webchat/nodejs/db"
+        image-name: "xstate-webchat-db"
+
+  - name: "builds/Digit-Core/accelerators/inbox"
+    build:
+      - work-dir: "accelerators/inbox"
+        image-name: "inbox"
+        dockerfile: "build/maven/Dockerfile"
+
+  - name: "builds/Digit-Core/accelerators/gateway-kubernetes-discovery"
+    build:
+      - work-dir: "accelerators/gateway-kubernetes-discovery"
+        image-name: "gateway-kubernetes-discovery"
+
+  - name: "builds/Digit-Core/core-services/service-request"
+    build:
+      - work-dir: "core-services/service-request"
+        image-name: "service-request"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/service-request/src/main/resources/db"
+        image-name: "service-request-db"
+
+
+# frontend
+  - name: builds/Digit-Core/accelerators/workbench-ui
+    build:
+      - work-dir: frontend/micro-ui/
+        dockerfile: frontend/micro-ui/web/workbench/Dockerfile
+        image-name: workbench-ui
         
-#Municipal Services
-
-  - name: "builds/naljal-digit/municipal-services/egov-user-event"
+  - name: builds/Digit-Core/accelerators/storybook-svg
     build:
-      - work-dir: "municipal-services/egov-user-event"
-        image-name: "egov-user-event"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/egov-user-event/src/main/resources/db"
-        image-name: "egov-user-event-db"
-
-  - name: "builds/naljal-digit/municipal-services/ws-services"
-    build:
-      - work-dir: "municipal-services/ws-services"
-        image-name: "ws-services"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/ws-services/src/main/resources/db"
-        image-name: "ws-services-db"
-        
-  - name: "builds/naljal-digit/municipal-services/property-services"
-    build:
-      - work-dir: "municipal-services/property-services"
-        image-name: "property-services"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/property-services/src/main/resources/db"
-        image-name: "property-services-db"
-
-  - name: "builds/naljal-digit/municipal-services/ws-calculator"
-    build:
-      - work-dir: "municipal-services/ws-calculator"
-        image-name: "ws-calculator"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/ws-calculator/src/main/resources/db"
-        image-name: "ws-calculator-db"
-
-  - name: "builds/naljal-digit/municipal-services/echallan-services"
-    build:
-      - work-dir: "municipal-services/echallan-services"
-        image-name: "echallan-services"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/echallan-services/src/main/resources/db"
-        image-name: "echallan-services-db"         
-
-  - name: "builds/naljal-digit/municipal-services/echallan-calculator"
-    build:
-      - work-dir: "municipal-services/echallan-calculator"
-        image-name: "echallan-calculator"
-        dockerfile: "build/maven/Dockerfile"  
-
-  - name: "builds/naljal-digit/municipal-services/vendor"
-    build:
-      - work-dir: "municipal-services/vendor"
-        image-name: "vendor"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "municipal-services/vendor/src/main/resources/db"
-        image-name: "vendor-db"
-
- # Utilities
- 
-  - name: "builds/naljal-digit/utilities/egov-weekly-impact-notifier"
-    build:
-      - work-dir: "utilities/egov-weekly-impact-notifier"
-        image-name: "egov-weekly-impact-notifier"
-        dockerfile: "build/maven/Dockerfile"
-        
-  - name: "builds/naljal-digit/utilities/zuul-kubernetes-discovery"
-    build:
-      - work-dir: "utilities/zuul-kubernetes-discovery"
-        image-name: "zuul-kubernetes-discovery"  
-
-  - name: "builds/naljal-digit/utilities/egov-api-cron-job"
-    build:
-      - work-dir: "utilities/egov-api-cron-job"
-        image-name: "egov-api-cron-job"
-        dockerfile: "build/python/Dockerfile"
-
-  - name: "builds/naljal-digit/utilities/kuberhealthy-checks"
-    build:
-      - work-dir: "utilities/kuberhealthy-checks"
-        image-name: "kuberhealthy-checks"
-
-  - name: "builds/naljal-digit/utilities/egov-pdf"
-    build:
-      - work-dir: "utilities/egov-pdf"
-        image-name: "egov-pdf"  
-
-  - name: "builds/naljal-digit/utilities/epass-chatbot"
-    build:
-      - work-dir: "utilities/epass-chatbot"
-        image-name: "epass-chatbot"
-        dockerfile: "build/maven/Dockerfile"
-
-  - name: "builds/naljal-digit/utilities/case-management"
-    build:
-      - work-dir: "utilities/case-management"
-        image-name: "case-management"
-        dockerfile: "build/maven/Dockerfile"
-      - work-dir: "utilities/case-management/src/main/resources/db"
-        image-name: "case-management-db"
-
-  - name: "builds/naljal-digit/utilities/data-upload"
-    build:
-      - work-dir: "utilities/data-upload"
-        image-name: "data-upload"
-        dockerfile: "build/maven/Dockerfile"
-
-  - name: "builds/naljal-digit/utilities/egov-custom-consumer"
-    build:
-      - work-dir: "utilities/egov-custom-consumer"
-        image-name: "egov-custom-consumer"
-        dockerfile: "build/maven/Dockerfile"
-
-  - name: "builds/naljal-digit/utilities/certificate_signer"
-    build:
-      - work-dir: "utilities/certificate_signer"
-        image-name: "certificate_signer"
-
-  - name: "builds/naljal-digit/utilities/certificate-verification"
-    build:
-      - work-dir: "utilities/certificate-verification"
-        image-name: "certificate-verification"
-
-# Frontend
-  - name: "builds/naljal-digit/frontend/frontend-mgramseva"
-    build:
-      - work-dir: "frontend/mgramseva"
-        image-name: "frontend-mgramseva"
-        dockerfile: "frontend/mgramseva/docker/Dockerfile"
-  - name: "builds/naljal-digit/frontend/mgramseva-web"
-    build:
-      - work-dir: "frontend/micro-ui"
-        image-name: "mgramseva-web"
-        dockerfile: "frontend/micro-ui/web/docker/Dockerfile"
-  - name: builds/naljal-digit/frontend/mono-ui/citizen
-    build:
-      - work-dir: frontend/mono-ui/web/rainmaker/
-        dockerfile: frontend/mono-ui/web/rainmaker/docker/citizen/Dockerfile
-        image-name: citizen
-
-  - name: builds/naljal-digit/frontend/mono-ui/employee
-    build:
-      - work-dir: frontend/mono-ui/web/rainmaker/
-        dockerfile: frontend/mono-ui/web/rainmaker/docker/employee/Dockerfile
-        image-name: employee
-
-  - name: builds/naljal-digit/frontend/mono-ui/employee-mcs
-    build:
-      - work-dir: frontend/mono-ui/web/rainmaker/
-        dockerfile: frontend/mono-ui/web/rainmaker/docker/employee-mcs/Dockerfile
-        image-name: employee-mcs
-
-  - name: builds/naljal-digit/frontend/mono-ui/localization
-    build:
-      - work-dir: frontend/mono-ui/web/rainmaker/
-        dockerfile: frontend/mono-ui/web/rainmaker/docker/localization/Dockerfile
-        image-name: ui-localisation
-
-  - name: builds/naljal-digit/frontend/mono-ui/ui-uploader
-    build:
-      - work-dir: frontend/mono-ui/web/ui-uploader/
-        image-name: ui-uploader
-
-  - name: builds/naljal-digit/frontend/mono-ui/dss-dashboard
-    build:
-      - work-dir: frontend/mono-ui/web/dss-dashboard/
-        dockerfile: frontend/mono-ui/web/dss-dashboard/docker/Dockerfile
-        image-name: dss-dashboard
+    - work-dir: frontend/micro-ui/web/micro-ui-internals/packages/svg-components/
+      dockerfile: frontend/micro-ui/web/micro-ui-internals/packages/svg-components/docker/Dockerfile
+      image-name: storybook-svg
       
-  - name: builds/naljal-digit/frontend/mono-ui/common-screen
+  - name: builds/Digit-Core/accelerators/storybook
     build:
-      - work-dir: frontend/mono-ui/web/egov-common-screen/
-        dockerfile: frontend/mono-ui/web/egov-common-screen/docker/Dockerfile
-        image-name: common-screen
+    - work-dir: frontend/micro-ui/web/micro-ui-internals/packages/components-core/
+      dockerfile: frontend/micro-ui/web/micro-ui-internals/packages/components-core/docker/Dockerfile
+      image-name: storybook
 
-  - name: builds/naljal-digit/frontend/micro-ui/digit-ui
+  - name: builds/Digit-Core/accelerators/digit-ui
     build:
-      - work-dir: .
+      - work-dir: frontend/micro-ui/
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
         image-name: digit-ui
-  
-  #EDCR
-  
-  - name: builds/naljal-digit/edcr/dcr-client/egov-dcr
-    build:
-      - work-dir: edcr/client/egov
-        dockerfile: edcr/client/Dockerfile
-        image-name: egov-edcr
-        
-  - name: builds/naljal-digit/edcr/dcr-service/egov-dcr
-    build:
-      - work-dir: edcr/service/egov
-        dockerfile: edcr/service/Dockerfile
-        image-name: egov-edcr
-              
 
