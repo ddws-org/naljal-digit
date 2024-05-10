@@ -35,7 +35,7 @@ public class IdGenService {
     String generateTxnId(TransactionRequest transactionRequest) {
         Transaction txn = transactionRequest.getTransaction();
         IdGenerationResponse response = idGenRepository.getId(transactionRequest.getRequestInfo(), txn.getTenantId(),
-                appProperties.getIdGenName(), appProperties.getIdGenFormat(), 1);
+                appProperties.getIdGenName(), appProperties.getIdGenFormat(), 2);
         log.info("response" + response);
         log.info("response" + response.getIdResponses());
         String txnId = response.getIdResponses().get(0).getId();
