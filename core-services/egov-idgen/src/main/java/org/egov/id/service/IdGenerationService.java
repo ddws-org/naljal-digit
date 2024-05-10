@@ -83,15 +83,17 @@ public class IdGenerationService {
 
         for (IdRequest idRequest : idRequests) {
             List<String> generatedId = generateIdFromIdRequest(idRequest, requestInfo);
+            log.info("generatedIdList::"+generatedId);
             for (String ListOfIds : generatedId) {
                 IdResponse idResponse = new IdResponse();
                 idResponse.setId(ListOfIds);
                 idResponses.add(idResponse);
             }
+            log.info("idResponses:"+idResponses);
             idGenerationResponse.setIdResponses(idResponses);
         }
         idGenerationResponse.setResponseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfo, true));
-
+        log.info("idGenerationResponse:"+idGenerationResponse);
         return idGenerationResponse;
 
     }
@@ -255,15 +257,18 @@ public class IdGenerationService {
                     }
 					idFormat = idFormat.replace("[" + attributeName + "]", sequences.get(attributeName).get(i));
                     log.info("idformat seq:"+idFormat);
-                } else if (attributeName.substring(0, 2).equalsIgnoreCase("fy")) {
+                }
+                else if (attributeName.substring(0, 2).equalsIgnoreCase("fy")) {
                     idFormat = idFormat.replace("[" + attributeName + "]",
                             generateFinancialYearDateFormat(attributeName, requestInfo));
                     log.info("idformat fy:"+idFormat);
-                } else if (attributeName.substring(0, 2).equalsIgnoreCase("cy")) {
+                }
+                else if (attributeName.substring(0, 2).equalsIgnoreCase("cy")) {
                     idFormat = idFormat.replace("[" + attributeName + "]",
                             generateCurrentYearDateFormat(attributeName, requestInfo));
                     log.info("idformat cy:"+idFormat);
-                } else if (attributeName.substring(0, 4).equalsIgnoreCase("city")) {
+                }
+                else if (attributeName.substring(0, 4).equalsIgnoreCase("city")) {
                     if (cityName == null) {
                         log.info("insideget city mdms");
                         cityName = mdmsService.getCity(requestInfo, idRequest);
@@ -271,8 +276,7 @@ public class IdGenerationService {
                     idFormat = idFormat.replace("[" + attributeName + "]", cityName);
                     log.info("idformat city:"+idFormat);
                 }
-                else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
-                {
+                else if (attributeName.substring(0,8).equalsIgnoreCase("district")) {
                     log.info("inside else part of district code");
                     if(districtCode==null) {
                         districtCode = mdmsService.getDistrict(requestInfo, idRequest);
@@ -281,12 +285,17 @@ public class IdGenerationService {
                     log.info("idformat district:"+idFormat);
                 }
                 else {
+                    log.info("iside else");
                     idFormat = idFormat.replace("[" + attributeName + "]", generateRandomText(attributeName, requestInfo));
                     log.info("idformat else ]:"+idFormat);
                 }
             }
+            log.info("before adding to list:"+idFormat);
             idFormatList.add(idFormat);
+            log.info("idFormatList:",idFormatList);
+            log.info("idFormatList::::"+idFormatList);
         }
+        log.info("beforereturn");
         log.info("idFormatList:::"+idFormatList);
 
         return idFormatList;
@@ -400,6 +409,7 @@ public class IdGenerationService {
         }
         String randomTxt = stringBuilder.toString();
         randomTxt = randomTxt.substring(0, length);
+        log.info("randomTxt");
         return randomTxt;
     }
 
