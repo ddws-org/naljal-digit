@@ -109,6 +109,7 @@ public class MdmsService {
 
     public String getIdFormat(RequestInfo requestInfo, IdRequest idRequest) {
         Map<String, String> getIdFormat = doMdmsServiceCall(requestInfo, idRequest);
+        log.info("getIdFormatfrom mdms:"+getIdFormat);
         String idFormat = null;
         try {
             if (getIdFormat != null) {
@@ -161,6 +162,7 @@ public class MdmsService {
 
         try {
             mdmsResponse = getMasterData(requestInfo, tenantId, masterDetails);
+            log.info("mdmsResponse::::::::"+mdmsResponse);
 
             if (mdmsResponse.getMdmsRes() != null && mdmsResponse.getMdmsRes().containsKey(tenantModule)
                     && mdmsResponse.getMdmsRes().get(tenantModule).containsKey(tenantMaster)
@@ -192,7 +194,8 @@ public class MdmsService {
         mdmsCallMap.put(formatMaster, idFormatFromMdms);
         mdmsCallMap.put(tenantMaster, cityCodeFromMdms);
         mdmsCallMap.put("districtCode",districtCodeFromMdms);
-
+        log.info("mdmsCallMap:::",mdmsCallMap);
+        log.info("mdmsCallMap::::::::"+mdmsCallMap);
         return mdmsCallMap;
     }
 

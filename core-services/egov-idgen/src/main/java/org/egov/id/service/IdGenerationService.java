@@ -114,13 +114,16 @@ public class IdGenerationService {
         {
             // If IDName is specified then check if it is defined in MDMS
             String idFormat = getIdFormatFinal(idRequest, requestInfo);
+            log.info("idFormat:"+idFormat);
 
             // If the idname is defined then the format should be used
             // else fallback to the format in the request itself
             if (!StringUtils.isEmpty(idFormat)){
+                log.info("inside not empty");
                 idRequest.setFormat(idFormat);
                 autoCreateNewSeqFlag=true;
             }else if(StringUtils.isEmpty(idFormat)){
+                log.info("is empty");
                 autoCreateNewSeqFlag=false;
             }
         }
@@ -146,8 +149,10 @@ public class IdGenerationService {
         String idFormat = null;
         try{
             if (idFormatFromMDMS == true) {
+                log.info("from mdms");
                 idFormat = mdmsService.getIdFormat(requestInfo, idRequest); //from MDMS
             } else {
+                log.info("from db");
                 idFormat = getIdFormatfromDB(idRequest, requestInfo); //from DB
             }
         }catch(Exception ex){
@@ -208,7 +213,7 @@ public class IdGenerationService {
     private List getFormattedId(IdRequest idRequest, RequestInfo requestInfo, boolean autoCreateNewSeqFlag) throws Exception {
         List<String> idFormatList = new LinkedList();
         String idFormat = idRequest.getFormat();
-
+        log.info("idFormat:::::::"+idFormat);
         try{
             if (!StringUtils.isEmpty(idFormat.trim()) && !StringUtils.isEmpty(idRequest.getTenantId())) {
                 idFormat = idFormat.replace("[tenantid]", idRequest.getTenantId());
@@ -220,7 +225,7 @@ public class IdGenerationService {
                 throw new CustomException("IDGEN_FORMAT_ERROR", "Blank format is not allowed");
             }
         }
-
+        log.info("idFormat:::::::"+idFormat);
         List<String> matchList = new ArrayList<String>();
 
         Pattern regExpPattern = Pattern.compile("\\[(.*?)\\]");
@@ -231,6 +236,7 @@ public class IdGenerationService {
         while (regExpMatcher.find()) {// Finds Matching Pattern in String
             matchList.add(regExpMatcher.group(1));// Fetching Group from String
         }
+        log.info("matchList::"+matchList);
 
         HashMap<String, List<String>> sequences = new HashMap<>();
         String idFormatTemplate = idFormat;
@@ -241,23 +247,29 @@ public class IdGenerationService {
             idFormat = idFormatTemplate;
 
             for (String attributeName : matchList) {
+                log.info("attributeName:"+attributeName);
 
                 if (attributeName.substring(0, 3).equalsIgnoreCase("seq")) {
                     if (!sequences.containsKey(attributeName)) {
                         sequences.put(attributeName, generateSequenceNumber(attributeName, requestInfo, idRequest,autoCreateNewSeqFlag));
                     }
 					idFormat = idFormat.replace("[" + attributeName + "]", sequences.get(attributeName).get(i));
+                    log.info("idformat seq:"+idFormat);
                 } else if (attributeName.substring(0, 2).equalsIgnoreCase("fy")) {
                     idFormat = idFormat.replace("[" + attributeName + "]",
                             generateFinancialYearDateFormat(attributeName, requestInfo));
+                    log.info("idformat fy:"+idFormat);
                 } else if (attributeName.substring(0, 2).equalsIgnoreCase("cy")) {
                     idFormat = idFormat.replace("[" + attributeName + "]",
                             generateCurrentYearDateFormat(attributeName, requestInfo));
+                    log.info("idformat cy:"+idFormat);
                 } else if (attributeName.substring(0, 4).equalsIgnoreCase("city")) {
                     if (cityName == null) {
+                        log.info("insideget city mdms");
                         cityName = mdmsService.getCity(requestInfo, idRequest);
                     }
                     idFormat = idFormat.replace("[" + attributeName + "]", cityName);
+                    log.info("idformat city:"+idFormat);
                 }
                 else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
                 {
@@ -266,13 +278,16 @@ public class IdGenerationService {
                         districtCode = mdmsService.getDistrict(requestInfo, idRequest);
                     }
                     idFormat=idFormat.replace("[" + attributeName + "]", districtCode);
+                    log.info("idformat district:"+idFormat);
                 }
                 else {
                     idFormat = idFormat.replace("[" + attributeName + "]", generateRandomText(attributeName, requestInfo));
+                    log.info("idformat else ]:"+idFormat);
                 }
             }
             idFormatList.add(idFormat);
         }
+        log.info("idFormatList:::"+idFormatList);
 
         return idFormatList;
     }
