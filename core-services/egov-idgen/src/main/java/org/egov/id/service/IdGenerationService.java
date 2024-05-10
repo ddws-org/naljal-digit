@@ -242,8 +242,25 @@ public class IdGenerationService {
 
             for (String attributeName : matchList) {
                 if(attributeName.length()>7 ) {
-                    if (attributeName.substring(0,8).equalsIgnoreCase("district"))
-                    {
+                    if (attributeName.substring(0, 3).equalsIgnoreCase("seq")) {
+                        if (!sequences.containsKey(attributeName)) {
+                            sequences.put(attributeName, generateSequenceNumber(attributeName, requestInfo, idRequest,autoCreateNewSeqFlag));
+                        }
+                        idFormat = idFormat.replace("[" + attributeName + "]", sequences.get(attributeName).get(i));
+                    } else if (attributeName.substring(0, 2).equalsIgnoreCase("fy")) {
+                        idFormat = idFormat.replace("[" + attributeName + "]",
+                                generateFinancialYearDateFormat(attributeName, requestInfo));
+                    } else if (attributeName.substring(0, 2).equalsIgnoreCase("cy")) {
+                        idFormat = idFormat.replace("[" + attributeName + "]",
+                                generateCurrentYearDateFormat(attributeName, requestInfo));
+                    } else if (attributeName.substring(0, 4).equalsIgnoreCase("city")) {
+                        if (cityName == null) {
+                            cityName = mdmsService.getCity(requestInfo, idRequest);
+                        }
+                        idFormat = idFormat.replace("[" + attributeName + "]", cityName);
+                    }
+                    else if (attributeName.substring(0,8).equalsIgnoreCase("district")) {
+
                         if(districtCode==null) {
                             districtCode = mdmsService.getDistrict(requestInfo, idRequest);
                         }
