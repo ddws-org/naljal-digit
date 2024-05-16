@@ -65,18 +65,15 @@ import lombok.ToString;
 @ToString
 public class GenerateBillCriteria {
 
-	@SafeHtml
 	@NotNull
 	@Size(max = 256)
 	private String tenantId;
 
-	@SafeHtml
 	@Size(max = 64)
 	private String demandId;
 	
 	private Set<String> consumerCode;
 
-	@SafeHtml
 	@NotNull
 	@Size(max = 256)
 	private String businessService;
