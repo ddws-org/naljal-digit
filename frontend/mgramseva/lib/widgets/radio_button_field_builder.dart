@@ -69,6 +69,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                         value: data.key,
                         groupValue: controller,
                         onChanged: (isEnabled ?? true) ? widget1 : null,
+                        activeColor: Color.fromRGBO(0,60,207,0.9),
                         secondary: data.key == refTextRadioBtn
                             ? Container(
                                 width: MediaQuery.of(context).size.width / 3.8,
