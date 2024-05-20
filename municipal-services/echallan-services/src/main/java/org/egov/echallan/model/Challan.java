@@ -15,10 +15,10 @@ package org.egov.echallan.model;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.echallan.web.models.calculation.Calculation;
-import org.hibernate.validator.constraints.SafeHtml;
+
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +33,7 @@ import lombok.Setter;
 /**
  * Capture the challan details 
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-10T16:46:24.044+05:30[Asia/Calcutta]")
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -45,31 +45,31 @@ public class Challan {
   private UserInfo citizen ;
 
   @JsonProperty("id")
-  @SafeHtml
+
   private String id ;
 
   @JsonProperty("tenantId")
-  @SafeHtml
+
   private String tenantId ;
 
   @JsonProperty("businessService")
-  @SafeHtml
+
   private String businessService ;
 
   @JsonProperty("challanNo")
-  @SafeHtml
+
   private String challanNo ;
 
   @JsonProperty("referenceId")
-  @SafeHtml
+
   private String referenceId ;
 
   @JsonProperty("description")
-  @SafeHtml
+
   private String description ;
 
   @JsonProperty("accountId")
-  @SafeHtml
+
   private String accountId ;
 
   @JsonProperty("additionalDetail")
@@ -77,7 +77,7 @@ public class Challan {
   private Object additionalDetail ;
 
   @JsonProperty("source")
-  @SafeHtml
+
   private String source ;
   
   @JsonProperty("taxPeriodFrom")
@@ -97,7 +97,7 @@ public class Challan {
   private Address address ;
   
   @JsonProperty("filestoreid")
-  @SafeHtml
+
   private String filestoreid ;
 
   @JsonProperty("auditDetails")
@@ -143,11 +143,11 @@ public class Challan {
   
 	// Expense fields
 	@JsonProperty("vendor")
-	@SafeHtml
+
 	private String vendor ;
 
 	@JsonProperty("typeOfExpense")
-	@SafeHtml
+
 	private String typeOfExpense ;
 
 	@JsonProperty("billDate")
