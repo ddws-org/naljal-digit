@@ -4,7 +4,7 @@ package org.egov.vendor.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.vendor.service.VendorService;
 import org.egov.vendor.util.ResponseInfoFactory;
