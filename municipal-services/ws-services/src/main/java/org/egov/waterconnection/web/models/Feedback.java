@@ -1,6 +1,6 @@
 package org.egov.waterconnection.web.models;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import io.micrometer.core.lang.NonNull;
 import lombok.AllArgsConstructor;

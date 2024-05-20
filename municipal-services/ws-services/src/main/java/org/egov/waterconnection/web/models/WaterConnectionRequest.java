@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * Contract class to receive request. Array of Property items are used in case
@@ -20,7 +20,7 @@ import javax.validation.Valid;
  */
 @ApiModel(description = "Contract class to receive request. Array of Property items  are used in case of create . Where as single Property item is used for update")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-10-24T10:29:25.253+05:30[Asia/Kolkata]")
+//@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-10-24T10:29:25.253+05:30[Asia/Kolkata]")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

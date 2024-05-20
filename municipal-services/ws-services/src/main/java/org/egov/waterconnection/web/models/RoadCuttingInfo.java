@@ -2,9 +2,9 @@ package org.egov.waterconnection.web.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.validator.constraints.SafeHtml;
 
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -12,11 +12,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class RoadCuttingInfo {
 
-  @SafeHtml
+  
   @JsonProperty("id")
   private String id ;
 
-  @SafeHtml
+  
   @JsonProperty("roadType")
   private String roadType = null;
 
