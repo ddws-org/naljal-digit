@@ -3,7 +3,7 @@ package org.egov.pt.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.apache.kafka.clients.admin.ConfigEntry.ConfigSource;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.pt.config.PropertyConfiguration;

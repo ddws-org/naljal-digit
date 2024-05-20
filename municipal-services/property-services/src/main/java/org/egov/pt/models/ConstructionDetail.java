@@ -2,8 +2,8 @@ package org.egov.pt.models;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.SafeHtml;
 
 /**
  * Construction/constructionDetail details are captured here. Detail information
@@ -46,7 +45,7 @@ public class ConstructionDetail {
 	@JsonProperty("superBuiltUpArea")
 	private BigDecimal superBuiltUpArea;
 
-	@SafeHtml
+	
 	@JsonProperty("constructionType")
 	private String constructionType;
 
