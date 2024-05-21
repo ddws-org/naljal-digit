@@ -3,10 +3,10 @@ package org.egov.mgramsevaifixadaptor.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
-import org.hibernate.validator.constraints.SafeHtml;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 
@@ -24,7 +24,7 @@ public class PaymentDetail {
     @Size(max=64)
     private String paymentId;
 
-    @SafeHtml
+
     @Size(max=64)
     @JsonProperty("tenantId")
     private String tenantId;
@@ -40,7 +40,7 @@ public class PaymentDetail {
     @JsonProperty("receiptNumber")
     private String receiptNumber;
 
-    @SafeHtml
+
     @Size(max=64)
     @JsonProperty("manualReceiptNumber")
     private String manualReceiptNumber;
@@ -51,11 +51,11 @@ public class PaymentDetail {
     @JsonProperty("receiptDate")
     private Long receiptDate = null;
 
-    @SafeHtml
+
     @JsonProperty("receiptType")
     private String receiptType = null;
 
-    @SafeHtml
+
     @JsonProperty("businessService")
     private String businessService;
 
