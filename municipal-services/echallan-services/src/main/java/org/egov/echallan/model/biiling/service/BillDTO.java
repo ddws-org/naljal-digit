@@ -10,9 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.egov.echallan.model.AuditDetails;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 

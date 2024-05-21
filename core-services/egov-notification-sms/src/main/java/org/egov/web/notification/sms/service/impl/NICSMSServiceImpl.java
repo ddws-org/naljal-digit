@@ -11,7 +11,7 @@ import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.ArrayList;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;

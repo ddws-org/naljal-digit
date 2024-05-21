@@ -8,7 +8,7 @@
  * org.egov.egf.instrument.web.contract.InstrumentTypeSearchContract; import
  * org.egov.egf.instrument.web.contract.TransactionTypeContract; import org.egov.egf.master.web.contract.FinancialStatusContract;
  * import org.junit.Before; import org.junit.Test; import org.junit.runner.RunWith; import org.mockito.InjectMocks; import
- * org.mockito.runners.MockitoJUnitRunner;
+ * org.mockito.junit.MockitoJUnitRunner;
  * @RunWith(MockitoJUnitRunner.class) public class InstrumentTypeMapperTest {
  * @InjectMocks private InstrumentTypeMapper instrumentTypeMapper;
  * @Before public void setup() { instrumentTypeMapper = new InstrumentTypeMapper(); }
