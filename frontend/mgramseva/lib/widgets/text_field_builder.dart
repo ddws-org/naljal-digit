@@ -122,6 +122,7 @@ class _BuildTextField extends State<BuildTextField> {
                     .translate((widget.placeHolder!))
                     : "",
                 border: widget.inputBorder,
+                focusedBorder:OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
                 disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
                 errorMaxLines: 2,
