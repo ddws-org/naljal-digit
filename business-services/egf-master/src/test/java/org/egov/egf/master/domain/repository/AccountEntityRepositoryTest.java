@@ -19,12 +19,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -230,7 +230,7 @@ public class AccountEntityRepositoryTest {
         info.setApiId("apiId");
         info.setKey("key");
         info.setMsgId("msgId");
-        info.setTs(new Date());
+        info.setTs(new Date().getTime());
         info.setUserInfo(user);
         info.setAuthToken("null");
         return info;

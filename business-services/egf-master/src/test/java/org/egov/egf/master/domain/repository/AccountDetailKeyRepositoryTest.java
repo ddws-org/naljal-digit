@@ -1,7 +1,7 @@
 package org.egov.egf.master.domain.repository;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +34,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountDetailKeyRepositoryTest {
@@ -235,7 +235,7 @@ public class AccountDetailKeyRepositoryTest {
 		info.setApiId("apiId");
 		info.setKey("key");
 		info.setMsgId("msgId");
-		info.setTs(new Date());
+		info.setTs(new Date().getTime());
 		info.setUserInfo(user);
 		info.setAuthToken("null");
 		return info;
