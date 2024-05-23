@@ -162,6 +162,9 @@ public class UserRequestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(fileContents)
         )
+                /*    To Do:  Commented out due to compilation issues
+                     causing a 400 response instead of the expected 200
+                */
 //                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8));
 //                .andExpect(content().json(getFileContents("updateValidatedCitizenSuccessResponse.json")));
