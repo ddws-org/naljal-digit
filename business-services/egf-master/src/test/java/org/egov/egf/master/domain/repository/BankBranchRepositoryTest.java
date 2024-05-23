@@ -227,7 +227,7 @@ public class BankBranchRepositoryTest {
 		info.setApiId("apiId");
 		info.setKey("key");
 		info.setMsgId("msgId");
-		info.setTs(new Date().getTime());
+		info.setTs(System.currentTimeMillis());
 		info.setUserInfo(user);
 		info.setAuthToken("null");
 		return info;
