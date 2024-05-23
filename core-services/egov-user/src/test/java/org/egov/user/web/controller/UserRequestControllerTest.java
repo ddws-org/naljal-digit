@@ -1,7 +1,7 @@
 package org.egov.user.web.controller;
 
 import org.apache.commons.io.IOUtils;
-import org.egov.encryption.EncryptionService;
+import org.egov.common.utils.MultiStateInstanceUtil;
 import org.egov.user.TestConfiguration;
 import org.egov.user.domain.exception.DuplicateUserNameException;
 import org.egov.user.domain.exception.OtpValidationPendingException;
@@ -50,6 +50,9 @@ public class UserRequestControllerTest {
 
     @MockBean
     private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private MultiStateInstanceUtil multiStateInstanceUtil;
 
     @MockBean
     private UserService userService;
