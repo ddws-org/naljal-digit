@@ -91,47 +91,60 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+       // backgroundColor: Colors.blue,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: SingleChildScrollView(
-            child: FormWrapper(Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-              HomeBack(),
-              StreamBuilder(
-                  stream: houseHoldProvider.streamController.stream,
-                  builder: (context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          HouseConnectionDetailCard(
-                              waterconnection:
-                                  houseHoldProvider.waterConnection),
-                          buildDemandView(snapshot.data)
-                        ],
-                      );
-                    } else if (snapshot.hasError) {
-                      return Notifiers.networkErrorPage(
-                          context,
-                          () => houseHoldProvider.fetchDemand(
-                              widget.waterConnection,
-                              widget.waterConnection?.demands));
-                    } else {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Loaders.circularLoader();
-                        case ConnectionState.active:
-                          return Loaders.circularLoader();
-                        default:
-                          return Container();
+        body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
+          child: SingleChildScrollView(
+              child: FormWrapper(Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                HomeBack(),
+                StreamBuilder(
+                    stream: houseHoldProvider.streamController.stream,
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            HouseConnectionDetailCard(
+                                waterconnection:
+                                    houseHoldProvider.waterConnection),
+                            buildDemandView(snapshot.data)
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        return Notifiers.networkErrorPage(
+                            context,
+                            () => houseHoldProvider.fetchDemand(
+                                widget.waterConnection,
+                                widget.waterConnection?.demands));
+                      } else {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return Loaders.circularLoader();
+                          case ConnectionState.active:
+                            return Loaders.circularLoader();
+                          default:
+                            return Container();
+                        }
                       }
-                    }
-                  }),
-              Footer()
-            ]))));
+                    }),
+                Footer()
+              ]))),
+        ));
   }
 }
