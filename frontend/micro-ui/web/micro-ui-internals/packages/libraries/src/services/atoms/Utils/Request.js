@@ -69,15 +69,18 @@ export const Request = async ({
   reqTimestamp = false,
 }) => {
 
-  const extractStateValue = (url) => {
-    // Split the URL by '/'
-    const parts = url.split('/');
-    
-    return parts[3]; 
-  }
 
-  let statesValue = extractStateValue(url)
-  url = `/${statesValue}/${url}`;
+
+
+  let statesValue = window.location.pathname 
+
+  let parts = statesValue.split("/");
+let state = parts[1]; 
+  
+  url = `/${state}${url}`;
+
+  console.log(url)
+
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
 
