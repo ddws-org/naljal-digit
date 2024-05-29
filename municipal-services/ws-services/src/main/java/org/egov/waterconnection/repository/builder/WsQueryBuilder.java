@@ -13,6 +13,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
+import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.service.WaterServiceImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.controller.WaterController;
@@ -38,8 +39,11 @@ public class WsQueryBuilder {
 	@Autowired
 	private UserService userService;
 	
+//	@Autowired
+//	WaterServiceImpl waterServiceImpl;
+
 	@Autowired
-	WaterServiceImpl waterServiceImpl;
+	WaterService waterService;
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
 	private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
@@ -236,7 +240,7 @@ public class WsQueryBuilder {
 			}
 		}
 		if(!StringUtils.isEmpty(criteria.getTextSearch()) && !StringUtils.isEmpty(criteria.getTenantId())) {
-			WaterConnectionResponse response = waterServiceImpl.getWCListFuzzySearch(criteria, requestInfo);
+			WaterConnectionResponse response = waterService.getWCListFuzzySearch(criteria, requestInfo);
 
 			if(!CollectionUtils.isEmpty(response.getWaterConnectionData())) {
 				Set<String> connectionNoSet = response.getWaterConnectionData().stream().map(data -> (String)data.get("connectionNo")).collect(Collectors.toSet());			
