@@ -60,9 +60,6 @@ public class UserService {
 	VendorRepository vendorRepository;
 
 	@Autowired
-	VendorService vendorService;
-
-	@Autowired
 	private ObjectMapper mapper;
 
 	/**
