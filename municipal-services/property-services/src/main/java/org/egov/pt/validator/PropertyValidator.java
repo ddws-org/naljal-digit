@@ -32,6 +32,7 @@ import org.egov.pt.util.PropertyUtil;
 import org.egov.pt.web.contracts.PropertyRequest;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -55,6 +56,7 @@ public class PropertyValidator {
     private PropertyConfiguration configs;
     
     @Autowired
+	@Lazy
     private PropertyService service;
     
     @Autowired
