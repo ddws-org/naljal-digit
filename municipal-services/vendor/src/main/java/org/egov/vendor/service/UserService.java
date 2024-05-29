@@ -56,8 +56,11 @@ public class UserService {
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
 
+//	@Autowired
+//	VendorRepository vendorRepository;
+
 	@Autowired
-	VendorRepository vendorRepository;
+	VendorService vendorService;
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -135,7 +138,7 @@ public class UserService {
 
 	private void validateVendorExists(List<User> user, String tenantId) {
 		List<String> ownerIds = user.stream().map(User::getUuid).collect(Collectors.toList());
-		int count = vendorRepository.getExistingVenodrsCount(ownerIds,tenantId);
+		int count = vendorService.getExistingVenodrsCount(ownerIds,tenantId);
 
 		if (count > 0) {
 			throw new CustomException(VendorErrorConstants.ALREADY_VENDOR_EXIST,

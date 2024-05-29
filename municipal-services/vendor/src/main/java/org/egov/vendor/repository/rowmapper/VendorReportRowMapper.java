@@ -23,6 +23,7 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
 {
     @Autowired
     private ObjectMapper mapper;
+
     @Autowired
     private UserService userService;
 

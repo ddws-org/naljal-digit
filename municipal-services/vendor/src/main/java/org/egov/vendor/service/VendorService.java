@@ -16,6 +16,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.vendor.config.VendorConfiguration;
 import org.egov.vendor.repository.VendorRepository;
+import org.egov.vendor.util.VendorErrorConstants;
 import org.egov.vendor.validator.VendorValidator;
 import org.egov.vendor.web.model.Vendor;
 import org.egov.vendor.web.model.VendorReportData;
@@ -175,5 +176,10 @@ public class VendorService {
 		List<VendorReportData> vendorReportData=repository.getVendorReportData(monthStartDateTime,tenantId,offset,limit);
 				return vendorReportData;
 
+	}
+
+
+	public int getExistingVenodrsCount(List<String> ownerIds, String tenantId) {
+		return repository.getExistingVenodrsCount(ownerIds,tenantId);
 	}
 }
