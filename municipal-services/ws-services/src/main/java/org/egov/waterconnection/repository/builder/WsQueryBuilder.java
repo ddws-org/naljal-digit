@@ -22,6 +22,7 @@ import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -39,11 +40,9 @@ public class WsQueryBuilder {
 	@Autowired
 	private UserService userService;
 	
-//	@Autowired
-//	WaterServiceImpl waterServiceImpl;
-
 	@Autowired
-	WaterService waterService;
+	@Lazy
+	WaterServiceImpl waterServiceImpl;
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
 	private static final String LEFT_OUTER_JOIN_STRING = " LEFT OUTER JOIN ";
@@ -240,7 +239,7 @@ public class WsQueryBuilder {
 			}
 		}
 		if(!StringUtils.isEmpty(criteria.getTextSearch()) && !StringUtils.isEmpty(criteria.getTenantId())) {
-			WaterConnectionResponse response = waterService.getWCListFuzzySearch(criteria, requestInfo);
+			WaterConnectionResponse response = waterServiceImpl.getWCListFuzzySearch(criteria, requestInfo);
 
 			if(!CollectionUtils.isEmpty(response.getWaterConnectionData())) {
 				Set<String> connectionNoSet = response.getWaterConnectionData().stream().map(data -> (String)data.get("connectionNo")).collect(Collectors.toSet());			
