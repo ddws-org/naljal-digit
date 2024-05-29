@@ -177,9 +177,4 @@ public class VendorService {
 				return vendorReportData;
 
 	}
-
-
-	public int getExistingVenodrsCount(List<String> ownerIds, String tenantId) {
-		return repository.getExistingVenodrsCount(ownerIds,tenantId);
-	}
 }

@@ -8,6 +8,7 @@ import org.egov.vendor.web.model.user.User;
 import org.egov.vendor.web.model.user.UserDetailResponse;
 import org.egov.vendor.web.model.user.UserSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class VendorReportRowMapper implements ResultSetExtractor<List<VendorRepo
     private ObjectMapper mapper;
 
     @Autowired
+    @Lazy
     private UserService userService;
 
     @Override
