@@ -17,7 +17,6 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
 import '../../model/mdms/tenants.dart';
 import '../../utils/common_methods.dart';
@@ -88,8 +87,13 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                    child:
-                        Center(child: Container(child: Text(loginUsername,style: TextStyle(fontSize: 18.0,color: Colors.black),)))),
+                    child: Center(
+                        child: Container(
+                            child: Text(
+                  ApplicationLocalizations.of(context).translate(
+                      loginUsername),
+                  style: TextStyle(fontSize: 18.0, color: Colors.black),
+                )))),
                 Container(
                   child: Column(
                     children: [
