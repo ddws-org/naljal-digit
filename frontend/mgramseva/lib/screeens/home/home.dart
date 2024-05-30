@@ -17,6 +17,7 @@ import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 
 import '../../model/mdms/tenants.dart';
 import '../../utils/common_methods.dart';
@@ -59,13 +60,13 @@ class _HomeState extends State<Home> {
         .toList();
     String loginUsername = "login user name";
     if (dashboardName.contains('CHAIRMEN')) {
-      loginUsername = "Chairmen";
+      loginUsername = i18.common.CHAIRMEN;
     } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
-      loginUsername = "Revenue Collector";
+      loginUsername = i18.common.REVENUE_COLLECTOR;
     } else if (dashboardName.contains('DIV_ADMIN')) {
-      loginUsername = "Division User";
+      loginUsername = i18.common.DIVISION_USER;
     } else if (dashboardName.contains('SECRETARY')) {
-      loginUsername = "Secretary";
+      loginUsername = i18.common.SECRETARY;
     }
     return Stack(
       children: [
