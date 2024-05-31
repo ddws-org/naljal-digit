@@ -17,7 +17,6 @@ import org.springframework.kafka.annotation.*;
 import org.springframework.kafka.config.*;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.*;
-import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.*;
 import org.springframework.web.client.RestClientException;
