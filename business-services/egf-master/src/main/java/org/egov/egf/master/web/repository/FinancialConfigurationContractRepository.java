@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
-@Primary
+
 @Repository
 public class FinancialConfigurationContractRepository {
 
