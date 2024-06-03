@@ -47,6 +47,9 @@ public class SmsNotificationListener {
     @Autowired
     protected SMSProperties smsProperties;
 
+    @Value("${sms.enabled}")
+    Boolean smsEnable;
+
 
     @Autowired
     public SmsNotificationListener(
@@ -81,6 +84,7 @@ public class SmsNotificationListener {
                     smsService.sendSMS(request.toDomain());
                 }
             }
+
         } catch (RestClientException rx) {
             log.info("Going to backup SMS Service", rx);
             if (!StringUtils.isEmpty(backupSmsTopic))

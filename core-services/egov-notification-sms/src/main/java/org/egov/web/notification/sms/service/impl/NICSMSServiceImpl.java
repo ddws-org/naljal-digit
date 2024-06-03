@@ -1,24 +1,8 @@
 package org.egov.web.notification.sms.service.impl;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.security.KeyStore;
-import java.util.ArrayList;
-
 import jakarta.annotation.PostConstruct;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.commons.codec.binary.Hex;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.web.notification.sms.config.SMSProperties;
 import org.egov.web.notification.sms.models.Sms;
 import org.egov.web.notification.sms.service.BaseSMSService;
@@ -27,7 +11,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.net.ssl.*;
+import java.io.*;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.util.ArrayList;
 
 
 @Service

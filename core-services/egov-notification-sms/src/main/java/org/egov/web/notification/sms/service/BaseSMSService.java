@@ -1,8 +1,13 @@
 package org.egov.web.notification.sms.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.jayway.jsonpath.*;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.*;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
@@ -10,8 +15,9 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.egov.web.notification.sms.repository.builder.SmsNotificationRepository;
 import org.egov.web.notification.sms.config.*;
 import org.egov.web.notification.sms.models.*;
-import org.egov.web.notification.sms.producer.Producer;
+import org.egov.web.notification.sms.config.Producer;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.core.*;
 import org.springframework.core.env.*;
 import org.springframework.http.*;
 import org.springframework.http.client.*;
@@ -67,7 +73,6 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 
     @Override
     public void sendSMS(Sms sms) {
-    	log.info("sendSMS() start: "+sms);
         if (!sms.isValid()) {
             log.error(String.format("Sms %s is not valid", sms));
             return;
@@ -99,29 +104,29 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 
     protected <T> ResponseEntity<T> executeAPI(URI uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> type) {
         log.info("executeAPI() start");
-    	
+
         log.info("calling third party api with url: "+uri+"  method:"+method);
         @SuppressWarnings("unchecked")
 		ResponseEntity<T> res = (ResponseEntity<T>) restTemplate.exchange(uri, method, requestEntity, String.class);
         log.info("third part api call done");
-        
+
     	String responseString = res.getBody().toString();
-    	
+
     	//String dummyResponse = "Message Accepted For Request ID=1231457859641254687954~code=API00 & info=Sms platform accepted & Time = 2007/10/04/09/58";
-        
+
 		/*
 		 * if (!isResponseValidated(res)) { log.error("Response from API - " +
 		 * responseString); throw new RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
-		 * 
+		 *
 		 * if (smsProperties.getSmsErrorCodes().size() > 0 &&
 		 * isResponseCodeInKnownErrorCodeList(res)) { throw new
 		 * RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
-		 * 
+		 *
 		 * if (smsProperties.getSmsSuccessCodes().size() > 0 &&
 		 * !isResponseCodeInKnownSuccessCodeList(res)) { throw new
 		 * RuntimeException(SMS_RESPONSE_NOT_SUCCESSFUL); }
 		 */
-    	
+
     	StringTokenizer tokenizer = new StringTokenizer(responseString, "&");
 		HashMap<String,String> responseMap = new HashMap<String, String>();
 		String pair = null, pname = null, pvalue = null;
@@ -136,16 +141,16 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
 						pvalue=(String)strTok.nextToken().trim();
 					responseMap.put(pname, pvalue);
 				}
-		
+
 			}
 		}
 		boolean status = responseString.contains("API000");
-  
+
 		if(!status) {
 			log.error("error response from third party api: info:"+responseMap.get("info"));
     		throw new RuntimeException(responseMap.get("info"));
     	}
-    	
+
 		log.info("executeAPI() end");
         return res;
     }
@@ -246,17 +251,20 @@ abstract public class BaseSMSService implements SMSService, SMSBodyBuilder {
             } catch (KeyManagementException e) {
                 e.printStackTrace();
             }
+
             // Create socket factory from SSLContext object
             SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(ctx, new NoopHostnameVerifier());
+
             // Create a connection manager with custom configuration to enable SSL.
             HttpClientConnectionManager ccm = PoolingHttpClientConnectionManagerBuilder.create()
-                    .setSSLSocketFactory(csf)
-                    .build();
+                .setSSLSocketFactory(csf)
+                .build();
 
             // Create HttpClient that uses pool manager.
             CloseableHttpClient httpClient = HttpClients.custom()
-                    .setConnectionManager(ccm)
-                    .build();
+                .setConnectionManager(ccm)
+                .build();
+
             HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(httpClient);
             restTemplate.setRequestFactory(requestFactory);

@@ -29,10 +29,6 @@ public class MSDGSMSServiceImpl extends BaseSMSService {
     @Autowired
     private SMSProperties smsProperties;
 
-//    @Autowired
-//    private SMSBodyBuilder bodyBuilder;
-
-
     /**
      * MD5 encryption algorithm
      *
