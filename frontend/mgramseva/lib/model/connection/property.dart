@@ -192,6 +192,8 @@ class Owners {
   String? status;
   @JsonKey(name: "gender")
   String? gender;
+  @JsonKey(name: "ihl")
+  String? ihl;
 
   @JsonKey(name: "ownerType")
   String? ownerType;

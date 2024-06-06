@@ -62,6 +62,12 @@ class WaterConnection {
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
 
+  @JsonKey(name:"ihlAccountNO")
+   String? ihlAccountNO;
+
+  @JsonKey(name:"ihlDetail")
+   String? ihlDetail;
+
   @JsonKey(name: "paymentType")
   String? paymentType;
 

@@ -39,7 +39,10 @@ class Constants {
     KeyValue('CORE_COMMON_GENDER_FEMALE', 'FEMALE'),
     KeyValue('CORE_COMMON_GENDER_TRANSGENDER', 'TRANSGENDER'),
   ];
-
+  static List<KeyValue> IHL = [
+    KeyValue('CORE_COMMON_IHL_YES', 'YES'),
+    KeyValue('CORE_COMMON_IHL_NO', 'NO'),
+  ];
   static List<KeyValue> EXPENSESTYPE = [
     KeyValue(i18.common.YES, true),
     KeyValue(i18.common.NO, false),
@@ -178,6 +181,11 @@ class Constants {
   static const String INVALID_EXCEPTION_CODE = 'InvalidAccessTokenException';
 
   static List<KeyValue> CONSUMER_PAYMENT_TYPE = [
+    KeyValue(i18.common.ARREARS, 'arrears'),
+    KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+  ];
+
+  static List<KeyValue> CONSUMER_IHL_TYPE = [
     KeyValue(i18.common.ARREARS, 'arrears'),
     KeyValue(i18.common.CORE_ADVANCE, 'advance'),
   ];

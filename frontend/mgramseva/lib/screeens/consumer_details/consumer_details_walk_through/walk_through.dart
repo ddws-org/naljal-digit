@@ -29,6 +29,19 @@ var json = [
     )
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_IHL_MSG),
+    "widget": RadioButtonFieldBuilder(
+      navigatorKey.currentContext!,
+      i18.common.IHL,
+      "",
+      '',
+      '',
+      true,
+      Constants.IHL,
+      (val) => {},
+    )
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_FATHER_MSG),
     "widget": BuildTextField(
       i18.consumer.FATHER_SPOUSE_NAME,

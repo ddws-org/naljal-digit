@@ -7,16 +7,18 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_flow_container.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
 import 'package:mgramseva/screeens/generate_bill/widgets/meter_reading.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
-import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/validators.dart';
 import 'package:mgramseva/widgets/date_picker_field_builder.dart';
 import 'package:mgramseva/widgets/drawer_wrapper.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/form_wrapper.dart';
+import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/widgets/home_back.dart';
 import 'package:mgramseva/widgets/label_text.dart';
 import 'package:mgramseva/widgets/radio_button_field_builder.dart';
@@ -26,8 +28,6 @@ import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:mgramseva/widgets/sub_label.dart';
 import 'package:mgramseva/widgets/table_text.dart';
 import 'package:mgramseva/widgets/text_field_builder.dart';
-import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/notifiers.dart';
@@ -284,6 +284,28 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               ],
                               isDisabled: false,
                             ),
+                          ),
+                          Wrap(
+                            children:[
+                              RadioButtonFieldBuilder(
+                                context,
+                                i18.common.IHL,
+                                property.owners!.first.ihl,
+                                '',
+                                '',
+                                false,
+                                Constants.IHL,
+                                    (val) => consumerProvider.onChangeOfGender(
+                                    val, property.owners!.first),
+                                contextKey:
+                                consumerProvider.consmerWalkthrougList[9].key,
+                              ),
+                              Visibility(
+                                  visible: consumerProvider.waterconnection.ihlDetail != null,
+                                  child: consumerProvider.waterconnection.ihlDetail == Constants.CONSUMER_IHL_TYPE.first.key
+                                      ? _buildYes(consumerProvider)
+                                      : _buildNo(consumerProvider))
+                            ]
                           ),
                           Consumer<ConsumerProvider>(
                             builder: (_, consumerProvider, child) =>
@@ -703,5 +725,91 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         validator: (val) => Validators.penaltyAndAdvanceValidator(val, true),
         textInputType: TextInputType.number,
         inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))]);
+  }
+
+  Widget _buildYes(ConsumerProvider consumerProvider) {
+    return Wrap(children: [
+      Consumer<ConsumerProvider>(
+          builder: (_, consumerProvider, child) => consumerProvider.isEdit ==
+                      false ||
+                  consumerProvider.isFirstDemand == false
+              ? Wrap(
+                  children: [
+                    SelectFieldBuilder(
+                      i18.demandGenerate.BILLING_YEAR_LABEL,
+                      consumerProvider.billYear,
+                      '',
+                      '',
+                      consumerProvider.onChangeOfBillYear,
+                      consumerProvider.getFinancialYearList(),
+                      true,
+                      itemAsString: (i) =>
+                          '${ApplicationLocalizations.of(context).translate(i.financialYear)}',
+                      controller:
+                          consumerProvider.waterconnection.billingCycleYearCtrl,
+                      key: Keys.bulkDemand.BULK_DEMAND_BILLING_YEAR,
+                    ),
+                    SelectFieldBuilder(
+                      i18.consumer.CONSUMER_BILLING_CYCLE,
+                      consumerProvider.selectedcycle,
+                      '',
+                      '',
+                      consumerProvider.onChangeBillingCycle,
+                      consumerProvider.getBillingCycle(),
+                      true,
+                      itemAsString: (i) =>
+                          "${ApplicationLocalizations.of(context).translate(i['name'])}",
+                      controller:
+                          consumerProvider.waterconnection.BillingCycleCtrl,
+                      suggestionKey: consumerProvider.searchPickerKey,
+                      key: Keys.createConsumer.CONSUMER_LAST_BILLED_CYCLE,
+                    )
+                  ],
+                )
+              : Text("")),
+    ]);
+  }
+
+  Widget _buildNo(ConsumerProvider consumerProvider) {
+    return Wrap(children: [
+      Consumer<ConsumerProvider>(
+          builder: (_, consumerProvider, child) => consumerProvider.isEdit ==
+                      false ||
+                  consumerProvider.isFirstDemand == false
+              ? Wrap(
+                  children: [
+                    SelectFieldBuilder(
+                      i18.demandGenerate.BILLING_YEAR_LABEL,
+                      consumerProvider.billYear,
+                      '',
+                      '',
+                      consumerProvider.onChangeOfBillYear,
+                      consumerProvider.getFinancialYearList(),
+                      true,
+                      itemAsString: (i) =>
+                          '${ApplicationLocalizations.of(context).translate(i.financialYear)}',
+                      controller:
+                          consumerProvider.waterconnection.billingCycleYearCtrl,
+                      key: Keys.bulkDemand.BULK_DEMAND_BILLING_YEAR,
+                    ),
+                    SelectFieldBuilder(
+                      i18.consumer.CONSUMER_BILLING_CYCLE,
+                      consumerProvider.selectedcycle,
+                      '',
+                      '',
+                      consumerProvider.onChangeBillingCycle,
+                      consumerProvider.getBillingCycle(),
+                      true,
+                      itemAsString: (i) =>
+                          "${ApplicationLocalizations.of(context).translate(i['name'])}",
+                      controller:
+                          consumerProvider.waterconnection.BillingCycleCtrl,
+                      suggestionKey: consumerProvider.searchPickerKey,
+                      key: Keys.createConsumer.CONSUMER_LAST_BILLED_CYCLE,
+                    )
+                  ],
+                )
+              : Text("")),
+    ]);
   }
 }
