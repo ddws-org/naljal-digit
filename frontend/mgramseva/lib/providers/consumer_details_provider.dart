@@ -391,6 +391,10 @@ class ConsumerProvider with ChangeNotifier {
     owners.gender = gender;
     notifyListeners();
   }
+  void onChangeOfIHL(String ihlValue, Owners owners) {
+    owners.ihl = ihlValue;
+    notifyListeners();
+  }
 
   void onChangeOfDate(value) {
     notifyListeners();

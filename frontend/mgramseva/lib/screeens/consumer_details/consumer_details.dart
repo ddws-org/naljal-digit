@@ -136,6 +136,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget buildconsumerView(Property property) {
+    print(property.owners!.first.gender);
+    print(property.owners!.first.ihl);
     return Column(
       children: [
         FormWrapper(
@@ -295,14 +297,19 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 '',
                                 false,
                                 Constants.IHL,
-                                    (val) => consumerProvider.onChangeOfGender(
+                                    (val) => consumerProvider.onChangeOfIHL(
                                     val, property.owners!.first),
-                                contextKey:
-                                consumerProvider.consmerWalkthrougList[9].key,
+                                contextKey: consumerProvider.consmerWalkthrougList[9].key,
+                                isEnabled: true,
                               ),
                               Visibility(
-                                  visible: consumerProvider.waterconnection.ihlDetail != null,
-                                  child: consumerProvider.waterconnection.ihlDetail == Constants.CONSUMER_IHL_TYPE.first.key
+                                  visible: consumerProvider
+                                      .waterconnection.paymentType !=
+                                      null,
+                                  child: consumerProvider
+                                      .waterconnection.paymentType ==
+                                      Constants
+                                          .CONSUMER_PAYMENT_TYPE.first.key
                                       ? _buildYes(consumerProvider)
                                       : _buildNo(consumerProvider))
                             ]
