@@ -17,12 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import java.util.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,7 +32,7 @@ public class EncryptionDecryptionUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value(("${egov.state.level.tenant.id}"))
+    @Value(("${state.level.tenant.id}"))
     private String stateLevelTenantId;
 
     @Value(("${decryption.abac.enabled}"))
@@ -80,15 +77,18 @@ public class EncryptionDecryptionUtil {
             }
             final User encrichedUserInfo = getEncrichedandCopiedUserInfo(requestInfo.getUserInfo());
             requestInfo.setUserInfo(encrichedUserInfo);
+
             Map<String,String> keyPurposeMap = getKeyToDecrypt(objectToDecrypt, encrichedUserInfo);
             String purpose = keyPurposeMap.get("purpose");
+
             if(key == null)
                 key = keyPurposeMap.get("key");
+
             P decryptedObject = (P) encryptionService.decryptJson(requestInfo,objectToDecrypt, key, purpose, classType);
             if (decryptedObject == null) {
                 throw new CustomException("DECRYPTION_NULL_ERROR", "Null object found on performing decryption");
             }
-//            auditTheDecryptRequest(objectToDecrypt, key, encrichedUserInfo);
+
             if (objectToDecryptNotList) {
                 decryptedObject = (P) ((List<E>) decryptedObject).get(0);
             }
@@ -127,60 +127,34 @@ public class EncryptionDecryptionUtil {
             return false;
     }
 
-//    public String getKeyToDecrypt(Object objectToDecrypt, User userInfo) {
-//        if (!abacEnabled)
-//            return "ALL_ACCESS";
-//        else if (isUserDecryptingForSelf(objectToDecrypt, userInfo))
-//            return "UserListSelf";
-//        else if (isDecryptionForIndividualUser(objectToDecrypt))
-//            return "UserListOtherIndividual";
-//        else
-//            return "UserListOtherBulk";
-//    }
-
-//    public void auditTheDecryptRequest(Object objectToDecrypt, String key, User userInfo) {
-//        String purpose;
-//        if (!abacEnabled)
-//            purpose = "AbacDisabled";
-//        else if (isUserDecryptingForSelf(objectToDecrypt, userInfo))
-//            purpose = "Self";
-//        else if (isDecryptionForIndividualUser(objectToDecrypt))
-//            purpose = "SingleSearchResult";
-//        else
-//            purpose = "BulkSearchResult";
-//
-//        ObjectNode abacParams = objectMapper.createObjectNode();
-//        abacParams.set("key", TextNode.valueOf(key));
-//
-//        List<String> decryptedUserUuid = (List<String>) ((List) objectToDecrypt).stream()
-//                .map(user -> ((org.egov.user.domain.model.User) user).getUuid()).collect(Collectors.toList());
-//
-//        ObjectNode auditData = objectMapper.createObjectNode();
-//        auditData.set("entityType", TextNode.valueOf(User.class.getName()));
-//        auditData.set("decryptedEntityIds", objectMapper.valueToTree(decryptedUserUuid));
-//        auditService.audit(userInfo.getUuid(), System.currentTimeMillis(), purpose, abacParams, auditData);
-//    }
-
     public Map<String,String> getKeyToDecrypt(Object objectToDecrypt, User userInfo) {
         Map<String,String> keyPurposeMap = new HashMap<>();
+
         if (!abacEnabled){
             keyPurposeMap.put("key","UserSelf");
             keyPurposeMap.put("purpose","AbacDisabled");
         }
+
+
         else if (isUserDecryptingForSelf(objectToDecrypt, userInfo)){
             keyPurposeMap.put("key","UserSelf");
             keyPurposeMap.put("purpose","Self");
         }
+
+
         else if (isDecryptionForIndividualUser(objectToDecrypt)){
             keyPurposeMap.put("key","User");
             keyPurposeMap.put("purpose","SingleSearchResult");
         }
+
         else{
             keyPurposeMap.put("key","User");
             keyPurposeMap.put("purpose","BulkSearchResult");
         }
+
         return keyPurposeMap;
     }
+
     private User getEncrichedandCopiedUserInfo(User userInfo) {
         List<Role> newRoleList = new ArrayList<>();
         if (userInfo.getRoles() != null) {
@@ -200,4 +174,5 @@ public class EncryptionDecryptionUtil {
                 .roles(newRoleList).tenantId(userInfo.getTenantId()).uuid(userInfo.getUuid()).build();
         return newuserInfo;
     }
+
 }

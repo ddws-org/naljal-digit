@@ -1,5 +1,21 @@
 package org.egov.user.web.controller;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TimeZone;
+
 import org.apache.commons.io.IOUtils;
 import org.egov.common.utils.MultiStateInstanceUtil;
 import org.egov.user.TestConfiguration;
@@ -28,18 +44,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
 @Import(TestConfiguration.class)
@@ -50,7 +54,7 @@ public class UserRequestControllerTest {
 
     @MockBean
     private PasswordEncoder passwordEncoder;
-
+    
     @MockBean
     private MultiStateInstanceUtil multiStateInstanceUtil;
 
@@ -162,12 +166,9 @@ public class UserRequestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(fileContents)
         )
-                /*    To Do:  Commented out due to compilation issues
-                     causing a 400 response instead of the expected 200
-                */
-//                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8));
-//                .andExpect(content().json(getFileContents("updateValidatedCitizenSuccessResponse.json")));
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json(getFileContents("updateValidatedCitizenSuccessResponse.json")));
     }
 
     @Test

@@ -27,6 +27,8 @@ import javax.validation.constraints.Size;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Getter
 @Setter
 @ToString
@@ -81,8 +83,10 @@ public class User {
     private Long createdBy;
     private Long lastModifiedBy;
     private Long loggedInUserId;
+    private String loggedInUserUuid;
     private boolean otpValidationMandatory;
     private boolean mobileValidationMandatory = true;
+    private String alternateMobileNumber;
     private boolean defaultPwdChgd=false;
 
     public User addAddressItem(Address addressItem) {
@@ -101,6 +105,10 @@ public class User {
         return this;
     }
 
+    public void validateNewUser() {
+        validateNewUser(true);
+    }
+
     public void validateNewUser(boolean createUserValidateName) {
         if (isUsernameAbsent()
                 || (createUserValidateName && isNameAbsent())
@@ -114,10 +122,6 @@ public class User {
                 || isTenantIdAbsent()) {
             throw new InvalidUserCreateException(this);
         }
-    }
-
-    public void validateNewUser() {
-        validateNewUser(true);
     }
 
     public void validateUserModification() {
@@ -202,7 +206,7 @@ public class User {
 
     @JsonIgnore
     public boolean isLoggedInUserDifferentFromUpdatedUser() {
-        return !id.equals(loggedInUserId);
+        return !id.equals(loggedInUserId) || !uuid.equals(loggedInUserUuid);
     }
 
     public void setRoleToCitizen() {
