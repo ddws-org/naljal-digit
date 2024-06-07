@@ -254,6 +254,12 @@ config:
       - work-dir: "core-services/internal-gateway"
         image-name: "internal-gateway"
         dockerfile: "build/maven/Dockerfile"
+
+  - name: "builds/naljal-digit/core-services/gateway"
+    build:
+      - work-dir: "core-services/gateway"
+        image-name: "gateway"
+        dockerfile: "build/maven/Dockerfile"
         
   - name: "builds/naljal-digit/core-services/egov-user-event"
     build:
