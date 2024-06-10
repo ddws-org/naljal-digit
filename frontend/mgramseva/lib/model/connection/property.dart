@@ -212,6 +212,9 @@ class Owners {
   @JsonKey(ignore: true)
   var phoneNumberCtrl = TextEditingController();
 
+  @JsonKey(ignore: true)
+  var sbmAccountCtrl = TextEditingController();
+
   Owners();
 
   setText() {

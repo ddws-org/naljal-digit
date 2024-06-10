@@ -59,6 +59,14 @@ var json = [
     ),
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SBM_ACCOUNT_MSG),
+    "widget": BuildTextField(
+      i18.common.SBM_ACCOUNT,
+      TextEditingController(),
+      isRequired: true,
+    ),
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_OLD_ID_MSG),
     "widget": BuildTextField(
       i18.consumer.OLD_CONNECTION_ID,
@@ -108,7 +116,7 @@ var json = [
   {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_TYPE_MSG),
     "widget": SelectFieldBuilder(
-      i18.consumer.SCHENE_TYPE,
+      i18.consumer.SCHEME_TYPE,
       '',
       '',
       '',

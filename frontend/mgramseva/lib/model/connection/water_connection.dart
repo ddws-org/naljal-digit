@@ -125,6 +125,9 @@ class WaterConnection {
   var ServiceTypeCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var SchemeTypeCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var om_1Ctrl = new TextEditingController();
   @JsonKey(ignore: true)
   var om_2Ctrl = new TextEditingController();
