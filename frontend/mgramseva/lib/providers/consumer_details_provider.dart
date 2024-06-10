@@ -576,6 +576,18 @@ class ConsumerProvider with ChangeNotifier {
 
     notifyListeners();
   }
+  onChangeOfSchemeType(val) {
+    waterconnection.connectionType = val;
+    waterconnection.meterIdCtrl.clear();
+    waterconnection.previousReadingDateCtrl.clear();
+    billYear = null;
+    selectedcycle = null;
+    waterconnection.BillingCycleCtrl.clear();
+    waterconnection.meterInstallationDateCtrl.clear();
+    searchPickerKey?.currentState?.Options.clear();
+
+    notifyListeners();
+  }
 
   onChangeBillingCycle(val) {
     selectedcycle = val;
@@ -597,6 +609,14 @@ class ConsumerProvider with ChangeNotifier {
     }
     return <String>[];
   }
+  List<String> getIHLTypeList() {
+    List<String> myList = [
+      "Under SBM","Self Funded"
+    ];
+
+    return myList;
+  }
+
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
   List<Map<String,dynamic>> getBillingCycle() {

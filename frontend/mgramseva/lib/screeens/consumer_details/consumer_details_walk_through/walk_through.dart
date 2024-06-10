@@ -106,6 +106,19 @@ var json = [
     )
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_TYPE_MSG),
+    "widget": SelectFieldBuilder(
+      i18.consumer.SCHENE_TYPE,
+      '',
+      '',
+      '',
+          (val) => {},
+      [],
+      true,
+      itemAsString: (i) => i.toString(),
+    )
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
     "widget": RadioButtonFieldBuilder(
         navigatorKey.currentContext!,

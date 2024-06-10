@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/radio_button_field_builder.dart';
 import 'package:mgramseva/widgets/select_field_builder.dart';
@@ -38,7 +38,7 @@ var json = [
       '',
       true,
       Constants.IHL,
-          (val) => {},
+      (val) => {},
     )
   },
   {
@@ -76,7 +76,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -89,7 +89,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -106,16 +106,23 @@ var json = [
     )
   },
   {
-    "name": (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
-    "widget": RadioButtonFieldBuilder(
-        navigatorKey.currentContext!,
-        "",
-        null,
-        '',
-        '',
-        false,
-        Constants.CONSUMER_PAYMENT_TYPE,
-        (val)=>{},
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_TYPE_MSG),
+    "widget": SelectFieldBuilder(
+      i18.consumer.SCHENE_TYPE,
+      '',
+      '',
+      '',
+      (val) => {},
+      [],
+      true,
+      itemAsString: (i) => i.toString(),
+    )
+  },
+  {
+    "name":
+        (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
+    "widget": RadioButtonFieldBuilder(navigatorKey.currentContext!, "", null,
+        '', '', false, Constants.CONSUMER_PAYMENT_TYPE, (val) => {},
         isEnabled: true),
   },
 ];
@@ -132,5 +139,6 @@ class ConsumerWalkWidgets {
   final Widget widget;
   bool isActive = false;
   GlobalKey? key;
+
   ConsumerWalkWidgets({required this.name, required this.widget});
 }

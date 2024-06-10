@@ -138,10 +138,12 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget buildconsumerView(Property property) {
     print(property.owners!.first.gender);
     print(property.owners!.first.ihl);
+
     return Column(
       children: [
         FormWrapper(
             Consumer<ConsumerProvider>(builder: (_, consumerProvider, child) {
+              print('data----${consumerProvider.getIHLTypeList()}');
           return Form(
               key: consumerProvider.formKey,
               autovalidateMode: consumerProvider.autoValidation
@@ -314,6 +316,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                       : _buildNo(consumerProvider))
                             ]
                           ),
+                          Container(child: _buildYes(consumerProvider)),
                           Consumer<ConsumerProvider>(
                             builder: (_, consumerProvider, child) =>
                                 SelectFieldBuilder(
@@ -430,8 +433,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         '',
                                         consumerProvider
                                             .onChangeOfConnectionType,
-                                        consumerProvider
-                                            .getConnectionTypeList(),
+                                        consumerProvider.getConnectionTypeList(),
                                         true,
                                         itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                                         contextKey: consumerProvider
@@ -735,45 +737,31 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget _buildYes(ConsumerProvider consumerProvider) {
+
     return Wrap(children: [
-      Consumer<ConsumerProvider>(
-          builder: (_, consumerProvider, child) => consumerProvider.isEdit ==
-                      false ||
-                  consumerProvider.isFirstDemand == false
-              ? Wrap(
-                  children: [
-                    SelectFieldBuilder(
-                      i18.demandGenerate.BILLING_YEAR_LABEL,
-                      consumerProvider.billYear,
-                      '',
-                      '',
-                      consumerProvider.onChangeOfBillYear,
-                      consumerProvider.getFinancialYearList(),
-                      true,
-                      itemAsString: (i) =>
-                          '${ApplicationLocalizations.of(context).translate(i.financialYear)}',
-                      controller:
-                          consumerProvider.waterconnection.billingCycleYearCtrl,
-                      key: Keys.bulkDemand.BULK_DEMAND_BILLING_YEAR,
-                    ),
-                    SelectFieldBuilder(
-                      i18.consumer.CONSUMER_BILLING_CYCLE,
-                      consumerProvider.selectedcycle,
-                      '',
-                      '',
-                      consumerProvider.onChangeBillingCycle,
-                      consumerProvider.getBillingCycle(),
-                      true,
-                      itemAsString: (i) =>
-                          "${ApplicationLocalizations.of(context).translate(i['name'])}",
-                      controller:
-                          consumerProvider.waterconnection.BillingCycleCtrl,
-                      suggestionKey: consumerProvider.searchPickerKey,
-                      key: Keys.createConsumer.CONSUMER_LAST_BILLED_CYCLE,
-                    )
-                  ],
-                )
-              : Text("")),
+      SelectFieldBuilder(
+        i18.consumer.SCHENE_TYPE,
+        consumerProvider
+            .waterconnection.connectionType,
+        '',
+        '',
+        consumerProvider
+            .onChangeOfSchemeType,
+        consumerProvider
+            .getIHLTypeList(),
+        true,
+        itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+        contextKey: consumerProvider
+            .consmerWalkthrougList[10].key,
+        controller: consumerProvider
+            .waterconnection.ServiceTypeCtrl,
+        readOnly: consumerProvider.isEdit ==
+            true ||
+            consumerProvider.isFirstDemand ==
+                true,
+        key: Keys.createConsumer
+            .CONSUMER_SERVICE_KEY,
+      ),
     ]);
   }
 
