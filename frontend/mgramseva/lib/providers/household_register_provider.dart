@@ -98,7 +98,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     if (sortBy != null) {
       query.addAll({
         'sortOrder': sortBy!.isAscending ? 'ASC' : 'DESC',
-        'sortBy': sortBy!.key
+        'sortBy': ""
       });
     }
 
@@ -465,7 +465,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     if (sortBy != null) {
       query.addAll({
         'sortOrder': sortBy!.isAscending ? 'ASC' : 'DESC',
-        'sortBy': sortBy!.key
+        'sortBy': "sortBy!.key"
       });
     }
 
