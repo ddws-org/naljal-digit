@@ -64,11 +64,11 @@ export const Request = async ({
   setTimeParam = true,
   userDownload = false,
   noRequestInfo = false,
-  multipartFormData = false,
+  multipartFormData = false,  
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/uat${url}`;
+  // url = `/uat${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
     data.RequestInfo = {
