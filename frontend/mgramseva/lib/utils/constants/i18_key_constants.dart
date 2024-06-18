@@ -137,6 +137,9 @@ class Common {
   String get OFFLINE_RTGS => 'OFFLINE_RTGS';
   String get POSTAL_ORDER => 'OFFLINE_RTGS';
   String get PAYGOV => 'PAYGOV';
+  String get SBI_E_PAY => 'SBIEPAY';
+
+
 
   String get FULL_AMOUNT => 'FULL_AMOUNT';
   String get CUSTOM_AMOUNT => 'CUSTOM_AMOUNT';

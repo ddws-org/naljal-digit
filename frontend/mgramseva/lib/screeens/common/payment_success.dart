@@ -53,6 +53,8 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
         Provider.of<TransactionUpdateProvider>(context, listen: false);
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
+
+ 
     UpdateTransactionDetails? transactionDetails;
     return Scaffold(
       appBar: AppBar(

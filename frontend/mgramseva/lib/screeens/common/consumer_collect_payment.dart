@@ -665,20 +665,22 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
   }
 
   paymentInfo(FetchBill fetchBill, BuildContext context) {
+          // print(fetchBill.paymentMethod.toString());
+
     var consumerPaymentProvider =
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      if (fetchBill.paymentMethod == 'PAYGOV') {
+      if (fetchBill.paymentMethod == 'SBIEPAY') {
         consumerPaymentProvider.createTransaction(
-            fetchBill, widget.query['tenantId'], context,widget.query);
+            fetchBill, widget.query['tenantId'], context, widget.query);
         setState(() {
-          checkValue=false;
+          checkValue = false;
         });
       }
     } else {
       setState(() {
-        checkValue=false;
+        checkValue = false;
         autoValidation = true;
       });
     }
@@ -709,19 +711,25 @@ class _ConsumerCollectPaymentViewState extends State<ConsumerCollectPayment> {
         pageBuilder: (context, anim1, anim2) {
           final clickedStatus = ValueNotifier<bool>(false);
           return ValueListenableBuilder<bool>(
-            valueListenable: clickedStatus,
-            builder: (context,bool isClicked,_) {
-              return isClicked?Loaders.loaderBoxCircularLoader(context,text: ""):Align(
-                  alignment: Alignment.center,
-                  child: ConfirmationPopUp(
-                    textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
-                    subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
-                    cancelLabel: i18.common.CORE_GO_BACK,
-                    confirmLabel: i18.common.CORE_CONFIRM,
-                    onConfirm: isClicked?(){}: () { clickedStatus.value = true;paymentInfo(fetchBill, context);},
-                  ));
-            }
-          );
+              valueListenable: clickedStatus,
+              builder: (context, bool isClicked, _) {
+                return isClicked
+                    ? Loaders.loaderBoxCircularLoader(context, text: "")
+                    : Align(
+                        alignment: Alignment.center,
+                        child: ConfirmationPopUp(
+                          textString: i18.payment.CORE_AMOUNT_CONFIRMATION,
+                          subTextString: '₹ ${fetchBill.customAmountCtrl.text}',
+                          cancelLabel: i18.common.CORE_GO_BACK,
+                          confirmLabel: i18.common.CORE_CONFIRM,
+                          onConfirm: isClicked
+                              ? () {}
+                              : () {
+                                  clickedStatus.value = true;
+                                  paymentInfo(fetchBill, context);
+                                },
+                        ));
+              });
         },
       );
     } else {
