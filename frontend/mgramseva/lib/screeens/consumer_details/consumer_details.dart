@@ -315,6 +315,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     ? _buildYes(consumerProvider, property)
                                     : _buildNo(consumerProvider))
                           ]),
+                            //dropdown for sbm & self funded
+/*
                           Consumer<ConsumerProvider>(
                               builder: (_, consumerProvider, child) => Column(
                                     children: [
@@ -387,6 +389,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                             )
                                     ],
                                   )),
+*/
                           Consumer<ConsumerProvider>(
                             builder: (_, consumerProvider, child) =>
                                 SelectFieldBuilder(
