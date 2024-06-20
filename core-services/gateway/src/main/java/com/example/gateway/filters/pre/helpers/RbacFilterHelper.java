@@ -97,7 +97,6 @@ public class RbacFilterHelper implements RewriteFunction<Map, Map> {
     }
 
     private boolean isUriAuthorized(AuthorizationRequest authorizationRequest , ServerWebExchange exchange) {
-
         AuthorizationRequestWrapper authorizationRequestWrapper = new AuthorizationRequestWrapper(new RequestInfo(), authorizationRequest);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -114,7 +113,7 @@ public class RbacFilterHelper implements RewriteFunction<Map, Map> {
 
         final HttpEntity<Object> httpEntity = new HttpEntity<>(authorizationRequestWrapper, headers);
         log.info("AuthorizationRequest is "+authorizationRequest);
-
+        authorizationRequest.getTenantIds().add(authorizationRequest.getRoles().stream().findFirst().get().getTenantId());
         try {
             log.info("Headers is "+headers);
             ResponseEntity<Void> responseEntity = restTemplate.postForEntity(applicationProperties.getAuthorizationUrl(), httpEntity, Void
