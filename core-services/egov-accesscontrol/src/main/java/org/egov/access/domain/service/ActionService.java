@@ -99,9 +99,12 @@ public class ActionService {
 
 		Map<String, ActionContainer>  roleActions = mdmsRepository.fetchRoleActionData(getStateLevelTenant
                 (authorizeRequest.getTenantIds().iterator().next()));
+		log.info("roleActions are "+roleActions.toString());
 
 		String uriToBeAuthorized = authorizeRequest.getUri();
+		log.info("Authorization req "+uriToBeAuthorized.toString());
 		Set<String> applicableRoles = getApplicableRoles(authorizeRequest);
+		log.info("Applicable roles "+ applicableRoles);
 		Set<String> uris = new HashSet<>();
 		List<String> regexUris = new ArrayList<>();
 
@@ -124,7 +127,9 @@ public class ActionService {
 
 	private Set<String> getApplicableRoles(AuthorizationRequest authorizationRequest){
 		Set<String> requestTenantIds = authorizationRequest.getTenantIds();
+		log.info("tenantId is "+requestTenantIds);
 		String stateLevelTenantId = getStateLevelTenant(requestTenantIds.iterator().next());
+		log.info("stateLevelTenantId is"+stateLevelTenantId);
 		Set<Role> roles = authorizationRequest.getRoles();
 		Set<Role> applicableRoles = new HashSet<>();
 

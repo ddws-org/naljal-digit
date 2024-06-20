@@ -1,5 +1,6 @@
 package org.egov.access.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.access.domain.model.Action;
 import org.egov.access.domain.model.ActionValidation;
 import org.egov.access.domain.model.authorize.AuthorizationRequestWrapper;
@@ -33,7 +34,7 @@ import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/v1/actions")
 public class ActionController {
@@ -109,6 +110,7 @@ public class ActionController {
 
 	@PostMapping(value = "_authorize")
 	public ResponseEntity<Void> authorize(@RequestBody @Valid AuthorizationRequestWrapper authorizationRequestWrapper) {
+		log.info("authorizationRequestWrapper is from line 113 "+authorizationRequestWrapper.getAuthorizationRequest());
 		boolean authorized = actionService.isAuthorized(authorizationRequestWrapper.getAuthorizationRequest());
 
 		if(authorized)
