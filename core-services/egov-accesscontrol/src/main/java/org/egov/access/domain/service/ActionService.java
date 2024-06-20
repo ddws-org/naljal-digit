@@ -112,9 +112,12 @@ public class ActionService {
 	public boolean isAuthorized(AuthorizationRequest authorizeRequest){
 
 		String inputTenantId = authorizeRequest.getTenantIds().iterator().next();
+		log.info("inputTenantId is "+inputTenantId);
 		List<String> roles = authorizeRequest.getRoles().stream().map(Role::getCode).collect(Collectors.toList());
+		log.info("roles from line 117 "+roles);
 		List<String> listOfMdmsTenantIdsToCheck = new ArrayList<>(fetchListOfTenantIdsForAuthorizationCheck(inputTenantId, roles));
 		Collections.sort(listOfMdmsTenantIdsToCheck, Collections.reverseOrder(Comparator.comparing(String::length)));
+		log.info("listOfMdmsTenantIdsToCheck are from line 120 "+ listOfMdmsTenantIdsToCheck.toString());
 
 		boolean isAuthorized = false;
 
@@ -153,9 +156,11 @@ public class ActionService {
 	private boolean isAuthorizedOnGivenTenantLevel(AuthorizationRequest authorizeRequest, String tenantId){
 
 		Map<String, ActionContainer>  roleActions = mdmsRepository.fetchRoleActionData(tenantId);
-
+		log.info("roleActions are "+roleActions.toString());
 		String uriToBeAuthorized = authorizeRequest.getUri();
+		log.info("Authorization req "+uriToBeAuthorized.toString());
 		Set<String> applicableRoles = getApplicableRoles(authorizeRequest);
+		log.info("Applicable roles "+ applicableRoles);
 		Set<String> uris = new HashSet<>();
 		List<String> regexUris = new ArrayList<>();
 
@@ -180,8 +185,11 @@ public class ActionService {
 		
 		Set<String> requestTenantIds = authorizationRequest.getTenantIds();
 		String tenantId = requestTenantIds.iterator().next();
+		log.info("tenantId is "+tenantId);
 		String centralInstanceLevelTenantId = getCentralInstanceLevelTenant(tenantId);
+		log.info("centralInstanceLevelTenantId is "+centralInstanceLevelTenantId);
 		String stateLevelTenantId = multiStateInstanceUtil.getStateLevelTenant(tenantId);
+		log.info("stateLevelTenantId is"+stateLevelTenantId);
 
 		Set<Role> roles = authorizationRequest.getRoles();
 		Set<Role> applicableRoles = new HashSet<>();
