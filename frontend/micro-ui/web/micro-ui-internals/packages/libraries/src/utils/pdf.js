@@ -70,7 +70,6 @@ function getBase64Image(tenantId) {
 const defaultLogo =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABBtJREFUWAntV11oVEcUnjN3mzXm111toQ8lWOtLTbIG0YgpMdQ05CEv0iTU1hhR7EMRWYuKSkteVExJBRGkpaUk0ChRSYtpKam4sbE0ia7RSNaS0uIfWtT4E8Xs5u7O8Vy7c3f27t2fh4W+ZF7OmfN9c86Ze2bOvZex/3mAGv/RIU9xJCL2IWIdAS7C/Nyhtbm8l39XeVKfOrLcHZoOHmCA7zJkC6VdSmAQRoYBAHbCXZBzED726xKT0kwgGnyUgpdI0JBEEMD4B+4dV3pU+9Mvyl4NMTZKAV5X7cl0APC5P127BqBNqBwuJ5Gw2G8NbmDIGEcQR+9/u6pAcg0ZYtiRaXCDT75rHnT0bjF0dZgJkLP3VEDVEakcj58ti7MBJOWrPFUHJurUuaGbCVCd5llBdQ4Yw7GnUaM9Fal4JjptJCGGmQA964upnPBXHCYOTSciDMGcp1qnYpzBBXVu6LEEGHxOByViJURJX7m2+W+qmKax3cn4Kk/qdJgnnXOdHXIupZnA/B1jw5TP+wzgngSpLEhX6ahLy/dKm5Su7WODBK4l/I60JZPkJ0DcuvxPLvxr5ZjXUAL45crchxD00A12OR3apTyv/67E7CQerndOztwto9uymPI1N2RwOcMwgBYorigah5qBsN36WVtCCZI9kqqu8Td0DG2mhlJKdb8JGvQOrV86YMevPDZagjpuQoFLqPY3gDtOjawvH7TjZpRAZeelesHwON3jQtUJtej2kdalu1RbZZe/QSB0U6L5ph0AObB9wy0Vn5m2qJI2geWd19yI09eo8SywLjbmdMgaRjZ4+gx9RffV13BGD1BXNV5kCYMzrW641dOvAnGnVgVMHYLUPu2DGxxk4iPJFeFwfbLgL7lcfCi5UqZNgK7WIkm2k4AxHARLyaUSJuBpE6AtBuwCmzaAGM5Tc6neMW7UQdoEcnOdv9Cpv24GjFNAAPCvpalwTuFP1J5vy7kqqRtGOGjfqDZDT5vAQNPbzzTgzQmOAWZotXe4xXNeOj3T9OYTjUMzHU1Le4YQImwdaimndh8/0t4CSV/T83fR1PRUI9W8lALc4jla3x/ryv6UuCqrvh+bp+t6IwL81weQn6abMqFyZnX5BDIugVyQifT52hxD7HyVAFFKb8nreVg46K354bHd2qwn0H6u9i0dI9S2scIMSN8YHHDjnmrfz6YtqmQ1gZ7xxpyJ+5MX6ROYDqplADzPAc2zs/rXv1Qk7TVUyen0iclHDbbBjYWIc3UR3mb1kdUEQGC5NYA6p1dzAp7VBKjulgakhjf+sqwNKoNOGO8i9Uxz8H6KEkzKAvzRimX1Cex+58w/9O2/nT4S4v7/jKDUyo/vrfZ1WxPI6i2Qzvf/VrtKRMJbKewSeiI3aJcn96w++53EVfkCw79XQZYr/EsAAAAASUVORK5CYII=";
 const jsPdfGenerator = async ({ breakPageLimit = null, tenantId, logo, name, email, phoneNumber, heading, details, t = (text) => text }) => {
-
   const emailLeftMargin =
     email.length <= 15
       ? 190
@@ -164,7 +163,6 @@ const jsPdfGenerator = async ({ breakPageLimit = null, tenantId, logo, name, ema
   downloadPDFFileUsingBase64(generatedPDF, "acknowledgement.pdf");
 };
 
-
 /**
  * Util function that can be used
  * to download WS connection acknowledgement pdfs
@@ -175,31 +173,42 @@ const jsPdfGenerator = async ({ breakPageLimit = null, tenantId, logo, name, ema
  * @example
  * Digit.Utils.pdf.generatev1()
  *
- * @returns Downloads a pdf  
+ * @returns Downloads a pdf
  */
-const jsPdfGeneratorv1 = async ({ breakPageLimit = null, tenantId, logo, name, email, phoneNumber, heading, details, headerDetails, t = (text) => text }) => {
+const jsPdfGeneratorv1 = async ({
+  breakPageLimit = null,
+  tenantId,
+  logo,
+  name,
+  email,
+  phoneNumber,
+  heading,
+  details,
+  headerDetails,
+  t = (text) => text,
+}) => {
   const emailLeftMargin =
     email.length <= 15
       ? 190
       : email.length <= 20
-        ? 150
-        : email.length <= 25
-          ? 130
-          : email.length <= 30
-            ? 90
-            : email.length <= 35
-              ? 50
-              : email.length <= 40
-                ? 10
-                : email.length <= 45
-                  ? 0
-                  : email.length <= 50
-                    ? -20
-                    : email.length <= 55
-                      ? -70
-                      : email.length <= 60
-                        ? -100
-                        : -60;
+      ? 150
+      : email.length <= 25
+      ? 130
+      : email.length <= 30
+      ? 90
+      : email.length <= 35
+      ? 50
+      : email.length <= 40
+      ? 10
+      : email.length <= 45
+      ? 0
+      : email.length <= 50
+      ? -20
+      : email.length <= 55
+      ? -70
+      : email.length <= 60
+      ? -100
+      : -60;
 
   const dd = {
     pageMargins: [40, 40, 40, 30],
@@ -213,7 +222,7 @@ const jsPdfGeneratorv1 = async ({ breakPageLimit = null, tenantId, logo, name, e
       };
     },
     content: [
-      ...createHeader(headerDetails,logo,tenantId),
+      ...createHeader(headerDetails, logo, tenantId),
       // {
       //   text: heading,
       //   font: "Hind",
@@ -234,7 +243,7 @@ const jsPdfGeneratorv1 = async ({ breakPageLimit = null, tenantId, logo, name, e
       font: "Hind",
     },
   };
-  
+
   pdfMake.vfs = Fonts;
   let locale = Digit.SessionStorage.get("locale") || "en_IN";
   let Hind = pdfFonts[locale] || pdfFonts["Hind"];
@@ -243,93 +252,92 @@ const jsPdfGeneratorv1 = async ({ breakPageLimit = null, tenantId, logo, name, e
   downloadPDFFileUsingBase64(generatedPDF, "acknowledgement.pdf");
 };
 
-export default { generate: jsPdfGenerator ,generatev1:jsPdfGeneratorv1};
+export default { generate: jsPdfGenerator, generatev1: jsPdfGeneratorv1 };
 
-const createBodyContentBillAmend = (table,t) => {
-  let bodyData = []
+const createBodyContentBillAmend = (table, t) => {
+  let bodyData = [];
   bodyData.push({
     text: t(table?.title),
-    color: "#F47738",
+    color: "#1f4ac4",
     style: "header",
     fontSize: 14,
     bold: true,
-    margin: [0, 15, 0, 10]
-  })
+    margin: [0, 15, 0, 10],
+  });
   bodyData.push({
-    layout:{
-      fillColor:function(rowIndex,node,columnIndex){
-        if(rowIndex === (table?.tableRows?.length)) {
-          return "#F47738"
+    layout: {
+      fillColor: function (rowIndex, node, columnIndex) {
+        if (rowIndex === table?.tableRows?.length) {
+          return "#1f4ac4";
         }
-        return (rowIndex % 2 === 0) ? "#F47738" : null; 
+        return rowIndex % 2 === 0 ? "#1f4ac4" : null;
       },
-      fillOpacity:function(rowIndex,node,columnIndex) {
-        if (rowIndex === (table?.tableRows?.length)) {
+      fillOpacity: function (rowIndex, node, columnIndex) {
+        if (rowIndex === table?.tableRows?.length) {
           return 1;
         }
-        return (rowIndex % 2 === 0) ? 0.15 : 1;
-      }
+        return rowIndex % 2 === 0 ? 0.15 : 1;
+      },
     },
-    table:{
-      headerRows:1,
+    table: {
+      headerRows: 1,
       widths: ["*", "*", "*", "*"],
-      body:[
-        table?.headers?.map(header =>{
+      body: [
+        table?.headers?.map((header) => {
           return {
-            text:t(header),
-            style:"header",
-            fontSize:11,
-            bold:true,
-            border: [false, false, false, false]
-          }
+            text: t(header),
+            style: "header",
+            fontSize: 11,
+            bold: true,
+            border: [false, false, false, false],
+          };
         }),
-        ...table?.tableRows?.map(row => {
+        ...table?.tableRows?.map((row) => {
           return [
             {
-              text:t(row?.[0]),
-              style:"header",
-              fontSize:11,
-              border: [false, false, false, false]
+              text: t(row?.[0]),
+              style: "header",
+              fontSize: 11,
+              border: [false, false, false, false],
             },
             {
               text: t(row?.[1]),
               style: "header",
               fontSize: 11,
-              border: [false, false, false, false]
+              border: [false, false, false, false],
             },
             {
               text: t(row?.[2]),
               style: "header",
               fontSize: 11,
-              border: [false, false, false, false]
+              border: [false, false, false, false],
             },
             {
               text: t(row?.[3]),
               style: "header",
               fontSize: 11,
-              border: [false, false, false, false]
-            }
-          ]
-        })
-      ]
-    }
-  })
-  return bodyData
-}
+              border: [false, false, false, false],
+            },
+          ];
+        }),
+      ],
+    },
+  });
+  return bodyData;
+};
 
-const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
-  
+const createHeaderBillAmend = (headerDetails, logo, tenantId, t) => {
   let headerData = [];
   headerData.push({
-    style: 'tableExample',
+    style: "tableExample",
     layout: "noBorders",
     fillColor: "#f7e0d4",
     margin: [-40, -40, -40, 40],
     table: {
-      widths: ['5%', 'auto', '*'],
+      widths: ["5%", "auto", "*"],
       body: [
         [
-            {
+          {
             image: logo || getBase64Image(tenantId) || defaultLogo,
             // width: 50,
             margin: [10, 10],
@@ -341,9 +349,9 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             text: headerDetails?.header, //"Amritsar Municipal Corporation",
             margin: [40, 10, 2, 4],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 18,
-            bold: true
+            bold: true,
           },
           {
             text: headerDetails?.typeOfApplication, //"New Sewerage Connection",
@@ -351,8 +359,8 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             fontSize: 16,
             alignment: "right",
             margin: [-40, 10, 2, 0],
-            color: "#F47738"
-          }
+            color: "#1f4ac4",
+          },
         ],
         [
           { text: "" },
@@ -360,9 +368,9 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             text: headerDetails?.subHeader, //"Municipal Corporation Amritsar, Town Hall, Amritsar, Punjab.",
             margin: [40, -45, -2, -5],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 10,
-            bold: true
+            bold: true,
           },
 
           {
@@ -371,8 +379,8 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             fontSize: 16,
             margin: [0, -45, 10, 0],
             alignment: "right",
-            color: "#F47738"
-          }
+            color: "#1f4ac4",
+          },
         ],
         [
           { text: "" },
@@ -381,25 +389,25 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             text: headerDetails?.description, //"0183-2545155 | www.amritsarcorp.com | cmcasr@gmail.com",
             margin: [40, -40, 2, 10],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 10,
-            bold: true
+            bold: true,
           },
           {
             text: "",
-          }
-        ]
-      ]
-    }
+          },
+        ],
+      ],
+    },
   });
   headerDetails?.values?.forEach((header, index) => {
     headerData.push({
-      style: 'tableExample',
+      style: "tableExample",
       layout: "noBorders",
       fillColor: "#f7e0d4",
       margin: [-40, -40, -40, 20],
       table: {
-        widths: ['30%', '*'],
+        widths: ["30%", "*"],
         body: [
           [
             {
@@ -407,7 +415,7 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
               margin: index == 0 ? [40, 0, 2, 10] : [40, 10, 2, 10],
               style: "header",
               fontSize: 10,
-              bold: true
+              bold: true,
             },
             {
               text: header?.value,
@@ -415,21 +423,21 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
               fontSize: 10,
               alignment: "left",
               margin: index == 0 ? [0, 0, 2, 10] : [0, 10, 2, 10],
-            }
-          ]
-        ]
-      }
-    })
-  })
+            },
+          ],
+        ],
+      },
+    });
+  });
   //push demand revision details old way
 
   headerData.push({
-    style: 'tableExample',
+    style: "tableExample",
     layout: "noBorders",
     fillColor: "#f7e0d4",
     margin: [-40, -25, -1000000, 20],
     table: {
-      widths: ['30%', '*'],
+      widths: ["30%", "*"],
       body: [
         [
           {
@@ -437,21 +445,21 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             margin: [40, 0, 2, 20],
             style: "header",
             fontSize: 13,
-            bold: true
-          }
-        ]
-      ]
-    }
-  })
+            bold: true,
+          },
+        ],
+      ],
+    },
+  });
 
   headerDetails?.DemandRevision?.values?.forEach((header, index) => {
     headerData.push({
-      style: 'tableExample',
+      style: "tableExample",
       layout: "noBorders",
       fillColor: "#f7e0d4",
       margin: [-40, -40, -40, 20],
       table: {
-        widths: ['30%', '*'],
+        widths: ["30%", "*"],
         body: [
           [
             {
@@ -459,7 +467,7 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
               margin: index == 0 ? [40, 0, 2, 10] : [40, 10, 2, 10],
               style: "header",
               fontSize: 10,
-              bold: true
+              bold: true,
             },
             {
               text: header?.value,
@@ -467,21 +475,21 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
               fontSize: 10,
               alignment: "left",
               margin: index == 0 ? [0, 0, 2, 10] : [0, 10, 2, 10],
-            }
-          ]
-        ]
-      }
-    })
-  })
+            },
+          ],
+        ],
+      },
+    });
+  });
 
- //attachment details
+  //attachment details
   headerData.push({
-    style: 'tableExample',
+    style: "tableExample",
     layout: "noBorders",
     fillColor: "#f7e0d4",
     margin: [-40, -25, -1000000, 20],
     table: {
-      widths: ['30%', '*'],
+      widths: ["30%", "*"],
       body: [
         [
           {
@@ -489,28 +497,28 @@ const createHeaderBillAmend = (headerDetails, logo, tenantId,t) => {
             margin: [40, 0, 2, 110],
             style: "header",
             fontSize: 13,
-            bold: true
-          }
-        ]
-      ]
-    }
-  })
-  
+            bold: true,
+          },
+        ],
+      ],
+    },
+  });
+
   headerData.push({
     layout: "noBorders",
     ul: headerDetails?.Attachments?.values,
-    margin:[0,-130,0,40]
-   })
+    margin: [0, -130, 0, 40],
+  });
 
   return headerData;
-}
+};
 
 const createBodyContent = (details) => {
-  let detailsHeaders = []
-  details.map((table,index) =>{
+  let detailsHeaders = [];
+  details.map((table, index) => {
     if (table?.isAttachments && table.values) {
       detailsHeaders.push({
-        style: 'tableExample',
+        style: "tableExample",
         layout: "noBorders",
         margin: [0, 13, 0, 5],
         table: {
@@ -518,129 +526,129 @@ const createBodyContent = (details) => {
             [
               {
                 text: table?.title,
-                color: "#F47738",
+                color: "#1f4ac4",
                 style: "header",
                 fontSize: 14,
-                bold: true
-              }
-            ]
-          ]
-        }
-      })
+                bold: true,
+              },
+            ],
+          ],
+        },
+      });
       detailsHeaders.push({
-        layout:'noBorders',
-        ul: table?.values
-      })
-      return
+        layout: "noBorders",
+        ul: table?.values,
+      });
+      return;
     }
     detailsHeaders.push({
-      layout:'noBorders',
-      table:{
-        headerRows:1,
-        widths:["*","*","*"],
-        body:[
-          table?.title?.map(t=>{ 
+      layout: "noBorders",
+      table: {
+        headerRows: 1,
+        widths: ["*", "*", "*"],
+        body: [
+          table?.title?.map((t) => {
             return {
-            text:t,
-            color: "#F47738",
-            style: "header",
-            fontSize: 14,
-            bold: true,
-            margin:[0,15,0,0]
-            }
+              text: t,
+              color: "#1f4ac4",
+              style: "header",
+              fontSize: 14,
+              bold: true,
+              margin: [0, 15, 0, 0],
+            };
           }),
-          ...table?.values?.map((value,index) => {
+          ...table?.values?.map((value, index) => {
             return [
               {
-                text:value?.val1,
+                text: value?.val1,
                 style: "header",
                 fontSize: 10,
-                bold: true
+                bold: true,
               },
               {
                 text: value?.val2,
-                fontSize: 10
+                fontSize: 10,
               },
               {
                 text: value?.val3,
-                fontSize: 10
-              }
-            ]
-          })
-        ]
-      }
-    })
-  })
+                fontSize: 10,
+              },
+            ];
+          }),
+        ],
+      },
+    });
+  });
 
-  return detailsHeaders
-}
+  return detailsHeaders;
+};
 
 function createContentDetails(details) {
   let detailsHeaders = [];
   details.forEach((detail, index) => {
     if (detail?.title) {
       detailsHeaders.push({
-        style: 'tableExample',
+        style: "tableExample",
         layout: "noBorders",
-        margin:[0,13,0,5],
+        margin: [0, 13, 0, 5],
         table: {
           body: [
             [
               {
                 text: detail?.title,
-                color: "#F47738",
+                color: "#1f4ac4",
                 style: "header",
                 fontSize: 14,
-                bold: true
-              }
-            ]
-          ]
-        }
-      })
+                bold: true,
+              },
+            ],
+          ],
+        },
+      });
     }
     if (detail?.isAttachments && detail.values) {
       detailsHeaders.push({
-        ul: detail?.values
-      })
+        ul: detail?.values,
+      });
     } else {
-      detail?.values?.forEach(indData => {
+      detail?.values?.forEach((indData) => {
         detailsHeaders.push({
-          style: 'tableExample',
+          style: "tableExample",
           layout: "noBorders",
           table: {
-            widths: ['40%', '*'],
+            widths: ["40%", "*"],
             body: [
               [
                 {
                   text: indData?.title,
                   style: "header",
                   fontSize: 10,
-                  bold: true
+                  bold: true,
                 },
 
                 {
                   text: indData?.value,
-                  fontSize: 10
-                }
-              ]
-            ]
-          }
-        })
-      })
+                  fontSize: 10,
+                },
+              ],
+            ],
+          },
+        });
+      });
     }
   });
   return detailsHeaders;
 }
 
-function createHeader(headerDetails,logo,tenantId) {
+function createHeader(headerDetails, logo, tenantId) {
   let headerData = [];
   headerData.push({
-    style: 'tableExample',
+    style: "tableExample",
     layout: "noBorders",
     fillColor: "#f7e0d4",
-    "margin": [-40, -40, -40, 40],
+    margin: [-40, -40, -40, 40],
     table: {
-      widths: ['5%', 'auto', '*'],
+      widths: ["5%", "auto", "*"],
       body: [
         [
           // {
@@ -651,7 +659,7 @@ function createHeader(headerDetails,logo,tenantId) {
             image: logo || getBase64Image(tenantId) || defaultLogo,
             // width: 50,
             margin: [10, 10],
-            fit: [50,50],
+            fit: [50, 50],
             //width: 50,
             //margin: [10, 10]
           },
@@ -659,9 +667,9 @@ function createHeader(headerDetails,logo,tenantId) {
             text: headerDetails?.[0]?.header, //"Amritsar Municipal Corporation",
             margin: [40, 10, 2, 4],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 18,
-            bold: true
+            bold: true,
           },
           {
             text: headerDetails?.[0]?.typeOfApplication, //"New Sewerage Connection",
@@ -669,8 +677,8 @@ function createHeader(headerDetails,logo,tenantId) {
             fontSize: 16,
             alignment: "right",
             margin: [-40, 10, 2, 0],
-            color: "#F47738"
-          }
+            color: "#1f4ac4",
+          },
         ],
         [
           { text: "" },
@@ -678,9 +686,9 @@ function createHeader(headerDetails,logo,tenantId) {
             text: headerDetails?.[0]?.subHeader, //"Municipal Corporation Amritsar, Town Hall, Amritsar, Punjab.",
             margin: [40, -45, -2, -5],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 10,
-            bold: true
+            bold: true,
           },
 
           {
@@ -689,8 +697,8 @@ function createHeader(headerDetails,logo,tenantId) {
             fontSize: 16,
             margin: [0, -50, 10, 0],
             alignment: "right",
-            color: "#F47738"
-          }
+            color: "#1f4ac4",
+          },
         ],
         [
           { text: "" },
@@ -699,25 +707,25 @@ function createHeader(headerDetails,logo,tenantId) {
             text: headerDetails?.[0]?.description, //"0183-2545155 | www.amritsarcorp.com | cmcasr@gmail.com",
             margin: [40, -40, 2, 10],
             style: "header",
-            // italics: true, 
+            // italics: true,
             fontSize: 10,
-            bold: true
+            bold: true,
           },
           {
             text: "",
-          }
-        ]
-      ]
-    }
+          },
+        ],
+      ],
+    },
   });
   headerDetails?.[0]?.values?.forEach((header, index) => {
     headerData.push({
-      style: 'tableExample',
+      style: "tableExample",
       layout: "noBorders",
       fillColor: "#f7e0d4",
-      "margin": [-40, -40, -40, 20],
+      margin: [-40, -40, -40, 20],
       table: {
-        widths: ['30%', '*'],
+        widths: ["30%", "*"],
         body: [
           [
             {
@@ -725,7 +733,7 @@ function createHeader(headerDetails,logo,tenantId) {
               margin: index == 0 ? [40, 0, 2, 10] : [40, 10, 2, 10],
               style: "header",
               fontSize: 10,
-              bold: true
+              bold: true,
             },
             {
               text: header?.value,
@@ -733,16 +741,15 @@ function createHeader(headerDetails,logo,tenantId) {
               fontSize: 10,
               alignment: "left",
               margin: index == 0 ? [0, 0, 2, 10] : [0, 10, 2, 10],
-            }
-          ]
-        ]
-      }
-    })
-  })
+            },
+          ],
+        ],
+      },
+    });
+  });
 
   return headerData;
 }
-
 
 function createContent(details, phoneNumber, breakPageLimit = null) {
   const data = [];
@@ -752,7 +759,7 @@ function createContent(details, phoneNumber, breakPageLimit = null) {
       let column1 = [];
       let column2 = [];
 
-      if ( breakPageLimit ?  (index + 1) % breakPageLimit === 0 : (index + 1) % 7 === 0) {
+      if (breakPageLimit ? (index + 1) % breakPageLimit === 0 : (index + 1) % 7 === 0) {
         data.push({
           text: "",
           margin: [-25, 0, 0, 200],
@@ -1026,12 +1033,7 @@ export const downloadReceipt = async (
 };
 /* Download Bills */
 
-export const downloadBill = async (
-  consumerCode,
-  businessService,
-  pdfKey = "consolidatedbill",
-  tenantId = Digit.ULBService.getCurrentTenantId(),
-) => {
+export const downloadBill = async (consumerCode, businessService, pdfKey = "consolidatedbill", tenantId = Digit.ULBService.getCurrentTenantId()) => {
   const response = await Digit.ReceiptsService.bill_download(businessService, consumerCode, tenantId, pdfKey);
   const responseStatus = parseInt(response.status, 10);
   if (responseStatus === 201 || responseStatus === 200) {
