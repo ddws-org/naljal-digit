@@ -26,7 +26,7 @@ class LanguageSelectMobileView extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 35.0),
             child: Card(
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Color(0xfffa7a39), width: 1.5),
+                side: BorderSide(color: Color(0x4590c5e5), width: 1.5),
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: Column(

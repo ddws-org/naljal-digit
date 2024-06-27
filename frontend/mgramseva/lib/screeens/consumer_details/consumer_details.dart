@@ -635,6 +635,17 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       ),
       body: SingleChildScrollView(
           child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Color(0xff90c5e5),
+                    Color(0xffeef7f2),
+                    Color(0xffffeca7),
+                  ],
+                ),
+              ),
               child: Column(children: [
         StreamBuilder(
             stream: userProvider.streamController.stream,

@@ -43,9 +43,9 @@ class _HomeCard extends State<HomeCard> {
                 }
               },
             child: new Card(
-                color: Color(0xfffff6f6),
+                color: Color(0xffffffff),
                 shape: RoundedRectangleBorder(
-                    side: new BorderSide(color: Color(0xfffa7a39), width: 1),
+                    side: new BorderSide(color: Color(0xff2494d4), width: 1),
                     borderRadius: BorderRadius.circular(4.0)),
                 key: homeProvider.homeWalkthroughList
                         .where((element) => element.label == item.label)
@@ -60,7 +60,7 @@ class _HomeCard extends State<HomeCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(item.iconData, size: 30),
+                    Icon(item.iconData, size: 30,color: Color(0xff033ccf),),
                     Container(
                       margin: EdgeInsets.all(10),
                       child: Center(

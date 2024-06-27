@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/household_register/household_card.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/drawer_wrapper.dart';
 import 'package:mgramseva/widgets/home_back.dart';
 import 'package:mgramseva/widgets/side_bar.dart';
@@ -63,14 +63,28 @@ class _HouseholdRegister extends State<HouseholdRegister>
           ),
           body: LayoutBuilder(
             builder: (context, constraints) => Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Color(0xff90c5e5),
+                    Color(0xffeef7f2),
+                    Color(0xffffeca7),
+                  ],
+                ),
+              ),
               alignment: Alignment.center,
-              margin: constraints.maxWidth < 760
+            /*  margin: constraints.maxWidth < 760
                   ? null
                   : EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 25),
+                      horizontal: MediaQuery.of(context).size.width / 25),*/
               child: Stack(children: [
                 Container(
-                    color: Color.fromRGBO(238, 238, 238, 1),
+                    margin: constraints.maxWidth < 760
+                        ? null
+                        : EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 25),
                     padding: EdgeInsets.only(left: 8, right: 8),
                     height: constraints.maxHeight - 50,
                     child: CustomScrollView(slivers: [
@@ -124,13 +138,13 @@ class _HouseholdRegister extends State<HouseholdRegister>
       },
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7))));
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
-      icon: Icon(Icons.download_sharp),
+      icon: Icon(Icons.download_sharp,color: Color.fromRGBO(3, 60, 207, 0.7),),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)));
+          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7)),));
 }
 
 showDownloadList(List<String> result, BuildContext context) {
