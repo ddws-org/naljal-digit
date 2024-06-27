@@ -8,7 +8,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
@@ -61,7 +60,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async{
   HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
-  SemanticsBinding.instance.ensureSemantics();
   //configureApp();
 
   // Register DartPingIOS
