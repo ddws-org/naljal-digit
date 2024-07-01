@@ -35,12 +35,7 @@ class _HomeCard extends State<HomeCard> {
       return GridTile(
         child: new GestureDetector(
             onTap: () {
-                if(kIsWeb && item.link == Routes.HRMS){
                   launchUrl(Uri.parse('${'$apiBaseUrl'+Url.HRMS}'));
-                }else{
-                  Navigator.pushNamed(context, item.link,
-                      arguments: item.arguments);
-                }
               },
             child: new Card(
                 color: Color(0xffffffff),
