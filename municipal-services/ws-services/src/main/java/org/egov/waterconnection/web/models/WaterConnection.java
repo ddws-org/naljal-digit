@@ -46,6 +46,19 @@ public class WaterConnection extends Connection {
 	@JsonProperty("paymentType")
 	private String paymentType = null;
 
+	@JsonProperty("ihlDetail")
+	private String ihlDetail = null;
+
+	@JsonProperty("sbmAccountno")
+	private String sbmAccountno = null;
+
+	@JsonProperty("schemeId")
+	private String schemeId = null;
+
+	@JsonProperty("schemeName")
+	private String schemeName = null;
+
+
 	public WaterConnection waterSource(String waterSource) {
 		this.waterSource = waterSource;
 		return this;
