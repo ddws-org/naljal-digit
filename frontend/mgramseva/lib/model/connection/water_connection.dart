@@ -65,8 +65,8 @@ class WaterConnection {
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
 
-  @JsonKey(name:"ihlAccountNO")
-   String? ihlAccountNO;
+  @JsonKey(name:"sbmAccountno")
+   String? sbmAccountno;
 
   @JsonKey(name:"ihlDetail")
    String? ihlDetail;
@@ -108,6 +108,9 @@ class WaterConnection {
   var OldConnectionCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var SbmAccountCtrl =TextEditingController();
+
+  @JsonKey(ignore: true)
   var BillingCycleCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -143,6 +146,8 @@ class WaterConnection {
 
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
+    sbmAccountno= SbmAccountCtrl.text;
+    ihlDetail=
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
 
     if (paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key) {

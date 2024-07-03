@@ -762,10 +762,9 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           children: [
                             BuildTextField(
                               i18.common.SBM_ACCOUNT,
-                              property.owners!.first.sbmAccountCtrl,
+                              consumerProvider.waterconnection.SbmAccountCtrl,
                               isRequired: true,
-                              textInputType: TextInputType.number,
-                              focusNode: _numberFocus,
+                              textInputType: TextInputType.name,
                               contextKey: consumerProvider
                                   .consmerWalkthrougList[11].key,
                               key: Keys.createConsumer.CONSUMER_SBM_ACCOUNT_KEY,
