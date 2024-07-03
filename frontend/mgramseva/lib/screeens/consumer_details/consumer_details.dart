@@ -290,106 +290,31 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             ),
                           ),
                           Wrap(
-                            children:[
-                              RadioButtonFieldBuilder(
-                                context,
-                                i18.common.IHL,
-                                property.owners!.first.ihl,
-                                '',
-                                '',
-                                false,
-                                Constants.IHL,
-                                    (val) => consumerProvider.onChangeOfIHL(
-                                    val, property.owners!.first),
-                                contextKey: consumerProvider.consmerWalkthrougList[9].key,
-                                isEnabled: true,
-                              ),
-                              Visibility(
-                                  visible: consumerProvider
-                                        .waterconnection.paymentType !=
+                            children: [
+                            RadioButtonFieldBuilder(
+                              context,
+                              i18.common.IHL,
+                              consumerProvider.waterconnection.ihlDetail,
+                              '',
+                              '',
+                              false,
+                              Constants.IHL,
+                              consumerProvider.onChangeOfIHL,
+                              contextKey:
+                                  consumerProvider.consmerWalkthrougList[9].key,
+                              isEnabled: true,
+                            ),
+                            Visibility(
+                                visible: consumerProvider
+                                        .waterconnection.ihlDetail !=
                                     null,
                                 child: consumerProvider
-                                            .waterconnection.paymentType ==
-                                        Constants
-                                            .CONSUMER_PAYMENT_TYPE.first.key
+                                            .waterconnection.ihlDetail ==
+                                        Constants.CONSUMER_IHL_TYPE.first.key
                                     ? _buildYes(consumerProvider, property)
                                     : _buildNo(consumerProvider))
                           ]),
                             //dropdown for sbm & self funded
-/*
-                          Consumer<ConsumerProvider>(
-                              builder: (_, consumerProvider, child) => Column(
-                                    children: [
-                                      SelectFieldBuilder(
-                                        i18.consumer.SCHEME_TYPE,
-                                        consumerProvider
-                                            .waterconnection.connectionNo,
-                                        '',
-                                        '',
-                                        consumerProvider.onChangeOfSchemeType,
-                                        consumerProvider.getIHLTypeList(),
-                                        true,
-                                        itemAsString: (i) =>
-                                            '${ApplicationLocalizations.of(context).translate(i.toString())}',
-                                        contextKey: consumerProvider
-                                            .consmerWalkthrougList[10].key,
-                                        controller: consumerProvider
-                                            .waterconnection.SchemeTypeCtrl,
-                                        key: Keys
-                                            .createConsumer.CONSUMER_SCHEME_KEY,
-                                      ),
-
-                                      //Consumer Service Type Field),
-                                      consumerProvider
-                                                  .getIHLTypeList()
-                                                  .elementAt(0) !=
-                                              'Under SBM'
-                                          ? Container()
-                                          : Column(
-                                              children: [
-                                                consumerProvider.isEdit ==
-                                                    false ||
-                                                    consumerProvider
-                                                        .isFirstDemand ==
-                                                        false
-                                                    ?
-                                                BuildTextField(
-                                                  i18.common.SBM_ACCOUNT,
-                                                  property.owners!.first
-                                                      .sbmAccountCtrl,
-                                                  isRequired: true,
-                                                  textInputType:
-                                                      TextInputType.number,
-                                                  focusNode: _numberFocus,
-                                                  contextKey: consumerProvider
-                                                      .consmerWalkthrougList[11]
-                                                      .key,
-                                                  key: Keys.createConsumer
-                                                      .CONSUMER_SBM_ACCOUNT_KEY,
-                                                )
-                                                :Text(""),
-                                                if (!(consumerProvider
-                                                        .waterconnection
-                                                        .connectionType ==
-                                                    'Self Funded'))
-                                                  Consumer<ConsumerProvider>(
-                                                      builder: (_,
-                                                              consumerProvider,
-                                                              child) =>
-                                                          consumerProvider.isEdit ==
-                                                                      false ||
-                                                                  consumerProvider
-                                                                          .isFirstDemand ==
-                                                                      false
-                                                              ? Wrap(
-                                                                  children: [],
-                                                                )
-                                                              : Text(""))
-                                              ],
-                                            )
-                                    ],
-                                  )),
-*/
                           Consumer<ConsumerProvider>(
                             builder: (_, consumerProvider, child) =>
                                 SelectFieldBuilder(
@@ -812,63 +737,100 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   Widget _buildYes(ConsumerProvider consumerProvider, Property property) {
     print(consumerProvider.getIHLTypeList().first);
     return Wrap(children: [
-      SelectFieldBuilder(
-        i18.consumer.SCHEME_TYPE,
-        consumerProvider.waterconnection.connectionNo,
-        '',
-        '',
-        consumerProvider.onChangeOfSchemeType,
-        consumerProvider.getIHLTypeList(),
-        true,
-        itemAsString: (i) =>
-            '${ApplicationLocalizations.of(context).translate(i.toString())}',
-        contextKey: consumerProvider.consmerWalkthrougList[10].key,
-        controller: consumerProvider.waterconnection.SchemeTypeCtrl,
-        key: Keys.createConsumer.CONSUMER_SCHEME_KEY,
-      ),
+      Consumer<ConsumerProvider>(
+          builder: (_, consumerProvider, child) => Column(
+                children: [
+                  SelectFieldBuilder(
+                    i18.consumer.SCHEME_TYPE,
+                    consumerProvider.waterconnection.schemeType,
+                    '',
+                    '',
+                    consumerProvider.onChangeOfSchemeType,
+                    consumerProvider.getIHLTypeList(),
+                    true,
+                    itemAsString: (i) =>
+                        '${ApplicationLocalizations.of(context).translate(i.toString())}',
+                    contextKey: consumerProvider.consmerWalkthrougList[10].key,
+                    controller: consumerProvider.waterconnection.SchemeTypeCtrl,
+                    key: Keys.createConsumer.CONSUMER_SCHEME_KEY,
+                  ),
+
+                  //Consumer Service Type Field),
+                  consumerProvider.waterconnection.schemeType != 'under_sbm'
+                      ? Container()
+                      : Column(
+                          children: [
+                            BuildTextField(
+                              i18.common.SBM_ACCOUNT,
+                              property.owners!.first.sbmAccountCtrl,
+                              isRequired: true,
+                              textInputType: TextInputType.number,
+                              focusNode: _numberFocus,
+                              contextKey: consumerProvider
+                                  .consmerWalkthrougList[11].key,
+                              key: Keys.createConsumer.CONSUMER_SBM_ACCOUNT_KEY,
+                            ),
+                            if ((consumerProvider
+                                    .waterconnection.connectionType ==
+                                'Self Funded'))
+                              Consumer<ConsumerProvider>(
+                                  builder: (_, consumerProvider, child) =>
+                                      consumerProvider.isEdit == false ||
+                                              consumerProvider.isFirstDemand ==
+                                                  false
+                                          ? Wrap(
+                                              children: [],
+                                            )
+                                          : Text(""))
+                          ],
+                        )
+                ],
+              )),
     ]);
   }
 
   Widget _buildNo(ConsumerProvider consumerProvider) {
     return Wrap(children: [
       Consumer<ConsumerProvider>(
-          builder: (_, consumerProvider, child) => consumerProvider.isEdit ==
-                      false ||
-                  consumerProvider.isFirstDemand == false
-              ? Wrap(
-                  children: [
-                    SelectFieldBuilder(
-                      i18.demandGenerate.BILLING_YEAR_LABEL,
-                      consumerProvider.billYear,
-                      '',
-                      '',
-                      consumerProvider.onChangeOfBillYear,
-                      consumerProvider.getFinancialYearList(),
-                      true,
-                      itemAsString: (i) =>
-                          '${ApplicationLocalizations.of(context).translate(i.financialYear)}',
-                      controller:
-                          consumerProvider.waterconnection.billingCycleYearCtrl,
-                      key: Keys.bulkDemand.BULK_DEMAND_BILLING_YEAR,
-                    ),
-                    SelectFieldBuilder(
-                      i18.consumer.CONSUMER_BILLING_CYCLE,
-                      consumerProvider.selectedcycle,
-                      '',
-                      '',
-                      consumerProvider.onChangeBillingCycle,
-                      consumerProvider.getBillingCycle(),
-                      true,
-                      itemAsString: (i) =>
-                          "${ApplicationLocalizations.of(context).translate(i['name'])}",
-                      controller:
-                          consumerProvider.waterconnection.BillingCycleCtrl,
-                      suggestionKey: consumerProvider.searchPickerKey,
-                      key: Keys.createConsumer.CONSUMER_LAST_BILLED_CYCLE,
-                    )
-                  ],
-                )
-              : Text("")),
+          builder: (_, consumerProvider, child) => Column(
+                children: [
+                  SelectFieldBuilder(
+                    i18.consumer.IHL_TYPE,
+                    consumerProvider.waterconnection.ihlDetail,
+                    '',
+                    '',
+                    consumerProvider.onChangeOfSchemeType,
+                    consumerProvider.getIhl(),
+                    true,
+                    itemAsString: (i) =>
+                        '${ApplicationLocalizations.of(context).translate(i.toString())}',
+                    contextKey: consumerProvider.consmerWalkthrougList[10].key,
+                    controller: consumerProvider.waterconnection.SchemeTypeCtrl,
+                    key: Keys.createConsumer.CONSUMER_SCHEME_KEY,
+                  ),
+
+                  //Consumer Service Type Field),
+                  consumerProvider.waterconnection.schemeType != 'under_sbm'
+                      ? Container()
+                      : Column(
+                          children: [
+                            Text(''),
+                            if ((consumerProvider
+                                    .waterconnection.connectionType ==
+                                'Self Funded'))
+                              Consumer<ConsumerProvider>(
+                                  builder: (_, consumerProvider, child) =>
+                                      consumerProvider.isEdit == false ||
+                                              consumerProvider.isFirstDemand ==
+                                                  false
+                                          ? Wrap(
+                                              children: [],
+                                            )
+                                          : Text(""))
+                          ],
+                        )
+                ],
+              ))
     ]);
   }
 }

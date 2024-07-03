@@ -186,8 +186,8 @@ class Constants {
   ];
 
   static List<KeyValue> CONSUMER_IHL_TYPE = [
-    KeyValue(i18.common.ARREARS, 'arrears'),
-    KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+    KeyValue('CORE_COMMON_IHL_YES', 'YES'),
+    KeyValue('CORE_COMMON_IHL_NO', 'NO'),
   ];
 
   static List<String> DOWNLOAD_OPTIONS = [

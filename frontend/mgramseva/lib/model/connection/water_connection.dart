@@ -40,6 +40,9 @@ class WaterConnection {
   double? arrears;
   @JsonKey(name: "connectionType")
   String? connectionType;
+  @JsonKey(name: "schemeType")
+  String? schemeType;
+
   @JsonKey(name: "oldConnectionNo")
   String? oldConnectionNo;
   @JsonKey(name: "meterId")

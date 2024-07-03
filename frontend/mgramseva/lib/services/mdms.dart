@@ -81,6 +81,7 @@ Map getConnectionTypePropertyTypeTaxPeriodMDMS(String tenantId, int datestamp) {
             {"name": "connectionType"},
             {"name": "Category"},
             {"name": "SubCategory"},
+            {"name": "schemeType"},
           ]
         },
         {
