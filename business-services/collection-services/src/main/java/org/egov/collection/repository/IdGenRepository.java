@@ -80,6 +80,8 @@ public class IdGenRepository {
         try {
             IdGenerationResponse idGenerationResponse = restTemplate.postForObject(uri, req,
                     IdGenerationResponse.class);
+	    log.info("GENERATED LINK TO Idgen " + uri);
+            log.info("GENERATED req TO Idgen {}", req);
             return idGenerationResponse.getIdResponses().get(0).getId();
         } catch (HttpClientErrorException e) {
             log.error("ID Gen Service failure ", e);
