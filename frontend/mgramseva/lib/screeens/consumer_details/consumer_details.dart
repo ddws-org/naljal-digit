@@ -136,14 +136,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget buildconsumerView(Property property) {
-    print(property.owners!.first.gender);
-    print(property.owners!.first.ihl);
-
     return Column(
       children: [
         FormWrapper(
             Consumer<ConsumerProvider>(builder: (_, consumerProvider, child) {
-              print('data----${consumerProvider.getIHLTypeList()}');
           return Form(
               key: consumerProvider.formKey,
               autovalidateMode: consumerProvider.autoValidation
@@ -294,7 +290,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             RadioButtonFieldBuilder(
                               context,
                               i18.common.IHL,
-                              consumerProvider.waterconnection.ihlDetail,
+                              consumerProvider.waterconnection.ihlType,
                               '',
                               '',
                               false,
@@ -305,14 +301,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               isEnabled: true,
                             ),
                             Visibility(
-                                visible: consumerProvider
-                                        .waterconnection.ihlDetail !=
-                                    null,
+                                visible:
+                                    consumerProvider.waterconnection.ihlType !=
+                                        null,
                                 child: consumerProvider
-                                            .waterconnection.ihlDetail ==
+                                            .waterconnection.ihlType ==
                                         Constants.CONSUMER_IHL_TYPE.first.key
                                     ? _buildYes(consumerProvider, property)
                                     : _buildNo(consumerProvider))
+                            //_buildNo(consumerProvider))
                           ]),
                             //dropdown for sbm & self funded
                           Consumer<ConsumerProvider>(
@@ -735,7 +732,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget _buildYes(ConsumerProvider consumerProvider, Property property) {
-    print(consumerProvider.getIHLTypeList().first);
+    print(consumerProvider.getIHLTypeList());
     return Wrap(children: [
       Consumer<ConsumerProvider>(
           builder: (_, consumerProvider, child) => Column(
@@ -769,20 +766,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                   .consmerWalkthrougList[11].key,
                               key: Keys.createConsumer.CONSUMER_SBM_ACCOUNT_KEY,
                             ),
-                            if ((consumerProvider
-                                    .waterconnection.connectionType ==
-                                'Self Funded'))
-                              Consumer<ConsumerProvider>(
-                                  builder: (_, consumerProvider, child) =>
-                                      consumerProvider.isEdit == false ||
-                                              consumerProvider.isFirstDemand ==
-                                                  false
-                                          ? Wrap(
-                                              children: [],
-                                            )
-                                          : Text(""))
                           ],
-                        )
+                        ),
                 ],
               )),
     ]);
@@ -795,39 +780,17 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                 children: [
                   SelectFieldBuilder(
                     i18.consumer.IHL_TYPE,
-                    consumerProvider.waterconnection.ihlDetail,
+                    consumerProvider.waterconnection.ihlTypechc,
                     '',
                     '',
-                    consumerProvider.onChangeOfSchemeType,
+                    consumerProvider.onChangeOfIHLTypeCHC,
                     consumerProvider.getIhl(),
                     true,
                     itemAsString: (i) =>
                         '${ApplicationLocalizations.of(context).translate(i.toString())}',
                     contextKey: consumerProvider.consmerWalkthrougList[10].key,
-                    controller: consumerProvider.waterconnection.SchemeTypeCtrl,
-                    key: Keys.createConsumer.CONSUMER_SCHEME_KEY,
+                    key: Keys.createConsumer.CONSUMER_IHL_TYPE_KEY,
                   ),
-
-                  //Consumer Service Type Field),
-                  consumerProvider.waterconnection.schemeType != 'under_sbm'
-                      ? Container()
-                      : Column(
-                          children: [
-                            Text(''),
-                            if ((consumerProvider
-                                    .waterconnection.connectionType ==
-                                'Self Funded'))
-                              Consumer<ConsumerProvider>(
-                                  builder: (_, consumerProvider, child) =>
-                                      consumerProvider.isEdit == false ||
-                                              consumerProvider.isFirstDemand ==
-                                                  false
-                                          ? Wrap(
-                                              children: [],
-                                            )
-                                          : Text(""))
-                          ],
-                        )
                 ],
               ))
     ]);

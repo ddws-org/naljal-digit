@@ -395,7 +395,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void onChangeOfIHL(value) {
-    waterconnection.ihlDetail = value;
+    waterconnection.ihlType=value;
     notifyListeners();
   }
 
@@ -581,14 +581,15 @@ class ConsumerProvider with ChangeNotifier {
   }
   onChangeOfSchemeType(val) {
     waterconnection.schemeType = val;
-    waterconnection.meterIdCtrl.clear();
-    waterconnection.previousReadingDateCtrl.clear();
-    billYear = null;
-    selectedcycle = null;
-    waterconnection.BillingCycleCtrl.clear();
-    waterconnection.meterInstallationDateCtrl.clear();
-    searchPickerKey?.currentState?.Options.clear();
-
+    waterconnection.ihlDetail=val;
+    notifyListeners();
+  }
+  onChangeOfIHLType(val) {
+    waterconnection.ihlType=val;
+    notifyListeners();
+  }
+  onChangeOfIHLTypeCHC(val) {
+    waterconnection.ihlTypechc=val;
     notifyListeners();
   }
 
@@ -624,7 +625,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   List<String> getIhl() {
-    List<String> myList = ["Using sbm", "usin chc"];
+    List<String> myList = ["They are using Shared Toilet", "They are using CHC Toilet"];
 
     return myList;
   }
@@ -707,7 +708,7 @@ class ConsumerProvider with ChangeNotifier {
 
   void onChangeOfAmountType(value) {
     waterconnection.paymentType = value;
-
+print("paymenttype value ${waterconnection.paymentType}" );
     if (!isEdit) {
       waterconnection.penaltyCtrl.clear();
       waterconnection.advanceCtrl.clear();
