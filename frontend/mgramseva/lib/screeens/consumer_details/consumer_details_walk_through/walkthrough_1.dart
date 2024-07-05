@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/widgets/radio_button_field_builder.dart';
 import 'package:mgramseva/widgets/select_field_builder.dart';
@@ -29,6 +29,19 @@ var json = [
     )
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_IHL_MSG),
+    "widget": RadioButtonFieldBuilder(
+      navigatorKey.currentContext!,
+      i18.common.IHL,
+      "",
+      '',
+      '',
+      true,
+      Constants.IHL,
+      (val) => {},
+    )
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_FATHER_MSG),
     "widget": BuildTextField(
       i18.consumer.FATHER_SPOUSE_NAME,
@@ -43,6 +56,14 @@ var json = [
       TextEditingController(),
       isRequired: true,
       maxLength: 10,
+    ),
+  },
+  {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SBM_ACCOUNT_MSG),
+    "widget": BuildTextField(
+      i18.common.SBM_ACCOUNT,
+      TextEditingController(),
+      isRequired: true,
     ),
   },
   {
@@ -63,7 +84,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -76,7 +97,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -93,16 +114,23 @@ var json = [
     )
   },
   {
-    "name": (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
-    "widget": RadioButtonFieldBuilder(
-        navigatorKey.currentContext!,
-        "",
-        null,
-        '',
-        '',
-        false,
-        Constants.CONSUMER_PAYMENT_TYPE,
-        (val)=>{},
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_TYPE_MSG),
+    "widget": SelectFieldBuilder(
+      i18.consumer.SCHEME_TYPE,
+      '',
+      '',
+      '',
+      (val) => {},
+      [],
+      true,
+      itemAsString: (i) => i.toString(),
+    )
+  },
+  {
+    "name":
+        (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
+    "widget": RadioButtonFieldBuilder(navigatorKey.currentContext!, "", null,
+        '', '', false, Constants.CONSUMER_PAYMENT_TYPE, (val) => {},
         isEnabled: true),
   },
 ];
@@ -119,5 +147,6 @@ class ConsumerWalkWidgets {
   final Widget widget;
   bool isActive = false;
   GlobalKey? key;
+
   ConsumerWalkWidgets({required this.name, required this.widget});
 }

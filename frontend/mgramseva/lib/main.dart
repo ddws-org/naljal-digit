@@ -292,7 +292,7 @@ class _LandingPageState extends State<LandingPage> {
         stream: commonProvider.userLoggedStreamCtrl.stream,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Loaders.circularLoader();
+            return Loaders.circularLoader(color: Color.fromRGBO(3, 60, 207, 0.9));
           } else {
             if (snapshot.hasError) {
               return Notifiers.networkErrorPage(context, () {});
