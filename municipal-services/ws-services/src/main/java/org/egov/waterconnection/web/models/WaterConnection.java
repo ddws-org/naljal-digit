@@ -63,6 +63,21 @@ public class WaterConnection extends Connection {
 		this.waterSource = waterSource;
 		return this;
 	}
+	public String getSbmAccountno() {
+		return sbmAccountno;
+	}
+
+	public void setSbmAccountno(String sbmAccountno) {
+		this.sbmAccountno = sbmAccountno;
+	}
+
+	public String getIhlDetail() {
+		return ihlDetail;
+	}
+
+	public void setIhlDetail(String ihlDetail) {
+		this.ihlDetail = ihlDetail;
+	}
 
 	/**
 	 * It is a namespaced master data, defined in MDMS
