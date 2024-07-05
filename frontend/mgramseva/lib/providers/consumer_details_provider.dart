@@ -582,6 +582,7 @@ class ConsumerProvider with ChangeNotifier {
   onChangeOfSchemeType(val) {
     waterconnection.schemeType = val;
     waterconnection.ihlDetail=val;
+    waterconnection.SbmAccountCtrl.clear();
     notifyListeners();
   }
   onChangeOfIHLType(val) {
@@ -589,7 +590,7 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
   onChangeOfIHLTypeCHC(val) {
-    waterconnection.ihlTypechc=val;
+    waterconnection.ihlDetail=val;
     notifyListeners();
   }
 
