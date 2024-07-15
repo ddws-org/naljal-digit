@@ -292,7 +292,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             RadioButtonFieldBuilder(
                               context,
                               i18.common.IHL,
-                              consumerProvider.waterconnection.ihlType,
+                              consumerProvider.waterconnection.accesIhl,
                               '',
                               '',
                               false,
@@ -304,10 +304,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             ),
                             Visibility(
                                 visible:
-                                    consumerProvider.waterconnection.ihlType !=
+                                    consumerProvider.waterconnection.accesIhl !=
                                         null,
                                 child: consumerProvider
-                                            .waterconnection.ihlType ==
+                                            .waterconnection.accesIhl ==
                                         Constants.CONSUMER_IHL_TYPE.first.key
                                     ? _buildYes(consumerProvider, property)
                                     : _buildNo(consumerProvider))

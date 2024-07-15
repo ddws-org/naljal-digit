@@ -70,8 +70,8 @@ class WaterConnection {
   @JsonKey(name:"ihlDetail")
    String? ihlDetail;
 
-  @JsonKey(name:"ihlType")
-   String? ihlType;
+  @JsonKey(name:"accesIhl")
+   String? accesIhl;
 
   @JsonKey(name:"ihlTypechc")
    String? ihlTypechc;

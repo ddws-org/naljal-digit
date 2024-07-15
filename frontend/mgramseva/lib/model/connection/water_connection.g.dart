@@ -24,6 +24,7 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) =>
       ..arrears = (json['arrears'] as num?)?.toDouble()
       ..connectionType = json['connectionType'] as String?
       ..ihlDetail = json['ihlDetail'] as String?
+      ..accesIhl = json['accesIhl'] as String?
       ..sbmAccountno = json['sbmAccountno'] as String?
       ..oldConnectionNo = json['oldConnectionNo'] as String?
       ..meterId = json['meterId'] as String?
@@ -62,6 +63,7 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'arrears': instance.arrears,
       'connectionType': instance.connectionType,
       'ihlDetail':instance.ihlDetail,
+      'accesIhl':instance.accesIhl,
       'sbmAccountno':instance.sbmAccountno,
       'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,

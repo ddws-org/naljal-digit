@@ -395,7 +395,7 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   void onChangeOfIHL(value) {
-    waterconnection.ihlType=value;
+    waterconnection.accesIhl=value;
     notifyListeners();
   }
 
@@ -586,7 +586,7 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
   onChangeOfIHLType(val) {
-    waterconnection.ihlType=val;
+    waterconnection.accesIhl=val;
     notifyListeners();
   }
   onChangeOfIHLTypeCHC(val) {
