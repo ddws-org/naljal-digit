@@ -77,6 +77,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
                 currentWaterConnection.setPenalty(rs.getBigDecimal("penalty"));
                 currentWaterConnection.setAdvance(rs.getBigDecimal("advance"));
 				currentWaterConnection.setIhlDetail(rs.getString("ihlDetail"));
+				currentWaterConnection.setAccesIhl(rs.getString("accesIhl"));
 				currentWaterConnection.setSbmAccountno(rs.getString("sbmAccountno"));
 				PGobject pgObj = (PGobject) rs.getObject("additionaldetails");
 				this.setFull_count(rs.getInt("full_count"));
