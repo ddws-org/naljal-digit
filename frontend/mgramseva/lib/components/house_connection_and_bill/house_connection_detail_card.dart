@@ -10,6 +10,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
   final WaterConnection? waterconnection;
   HouseConnectionDetailCard({this.waterconnection});
   _getLabelText(label, value, context) {
+  print("scheme type------- ${waterconnection!.ihlDetail}");
     return (Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -109,6 +110,11 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 ),
                 _getLabelText(i18.searchWaterConnection.PROPERTY_TYPE,
                     waterconnection!.additionalDetails!.propertyType, context),
+                _getLabelText(i18.consumer.SCHEME_TYPE,
+                    waterconnection!.ihlDetail, context),
+                _getLabelText(i18.consumer.SCHEME_TYPE,
+                    waterconnection!.ihlDetail, context),
+
                 _getLabelText(i18.consumer.SERVICE_TYPE,
                     waterconnection!.connectionType, context),
                 waterconnection!.meterId == null
