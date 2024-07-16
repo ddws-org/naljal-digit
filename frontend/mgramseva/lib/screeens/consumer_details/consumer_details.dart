@@ -734,7 +734,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
   }
 
   Widget _buildYes(ConsumerProvider consumerProvider, Property property) {
-    print(consumerProvider.getIHLTypeList());
     return Wrap(children: [
       Consumer<ConsumerProvider>(
           builder: (_, consumerProvider, child) => Column(
@@ -782,7 +781,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                 children: [
                   SelectFieldBuilder(
                     i18.consumer.IHL_TYPE,
-                    consumerProvider.waterconnection.ihlTypechc,
+                    consumerProvider.waterconnection.ihlDetail,
                     '',
                     '',
                     consumerProvider.onChangeOfIHLTypeCHC,
