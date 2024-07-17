@@ -259,7 +259,7 @@ public class IdGenerationService {
                     }
                     idFormat = idFormat.replace("[" + attributeName + "]", cityName);
                 }
-                else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
+                else if (attributeName.length()>=8 && attributeName.substring(0,8).equalsIgnoreCase("district"))
                 {
                     log.info("inside else part of district code");
                     if(districtCode==null) {
