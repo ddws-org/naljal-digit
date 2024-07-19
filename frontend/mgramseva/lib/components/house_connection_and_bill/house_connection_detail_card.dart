@@ -110,7 +110,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 _getLabelText(i18.searchWaterConnection.PROPERTY_TYPE,
                     waterconnection!.additionalDetails!.propertyType, context),
                 _getLabelText(i18.consumer.SCHEME_TYPE,
-                    waterconnection!.ihlDetail.toString(), context),
+                    waterconnection!.ihlDetail, context),
 
                 _getLabelText(i18.common.SCHEME_ID,
                     waterconnection!.schemeId.toString(), context),
