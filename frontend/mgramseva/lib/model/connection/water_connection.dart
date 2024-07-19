@@ -67,6 +67,12 @@ class WaterConnection {
   @JsonKey(name:"sbmAccountno")
    String? sbmAccountno;
 
+  @JsonKey(name:"schemeName")
+   String? schemeName;
+
+  @JsonKey(name:"schemeId")
+   String? schemeId;
+
   @JsonKey(name:"ihlDetail")
    String? ihlDetail;
 
@@ -118,6 +124,9 @@ class WaterConnection {
   var SbmAccountCtrl =TextEditingController();
 
   @JsonKey(ignore: true)
+  var SchemeIdCtrl =TextEditingController();
+
+  @JsonKey(ignore: true)
   var IhlDetailController =TextEditingController();
 
   @JsonKey(ignore: true)
@@ -157,8 +166,7 @@ class WaterConnection {
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
     sbmAccountno= SbmAccountCtrl.text;
-    print('data has to print there');
-    print("ihddddddddd ${ihlDetail} sbmaccount $sbmAccountno");
+    schemeId= SchemeTypeCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
 
     if (paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key) {
@@ -210,6 +218,7 @@ class WaterConnection {
   getText() {
     OldConnectionCtrl.text = oldConnectionNo ?? "";
     SbmAccountCtrl.text=sbmAccountno ?? "";
+    SchemeIdCtrl.text=schemeId ?? "";
     IhlDetailController.text = ihlDetail ?? "";
     meterIdCtrl.text = meterId ?? "";
     arrearsCtrl.text = (arrears == null ? '' : getFilteredAmount(arrears!));

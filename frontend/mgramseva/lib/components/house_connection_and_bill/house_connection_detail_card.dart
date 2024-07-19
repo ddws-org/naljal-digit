@@ -119,6 +119,11 @@ class HouseConnectionDetailCard extends StatelessWidget {
                     : _getLabelText(i18.common.SBM_ACCOUNT,
                         waterconnection!.sbmAccountno, context),
 
+                waterconnection!.schemeId ==""
+                    ? Text("")
+                    : _getLabelText(i18.common.SCHEME_ID,
+                        waterconnection!.schemeId, context),
+
                 _getLabelText(i18.consumer.SERVICE_TYPE,
                     waterconnection!.connectionType, context),
                 waterconnection!.meterId == null

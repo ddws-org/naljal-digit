@@ -213,6 +213,9 @@ class Owners {
   var phoneNumberCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var schemeIdCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var sbmAccountCtrl = TextEditingController();
 
   Owners();

@@ -287,6 +287,21 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               isDisabled: false,
                             ),
                           ),
+                              BuildTextField(
+                                i18.common.SCHEME_ID,
+                                property.owners!.first.schemeIdCtrl,
+                                isRequired: true,
+                                textInputType: TextInputType.number,
+                                maxLength: 15,
+                                focusNode: _numberFocus,
+                                validator: Validators.schemeIdValidator,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                                ],
+                                contextKey:
+                                consumerProvider.consmerWalkthrougList[12].key,
+                                key: Keys.createConsumer.CONSUMER_SCHEME_ID_KEY,
+                              ),
                           Wrap(
                             children: [
                             RadioButtonFieldBuilder(

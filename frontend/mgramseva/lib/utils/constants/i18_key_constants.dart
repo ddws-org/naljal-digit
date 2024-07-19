@@ -41,6 +41,7 @@ class Common {
   String get NAME => 'CORE_COMMON_NAME';
   String get CONTINUE_TO_LOGIN => 'CONTINUE_TO_LOGIN';
   String get PHONE_NUMBER => 'CORE_COMMON_PHONE_NUMBER';
+  String get SCHEME_ID => 'CORE_COMMON_SCHEME_ID';
   String get SBM_ACCOUNT => 'CORE_COMMON_SBM_ACCOUNT';
   String get MOBILE_NUMBER => 'CORE_COMMON_MOBILE_NUMBER';
   String get LOGOUT => 'CORE_COMMON_LOGOUT';
@@ -452,6 +453,8 @@ class _Validators {
   String get MOBILE_NUMBER_SHOULD_BE_10_DIGIT =>
       'MOBILE_NUMBER_SHOULD_BE_10_DIGIT'; //Mobile number should be 10 digits
 
+  String get ENTER_SCHEME_ID =>
+      'ENTER_SCHEME_ID'; //Please enter Mobile number
   /// Re confirm password
   String get INVALID_FORMAT => 'INVALID_FORMAT'; // Invalid format
   String get CONFIRM_RECONFIRM_SHOULD_SAME =>
@@ -624,6 +627,7 @@ class _ConsumerWalkThroughMsg {
   String get CONSUMER_IHL_MSG => 'CONSUMER_IHL_MSG';
   String get CONSUMER_FATHER_MSG => 'CONSUMER_FATHER_MSG';
   String get CONSUMER_MOBILE_MSG => 'CONSUMER_MOBILE_MSG';
+  String get CONSUMER_SCHEME_ID_MSG => 'CONSUMER_SCHEME_ID_MSG';
   String get CONSUMER_SBM_ACCOUNT_MSG => 'CONSUMER_SBM_ACCOUNT_MSG';
   String get CONSUMER_AADHAR_MSG => 'CONSUMER_AADHAR_MSG';
   String get CONSUMER_OLD_ID_MSG => 'CONSUMER_OLD_ID_MSG';

@@ -59,6 +59,15 @@ var json = [
     ),
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_ID_MSG),
+    "widget": BuildTextField(
+      i18.common.SCHEME_ID,
+      TextEditingController(),
+      isRequired: true,
+      maxLength: 15,
+    ),
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_SBM_ACCOUNT_MSG),
     "widget": BuildTextField(
       i18.common.SBM_ACCOUNT,

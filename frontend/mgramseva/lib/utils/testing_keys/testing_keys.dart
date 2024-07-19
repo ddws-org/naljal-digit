@@ -58,6 +58,7 @@ class CreateConsumerKeys{
   Key get CONSUMER_NAME_KEY => Key("consumerName");
   Key get CONSUMER_SPOUSE_PARENT_KEY => Key("spouse parentName");
   Key get CONSUMER_PHONE_NUMBER_KEY => Key("consumerPhone");
+  Key get CONSUMER_SCHEME_ID_KEY => Key("consumerSchemeId");
   Key get CONSUMER_OLD_ID_KEY => Key("consumerOldID");
   Key get CONSUMER_CATEORY_KEY => Key("consumerCategory");
   Key get CONSUMER_SUB_CATEORY_KEY => Key("consumerSubCategory");
