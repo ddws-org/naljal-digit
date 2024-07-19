@@ -126,6 +126,7 @@ public class NICSMSServiceImpl extends BaseSMSService {
 				final_data+="&dlt_template_id="+sms.getTemplateId();
 
 			if(smsProperties.isSmsEnabled()) {
+				log.info("field dataaaaa-------"+final_data);
 				HttpsURLConnection conn = (HttpsURLConnection) new URL(smsProperties.getUrl()+"?"+final_data).openConnection();
 				conn.setSSLSocketFactory(sslContext.getSocketFactory());
 				conn.setDoOutput(true);
