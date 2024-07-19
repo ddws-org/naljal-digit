@@ -67,6 +67,8 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'ihlDetail':instance.ihlDetail,
       'accesIhl':instance.accesIhl,
       'sbmAccountno':instance.sbmAccountno,
+      'schemeId':instance.schemeId,
+      'schemeName':instance.schemeName,
       'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,
       'propertyType': instance.propertyType,

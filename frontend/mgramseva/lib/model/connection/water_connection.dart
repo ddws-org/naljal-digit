@@ -166,7 +166,7 @@ class WaterConnection {
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
     sbmAccountno= SbmAccountCtrl.text;
-    schemeId= SchemeTypeCtrl.text;
+    schemeId= SchemeIdCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
 
     if (paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key) {

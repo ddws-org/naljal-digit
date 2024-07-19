@@ -54,7 +54,6 @@ class ConsumerProvider with ChangeNotifier {
   late bool isEdit = false;
   LanguageList? languageList;
   PaymentType? paymentType;
-  var ihlType = "not selected";
   bool phoneNumberAutoValidation = false;
   GlobalKey<SearchSelectFieldState>? searchPickerKey;
 
