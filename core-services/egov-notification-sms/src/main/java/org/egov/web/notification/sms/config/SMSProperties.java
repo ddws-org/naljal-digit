@@ -32,6 +32,9 @@ public class SMSProperties {
     @Value("${sms.provider.password}")
     public String password;
 
+    @Value("${sms.provider.apikey}")
+    public String apikey;
+
     @Value("${sms.senderid}")
     public String senderid;
 

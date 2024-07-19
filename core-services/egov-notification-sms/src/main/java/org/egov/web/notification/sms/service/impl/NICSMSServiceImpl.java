@@ -93,8 +93,9 @@ public class NICSMSServiceImpl extends BaseSMSService {
 		try {
 
 			String final_data="";
-			final_data+="username="+ smsProperties.getUsername();
-			final_data+="&pin="+ smsProperties.getPassword();
+		/*	final_data+="username="+ smsProperties.getUsername();
+			final_data+="&pin="+ smsProperties.getPassword();*/
+			final_data+="api_key"+smsProperties.getApikey();
 
 			String smsBody = sms.getMessage();
 
@@ -115,7 +116,7 @@ public class NICSMSServiceImpl extends BaseSMSService {
 
 			final_data+="&message="+ message;
 			final_data+="&mnumber=91"+ sms.getMobileNumber();
-			final_data+="&signature="+ smsProperties.getSenderid();
+			final_data+="&sender="+ smsProperties.getSenderid();
 			final_data+="&dlt_entity_id="+ smsProperties.getSmsEntityId();
 			if(null == sms.getTemplateId())
 			{
