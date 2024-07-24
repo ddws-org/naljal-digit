@@ -56,9 +56,11 @@ public class EmployeeSearchCriteria {
 
 	public List<String> tenantIds;
 
-	public Integer offset;
+	public Long offset;
 	
-	public Integer limit;
+	public Long limit;
+
+	private String name;
 	
 	
 	public boolean isCriteriaEmpty(EmployeeSearchCriteria criteria) {

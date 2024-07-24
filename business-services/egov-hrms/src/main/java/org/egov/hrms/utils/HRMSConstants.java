@@ -29,6 +29,13 @@ public class HRMSConstants {
 	
 	public static final String HRMS_LOCALIZATION_CODES_JSONPATH = "$.messages.*.code";
 	public static final String HRMS_LOCALIZATION_MSGS_JSONPATH = "$.messages.*.message";
+
+	// Fuzzy Search
+	public static final String ES_DATA_PATH = "$..Data";
+
+	public static final String ES_DATA_TENANTID_PATH = "$.tenantData.code";
+
+	public static final String ES_DATA_PROPERTYID_PATH = "$.propertyId";
 	
 	
 	public static final String HRMS_EMP_CREATE_LOCLZN_CODE = "hrms.employee.create.notification";

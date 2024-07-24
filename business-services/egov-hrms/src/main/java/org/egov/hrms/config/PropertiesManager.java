@@ -116,4 +116,34 @@ public class PropertiesManager {
 
 	@Value("${sms.user.creation.enabled}")
 	public boolean isSMSForUserCreationEnable;
+
+
+	//	FuzzyConfigs
+	@Value("${hrms.search.pagination.default.limit=50}")
+	public Long defaultLimit;
+
+	@Value("${hrms.search.pagination.default.offset=0}")
+	public Long defaultOffset;
+
+	@Value("${hrms.search.pagination.max.search.limit=5000}")
+	public Long searchLimit;
+
+	@Value("${hrms.search.pagination.max.search.limit}")
+	private Long maxSearchLimit;
+
+	@Value("${hrms.fuzzy.search.is.wildcard}")
+	private Boolean isSearchWildcardBased;
+
+	@Value("${hrms.search.name.fuziness}")
+	private String nameFuziness;
+
+	//	es configs
+	@Value("${elasticsearch.host}")
+	private String esHost;
+
+	@Value("${hrms.es.index}")
+	private String esPTIndex;
+
+	@Value("${elasticsearch.search.endpoint}")
+	private String esSearchEndpoint;
 }
