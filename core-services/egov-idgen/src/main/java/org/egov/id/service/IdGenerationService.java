@@ -177,7 +177,7 @@ public class IdGenerationService {
             String tenantId = idRequest.getTenantId();
             // select the id format from the id generation table
             StringBuffer idSelectQuery = new StringBuffer();
-            idSelectQuery.append("SELECT format FROM uat.id_generator ").append(" WHERE idname=? and tenantid=?");
+            idSelectQuery.append("SELECT format FROM id_generator ").append(" WHERE idname=? and tenantid=?");
 
            String rs = jdbcTemplate.queryForObject(idSelectQuery.toString(),new Object[]{idName,tenantId}, String.class);
             if (!StringUtils.isEmpty(rs)) {
@@ -185,7 +185,7 @@ public class IdGenerationService {
             } else {
                 // querying for the id format with idname
                 StringBuffer idNameQuery = new StringBuffer();
-                idNameQuery.append("SELECT format FROM uat.id_generator ").append(" WHERE idname=?");
+                idNameQuery.append("SELECT format FROM id_generator ").append(" WHERE idname=?");
                  rs = jdbcTemplate.queryForObject(idSelectQuery.toString(),new Object[]{idName}, String.class);
                 if (!StringUtils.isEmpty(rs))
                     idFormat = rs;
