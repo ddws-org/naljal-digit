@@ -349,6 +349,12 @@ public class PropertyConfiguration {
     @Value("${pt.fuzzy.searh.is.wildcard}")
     private Boolean isSearchWildcardBased;
 
+    @Value("${egov.indexer.es.username}")
+    private String esUsername;
+
+    @Value("${egov.indexer.es.password}")
+    private String esPassword;
+
     // Inbox service Config
 
     @Value("${inbox.property.search.allowed}")
