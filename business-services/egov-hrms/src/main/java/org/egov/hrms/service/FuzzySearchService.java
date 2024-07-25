@@ -9,22 +9,26 @@ import org.egov.hrms.repository.ElasticSearchRepository;
 import org.egov.hrms.repository.EmployeeRepository;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
 import org.egov.tracer.model.CustomException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
 import static org.egov.hrms.utils.HRMSConstants.ES_DATA_PATH;
 
+@Service
 public class FuzzySearchService {
+    @Autowired
     private ElasticSearchRepository elasticSearchRepository;
-
+    @Autowired
     private ObjectMapper mapper;
-
+    @Autowired
     private EmployeeRepository employeeRepository;
-
+    @Autowired
     private PropertiesManager config;
 
-    public List<Employee> getProperties(RequestInfo requestInfo, EmployeeSearchCriteria criteria) {
+    public List<Employee> getEmployees(RequestInfo requestInfo, EmployeeSearchCriteria criteria) {
 
         if(criteria.getTenantId() == null)
         {	criteria.setTenantId(config.getStateLevelTenantId()); }
@@ -46,15 +50,15 @@ public class FuzzySearchService {
             String tenantId = entry.getKey();
             Set<String> propertyIds = entry.getValue();
 
-            EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).propertyIds(propertyIds).build();
+//            EmployeeSearchCriteria employeeSearchCriteria = EmployeeSearchCriteria.builder().tenantId(tenantId).propertyIds(propertyIds).build();
 
-            employees.addAll(employeeRepository.getPropertiesWithOwnerInfo(propertyCriteria,requestInfo,false));
+            employees.addAll(employeeRepository.fetchEmployees(criteria,requestInfo));
 
         }
 
-        List<Employee> orderedProperties = orderByESScore(properties, esResponse);
+//        List<Employee> orderedProperties = orderByESScore(properties, esResponse);
 
-        return orderedProperties;
+        return employees;
     }
     private void validateFuzzySearchCriteria(EmployeeSearchCriteria criteria){
 

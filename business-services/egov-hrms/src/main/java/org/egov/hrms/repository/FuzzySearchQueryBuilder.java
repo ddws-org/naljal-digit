@@ -9,12 +9,14 @@ import org.egov.hrms.config.PropertiesManager;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+@Repository
 @Slf4j
 public class FuzzySearchQueryBuilder {
     private ObjectMapper mapper;
@@ -69,7 +71,7 @@ public class FuzzySearchQueryBuilder {
             List<JsonNode> fuzzyClauses = new LinkedList<>();
 
             if(criteria.getName() != null){
-                fuzzyClauses.add(getInnerNode(criteria.getName(),"Data.ownerNames",config.getNameFuziness()));
+                fuzzyClauses.add(getInnerNode(criteria.getName(),"Data.user.name",config.getNameFuziness()));
             }
 
             JsonNode mustNode = mapper.convertValue(new HashMap<String, List<JsonNode>>(){{put("must",fuzzyClauses);}}, JsonNode.class);
@@ -92,6 +94,8 @@ public class FuzzySearchQueryBuilder {
             log.error("ES_ERROR",e);
             throw new CustomException("JSONNODE_ERROR","Failed to build json query for fuzzy search");
         }
+
+        log.info(finalQuery);
 
         return finalQuery;
 

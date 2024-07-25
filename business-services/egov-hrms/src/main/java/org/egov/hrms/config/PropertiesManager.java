@@ -119,13 +119,13 @@ public class PropertiesManager {
 
 
 	//	FuzzyConfigs
-	@Value("${hrms.search.pagination.default.limit=50}")
+	@Value("${hrms.search.pagination.default.limit}")
 	public Long defaultLimit;
 
-	@Value("${hrms.search.pagination.default.offset=0}")
+	@Value("${hrms.search.pagination.default.offset}")
 	public Long defaultOffset;
 
-	@Value("${hrms.search.pagination.max.search.limit=5000}")
+	@Value("${hrms.search.pagination.max.search.limit}")
 	public Long searchLimit;
 
 	@Value("${hrms.search.pagination.max.search.limit}")
