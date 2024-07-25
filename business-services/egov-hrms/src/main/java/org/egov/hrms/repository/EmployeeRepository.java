@@ -68,7 +68,7 @@ public class EmployeeRepository {
 		return employees;
 	}
 
-	private List<String> fetchEmployeesforAssignment(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
+	public List<String> fetchEmployeesforAssignment(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
 		List<String> employeesIds = new ArrayList<>();
 		List <Object> preparedStmtList = new ArrayList<>();
 		String query = queryBuilder.getAssignmentSearchQuery(criteria, preparedStmtList);
