@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -65,6 +66,7 @@ public class FuzzySearchQueryBuilder {
         String finalQuery;
 
         try {
+            // Generate base query with pagination
             String baseQuery = addPagination(criteria);
             JsonNode node = mapper.readTree(baseQuery);
             ObjectNode insideMatch = (ObjectNode)node.get("query");
@@ -74,31 +76,64 @@ public class FuzzySearchQueryBuilder {
                 fuzzyClauses.add(getInnerNode(criteria.getName(),"Data.user.name",config.getNameFuziness()));
             }
 
-            JsonNode mustNode = mapper.convertValue(new HashMap<String, List<JsonNode>>(){{put("must",fuzzyClauses);}}, JsonNode.class);
+            // Create 'must' node with fuzzy clauses
+            JsonNode mustNode = mapper.convertValue(new HashMap<String, List<JsonNode>>() {{
+                put("must", fuzzyClauses);
+            }}, JsonNode.class);
 
-            insideMatch.put("bool",mustNode);
-            ObjectNode boolNode = (ObjectNode)insideMatch.get("bool");
+            insideMatch.put("bool", mustNode);
+            ObjectNode boolNode = (ObjectNode) insideMatch.get("bool");
 
-
-            if(!CollectionUtils.isEmpty(ids)){
-                JsonNode jsonNode = mapper.convertValue(new HashMap<String, List<String>>(){{put("Data.id.keyword",ids);}}, JsonNode.class);
+            // Add filter by IDs if the list is not empty
+            if (!CollectionUtils.isEmpty(ids)) {
+                JsonNode jsonNode = mapper.convertValue(new HashMap<String, List<String>>() {{
+                    put("Data.id.keyword", ids);
+                }}, JsonNode.class);
                 ObjectNode parentNode = mapper.createObjectNode();
-                parentNode.put("terms",jsonNode);
+                parentNode.put("terms", jsonNode);
                 boolNode.put("filter", parentNode);
             }
 
+            // Add filter for tenantId
+            if (criteria.getTenantId() != null) {
+                if (criteria.getTenantIds() instanceof List) {
+                    // Handle tenantId as a list
+                    JsonNode tenantIdNode = mapper.convertValue(new HashMap<String, List<String>>() {{
+                        put("Data.tenantId", (List<String>) criteria.getTenantIds());
+                    }}, JsonNode.class);
+                    ObjectNode tenantParentNode = mapper.createObjectNode();
+                    tenantParentNode.put("terms", tenantIdNode);
+                    boolNode.put("filter", tenantParentNode);
+                } else{
+                    // Handle tenantId as a single value
+                    JsonNode tenantIdNode = mapper.convertValue(new HashMap<String, String>() {{
+                        put("Data.tenantId", (String) criteria.getTenantId());
+                    }}, JsonNode.class);
+                    ObjectNode tenantParentNode = mapper.createObjectNode();
+                    tenantParentNode.put("term", tenantIdNode);
+                    boolNode.put("filter", tenantParentNode);
+                }
+            }
+
+            if (criteria.getRoles()!=null) {
+                // Create a "terms" filter for roles
+                JsonNode rolesNode = mapper.convertValue(new HashMap<String, List<String>>() {{
+                    put("Data.user.roles.code", criteria.getRoles());
+                }}, JsonNode.class);
+                ObjectNode rolesFilterNode = mapper.createObjectNode();
+                rolesFilterNode.put("terms", rolesNode);
+                boolNode.put("filter", rolesFilterNode);
+            }
+
+            // Convert the final JSON node back to a string
             finalQuery = mapper.writeValueAsString(node);
-
-        }
-        catch (Exception e){
-            log.error("ES_ERROR",e);
-            throw new CustomException("JSONNODE_ERROR","Failed to build json query for fuzzy search");
+        } catch (Exception e) {
+            log.error("ES_ERROR", e);
+            throw new CustomException("JSONNODE_ERROR", "Failed to build json query for fuzzy search");
         }
 
-        log.info(finalQuery);
-
+        log.info("finalQuery {}",finalQuery);
         return finalQuery;
-
     }
 
     private JsonNode getInnerNode(String param, String var, String fuziness) throws JsonProcessingException {

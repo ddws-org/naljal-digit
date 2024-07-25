@@ -35,8 +35,8 @@ public class FuzzySearchService {
 
         List<String> idsFromDB = employeeRepository.fetchEmployeesforAssignment(criteria,requestInfo);
 
-        if(CollectionUtils.isEmpty(idsFromDB))
-            return new LinkedList<>();
+//        if(CollectionUtils.isEmpty(idsFromDB))
+//            return new LinkedList<>();
 
         validateFuzzySearchCriteria(criteria);
 

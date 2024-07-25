@@ -146,7 +146,7 @@ public class EmployeeService {
 		else
 			criteria.setIsActive(false);*/
 
-		if(criteria.getName()!=null || criteria.getTenantIds()!=null || criteria.getTenantId()!=null){
+		if(criteria.getName()!=null){
 			List<Employee> fuzzyEmployees = fuzzySearchService.getEmployees(requestInfo, criteria);
 			return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
 					.employees(fuzzyEmployees).build();
