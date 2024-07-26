@@ -37,7 +37,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>5.2.20.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.egov.services</groupId>
@@ -107,6 +106,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.experimental</groupId>
+      <artifactId>spring-aot</artifactId>
+      <version>0.13.0</version>
     </dependency>
   </dependencies>
   <repositories>
