@@ -58,10 +58,54 @@ public class WaterConnection extends Connection {
 	@JsonProperty("schemeName")
 	private String schemeName = null;
 
+	public String getSchemeId() {
+		return schemeId;
+	}
+
+	public void setSchemeId(String schemeId) {
+		this.schemeId = schemeId;
+	}
+
+	public String getSchemeName() {
+		return schemeName;
+	}
+
+	public void setSchemeName(String schemeName) {
+		this.schemeName = schemeName;
+	}
+
+	public String getAccesIhl() {
+		return accesIhl;
+	}
+
+	public void setAccesIhl(String accesIhl) {
+		this.accesIhl = accesIhl;
+	}
+
+	@JsonProperty("accesIhl")
+	private String accesIhl = null;
+
+
+
 
 	public WaterConnection waterSource(String waterSource) {
 		this.waterSource = waterSource;
 		return this;
+	}
+	public String getSbmAccountno() {
+		return sbmAccountno;
+	}
+
+	public void setSbmAccountno(String sbmAccountno) {
+		this.sbmAccountno = sbmAccountno;
+	}
+
+	public String getIhlDetail() {
+		return ihlDetail;
+	}
+
+	public void setIhlDetail(String ihlDetail) {
+		this.ihlDetail = ihlDetail;
 	}
 
 	/**
