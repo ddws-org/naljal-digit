@@ -245,7 +245,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   navigatorKey: navigatorKey,
                   navigatorObservers: <NavigatorObserver>[observer],
-                  initialRoute: Routes.SELECT_LANGUAGE,
+                  initialRoute: Routes.LANDING_PAGE,
                   onGenerateRoute: Routing.generateRoute,
                   theme: theme,
                   // home: SelectLanguage((val) => setLocale(Locale(val, 'IN'))),
