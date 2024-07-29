@@ -3,6 +3,7 @@ import 'package:mgramseva/model/mdms/category_type.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/expense_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/scheme_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 
@@ -85,6 +86,7 @@ class MdmsRes {
   Expense? expense;
   PropertyTax? propertyTax;
   Connection? connection;
+  Scheme? scheme;
   Category? category;
   SubCategory? subCategory;
   TaxPeriodListModel? taxPeriodList;
@@ -107,6 +109,9 @@ class MdmsRes {
         : null;
     connection = json['ws-services-masters'] != null
         ? new Connection.fromJson(json['ws-services-masters'])
+        : null;
+    scheme = json['ws-services-masters'] != null
+        ? new Scheme.fromJson(json['ws-services-masters'])
         : null;
     category = json['ws-services-masters'] != null
         ? new Category.fromJson(json['ws-services-masters'])

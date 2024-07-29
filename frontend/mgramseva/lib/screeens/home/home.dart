@@ -59,13 +59,13 @@ class _HomeState extends State<Home> {
         .toList();
     String loginUsername = "login user name";
     if (dashboardName.contains('CHAIRMEN')) {
-      loginUsername = "Chairmen";
+      loginUsername = i18.common.CHAIRMEN;
     } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
-      loginUsername = "Revenue Collector";
+      loginUsername = i18.common.REVENUE_COLLECTOR;
     } else if (dashboardName.contains('DIV_ADMIN')) {
-      loginUsername = "Division User";
+      loginUsername = i18.common.DIVISION_USER;
     } else if (dashboardName.contains('SECRETARY')) {
-      loginUsername = "Secretary";
+      loginUsername = i18.common.SECRETARY;
     }
     return Stack(
       children: [
@@ -87,8 +87,13 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                    child:
-                        Center(child: Container(child: Text(loginUsername,style: TextStyle(fontSize: 18.0,color: Colors.black),)))),
+                    child: Center(
+                        child: Container(
+                            child: Text(
+                  ApplicationLocalizations.of(context).translate(
+                      loginUsername),
+                  style: TextStyle(fontSize: 18.0, color: Colors.black),
+                )))),
                 Container(
                   child: Column(
                     children: [

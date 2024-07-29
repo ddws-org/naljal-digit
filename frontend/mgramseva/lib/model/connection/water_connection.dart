@@ -40,6 +40,8 @@ class WaterConnection {
   double? arrears;
   @JsonKey(name: "connectionType")
   String? connectionType;
+  @JsonKey(name: "schemeType")
+  String? schemeType;
   @JsonKey(name: "oldConnectionNo")
   String? oldConnectionNo;
   @JsonKey(name: "meterId")
@@ -61,6 +63,26 @@ class WaterConnection {
 
   @JsonKey(name: "processInstance")
   ProcessInstance? processInstance;
+
+  @JsonKey(name:"sbmAccountno")
+   String? sbmAccountno;
+
+  @JsonKey(name:"schemeName")
+   String? schemeName;
+
+  @JsonKey(name:"schemeId")
+   String? schemeId;
+
+  @JsonKey(name:"ihlDetail")
+   String? ihlDetail;
+
+  @JsonKey(name:"accesIhl")
+   String? accesIhl;
+
+  @JsonKey(name:"ihlTypechc")
+   String? ihlTypechc;
+
+
 
   @JsonKey(name: "paymentType")
   String? paymentType;
@@ -99,6 +121,15 @@ class WaterConnection {
   var OldConnectionCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var SbmAccountCtrl =TextEditingController();
+
+  @JsonKey(ignore: true)
+  var SchemeIdCtrl =TextEditingController();
+
+  @JsonKey(ignore: true)
+  var IhlDetailController =TextEditingController();
+
+  @JsonKey(ignore: true)
   var BillingCycleCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -119,6 +150,9 @@ class WaterConnection {
   var ServiceTypeCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var SchemeTypeCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var om_1Ctrl = new TextEditingController();
   @JsonKey(ignore: true)
   var om_2Ctrl = new TextEditingController();
@@ -131,6 +165,8 @@ class WaterConnection {
 
   setText() {
     oldConnectionNo = OldConnectionCtrl.text;
+    sbmAccountno= SbmAccountCtrl.text;
+    schemeId= SchemeIdCtrl.text;
     meterId = meterIdCtrl.text != "" ? meterIdCtrl.text : null;
 
     if (paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key) {
@@ -181,6 +217,9 @@ class WaterConnection {
 
   getText() {
     OldConnectionCtrl.text = oldConnectionNo ?? "";
+    SbmAccountCtrl.text=sbmAccountno ?? "";
+    SchemeIdCtrl.text=schemeId ?? "";
+    IhlDetailController.text = ihlDetail ?? "";
     meterIdCtrl.text = meterId ?? "";
     arrearsCtrl.text = (arrears == null ? '' : getFilteredAmount(arrears!));
     advanceCtrl.text =
