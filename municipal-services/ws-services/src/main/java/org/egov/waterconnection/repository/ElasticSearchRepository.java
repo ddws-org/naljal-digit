@@ -51,9 +51,10 @@ public class ElasticSearchRepository {
         String url = getESURL();
 
         String searchQuery = queryBuilder.getFuzzySearchQuery(criteria, ids);
-
+        log.info("searchQuery {}",searchQuery);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.info("headers {}",headers);
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
