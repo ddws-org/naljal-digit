@@ -45,6 +45,8 @@ public class BulkIndexer {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			headers.add("Authorization", indexerUtils.getESEncodedCredentials());
 			final HttpEntity<String> entity = new HttpEntity<>(indexJson, headers);
+			log.info("entity being en: {}" , entity);
+			log.info("URL : " + url);
 			Object response = restTemplate.postForObject(url.toString(), entity, Map.class);
 			if (url.contains("_bulk")) {
 				if (JsonPath.read(mapper.writeValueAsString(response), "$.errors").equals(true)) {
