@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.egov.waterconnection.web.models.workflow.ProcessInstance;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +30,8 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(description = "This is lightweight property object that can be used as reference by definitions needing property linking. Actual Property Object extends this to include more elaborate attributes of the property.")
 @Validated
+@Getter
+@Setter
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-05-20T12:22:10.265+05:30[Asia/Kolkata]")
 public class Connection {
 	@SafeHtml
@@ -92,6 +96,12 @@ public class Connection {
 	@SafeHtml
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
+
+	@JsonProperty("imisNumber")
+	private String imisNumber=null;
+
+	@JsonProperty("villageId")
+	private String villageId=null;
 
 	@JsonProperty("documents")
 	@Valid
