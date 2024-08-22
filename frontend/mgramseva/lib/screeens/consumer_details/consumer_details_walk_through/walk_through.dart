@@ -29,6 +29,19 @@ var json = [
     )
   },
   {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_IHL_MSG),
+    "widget": RadioButtonFieldBuilder(
+      navigatorKey.currentContext!,
+      i18.common.IHL,
+      "",
+      '',
+      '',
+      true,
+      Constants.IHL,
+      (val) => {},
+    )
+  },
+  {
     "name": (i18.consumerWalkThroughMsg.CONSUMER_FATHER_MSG),
     "widget": BuildTextField(
       i18.consumer.FATHER_SPOUSE_NAME,
@@ -43,6 +56,23 @@ var json = [
       TextEditingController(),
       isRequired: true,
       maxLength: 10,
+    ),
+  },
+  {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_ID_MSG),
+    "widget": BuildTextField(
+      i18.common.SCHEME_ID,
+      TextEditingController(),
+      isRequired: true,
+      maxLength: 15,
+    ),
+  },
+  {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SBM_ACCOUNT_MSG),
+    "widget": BuildTextField(
+      i18.common.SBM_ACCOUNT,
+      TextEditingController(),
+      isRequired: true,
     ),
   },
   {
@@ -90,6 +120,19 @@ var json = [
       [],
       true,
       itemAsString: (i) =>i.toString(),
+    )
+  },
+  {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_SCHEME_TYPE_MSG),
+    "widget": SelectFieldBuilder(
+      i18.consumer.SCHEME_TYPE,
+      '',
+      '',
+      '',
+          (val) => {},
+      [],
+      true,
+      itemAsString: (i) => i.toString(),
     )
   },
   {

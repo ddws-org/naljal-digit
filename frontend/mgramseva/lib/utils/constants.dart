@@ -39,7 +39,10 @@ class Constants {
     KeyValue('CORE_COMMON_GENDER_FEMALE', 'FEMALE'),
     KeyValue('CORE_COMMON_GENDER_TRANSGENDER', 'TRANSGENDER'),
   ];
-
+  static List<KeyValue> IHL = [
+    KeyValue('CORE_COMMON_IHL_YES', 'YES'),
+    KeyValue('CORE_COMMON_IHL_NO', 'NO'),
+  ];
   static List<KeyValue> EXPENSESTYPE = [
     KeyValue(i18.common.YES, true),
     KeyValue(i18.common.NO, false),
@@ -57,11 +60,12 @@ class Constants {
       Routes.HOUSEHOLD_REGISTER,
       {},
     ),
+    /*
     HomeItem(
         "CORE_CONSUMER_CREATE",
         (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
         HomeIcons.createconsumer,
-        Routes.CONSUMER_CREATE, {}),
+        Routes.CONSUMER_CREATE, {}),*/
 
     HomeItem(
         "CORE_UPDATE_CONSUMER_DETAILS",
@@ -180,6 +184,11 @@ class Constants {
   static List<KeyValue> CONSUMER_PAYMENT_TYPE = [
     KeyValue(i18.common.ARREARS, 'arrears'),
     KeyValue(i18.common.CORE_ADVANCE, 'advance'),
+  ];
+
+  static List<KeyValue> CONSUMER_IHL_TYPE = [
+    KeyValue('CORE_COMMON_IHL_YES', 'YES'),
+    KeyValue('CORE_COMMON_IHL_NO', 'NO'),
   ];
 
   static List<String> DOWNLOAD_OPTIONS = [

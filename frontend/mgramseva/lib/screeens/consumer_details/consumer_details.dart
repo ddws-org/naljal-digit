@@ -7,16 +7,18 @@ import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_flow_container.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
 import 'package:mgramseva/screeens/generate_bill/widgets/meter_reading.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
-import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
 import 'package:mgramseva/utils/validators/validators.dart';
 import 'package:mgramseva/widgets/date_picker_field_builder.dart';
 import 'package:mgramseva/widgets/drawer_wrapper.dart';
+import 'package:mgramseva/widgets/footer.dart';
 import 'package:mgramseva/widgets/form_wrapper.dart';
+import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/widgets/home_back.dart';
 import 'package:mgramseva/widgets/label_text.dart';
 import 'package:mgramseva/widgets/radio_button_field_builder.dart';
@@ -26,8 +28,6 @@ import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:mgramseva/widgets/sub_label.dart';
 import 'package:mgramseva/widgets/table_text.dart';
 import 'package:mgramseva/widgets/text_field_builder.dart';
-import 'package:mgramseva/widgets/footer.dart';
-import 'package:mgramseva/widgets/help.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/notifiers.dart';
@@ -209,6 +209,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
+                            readOnly: true,
+                            isDisabled: true,
                           ),
 
                           RadioButtonFieldBuilder(
@@ -265,28 +267,75 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           ),
 
                           //Consumer Old Connection Field
-                          Consumer<ConsumerProvider>(
-                            builder: (_, consumerProvider, child) =>
-                                BuildTextField(
-                              i18.consumer.OLD_CONNECTION_ID,
-                              consumerProvider
-                                  .waterconnection.OldConnectionCtrl,
-                              validator: (val) =>
-                                  Validators.maxCharactersValidator(
-                                      val, 20, i18.consumer.OLD_CONNECTION_ID),
-                              isRequired: true,
-                              contextKey:
-                                  consumerProvider.consmerWalkthrougList[4].key,
-                              key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
-                              readOnly: consumerProvider.isEdit ==
-                                  true,
-                              inputFormatter: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp("[a-zA-Z0-9/\\-]"))
-                              ],
-                              isDisabled: false,
+                          Visibility(
+                            visible:false,
+                            child: Consumer<ConsumerProvider>(
+                              builder: (_, consumerProvider, child) =>
+                                  BuildTextField(
+                                i18.consumer.OLD_CONNECTION_ID,
+                                consumerProvider
+                                    .waterconnection.OldConnectionCtrl,
+                                validator: (val) =>
+                                    Validators.maxCharactersValidator(
+                                        val, 20, i18.consumer.OLD_CONNECTION_ID),
+                                isRequired: true,
+                                contextKey:
+                                    consumerProvider.consmerWalkthrougList[4].key,
+                                key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
+                                readOnly: consumerProvider.isEdit ==
+                                    true,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z0-9/\\-]"))
+                                ],
+                                isDisabled: false,
+                              ),
                             ),
                           ),
+                              Consumer<ConsumerProvider>(
+                                builder: (_, consumerProvider, child) =>
+                               BuildTextField(
+                                i18.common.SCHEME_ID,
+                                consumerProvider.waterconnection.SchemeIdCtrl,
+                                isRequired: true,
+                                textInputType: TextInputType.number,
+                                maxLength: 15,
+                                validator: Validators.schemeIdValidator,
+                                 inputFormatter: [
+                                   FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                                 ],
+                                contextKey:
+                                consumerProvider.consmerWalkthrougList[12].key,
+                                key: Keys.createConsumer.CONSUMER_SCHEME_ID_KEY,
+                               ),
+                              ),
+                          Wrap(
+                            children: [
+                            RadioButtonFieldBuilder(
+                              context,
+                              i18.common.IHL,
+                              consumerProvider.waterconnection.accesIhl,
+                              '',
+                              '',
+                              false,
+                              Constants.IHL,
+                              consumerProvider.onChangeOfIHL,
+                              contextKey:
+                                  consumerProvider.consmerWalkthrougList[9].key,
+                              isEnabled: true,
+                            ),
+                            Visibility(
+                                visible:
+                                    consumerProvider.waterconnection.accesIhl !=
+                                        null,
+                                child: consumerProvider
+                                            .waterconnection.accesIhl ==
+                                        Constants.CONSUMER_IHL_TYPE.first.key
+                                    ? _buildYes(consumerProvider, property)
+                                    : _buildNo(consumerProvider))
+                            //_buildNo(consumerProvider))
+                          ]),
+                            //dropdown for sbm & self funded
                           Consumer<ConsumerProvider>(
                             builder: (_, consumerProvider, child) =>
                                 SelectFieldBuilder(
@@ -403,8 +452,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         '',
                                         consumerProvider
                                             .onChangeOfConnectionType,
-                                        consumerProvider
-                                            .getConnectionTypeList(),
+                                        consumerProvider.getConnectionTypeList(),
                                         true,
                                         itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
                                         contextKey: consumerProvider
@@ -705,5 +753,69 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         validator: (val) => Validators.penaltyAndAdvanceValidator(val, true),
         textInputType: TextInputType.number,
         inputFormatter: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))]);
+  }
+
+  Widget _buildYes(ConsumerProvider consumerProvider, Property property) {
+    return Wrap(children: [
+      Consumer<ConsumerProvider>(
+          builder: (_, consumerProvider, child) => Column(
+                children: [
+                  SelectFieldBuilder(
+                    i18.consumer.SCHEME_TYPE,
+                    consumerProvider.waterconnection.schemeType,
+                    '',
+                    '',
+                    consumerProvider.onChangeOfSchemeType,
+                    consumerProvider.getIHLTypeList(),
+                    true,
+                    itemAsString: (i) =>
+                        '${ApplicationLocalizations.of(context).translate(i.toString())}',
+                    contextKey: consumerProvider.consmerWalkthrougList[10].key,
+                    controller: consumerProvider.waterconnection.SchemeTypeCtrl,
+                    key: Keys.createConsumer.CONSUMER_SCHEME_KEY,
+                  ),
+
+                  //Consumer Service Type Field),
+                  consumerProvider.waterconnection.schemeType != 'under_sbm'
+                      ? Container()
+                      : Column(
+                          children: [
+                            BuildTextField(
+                              i18.common.SBM_ACCOUNT,
+                              consumerProvider.waterconnection.SbmAccountCtrl,
+                              isRequired: true,
+                              textInputType: TextInputType.name,
+                              contextKey: consumerProvider
+                                  .consmerWalkthrougList[11].key,
+                              key: Keys.createConsumer.CONSUMER_SBM_ACCOUNT_KEY,
+                            ),
+                          ],
+                        ),
+                ],
+              )),
+    ]);
+  }
+
+  Widget _buildNo(ConsumerProvider consumerProvider) {
+    return Wrap(children: [
+      Consumer<ConsumerProvider>(
+          builder: (_, consumerProvider, child) => Column(
+                children: [
+                  SelectFieldBuilder(
+                    i18.consumer.IHL_TYPE,
+                    consumerProvider.waterconnection.ihlDetail,
+                    '',
+                    '',
+                    consumerProvider.onChangeOfIHLTypeCHC,
+                    consumerProvider.getIhl(),
+                    true,
+                    itemAsString: (i) =>
+                        '${ApplicationLocalizations.of(context).translate(i.toString())}',
+                    contextKey: consumerProvider.consmerWalkthrougList[10].key,
+                    key: Keys.createConsumer.CONSUMER_IHL_TYPE_KEY,
+                  ),
+                ],
+              ))
+    ]);
   }
 }

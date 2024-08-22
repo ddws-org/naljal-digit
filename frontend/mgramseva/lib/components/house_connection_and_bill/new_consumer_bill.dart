@@ -138,7 +138,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                       .bill!.first.mobileNumber,
                                                   billList.bill?.first,
                                                   "Download"),
-                                          icon: Icon(Icons.download_sharp),
+                                          icon: Icon(Icons.download_sharp,color: Color(0xFF033CCF),),
                                           label: Text(
                                             ApplicationLocalizations.of(context)
                                                 .translate(
@@ -146,6 +146,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
+                                              color:Color(0xFF033CCF)
                                             ),
                                             textAlign: TextAlign.left,
                                           ),

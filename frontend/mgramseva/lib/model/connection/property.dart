@@ -192,6 +192,8 @@ class Owners {
   String? status;
   @JsonKey(name: "gender")
   String? gender;
+  @JsonKey(name: "ihl")
+  String? ihl;
 
   @JsonKey(name: "ownerType")
   String? ownerType;
@@ -209,6 +211,12 @@ class Owners {
 
   @JsonKey(ignore: true)
   var phoneNumberCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var schemeIdCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
+  var sbmAccountCtrl = TextEditingController();
 
   Owners();
 

@@ -49,6 +49,14 @@ class Validators {
     }
     return null;
   }
+  static String? schemeIdValidator(String? v) {
+    if (v!.trim().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_SCHEME_ID)}';
+    } else if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.validators.ENTER_NUMBERS_ONLY)}';
+    }
+    return null;
+  }
 
   static String? maxCharactersValidator(String? v, int input, String? key) {
     if (key == i18.consumer.OLD_CONNECTION_ID && v.toString().isEmpty) {

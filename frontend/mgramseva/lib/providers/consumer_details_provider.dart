@@ -12,6 +12,7 @@ import 'package:mgramseva/model/mdms/category_type.dart';
 import 'package:mgramseva/model/mdms/connection_type.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
 import 'package:mgramseva/model/mdms/property_type.dart';
+import 'package:mgramseva/model/mdms/scheme_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -21,14 +22,14 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
 import 'package:mgramseva/services/mdms.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
+import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/custom_dialog.dart';
@@ -392,6 +393,11 @@ class ConsumerProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void onChangeOfIHL(value) {
+    waterconnection.accesIhl=value;
+    notifyListeners();
+  }
+
   void onChangeOfDate(value) {
     notifyListeners();
   }
@@ -572,6 +578,20 @@ class ConsumerProvider with ChangeNotifier {
 
     notifyListeners();
   }
+  onChangeOfSchemeType(val) {
+    waterconnection.schemeType = val;
+    waterconnection.ihlDetail=val;
+    waterconnection.SbmAccountCtrl.clear();
+    notifyListeners();
+  }
+  onChangeOfIHLType(val) {
+    waterconnection.accesIhl=val;
+    notifyListeners();
+  }
+  onChangeOfIHLTypeCHC(val) {
+    waterconnection.ihlDetail=val;
+    notifyListeners();
+  }
 
   onChangeBillingCycle(val) {
     selectedcycle = val;
@@ -594,9 +614,25 @@ class ConsumerProvider with ChangeNotifier {
     return <String>[];
   }
 
+  List<String> getIHLTypeList() {
+    if (languageList?.mdmsRes?.scheme?.schemeType != null) {
+      return (languageList?.mdmsRes?.scheme?.schemeType ?? <SchemeType>[])
+          .map((value) {
+        return value.code!;
+      }).toList();
+    }
+    return <String>[];
+  }
+
+  List<String> getIhl() {
+    List<String> myList = ["They are using Shared Toilet", "They are using CHC Toilet"];
+
+    return myList;
+  }
+
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
-  List<Map<String,dynamic>> getBillingCycle() {
-    var dates = <Map<String,dynamic>>[];
+  List<Map<String, dynamic>> getBillingCycle() {
+    var dates = <Map<String, dynamic>>[];
     if (billYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -672,7 +708,7 @@ class ConsumerProvider with ChangeNotifier {
 
   void onChangeOfAmountType(value) {
     waterconnection.paymentType = value;
-
+print("paymenttype value ${waterconnection.paymentType}" );
     if (!isEdit) {
       waterconnection.penaltyCtrl.clear();
       waterconnection.advanceCtrl.clear();

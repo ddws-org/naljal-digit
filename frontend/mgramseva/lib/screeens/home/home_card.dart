@@ -37,7 +37,10 @@ class _HomeCard extends State<HomeCard> {
             onTap: () {
                     if (kIsWeb && item.link == Routes.HRMS) {
                 launchUrl(Uri.parse('${'$apiBaseUrl' + Url.HRMS}'));
-              }else{
+              }else if(!kIsWeb && item.link == Routes.HRMS){
+                      launchUrl(Uri.parse('${'$apiBaseUrl' + Url.HRMS}'));
+                    }
+                    else{
                 Navigator.pushNamed(context, item.link,
                     arguments: item.arguments);
               }

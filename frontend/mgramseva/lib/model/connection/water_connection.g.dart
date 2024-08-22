@@ -23,6 +23,11 @@ WaterConnection _$WaterConnectionFromJson(Map<String, dynamic> json) =>
       ..noOfTaps = json['noOfTaps'] as int?
       ..arrears = (json['arrears'] as num?)?.toDouble()
       ..connectionType = json['connectionType'] as String?
+      ..ihlDetail = json['ihlDetail'] as String?
+      ..accesIhl = json['accesIhl'] as String?
+      ..sbmAccountno = json['sbmAccountno'] as String?
+      ..schemeId = json['schemeId'] as String?
+      ..schemeName = json['schemeName'] as String?
       ..oldConnectionNo = json['oldConnectionNo'] as String?
       ..meterId = json['meterId'] as String?
       ..propertyType = json['propertyType'] as String?
@@ -59,6 +64,11 @@ Map<String, dynamic> _$WaterConnectionToJson(WaterConnection instance) =>
       'noOfTaps': instance.noOfTaps,
       'arrears': instance.arrears,
       'connectionType': instance.connectionType,
+      'ihlDetail':instance.ihlDetail,
+      'accesIhl':instance.accesIhl,
+      'sbmAccountno':instance.sbmAccountno,
+      'schemeId':instance.schemeId,
+      'schemeName':instance.schemeName,
       'oldConnectionNo': instance.oldConnectionNo,
       'meterId': instance.meterId,
       'propertyType': instance.propertyType,
