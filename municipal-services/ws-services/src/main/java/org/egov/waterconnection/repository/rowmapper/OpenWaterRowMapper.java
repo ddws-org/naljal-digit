@@ -51,11 +51,14 @@ public class OpenWaterRowMapper implements ResultSetExtractor<List<WaterConnecti
                 currentWaterConnection.setStatus(StatusEnum.fromValue(rs.getString("status")));
                 currentWaterConnection.setConnectionNo(rs.getString("connectionNo"));
                 currentWaterConnection.setOldConnectionNo(rs.getString("oldConnectionNo"));
+                currentWaterConnection.setImisNumber(rs.getString("imisNumber"));
+                currentWaterConnection.setVillageId(rs.getString("VillageId"));
                 currentWaterConnection.setOldApplication(rs.getBoolean("isoldapplication"));
                 HashMap<String, Object> additionalDetails = new HashMap<>();
                 additionalDetails.put(WCConstants.INITIAL_METER_READING_CONST, rs.getBigDecimal("initialmeterreading"));
                 additionalDetails.put(WCConstants.APP_CREATED_DATE, rs.getBigDecimal("appCreatedDate"));
                 additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
+                additionalDetails.put(WCConstants.VILLAGE_NAME,rs.getString("villageName"));
                 additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
                 additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
                 currentWaterConnection.setAdditionalDetails(additionalDetails);

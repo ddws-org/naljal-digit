@@ -65,6 +65,8 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				currentWaterConnection.setStatus(StatusEnum.fromValue(rs.getString("status")));
 				currentWaterConnection.setConnectionNo(rs.getString("connectionNo"));
 				currentWaterConnection.setOldConnectionNo(rs.getString("oldConnectionNo"));
+				currentWaterConnection.setImisNumber(rs.getString("imisNumber"));
+				currentWaterConnection.setVillageId(rs.getString("VillageId"));
 				currentWaterConnection.setPipeSize(rs.getDouble("pipeSize"));
 				currentWaterConnection.setNoOfTaps(rs.getInt("noOfTaps"));
 				currentWaterConnection.setProposedPipeSize(rs.getDouble("proposedPipeSize"));
@@ -103,6 +105,7 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put(WCConstants.ESTIMATION_FILESTORE_ID, rs.getString("estimationfileStoreId"));
 				additionalDetails.put(WCConstants.SANCTION_LETTER_FILESTORE_ID, rs.getString("sanctionfileStoreId"));
 				additionalDetails.put(WCConstants.ESTIMATION_DATE_CONST, rs.getBigDecimal("estimationLetterDate"));
+				additionalDetails.put(WCConstants.VILLAGE_NAME,rs.getString("villagename"));
 				additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
 				additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
 				additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));

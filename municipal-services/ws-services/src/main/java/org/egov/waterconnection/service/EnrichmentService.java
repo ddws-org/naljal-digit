@@ -151,6 +151,7 @@ public class EnrichmentService {
 				additionalDetail.put(WCConstants.ESTIMATION_DATE_CONST, System.currentTimeMillis());
 			}
 			additionalDetail.put(WCConstants.LOCALITY,addDetail.get(WCConstants.LOCALITY).toString());
+			additionalDetail.put(WCConstants.VILLAGE_NAME,addDetail.get(WCConstants.VILLAGE_NAME).toString());
 
 			for (Map.Entry<String, Object> entry: addDetail.entrySet()) {
 				if (additionalDetail.getOrDefault(entry.getKey(), null) == null) {
