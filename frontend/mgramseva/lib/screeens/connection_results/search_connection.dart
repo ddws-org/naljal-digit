@@ -148,32 +148,38 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                       Text(
                                           '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                           textAlign: TextAlign.center),
-                                      BuildTextField(
-                                        i18.searchWaterConnection
-                                            .OLD_CONNECTION_ID,
-                                        searchConnectionProvider
-                                            .searchconnection
-                                            .oldConnectionCtrl,
-                                        isDisabled: searchConnectionProvider
-                                            .searchconnection.controllers[2],
-                                        onChange: (value) =>
-                                            searchConnectionProvider
-                                                .getdetails(value, 2),
-                                        hint: ApplicationLocalizations.of(
-                                                context)
-                                            .translate(i18
-                                                .searchWaterConnection
-                                                .OLD_CONNECTION_HINT),
-                                        key: Keys.searchConnection.SEARCH_OLD_ID_KEY,
-                                          onSubmit: (value){
-                                            searchConnectionProvider.validatesearchConnectionDetails(
-                                                context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
-                                                ? true : false);
-                                          }
+                                      Visibility(
+                                        visible: false,
+                                        child: BuildTextField(
+                                          i18.searchWaterConnection
+                                              .OLD_CONNECTION_ID,
+                                          searchConnectionProvider
+                                              .searchconnection
+                                              .oldConnectionCtrl,
+                                          isDisabled: searchConnectionProvider
+                                              .searchconnection.controllers[2],
+                                          onChange: (value) =>
+                                              searchConnectionProvider
+                                                  .getdetails(value, 2),
+                                          hint: ApplicationLocalizations.of(
+                                                  context)
+                                              .translate(i18
+                                                  .searchWaterConnection
+                                                  .OLD_CONNECTION_HINT),
+                                          key: Keys.searchConnection.SEARCH_OLD_ID_KEY,
+                                            onSubmit: (value){
+                                              searchConnectionProvider.validatesearchConnectionDetails(
+                                                  context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                                  ? true : false);
+                                            }
+                                        ),
                                       ),
-                                      Text(
-                                          '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                          textAlign: TextAlign.center),
+                                      Visibility(
+                                        visible: false,
+                                        child: Text(
+                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                            textAlign: TextAlign.center),
+                                      ),
                                       BuildTextField(
                                         i18.searchWaterConnection
                                             .NEW_CONNECTION_ID,

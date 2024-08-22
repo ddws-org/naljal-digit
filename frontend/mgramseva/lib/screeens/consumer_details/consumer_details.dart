@@ -209,6 +209,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
+                            readOnly: true,
+                            isDisabled: true,
                           ),
 
                           RadioButtonFieldBuilder(
@@ -265,26 +267,29 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           ),
 
                           //Consumer Old Connection Field
-                          Consumer<ConsumerProvider>(
-                            builder: (_, consumerProvider, child) =>
-                                BuildTextField(
-                              i18.consumer.OLD_CONNECTION_ID,
-                              consumerProvider
-                                  .waterconnection.OldConnectionCtrl,
-                              validator: (val) =>
-                                  Validators.maxCharactersValidator(
-                                      val, 20, i18.consumer.OLD_CONNECTION_ID),
-                              isRequired: true,
-                              contextKey:
-                                  consumerProvider.consmerWalkthrougList[4].key,
-                              key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
-                              readOnly: consumerProvider.isEdit ==
-                                  true,
-                              inputFormatter: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp("[a-zA-Z0-9/\\-]"))
-                              ],
-                              isDisabled: false,
+                          Visibility(
+                            visible:false,
+                            child: Consumer<ConsumerProvider>(
+                              builder: (_, consumerProvider, child) =>
+                                  BuildTextField(
+                                i18.consumer.OLD_CONNECTION_ID,
+                                consumerProvider
+                                    .waterconnection.OldConnectionCtrl,
+                                validator: (val) =>
+                                    Validators.maxCharactersValidator(
+                                        val, 20, i18.consumer.OLD_CONNECTION_ID),
+                                isRequired: true,
+                                contextKey:
+                                    consumerProvider.consmerWalkthrougList[4].key,
+                                key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
+                                readOnly: consumerProvider.isEdit ==
+                                    true,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[a-zA-Z0-9/\\-]"))
+                                ],
+                                isDisabled: false,
+                              ),
                             ),
                           ),
                           Consumer<ConsumerProvider>(
