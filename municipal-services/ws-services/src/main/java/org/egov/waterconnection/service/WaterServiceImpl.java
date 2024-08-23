@@ -310,6 +310,7 @@ public class WaterServiceImpl implements WaterService {
 
 	private List<WaterConnection> getWaterConnectionForOldConnectionNo(WaterConnectionRequest waterConnectionRequest) {
 		SearchCriteria criteria = SearchCriteria.builder().tenantId(waterConnectionRequest.getWaterConnection().getTenantId())
+				.oldConnectionNumber(waterConnectionRequest.getWaterConnection().getOldConnectionNo())
 				.imisNumber(waterConnectionRequest.getWaterConnection().getImisNumber()).build();
 		WaterConnectionResponse waterConnection = search(criteria, waterConnectionRequest.getRequestInfo());
 		return waterConnection.getWaterConnection();
