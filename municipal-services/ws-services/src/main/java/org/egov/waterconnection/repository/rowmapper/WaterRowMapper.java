@@ -105,7 +105,6 @@ public class WaterRowMapper implements ResultSetExtractor<List<WaterConnection>>
 				additionalDetails.put(WCConstants.ESTIMATION_FILESTORE_ID, rs.getString("estimationfileStoreId"));
 				additionalDetails.put(WCConstants.SANCTION_LETTER_FILESTORE_ID, rs.getString("sanctionfileStoreId"));
 				additionalDetails.put(WCConstants.ESTIMATION_DATE_CONST, rs.getBigDecimal("estimationLetterDate"));
-				additionalDetails.put(WCConstants.VILLAGE_NAME,rs.getString("villageName"));
 				additionalDetails.put(WCConstants.LOCALITY, rs.getString("locality"));
 				additionalDetails.put("collectionAmount", rs.getString("collectionamount"));
 				additionalDetails.put("collectionPendingAmount", rs.getString("pendingamount"));
