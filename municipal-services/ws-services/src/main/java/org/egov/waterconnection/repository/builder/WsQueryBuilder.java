@@ -275,7 +275,7 @@ public class WsQueryBuilder {
 
 		if (!StringUtils.isEmpty(criteria.getImisNumber())) {
 			addClauseIfRequired(preparedStatement, query);
-			query.append(" conn.imisNumber = ? ");
+			query.append(" conn.imisnumber = ? ");
 			preparedStatement.add(criteria.getImisNumber());
 		}
 
