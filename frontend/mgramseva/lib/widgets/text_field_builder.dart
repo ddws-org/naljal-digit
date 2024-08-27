@@ -122,9 +122,7 @@ class _BuildTextField extends State<BuildTextField> {
                     .translate((widget.placeHolder!))
                     : "",
                 border: widget.inputBorder,
-                focusedBorder:OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
-                disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
+                enabledBorder: widget.inputBorder,
                 errorMaxLines: 2,
                 enabled: widget.isDisabled ?? true,
                 filled: widget.isFilled,
@@ -159,7 +157,6 @@ class _BuildTextField extends State<BuildTextField> {
             ),
             onChanged: widget.onChange,
             onFieldSubmitted: widget.onSubmit,
-            cursorColor:Color.fromRGBO(0,60,207,0.9),
         ));
 // Label Text
     Widget textLabelwidget =

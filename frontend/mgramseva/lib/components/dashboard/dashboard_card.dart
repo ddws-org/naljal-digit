@@ -47,8 +47,7 @@ class DashboardCard extends StatelessWidget {
                             padding: EdgeInsets.only(right: isFromScreenshot ? 8.0 : 3.0),
                             child: Visibility(
                               visible: !isFromScreenshot,
-                              child: Icon(Icons.arrow_drop_down,color: Color(
-                                  0xff033ccf),),
+                              child: Icon(Icons.arrow_drop_down),
                             ),
                           )
                         ]),

@@ -9,7 +9,7 @@ import 'package:mgramseva/model/mdms/tax_period.dart';
 import '../../repository/water_services_calculation.dart';
 
 class LanguageList {
-  dynamic responseInfo;
+  dynamic? responseInfo;
   MdmsRes? mdmsRes;
 
   LanguageList({this.responseInfo, this.mdmsRes});
@@ -198,8 +198,6 @@ class StateInfo {
   String? bannerUrl;
   String? logoUrl;
   String? logoUrlWhite;
-  String? digitFooterWhite;
-  String? digitFooterColor;
   bool? hasLocalisation;
   bool? enableWhatsApp;
   String? selectedCode;
@@ -217,8 +215,6 @@ class StateInfo {
     this.selectedCode,
     this.stateLogoURL,
     this.logoUrlWhite,
-    this.digitFooterWhite,
-    this.digitFooterColor,
     this.hasLocalisation,
     this.enableWhatsApp,
     this.defaultUrl,
@@ -233,8 +229,6 @@ class StateInfo {
     bannerUrl = json['bannerUrl'];
     stateLogoURL = json['stateLogoURL'];
     logoUrl = json['logoUrl'];
-    digitFooterWhite = json['digitFooterWhite']??'';
-    digitFooterColor = json['digitFooterColor']??'';
     selectedCode = json['selectedCode'];
     logoUrlWhite = json['logoUrlWhite'];
     hasLocalisation = json['hasLocalisation'];
@@ -266,8 +260,6 @@ class StateInfo {
     data['stateLogoURL'] = this.stateLogoURL;
     data['selectedCode'] = this.selectedCode;
     data['logoUrlWhite'] = this.logoUrlWhite;
-    data['digitFooterWhite'] = this.digitFooterWhite;
-    data['digitFooterColor'] = this.digitFooterColor;
     data['hasLocalisation'] = this.hasLocalisation;
     data['enableWhatsApp'] = this.enableWhatsApp;
     if (this.defaultUrl != null) {

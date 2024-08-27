@@ -230,9 +230,9 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   .toString()) +
                               ' only')),
                       getPrinterLabel(
-                          i18.consumerReciepts.CONSUMER_PENDING_AMOUNT,
+                          (item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)>=0?i18.consumerReciepts.CONSUMER_PENDING_AMOUNT:i18.common.CORE_ADVANCE,
                           ('₹' +
-                              ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0))
+                              ((item.totalDue ?? 0) - (item.totalAmountPaid ?? 0)).abs()
                                   .toString())),
                       SizedBox(
                         height: 8,
@@ -329,11 +329,11 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   "tenantId": commonProvider
                                       .userDetails!.selectedtenant!.code,
                                 }, item.mobileNumber, item, "Download"),
-                                icon: Icon(Icons.download_sharp,color: Color(0xff033ccf),),
+                                icon: Icon(Icons.download_sharp),
                                 label: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(i18.common.RECEIPT_DOWNLOAD),
-                                    style: TextStyle(fontSize: 16,color: Color(0xff033ccf))),
+                                    style: TextStyle(fontSize: 16)),
                               ),
                             ),
                             _getLabeltext(
@@ -397,7 +397,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                         child: ElevatedButton.icon(
                             onPressed: () => _capturePng(item),
                             icon: Icon(Icons.print,color: Colors.white,),
-                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(3, 60, 207, 0.9)),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(244, 119, 56, 1)),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.consumerReciepts

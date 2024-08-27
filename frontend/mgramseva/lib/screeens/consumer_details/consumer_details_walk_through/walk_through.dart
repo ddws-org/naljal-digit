@@ -63,7 +63,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -76,7 +76,7 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
@@ -89,21 +89,23 @@ var json = [
       (val) => {},
       [],
       true,
-      itemAsString: (i) =>i.toString(),
+      itemAsString: (i) => i.toString(),
     )
   },
   {
-    "name": (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
-    "widget": RadioButtonFieldBuilder(
-        navigatorKey.currentContext!,
-        "",
-        null,
-        '',
-        '',
-        false,
-        Constants.CONSUMER_PAYMENT_TYPE,
-        (val)=>{},
+    "name":
+        (i18.consumerWalkThroughMsg.CONSUMER_WALKTHROUGH_AMOUNT_TYPE_MESSAGE),
+    "widget": RadioButtonFieldBuilder(navigatorKey.currentContext!, "", null,
+        '', '', false, Constants.CONSUMER_PAYMENT_TYPE, (val) => {},
         isEnabled: true),
+  },
+  {
+    "name": (i18.consumerWalkThroughMsg.CONSUMER_REMARKS_MSG),
+    "widget": BuildTextField(
+      i18.consumer.CONSUMER_REMARKS,
+      TextEditingController(),
+      isRequired: true,
+    ),
   },
 ];
 

@@ -57,16 +57,12 @@ class PdfUtils {
     var languageProvider =
     Provider.of<LanguageProvider>(navigatorKey.currentContext!, listen: false);
 
-    return await imageFromAssetBundle('assets/png/head_naljal.png')/*networkImage(
-      languageProvider.stateInfo?.logoUrlWhite ?? '')*/;
+    return await networkImage(
+      languageProvider.stateInfo?.logoUrlWhite ?? '');
   }
 
-  static Future<pw.ImageProvider> get powerdByDigit async  {
-    var languageProvider =
-    Provider.of<LanguageProvider>(navigatorKey.currentContext!, listen: false);
-      return await imageFromAssetBundle('assets/png/nic-footer.png')/*networkImage(
-          languageProvider.stateInfo?.digitFooterColor??'')*/;
-  }
+  static Future<pw.ImageProvider> get powerdByDigit async => await networkImage(
+      "$apiBaseUrl${Constants.DIGIT_FOOTER_ENDPOINT}");
 
   static pw.Widget pdfFooter(pw.ImageProvider image){
     return pw.Container(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -30,55 +32,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   afterViewBuild() {
-    var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+  //   var commonProvider = Provider.of<CommonProvider>(
+  //       navigatorKey.currentContext!,
+  //       listen: false);
+  //  commonProvider.appBarUpdate();    
 
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
-
-    if (tenantProvider.tenants != null) {
-      final r = commonProvider.userDetails!.userRequest!.roles!
-          .map((e) => e.tenantId)
-          .toSet()
-          .toList();
-      final result = tenantProvider.tenants!.tenantsList
-          ?.where((element) => r.contains(element.code?.trim()))
-          .toList();
-      if (result?.length == 1 &&
-          commonProvider.userDetails!.selectedtenant == null) {
-        if (result?.isNotEmpty ?? false)
-          commonProvider.setTenant(result?.first);
-
-        // });
-      } else if (result != null &&
-          result.length > 1 &&
-          commonProvider.userDetails!.selectedtenant == null) {
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) => showDialogBox(result));
-      }
-    } else {
-      tenantProvider.getTenants().then((value) {
-        final r = commonProvider.userDetails!.userRequest!.roles!
-            .map((e) => e.tenantId)
-            .toSet()
-            .toList();
-        final result = tenantProvider.tenants!.tenantsList
-            ?.where((element) => r.contains(element.code?.trim()))
-            .toList();
-        if (result?.length == 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          if (result?.isNotEmpty ?? false)
-            commonProvider.setTenant(result?.first);
-
-          // });
-        } else if (result != null &&
-            result.length > 1 &&
-            commonProvider.userDetails!.selectedtenant == null) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => showDialogBox(result));
-        }
-      });
-    }
   }
 
   showDialogBox(List<Tenants> tenants) {
@@ -98,60 +56,55 @@ class _CustomAppBarState extends State<CustomAppBar> {
         context: context,
         builder: (BuildContext context) {
           var searchController = TextEditingController();
-          var visibleTenants = tenants.asMap().values.toList();
-          return StatefulBuilder(builder: (context, StateSetter stateSetter) {
-            return Stack(children: <Widget>[
-              Container(
-                  margin: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width > 720
-                          ? MediaQuery.of(context).size.width -
-                              MediaQuery.of(context).size.width / 3
-                          : 0,
-                      top: 60),
-                  width: MediaQuery.of(context).size.width > 720
-                      ? MediaQuery.of(context).size.width / 3
-                      : MediaQuery.of(context).size.width,
-                  height: (visibleTenants.length * 50 < 300
-                          ? visibleTenants.length * 50
-                          : 300) +
-                      60,
-                  color: Colors.white,
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    children: [
-                      Material(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                                hintText:
-                                    "${ApplicationLocalizations.of(context).translate(i18.common.SEARCH)}"),
-                            onChanged: (text) {
-                              if (text.isEmpty) {
-                                stateSetter(() => visibleTenants =
-                                    tenants.asMap().values.toList());
-                              } else {
-                                var tresult = tenants
-                                    .where((e) =>
-                                        "${ApplicationLocalizations.of(context).translate(e.code!)}-${e.city!.code!}"
-                                            .toLowerCase()
-                                            .trim()
-                                            .contains(
-                                                text.toLowerCase().trim()))
-                                    .toList();
-                                stateSetter(() => visibleTenants = tresult);
-                              }
-                            },
+          var visibleTenants = tenants.asMap().values.where((element) =>element.city?.districtCode != null).toList();
+          return StatefulBuilder(
+            builder: (context, StateSetter stateSetter) {
+              return Stack(children: <Widget>[
+                Container(
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width > 720
+                            ? MediaQuery.of(context).size.width -
+                                MediaQuery.of(context).size.width / 3
+                            : 0,
+                        top: 60),
+                    width: MediaQuery.of(context).size.width > 720
+                        ? MediaQuery.of(context).size.width / 3
+                        : MediaQuery.of(context).size.width,
+                    height: (visibleTenants.length * 50 < 300 ?
+                    visibleTenants.length * 50 : 300)+ 60,
+                    color: Colors.white,
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        Material(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                hintText: "${ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SEARCH)}"
+                              ),
+                              onChanged: (text) {
+                                  if(text.isEmpty){
+                                    stateSetter(()=>visibleTenants = tenants.asMap().values.toList()
+                                    );
+                                  }else{
+                                    var tresult = tenants.where((e) => "${ApplicationLocalizations.of(context)
+                                        .translate(e.code!)}-${e.city!.code!}".toLowerCase().trim().contains(text.toLowerCase().trim())).toList();
+                                    stateSetter(()=>visibleTenants = tresult
+                                    );
+                                  }
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      ...List.generate(visibleTenants.length, (index) {
+                        ...List.generate(visibleTenants.length, (index) {
                         return GestureDetector(
                             onTap: () {
                               commonProvider.setTenant(visibleTenants[index]);
-                              Navigator.pop(context);
+                              Navigator.of(context,rootNavigator: true).pop();
                               CommonMethods.home();
                             },
                             child: Material(
@@ -204,11 +157,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     ]),
                               ),
                             )));
-                      }, growable: true)
-                    ],
-                  ))
-            ]);
-          });
+                      },growable: true)],
+                    ))
+              ]);
+            }
+          );
         });
   }
 
@@ -230,27 +183,20 @@ class _CustomAppBarState extends State<CustomAppBar> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Consumer<CommonProvider>(
-                  builder: (_, commonProvider, child) => commonProvider
-                              .userDetails?.selectedtenant ==
-                          null
-                      ? Text("")
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                              Text(
-                                ApplicationLocalizations.of(context).translate(
-                                    commonProvider
-                                        .userDetails!.selectedtenant!.code!),
-                                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
-                              ),
-                              Text(
-                                ApplicationLocalizations.of(context).translate(
-                                    commonProvider.userDetails!.selectedtenant!
-                                        .city!.code!),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),
-                              )
-                            ])),
+                  builder: (_, commonProvider, child) =>
+                      commonProvider.userDetails?.selectedtenant == null
+                          ? Text("")
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider
+                                          .userDetails!.selectedtenant!.code!),style: Theme.of(context).textTheme.labelMedium,),
+                                  Text(ApplicationLocalizations.of(context)
+                                      .translate(commonProvider.userDetails!
+                                          .selectedtenant!.city!.code!),style: Theme.of(context).textTheme.labelSmall,)
+                                ])),
               Icon(Icons.arrow_drop_down)
             ],
           ),
@@ -265,27 +211,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Provider.of<LanguageProvider>(context, listen: false);
     return AppBar(
       titleSpacing: 0,
-      iconTheme: IconThemeData(color: Colors.black),
-      title:  Container(
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 0),
-              child: Image.asset("assets/png/svgg.png", //TODO add to MDMS
-                height: kToolbarHeight-5,
-                fit: BoxFit.fill,),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18),
-              child: Image.asset("assets/png/jal_jeevan.png",//TODO add to MDMS
-              height: kToolbarHeight-5,
-              fit: BoxFit.fill,),
-            ),
-          ],
-        ),
-      ),
+      iconTheme: IconThemeData(color: Colors.white),
+      title: Image(
+          width: 130,
+          image: NetworkImage(
+            languageProvider.stateInfo!.logoUrlWhite!,
+          )),
       actions: [
         Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 3,
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -293,34 +228,26 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   tenantProvider.tenants != null
                       ? buildTenantsView(tenantProvider.tenants!)
                       : StreamBuilder(
-                      stream: tenantProvider.streamController.stream,
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          return buildTenantsView(snapshot.data);
-                        } else if (snapshot.hasError) {
-                          return Notifiers.networkErrorPage(
-                              context, () {});
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Loaders.circularLoader();
-                            case ConnectionState.active:
-                              return Loaders.circularLoader();
-                            default:
-                              return Container(
-                                child: Text(""),
-                              );
-                          }
-                        }
-                      })
-                ])),
-        Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: Image.asset(
-            'assets/png/national-emblem-india.png',
-            width: 30,
-          ),
-        ),
+                          stream: tenantProvider.streamController.stream,
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return buildTenantsView(snapshot.data);
+                            } else if (snapshot.hasError) {
+                              return Notifiers.networkErrorPage(context, () {});
+                            } else {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Loaders.circularLoader();
+                                case ConnectionState.active:
+                                  return Loaders.circularLoader();
+                                default:
+                                  return Container(
+                                    child: Text(""),
+                                  );
+                              }
+                            }
+                          })
+                ]))
       ],
     );
   }

@@ -125,14 +125,6 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
                         onChanged: widget.widget,
                         enabled: !widget.readOnly!,
                         dropdownDecoratorProps: DropDownDecoratorProps(
-                          dropdownSearchDecoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(   color: Color.fromRGBO(3, 60, 207, 0.9), width: 1.0),
-                              ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(   color: Color.fromRGBO(3, 60, 207, 0.9), width: 1.0),
-                              ),
-                          ),
                             baseStyle: TextStyle(
                                 color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
                             )
@@ -167,13 +159,14 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
               return DropdownSearch(
                 key: widget.suggestionKey,
                 selectedItem: widget.value,
+              
                 itemAsString: widget.itemAsString,
                 items: widget.options,
                 onChanged: widget.widget,
                 enabled: !widget.readOnly!,
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   baseStyle: TextStyle(
-                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.blue
+                    color: !widget.readOnly!?Theme.of(context).primaryColorDark:Colors.grey
                   )
                 ),
                 popupProps: PopupProps.menu(

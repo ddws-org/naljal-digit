@@ -277,9 +277,8 @@ class CoreRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             "string|" + languageProvider.selectedLanguage!.value!,
-            commonProvider.userDetails!.accessToken,
-            commonProvider.userDetails?.userRequest?.toJson()
-        ));
+            commonProvider.userDetails!.accessToken),
+      );
 
       if (res != null) {
         pdfServiceResponse = PDFServiceResponse.fromJson(res);
@@ -311,9 +310,7 @@ class CoreRepository extends BaseService {
               APIConstants.API_DID,
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
-              commonProvider.userDetails!.accessToken,
-              commonProvider.userDetails?.userRequest?.toJson()
-          ));
+              commonProvider.userDetails!.accessToken));
 
       if (res != null) {
         eventsResponse = EventsList.fromJson((res));
@@ -344,9 +341,7 @@ class CoreRepository extends BaseService {
               APIConstants.API_DID,
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
-              commonProvider.userDetails!.accessToken,
-              commonProvider.userDetails?.userRequest?.toJson()
-      ));
+              commonProvider.userDetails!.accessToken));
 
       if (res != null) {
         return true;

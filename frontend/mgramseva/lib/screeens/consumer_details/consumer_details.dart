@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mgramseva/model/connection/property.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/consumer_details_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_flow_container.dart';
 import 'package:mgramseva/screeens/consumer_details/consumer_details_walk_through/walk_through.dart';
 import 'package:mgramseva/screeens/generate_bill/widgets/meter_reading.dart';
@@ -66,15 +70,18 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
         var commonProvider = Provider.of<CommonProvider>(
             navigatorKey.currentContext!,
             listen: false);
+
         consumerProvider
           ..setModel()
           ..setWaterConnection(widget.waterConnection)
           ..fetchBoundary()
           ..getPaymentType()
-          ..getProperty({
-            "tenantId": commonProvider.userDetails!.selectedtenant!.code,
-            "propertyIds": widget.waterConnection!.propertyId
-          })
+          ..getProperty(
+            {
+              "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+              "propertyIds": widget.waterConnection!.propertyId
+            },
+          )
           ..autoValidation = false
           ..formKey = GlobalKey<FormState>()
           ..setWalkThrough(ConsumerWalkThrough().consumerWalkThrough.map((e) {
@@ -86,6 +93,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Provider.of<CommonProvider>(navigatorKey.currentContext!,
             listen: false);
+
         consumerProvider
           ..setModel()
           ..getWaterConnection(widget.id)
@@ -149,32 +157,34 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HomeBack(
-                        widget: Help(
-                      callBack: () => showGeneralDialog(
-                        barrierLabel: "Label",
-                        barrierDismissible: false,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: Duration(milliseconds: 700),
-                        context: context,
-                        pageBuilder: (context, anim1, anim2) {
-                          return WalkThroughContainer((index) =>
-                              consumerProvider.incrementIndex(
-                                  index,
-                                  consumerProvider
-                                      .consmerWalkthrougList[index + 1].key));
-                        },
-                        transitionBuilder: (context, anim1, anim2, child) {
-                          return SlideTransition(
-                            position:
-                                Tween(begin: Offset(0, 1), end: Offset(0, 0))
-                                    .animate(anim1),
-                            child: child,
-                          );
-                        },
-                      ),
-                      walkThroughKey: Constants.CREATE_CONSUMER_KEY,
-                    )),
+                    // ConsmerWalkthrougList Is Removed
+                    // HomeBack(
+                    //     widget: Help(
+                    //   callBack: () => showGeneralDialog(
+                    //     barrierLabel: "Label",
+                    //     barrierDismissible: false,
+                    //     barrierColor: Colors.black.withOpacity(0.5),
+                    //     transitionDuration: Duration(milliseconds: 700),
+                    //     context: context,
+                    //     pageBuilder: (context, anim1, anim2) {
+                    //       return WalkThroughContainer((index) =>
+                    //           consumerProvider.incrementIndex(
+                    //               index,
+                    //               consumerProvider
+                    //                   .consmerWalkthrougList[index + 1].key));
+                    //     },
+                    //     transitionBuilder: (context, anim1, anim2, child) {
+                    //       return SlideTransition(
+                    //         position:
+                    //             Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                    //                 .animate(anim1),
+                    //         child: child,
+                    //       );
+                    //     },
+                    //   ),
+                    //   walkThroughKey: Constants.CREATE_CONSUMER_KEY,
+                    // )),
+                    HomeBack(),
                     Card(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -209,8 +219,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
-                            readOnly: true,
-                            isDisabled: true,
                           ),
 
                           RadioButtonFieldBuilder(
@@ -267,29 +275,24 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           ),
 
                           //Consumer Old Connection Field
-                          Visibility(
-                            visible:false,
-                            child: Consumer<ConsumerProvider>(
-                              builder: (_, consumerProvider, child) =>
-                                  BuildTextField(
-                                i18.consumer.OLD_CONNECTION_ID,
-                                consumerProvider
-                                    .waterconnection.OldConnectionCtrl,
-                                validator: (val) =>
-                                    Validators.maxCharactersValidator(
-                                        val, 20, i18.consumer.OLD_CONNECTION_ID),
-                                isRequired: true,
-                                contextKey:
-                                    consumerProvider.consmerWalkthrougList[4].key,
-                                key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
-                                readOnly: consumerProvider.isEdit ==
-                                    true,
-                                inputFormatter: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z0-9/\\-]"))
-                                ],
-                                isDisabled: false,
-                              ),
+                          Consumer<ConsumerProvider>(
+                            builder: (_, consumerProvider, child) =>
+                                BuildTextField(
+                              i18.consumer.OLD_CONNECTION_ID,
+                              consumerProvider
+                                  .waterconnection.OldConnectionCtrl,
+                              validator: (val) =>
+                                  Validators.maxCharactersValidator(
+                                      val, 20, i18.consumer.OLD_CONNECTION_ID),
+                              isRequired: true,
+                              contextKey:
+                                  consumerProvider.consmerWalkthrougList[4].key,
+                              key: Keys.createConsumer.CONSUMER_OLD_ID_KEY,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[a-zA-Z0-9/\\-]"))
+                              ],
+                              isDisabled: false,
                             ),
                           ),
                           Consumer<ConsumerProvider>(
@@ -305,7 +308,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               false,
                               // contextkey: consumerProvider
                               //     .consmerWalkthrougList[6].key,
-                                  itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+                              itemAsString: (i) =>
+                                  '${ApplicationLocalizations.of(context).translate(i.toString())}',
                               controller:
                                   consumerProvider.waterconnection.categoryCtrl,
                               key: Keys.createConsumer.CONSUMER_CATEORY_KEY,
@@ -323,7 +327,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     consumerProvider.onChangeOfSubCategory,
                                     consumerProvider.getSubCategoryList(),
                                     false,
-                                    itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+                                    itemAsString: (i) =>
+                                        '${ApplicationLocalizations.of(context).translate(i.toString())}',
                                     // contextkey: consumerProvider
                                     //     .consmerWalkthrougList[6].key,
                                     controller: consumerProvider
@@ -373,7 +378,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                           consumerProvider.onChangeOfLocality,
                                           consumerProvider.getBoundaryList(),
                                           true,
-                                          itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.code!.toString())}',
+                                          itemAsString: (i) =>
+                                              '${ApplicationLocalizations.of(context).translate(i.code!.toString())}',
                                           contextKey: consumerProvider
                                               .consmerWalkthrougList[5].key)
                                       : Container()),
@@ -389,7 +395,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                               consumerProvider.onChangeOfPropertyType,
                               consumerProvider.getPropertyTypeList(),
                               true,
-                              itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+                              itemAsString: (i) =>
+                                  '${ApplicationLocalizations.of(context).translate(i.toString())}',
                               contextKey:
                                   consumerProvider.consmerWalkthrougList[6].key,
                               controller: property.address.propertyCtrl,
@@ -411,7 +418,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                         consumerProvider
                                             .getConnectionTypeList(),
                                         true,
-                                        itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.toString())}',
+                                        itemAsString: (i) =>
+                                            '${ApplicationLocalizations.of(context).translate(i.toString())}',
                                         contextKey: consumerProvider
                                             .consmerWalkthrougList[7].key,
                                         controller: consumerProvider
@@ -444,8 +452,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                         consumerProvider
                                                             .waterconnection
                                                             .previousReadingDateCtrl,
-                                                        firstDate:
-                                                            DateTime.fromMillisecondsSinceEpoch(consumerProvider.languageList?.mdmsRes?.billingService?.taxPeriodList!.first.fromDate??0),
+                                                        firstDate: DateTime
+                                                            .fromMillisecondsSinceEpoch(
+                                                                consumerProvider
+                                                                        .getLastFinancialYearList(
+                                                                            2)
+                                                                        .reversed
+                                                                        .first
+                                                                        .fromDate ??
+                                                                    0),
                                                         lastDate:
                                                             DateTime.now(),
                                                         onChangeOfDate:
@@ -464,7 +479,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                   inputFormatter: [
                                                     FilteringTextInputFormatter
                                                         .allow(RegExp(
-                                                            "[a-zA-Z0-9]"))
+                                                            r"^(?!0+$)[a-zA-Z0-9]+$"))
                                                   ],
                                                   key: Keys.createConsumer
                                                       .CONSUMER_METER_NUMBER_KEY,
@@ -510,25 +525,25 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             false
                                                     ? Wrap(
                                                         children: [
-                                                          SelectFieldBuilder(
-                                                            i18.demandGenerate
-                                                                .BILLING_YEAR_LABEL,
-                                                            consumerProvider
-                                                                .billYear,
-                                                            '',
-                                                            '',
-                                                            consumerProvider
-                                                                .onChangeOfBillYear,
-                                                            consumerProvider
-                                                                .getFinancialYearList(),
-                                                            true,
-                                                            itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
-                                                            controller: consumerProvider
-                                                                .waterconnection
-                                                                .billingCycleYearCtrl,
-                                                            key: Keys.bulkDemand
-                                                                .BULK_DEMAND_BILLING_YEAR,
-                                                          ),
+                                                          // SelectFieldBuilder(
+                                                          //   i18.demandGenerate
+                                                          //       .BILLING_YEAR_LABEL,
+                                                          //   consumerProvider
+                                                          //       .billYear,
+                                                          //   '',
+                                                          //   '',
+                                                          //   consumerProvider
+                                                          //       .onChangeOfBillYear,
+                                                          //   consumerProvider
+                                                          //       .getFinancialYearList(),
+                                                          //   true,
+                                                          //   itemAsString: (i) =>'${ApplicationLocalizations.of(context).translate(i.financialYear)}',
+                                                          //   controller: consumerProvider
+                                                          //       .waterconnection
+                                                          //       .billingCycleYearCtrl,
+                                                          //   key: Keys.bulkDemand
+                                                          //       .BULK_DEMAND_BILLING_YEAR,
+                                                          // ),
                                                           SelectFieldBuilder(
                                                             i18.consumer
                                                                 .CONSUMER_BILLING_CYCLE,
@@ -539,9 +554,10 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                                             consumerProvider
                                                                 .onChangeBillingCycle,
                                                             consumerProvider
-                                                                .getBillingCycle(),
+                                                                .newBillingCycleFunction(),
                                                             true,
-                                                            itemAsString: (i) =>"${ApplicationLocalizations.of(context).translate(i['name'])}",
+                                                            itemAsString: (i) =>
+                                                                "${ApplicationLocalizations.of(context).translate(i['name'])}",
                                                             controller: consumerProvider
                                                                 .waterconnection
                                                                 .BillingCycleCtrl,
@@ -574,6 +590,17 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                     contextKey: consumerProvider
                                         .consmerWalkthrougList[8].key,
                                     isEnabled: true),
+
+                                // // Test
+                                // Column(
+                                //   children: [
+                                //     Text(
+                                //         "${consumerProvider.waterconnection.paymentType != null}"),
+                                //     Text(
+                                //         "${consumerProvider.waterconnection.paymentType == Constants.CONSUMER_PAYMENT_TYPE.first.key}"),
+                                //   ],
+                                // ),
+                                // // Test
                                 Visibility(
                                     visible: consumerProvider
                                             .waterconnection.paymentType !=
@@ -618,6 +645,45 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                                 ],
                               ),
                             ),
+
+                          // REMARKS
+                          // Show Remarks TextField when check box is true
+                          if (consumerProvider.isEdit &&
+                              consumerProvider.waterconnection.status ==
+                                  "Inactive")
+                            Visibility(
+                              visible:
+                                  (consumerProvider.waterconnection.status ==
+                                      "Inactive"),
+                              child: Consumer<ConsumerProvider>(
+                                  builder: (_, consumerProvider, child) {                                    
+                             
+                                  property.owners!.first.consumerRemarksCtrl
+                                      .text = consumerProvider.waterconnection
+                                          .additionalDetails!.remarks ??
+                                      "";
+           
+
+                                return BuildTextField(
+                                  i18.consumer.CONSUMER_REMARKS,
+                                  property.owners!.first.consumerRemarksCtrl,
+                                  validator: (val) =>
+                                      Validators.consumerRemarksValidator(val,
+                                          40, i18.consumer.CONSUMER_REMARKS),
+                                  isRequired: true,
+                                  contextKey: consumerProvider
+                                      .consmerWalkthrougList[9].key,
+                                  key: Keys.createConsumer.CONSUMER_REMARKS_KEY,
+                                  inputFormatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp("[A-Za-z ]"))
+                                  ],
+                                  isDisabled: false,
+                                );
+                              }),
+                            ),
+
+                          // REMARKS
                           SizedBox(
                             height: 20,
                           ),
@@ -640,17 +706,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
       ),
       body: SingleChildScrollView(
           child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [
-                    Color(0xff90c5e5),
-                    Color(0xffeef7f2),
-                    Color(0xffffeca7),
-                  ],
-                ),
-              ),
               child: Column(children: [
         StreamBuilder(
             stream: userProvider.streamController.stream,

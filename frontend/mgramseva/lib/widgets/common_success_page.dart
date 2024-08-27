@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/success_handler.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
@@ -34,11 +35,16 @@ class CommonSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        CommonMethods.home();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+         if (didPop) {    
+          CommonMethods.home(); 
+          return;
+        }
+        
       },
+
       child: Scaffold(
           appBar: isWithoutLogin
               ? AppBar(
@@ -112,6 +118,7 @@ class CommonSuccess extends StatelessWidget {
                                                 null
                                             ? successHandler.downloadLinkLabel!
                                             : ''),
+                                    textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: Theme.of(context).primaryColor)),
@@ -132,6 +139,7 @@ class CommonSuccess extends StatelessWidget {
                                             successHandler.printLabel != null
                                                 ? successHandler.printLabel!
                                                 : ''),
+                                    textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: Theme.of(context).primaryColor)),
@@ -146,6 +154,7 @@ class CommonSuccess extends StatelessWidget {
                                 label: Text(
                                   ApplicationLocalizations.of(context)
                                       .translate(i18.common.SHARE_BILL),
+                                  textScaleFactor: MediaQuery.of(context).size.width>360?0.9:0.68,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: Theme.of(context).primaryColor),

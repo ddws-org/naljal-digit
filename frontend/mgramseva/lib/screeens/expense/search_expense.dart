@@ -45,91 +45,79 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return KeyboardFocusWatcher(child:Scaffold(
-    //  backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
-      body: Container( decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: FractionalOffset.topCenter,
-          end: FractionalOffset.bottomCenter,
-          colors: [
-            Color(0xff90c5e5),
-            Color(0xffeef7f2),
-            Color(0xffffeca7),
-          ],
-        ),
-      ),
-        child: SingleChildScrollView(
-            child: Column(children: [
-          FormWrapper(
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HomeBack(),
-                  Card(
-                      child: Column(
+      body: SingleChildScrollView(
+          child: Column(children: [
+        FormWrapper(
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HomeBack(),
+                Card(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                      LabelText(i18.expense.SEARCH_EXPENSE_BILL),
+                      SubLabelText(
+                        i18.expense.ENTER_VENDOR_BILL_EXPENSE,
+                      ),
+                      BuildTextField(
+                        i18.expense.VENDOR_NAME,
+                        vendorNameCtrl,
+                        key: Keys.expense.SEARCH_VENDOR_NAME,
+                      ),
+                      Text(
+                          '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                          textAlign: TextAlign.center),
+                      Consumer<ExpensesDetailsProvider>(
+                        builder: (_, expensesDetailsProvider, child) {
+                          return SelectFieldBuilder(
+                            i18.expense.EXPENSE_TYPE,
+                            expenseType,
+                            '',
+                            '',
+                            onChangeOfExpense,
+                            expensesDetailsProvider.getExpenseTypeList(isSearch: true)??[],
+                            false,
+                            hint:
+                            '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
+                            controller: expenseTypeCtrl,
+                            key: Keys.expense.SEARCH_EXPENSE_TYPE, itemAsString: (i) =>'${ApplicationLocalizations.of(context)
+                              .translate(
+                              i.toString())}',
+                          );
+                        }
+                            ,
+                      ),
+                      Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                        LabelText(i18.expense.SEARCH_EXPENSE_BILL),
-                        SubLabelText(
-                          i18.expense.ENTER_VENDOR_BILL_EXPENSE,
-                        ),
-                        BuildTextField(
-                          i18.expense.VENDOR_NAME,
-                          vendorNameCtrl,
-                          key: Keys.expense.SEARCH_VENDOR_NAME,
-                        ),
-                        Text(
-                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                            textAlign: TextAlign.center),
-                        Consumer<ExpensesDetailsProvider>(
-                          builder: (_, expensesDetailsProvider, child) {
-                            return SelectFieldBuilder(
-                              i18.expense.EXPENSE_TYPE,
-                              expenseType,
-                              '',
-                              '',
-                              onChangeOfExpense,
-                              expensesDetailsProvider.getExpenseTypeList(isSearch: true)??[],
-                              false,
-                              hint:
-                              '${ApplicationLocalizations.of(context).translate(i18.common.ELECTRICITY_HINT)}',
-                              controller: expenseTypeCtrl,
-                              key: Keys.expense.SEARCH_EXPENSE_TYPE, itemAsString: (i) =>'${ApplicationLocalizations.of(context)
-                                .translate(
-                                i.toString())}',
-                            );
-                          }
-                              ,
-                        ),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                  '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                  textAlign: TextAlign.center),
-                              BuildTextField(
-                                i18.common.BILL_ID,
-                                billIdCtrl,
-                                hint: i18.common.BILL_HINT,
-                                textCapitalization:
-                                    TextCapitalization.characters,
-                                inputFormatter: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[A-Z0-9-]"))
-                                ],
-                                key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
-                              ),
-                            ]),
-                      ]))
-                ]),
-          ),
-          Footer()
-        ])),
-      ),
+                            Text(
+                                '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                textAlign: TextAlign.center),
+                            BuildTextField(
+                              i18.common.BILL_ID,
+                              billIdCtrl,
+                              hint: i18.common.BILL_HINT,
+                              textCapitalization:
+                                  TextCapitalization.characters,
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[A-Z0-9-]"))
+                              ],
+                              key: Keys.expense.SEARCH_EXPENSE_BILL_ID,
+                            ),
+                          ]),
+                    ]))
+              ]),
+        ),
+        Footer()
+      ])),
       bottomNavigationBar: BottomButtonBar(i18.common.SEARCH, onSubmit, key: Keys.expense.SEARCH_EXPENSES),
     ));
   }

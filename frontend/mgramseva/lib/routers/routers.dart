@@ -1,11 +1,11 @@
 class Routes {
   ///Authentication
   static const String LANDING_PAGE = '/';
-  static const String SELECT_STATE = '/selectState';
+
   static const String DEFAULT_PASSWORD_UPDATE = '/passwordupdated';
 
   static const String SELECT_LANGUAGE = '/selectLanguage';
-  static const String LOGIN = '/login';
+  static const String LOGIN = '$SELECT_LANGUAGE/login';
 
   static const String HOME = '/home';
 
@@ -83,9 +83,9 @@ class Routes {
 
   static const String NOTIFICATIONS = '/home/notifications';
   static const String REPORTS = '/home/reports';
+  static const String LEDGER_REPORTS = '/home/leadger/reports';
   static const String PRIVACY_POLICY = '/privacy';
   static const String TERMS_OF_USE = '/terms';
   static const String PRIVACY_POLICY_S = '/privacy/';
   static const String TERMS_OF_USE_S = '/terms/';
-  static const String HRMS = '/home/hrms';
 }

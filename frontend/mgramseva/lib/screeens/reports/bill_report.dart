@@ -72,7 +72,7 @@ class _BillReport extends State<BillReport>
                           () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getDemandReport();
@@ -90,14 +90,14 @@ class _BillReport extends State<BillReport>
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.getDemandReport(download: true);
                             }
                           },
-                          icon: Icon(Icons.download_sharp,color: Color(0xff033ccf)),
+                          icon: Icon(Icons.download_sharp),
                           label: Text(ApplicationLocalizations.of(context)
-                              .translate(i18.common.CORE_DOWNLOAD),style: TextStyle(color: Color(0xff033ccf)))),
+                              .translate(i18.common.CORE_DOWNLOAD))),
                     ],
                   ),
                 ],

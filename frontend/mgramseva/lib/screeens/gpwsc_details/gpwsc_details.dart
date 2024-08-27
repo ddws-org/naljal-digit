@@ -6,9 +6,10 @@ import '../../providers/ifix_hierarchy_provider.dart';
 import '../../utils/global_variables.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/drawer_wrapper.dart';
-import '../../widgets/footer.dart';
 import '../../widgets/home_back.dart';
 import '../../widgets/side_bar.dart';
+import '../../widgets/footer.dart';
+import 'gpwsc_boundary_detail_card.dart';
 
 class GPWSCDetails extends StatefulWidget {
   const GPWSCDetails({Key? key}) : super(key: key);
@@ -39,7 +40,7 @@ class _GpwscDetails extends State<GPWSCDetails>
     var departmentProvider = Provider.of<IfixHierarchyProvider>(
         navigatorKey.currentContext!,
         listen: false);
-    // departmentProvider.getDepartments();
+    departmentProvider.getDepartments();
     departmentProvider.getBillingSlabs();
   }
 
@@ -53,43 +54,33 @@ class _GpwscDetails extends State<GPWSCDetails>
       backgroundColor: Color.fromRGBO(238, 238, 238, 1),
       body: LayoutBuilder(
     builder: (context, constraints) => Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-              colors: [
-                Color(0xff90c5e5),
-                Color(0xffeef7f2),
-                Color(0xffffeca7),
-              ],
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      alignment: Alignment.center,
+      margin: constraints.maxWidth < 760
+          ? null
+          : EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  HomeBack(),
-                ],
-              ),
+              HomeBack(),
+            ],
+          ),
           Container(
-                margin: constraints.maxWidth < 760
-                    ? null
-                    : EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 25),
-                padding: EdgeInsets.only(left: 8, right: 8),
-                height: constraints.maxHeight - 52,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    children: [
-                      // GPWSCBoundaryDetailCard(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GPWSCRateCard(rateType: "Non_Metered"),
+            color: Color.fromRGBO(238, 238, 238, 1),
+            padding: EdgeInsets.only(left: 8, right: 8),
+            height: constraints.maxHeight - 50,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  GPWSCBoundaryDetailCard(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GPWSCRateCard(rateType: "Non_Metered"),
                   SizedBox(
                     height: 10,
                   ),

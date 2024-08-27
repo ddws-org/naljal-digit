@@ -15,15 +15,9 @@ class Constants {
   static const String PACKAGE_NAME = "com.dwss.mgramseva";
 
   static const String DIGIT_FOOTER_ENDPOINT =
-      'naljal-uat-s3/logo/digit-footer.png';
+      'mgramseva-dev-assets/logo/digit-footer.png';
   static const String DIGIT_FOOTER_WHITE_ENDPOINT =
-      'naljal-uat-s3/logo/digit-footer-bw.png';
-  static const String NALJAL_FOOTER_ENDPOINT =
-      'naljal-uat-s3/logo/nic-footer.png';
-  static const String NALJAL_FOOTER_WHITE_ENDPOINT =
-      'naljal-uat-s3/logo/nic-footer-bw.png';
-  static const String NATIONAL_EMBLEM_INDIA =
-      'naljal-uat-s3/logo/national-emblem-india.png'; // TODO add in StateInfo in MDMS
+      'mgramseva-dev-assets/logo/digit-footer-bw.png';
   static const String LOGIN_KEY = 'login_key';
   static const String LANGUAGE_KEY = 'language_key';
   static const String STATES_KEY = 'states_key';
@@ -57,18 +51,18 @@ class Constants {
       Routes.HOUSEHOLD_REGISTER,
       {},
     ),
-/*    HomeItem(
-        "CORE_CONSUMER_CREATE",
-        (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
-        HomeIcons.createconsumer,
-        Routes.CONSUMER_CREATE, {}),*/
-
     HomeItem(
-        "CORE_UPDATE_CONSUMER_DETAILS",
-        (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
-        HomeIcons.updateconsumer,
-        Routes.CONSUMER_SEARCH_UPDATE,
-        {'Mode': "update"}),
+        "CORE_COLLECT_PAYMENTS",
+        (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
+        HomeIcons.collectpayment,
+        Routes.HOUSEHOLD,
+        {'Mode': "collect"}),
+    HomeItem(
+        "DOWNLOAD_BILLS_AND_RECEIPTS",
+        (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
+        HomeIcons.printreciept,
+        Routes.HOUSEHOLDRECEIPTS,
+        {'Mode': "receipts"}),
     HomeItem(
         "ADD_EXPENSES_RECORD",
         (i18.homeWalkThroughMSg.ADD_EXPENSE_RECORD_MSG),
@@ -79,33 +73,27 @@ class Constants {
         (i18.homeWalkThroughMSg.UPDATE_EXPENSE_MSG),
         HomeIconsModified.vector,
         Routes.EXPENSE_SEARCH, {}),
-
     HomeItem(
         "CORE_GENERATE_DEMAND",
         (i18.homeWalkThroughMSg.GENERATE_DEMAND_MSG),
         HomeIcons.generaedemand,
         Routes.MANUAL_BILL_GENERATE, {}),
-
     HomeItem(
-        "DOWNLOAD_BILLS_AND_RECEIPTS",
-        (i18.homeWalkThroughMSg.DOWNLOAD_BILLS_AND_RECEIPTS_MSG),
-        HomeIcons.printreciept,
-        Routes.HOUSEHOLDRECEIPTS,
-        {'Mode': "receipts"}),
-
+        "CORE_CONSUMER_CREATE",
+        (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
+        HomeIcons.createconsumer,
+        Routes.CONSUMER_CREATE, {}),
     HomeItem(
-        "CORE_COLLECT_PAYMENTS",
-        (i18.homeWalkThroughMSg.COLLECT_PAYMENTS_MSG),
-        HomeIcons.collectpayment,
-        Routes.HOUSEHOLD,
-        {'Mode': "collect"}),
-
+        "CORE_UPDATE_CONSUMER_DETAILS",
+        (i18.homeWalkThroughMSg.UPDATE_CONSUMER_DETAILS_MSG),
+        HomeIcons.updateconsumer,
+        Routes.CONSUMER_SEARCH_UPDATE,
+        {'Mode': "update"}),
     HomeItem(
         "CORE_GPWSC_DASHBOARD",
         (i18.homeWalkThroughMSg.GPWSC_DASHBOARD_MSG),
         HomeIcons.dashboard,
         Routes.DASHBOARD, {}),
-
     HomeItem(
         "CORE_GPWSC_DETAILS_AND_RATE_INFO",
         (i18.dashboard.CORE_GPWSC_DETAILS_AND_RATE_INFO),
@@ -116,11 +104,6 @@ class Constants {
         (i18.dashboard.CORE_REPORTS),
         Icons.assessment,
         Routes.REPORTS, {}),
-    HomeItem(
-        "CORE_HRMS_DASHBOARD",
-        (i18.dashboard.HRMS_DASHBOARD),
-        HomeIcons.gpwscdetails,
-        Routes.HRMS, {}),
   ];
 
   static List<KeyValue> SERVICECATEGORY = [
@@ -186,6 +169,4 @@ class Constants {
     i18.householdRegister.PDF,
     i18.householdRegister.EXCEL
   ];
-  static String STATE_CODE = '';
-  static String SELECTED_STATE = '';
 }

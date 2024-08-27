@@ -153,7 +153,7 @@ class HouseConnectionDetailCard extends StatelessWidget {
                                       new Text(
                                         '\n${ApplicationLocalizations.of(context).translate(!provider.isVisible ? i18.common.SHOW_MORE : i18.common.SHOW_LESS)}',
                                         style: new TextStyle(
-                                            color: Color(0xFF033CCF)),
+                                            color: Colors.deepOrangeAccent),
                                       )
                                     ],
                                   ),

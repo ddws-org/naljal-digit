@@ -285,7 +285,7 @@ class ExpensesDetailsProvider with ChangeNotifier {
       if (boundaryList.length > 0) {
         code = boundaryList.first.code;
       } else {
-        code = commonProvider.userDetails?.selectedtenant?.city?.code;
+        code = "WARD1";
       }
 
       var body = {
@@ -555,9 +555,6 @@ class ExpensesDetailsProvider with ChangeNotifier {
       var tempList = languageList?.mdmsRes?.expense?.expenseList?.toList();
       if(res!=null && res.isNotEmpty){
         isSearch?{}:tempList!.removeWhere((element) => element.code=="ELECTRICITY_BILL");
-      }
-      if(tempList!=null && tempList.isNotEmpty){
-        tempList.removeWhere((element) => element.isActive== false);
       }
       return (tempList ?? <ExpenseType>[])
           .map((value) {

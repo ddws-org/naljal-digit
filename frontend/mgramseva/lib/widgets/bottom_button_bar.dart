@@ -45,7 +45,7 @@ class BottomButtonBar extends StatelessWidget {
     print(ApplicationLocalizations.of(context).translate(this.label));
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          backgroundColor: callBack != null ? Color.fromRGBO(3,60,207,0.9) : Color.fromRGBO(3,60,207,0.7)
+          backgroundColor: callBack != null ? Color.fromRGBO(244, 119, 56, 1) : Color.fromRGBO(235,235,228, 0.7)
       ),
       child: Text(
         ApplicationLocalizations.of(context).translate(this.label),
