@@ -44,6 +44,13 @@ class _HomeCard extends State<HomeCard> {
               }
               },
             child: new Card(
+              color: Color(0xffffffff),
+
+                shape: RoundedRectangleBorder(
+
+                    side: new BorderSide(color: Color(0xff2494d4), width: 1),
+
+                    borderRadius: BorderRadius.circular(4.0)),
               key :Key(item.label),
                 // key: homeProvider.homeWalkthroughList
                 //     .where((element) => element.label == item.label).isNotEmpty?homeProvider.homeWalkthroughList

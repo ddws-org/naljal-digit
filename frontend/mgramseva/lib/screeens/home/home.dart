@@ -15,6 +15,7 @@ import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:mgramseva/widgets/drawer_wrapper.dart';
 import 'package:mgramseva/widgets/footer.dart';
+import 'package:mgramseva/widgets/help.dart';
 import 'package:mgramseva/widgets/side_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -35,51 +36,107 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-
-  
-
-  afterViewBuild()  {
+  afterViewBuild() {
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
-        var commonProvider = Provider.of<CommonProvider>(
+    var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
-   commonProvider.appBarUpdate();     
+    commonProvider.appBarUpdate();
     languageProvider.getLocalizationData(context);
-
   }
 
   _buildView(homeProvider, Widget notification) {
-    return Column(children: [
-      /* Note : WalkThroughContainer Is Removed */
-      // Align(
-      //     alignment: Alignment.centerRight,
-      //     child: Help(
-      //       callBack: () => showGeneralDialog(
-      //         barrierLabel: "Label",
-      //         barrierDismissible: false,
-      //         barrierColor: Colors.black.withOpacity(0.5),
-      //         transitionDuration: Duration(milliseconds: 700),
-      //         context: context,
-      //         pageBuilder: (context, anim1, anim2) {
-      //           return HomeWalkThroughContainer((index) =>
-      //               homeProvider.incrementIndex(index,
-      //                   homeProvider.homeWalkthroughList[index + 1].key));
-      //         },
-      //         transitionBuilder: (context, anim1, anim2, child) {
-      //           return SlideTransition(
-      //             position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
-      //                 .animate(anim1),
-      //             child: child,
-      //           );
-      //         },
-      //       ),
-      //       walkThroughKey: Constants.HOME_KEY,
-      //     )),
-      HomeCard(),
-      notification,
-      Footer()
-    ]);
+    var tenantProvider = Provider.of<TenantsProvider>(context, listen: false);
+    var languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    final dashboardName = commonProvider.userDetails!.userRequest!.roles!
+        .map((e) => e.code)
+        .toSet()
+        .toList();
+    String loginUsername = "login user name";
+    if (dashboardName.contains('CHAIRMEN')) {
+      loginUsername = "Chairmen";
+    } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
+      loginUsername = "Revenue Collector";
+    } else if (dashboardName.contains('DIV_ADMIN')) {
+      loginUsername = "Division User";
+    } else if (dashboardName.contains('SECRETARY')) {
+      loginUsername = "Secretary";
+    }
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
+              ],
+            ),
+          ),
+          child: Column(children: [
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Center(
+                        child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(loginUsername,
+                                                style: TextStyle(fontSize: 18.0, color: Colors.black),
+                                              ),
+                            )))),
+                // Container(
+                //   child: Column(
+                //     children: [
+                //       Help(
+                //         callBack: () => showGeneralDialog(
+                //           barrierLabel: "Label",
+                //           barrierDismissible: false,
+                //           barrierColor: Colors.black.withOpacity(0.5),
+                //           transitionDuration: Duration(milliseconds: 700),
+                //           context: context,
+                //           pageBuilder: (context, anim1, anim2) {
+                //             return HomeWalkThroughContainer((index) =>
+                //                 homeProvider.incrementIndex(
+                //                     index,
+                //                     homeProvider
+                //                         .homeWalkthroughList[index + 1].key));
+                //           },
+                //           transitionBuilder: (context, anim1, anim2, child) {
+                //             return SlideTransition(
+                //               position:
+                //                   Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                //                       .animate(anim1),
+                //               child: child,
+                //             );
+                //           },
+                //         ),
+                //         walkThroughKey: Constants.HOME_KEY,
+                //       ),
+                //       Text('help')
+                //     ],
+                //   ),
+                // )
+              ],
+            ),
+            HomeCard(),
+            notification,
+            Footer()
+          ]),
+        ),
+      ],
+    );
   }
 
   @override
