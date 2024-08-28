@@ -34,7 +34,7 @@ class SuccessHandler {
   @JsonKey(name: "printLabel")
   String? printLabel;
 
-  @JsonKey(name: "subHeaderFun")
+  @JsonKey(name: "subTextFun")
   String Function()? subTextFun;
 
   @JsonKey(name: "subtitleFun")

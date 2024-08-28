@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -43,18 +44,11 @@ class _HomeCard extends State<HomeCard> {
               }
               },
             child: new Card(
-                color: Color(0xffffffff),
-                shape: RoundedRectangleBorder(
-                    side: new BorderSide(color: Color(0xff2494d4), width: 1),
-                    borderRadius: BorderRadius.circular(4.0)),
-                key: homeProvider.homeWalkthroughList
-                        .where((element) => element.label == item.label)
-                        .isNotEmpty
-                    ? homeProvider.homeWalkthroughList
-                        .where((element) => element.label == item.label)
-                        .first
-                        .key
-                    : Key(item.label),
+              key :Key(item.label),
+                // key: homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).isNotEmpty?homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).first
+                //     .key:Key(item.label),
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

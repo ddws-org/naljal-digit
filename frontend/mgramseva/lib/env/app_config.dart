@@ -62,7 +62,7 @@ Future<Map<String, dynamic>> get devConstantsMobile async {
     return {
       // _baseUrl: "https://naljalseva.jjm.gov.in/"+state+"/",
       _baseUrl: "https://naljal-uat.digit.org/",
-    };
+};
 }
 Map<String, dynamic> stageConstants = {
   _baseUrl: "https://api.stage.com/",

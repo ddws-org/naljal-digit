@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Keys{
+class Keys {
   static LanguagePageKeys language = const LanguagePageKeys();
   static ForgotPasswordKeys forgotPassword = const ForgotPasswordKeys();
   static LoginKeys login = const LoginKeys();
@@ -16,18 +16,19 @@ class Keys{
   static BillReportKeys billReport = const BillReportKeys();
 }
 
-class LanguagePageKeys{
+class LanguagePageKeys {
   const LanguagePageKeys();
-  Key get LANGUAGE_PAGE_CONTINUE_BTN => Key("language selected continue button");
+  Key get LANGUAGE_PAGE_CONTINUE_BTN =>
+      Key("language selected continue button");
 }
 
-class ForgotPasswordKeys{
+class ForgotPasswordKeys {
   const ForgotPasswordKeys();
   Key get FORGOT_PASSWORD_BUTTON => Key("forgot Password Button");
   Key get FORGOT_PASSWORD_MOBILE_NO => Key("forgot Password Mobile");
-  Key get FORGOT_PASSWORD_CONTINUE_BTN => Key("forgot Password Continue button");
+  Key get FORGOT_PASSWORD_CONTINUE_BTN =>
+      Key("forgot Password Continue button");
 }
-
 
 class LoginKeys {
   const LoginKeys();
@@ -53,7 +54,7 @@ class ChangePasswordKeys {
   Key get CHANGE_PASSWORD_BTN_KEY => Key("Change Password Button Key");
 }
 
-class CreateConsumerKeys{
+class CreateConsumerKeys {
   const CreateConsumerKeys();
   Key get CONSUMER_NAME_KEY => Key("consumerName");
   Key get CONSUMER_SPOUSE_PARENT_KEY => Key("spouse parentName");
@@ -64,10 +65,12 @@ class CreateConsumerKeys{
   Key get CONSUMER_PROPERTY_KEY => Key("consumerProperty");
   Key get CONSUMER_SERVICE_KEY => Key("consumerService");
   Key get CONSUMER_LAST_BILLED_CYCLE => Key("consumerLastBilledCycle");
-  Key get CONSUMER_PREVIOUS_READING_DATE_KEY => Key("consumerPreviousReadingDatePicker");
+  Key get CONSUMER_PREVIOUS_READING_DATE_KEY =>
+      Key("consumerPreviousReadingDatePicker");
   Key get CONSUMER_METER_NUMBER_KEY => Key("consumerMeterNumber");
   Key get CONSUMER_ARREARS_KEY => Key("consumerArrears");
   Key get CREATE_CONSUMER_BTN_KEY => Key("createConsumerBtn");
+  Key get CONSUMER_REMARKS_KEY => Key("consumerRemarks");
 }
 
 class SearchConnectionKeys {
@@ -80,20 +83,21 @@ class SearchConnectionKeys {
   Key get SEARCH_BTN_KEY => Key("Search Connection Btn");
 }
 
-class GenerateBulkDemandKeys{
+class GenerateBulkDemandKeys {
   const GenerateBulkDemandKeys();
   Key get BULK_DEMAND_BILLING_YEAR => Key('Bulk Demand billingYear');
   Key get BULK_DEMAND_BILLING_CYCLE => Key('Bulk Demand billingCycle');
   Key get GENERATE_BILL_BTN => Key('Generate Bill button');
 }
 
-class CommonKeys{
+class CommonKeys {
   const CommonKeys();
   Key get LOGOUT_TILE_KEY => Key('Log out Side Bar');
-  Key get CONSUMER_PREVIOUS_READING_DATE_KEY => Key("consumerPreviousReadingDatePicker");
+  Key get CONSUMER_PREVIOUS_READING_DATE_KEY =>
+      Key("consumerPreviousReadingDatePicker");
   Key get PAGINATION_DROPDOWN => Key("drop_down");
-  Key get PAGINATION_COUNT=> Key("20");
-  Key get SHARE=> Key("Share Whatsapp");
+  Key get PAGINATION_COUNT => Key("20");
+  Key get SHARE => Key("Share Whatsapp");
 }
 
 class ExpenseKeys {
@@ -121,7 +125,6 @@ class DashboardKeys {
   Key get DASHBOARD_DATE_PICKER => Key("dashboard_date_picker");
   Key get SECOND_TAB => Key("1");
   Key get THIRD_TAB => Key("2");
-
 }
 
 class HouseholdKeys {
@@ -132,10 +135,18 @@ class HouseholdKeys {
 class BillReportKeys {
   const BillReportKeys();
   Key get BILL_REPORT_VIEW_BUTTON => Key("bill_report_view_button");
+  Key get LEDGER_REPORT_VIEW_BUTTON => Key("bill_report_view_button");
   Key get BILL_REPORT_DOWNLOAD_BUTTON => Key("bill_report_download_button");
   Key get COLLECTION_REPORT_VIEW_BUTTON => Key("collection_report_view_button");
-  Key get INACTIVE_CONSUMER_REPORT_VIEW_BUTTON => Key("inactive_consumer_report_view_button");
-  Key get COLLECTION_REPORT_DOWNLOAD_BUTTON => Key("collection_report_download_button");
+  Key get INACTIVE_CONSUMER_REPORT_VIEW_BUTTON =>
+      Key("inactive_consumer_report_view_button");
+  Key get COLLECTION_REPORT_DOWNLOAD_BUTTON =>
+      Key("collection_report_download_button");
   Key get BILL_REPORT_BILLING_YEAR => Key("bill_report_billing_year");
   Key get BILL_REPORT_BILLING_CYCLE => Key("bill_report_billing_cycle");
+  Key get EXPENSE_BILL_REPORT_VIEW_BUTTON =>
+      Key("expense_bill_report_view_button");
+  Key get VENDOR_REPORT_VIEW_BUTTON => Key("vendor_report_view_button");
+  Key get MONTHLY_LEDGER_REPORT_VIEW_BUTTON =>
+      Key("monthly_ledger_report_view_button");
 }

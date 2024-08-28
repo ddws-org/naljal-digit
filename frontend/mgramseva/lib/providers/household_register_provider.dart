@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/household_register/household_pdf_creator.dart';
@@ -159,7 +162,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
                       (waterConnectionsDetails?.totalCount ?? 0))
                   ? (waterConnectionsDetails!.totalCount!)
                   : (offset + limit) - 1));
-        } catch (e, s) {
+    } catch (e, s) {
       isLoaderEnabled = false;
       notifyListeners();
       streamController.addError('error');
@@ -183,34 +186,64 @@ class HouseholdRegisterProvider with ChangeNotifier {
   }
 
   List<TableHeader> get collectionHeaderList => [
-    TableHeader(i18.common.CONNECTION_ID, isSortingRequired: true, isAscendingOrder: sortBy != null && sortBy!.key == 'connectionNumber' ? sortBy!.isAscending : null, apiKey: 'connectionNumber', callBack: onSort),
-    // TableHeader(i18.common.VILLAGE_CODE, isSortingRequired: false),
-    // TableHeader(i18.common.VILLAGE_NAME, isSortingRequired: false),
-    // TableHeader(i18.common.TENANT_ID, isSortingRequired: false),
-    TableHeader(i18.common.NAME, isSortingRequired: false),
-    TableHeader(i18.common.GENDER, isSortingRequired: false),
-    TableHeader(i18.consumer.FATHER_SPOUSE_NAME, isSortingRequired: false),
-    TableHeader(i18.common.MOBILE_NUMBER, isSortingRequired: false),
-    TableHeader(i18.consumer.OLD_CONNECTION_ID, isSortingRequired: false),
-    TableHeader(i18.consumer.CONSUMER_CATEGORY, isSortingRequired: false),
-    TableHeader(i18.consumer.CONSUMER_SUBCATEGORY, isSortingRequired: false),
-    TableHeader(i18.searchWaterConnection.PROPERTY_TYPE, isSortingRequired: false),
-    TableHeader(i18.searchWaterConnection.CONNECTION_TYPE, isSortingRequired: false),
-    TableHeader(i18.demandGenerate.METER_READING_DATE, isSortingRequired: false),
-    TableHeader(i18.searchWaterConnection.METER_NUMBER, isSortingRequired: false),
-    TableHeader(i18.demandGenerate.PREV_METER_READING_LABEL, isSortingRequired: false),
-    TableHeader(i18.consumer.ARREARS_ON_CREATION, isSortingRequired: false),
-    TableHeader(i18.consumer.CORE_PENALTY_ON_CREATION, isSortingRequired: false),
-    TableHeader(i18.consumer.CORE_ADVANCE_ON_CREATION, isSortingRequired: false),
-    TableHeader(i18.common.CORE_TOTAL_BILL_AMOUNT, isSortingRequired: false),
-    TableHeader(i18.billDetails.TOTAL_AMOUNT_COLLECTED, isSortingRequired: false),
-    TableHeader(i18.common.CORE_ADVANCE_AS_ON_TODAY, isSortingRequired: false),
-    TableHeader(i18.householdRegister.PENDING_COLLECTIONS, isSortingRequired: true, isAscendingOrder: sortBy != null && sortBy!.key == 'collectionPendingAmount' ? sortBy!.isAscending : null, apiKey: 'collectionPendingAmount', callBack: onSort),
-    TableHeader(i18.common.CREATED_ON_DATE, isSortingRequired: false),
-    TableHeader(i18.householdRegister.LAST_BILL_GEN_DATE, isSortingRequired: true, apiKey: 'lastDemandGeneratedDate', isAscendingOrder: sortBy != null && sortBy!.key == 'lastDemandGeneratedDate' ? sortBy!.isAscending : null, callBack: onSort),
-    TableHeader(i18.householdRegister.ACTIVE_INACTIVE, isSortingRequired: false, apiKey: 'status'),
-  ]
-  ;
+        TableHeader(i18.common.CONNECTION_ID,
+            isSortingRequired: true,
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'connectionNumber'
+                    ? sortBy!.isAscending
+                    : null,
+            apiKey: 'connectionNumber',
+            callBack: onSort),
+        TableHeader(i18.common.NAME, isSortingRequired: false),
+        TableHeader(i18.common.GENDER, isSortingRequired: false),
+        TableHeader(i18.consumer.FATHER_SPOUSE_NAME, isSortingRequired: false),
+        TableHeader(i18.common.MOBILE_NUMBER, isSortingRequired: false),
+        TableHeader(i18.consumer.OLD_CONNECTION_ID, isSortingRequired: false),
+        TableHeader(i18.consumer.CONSUMER_CATEGORY, isSortingRequired: false),
+        TableHeader(i18.consumer.CONSUMER_SUBCATEGORY,
+            isSortingRequired: false),
+        TableHeader(i18.searchWaterConnection.PROPERTY_TYPE,
+            isSortingRequired: false),
+        TableHeader(i18.searchWaterConnection.CONNECTION_TYPE,
+            isSortingRequired: false),
+        TableHeader(i18.demandGenerate.METER_READING_DATE,
+            isSortingRequired: false),
+        TableHeader(i18.searchWaterConnection.METER_NUMBER,
+            isSortingRequired: false),
+        TableHeader(i18.demandGenerate.PREV_METER_READING_LABEL,
+            isSortingRequired: false),
+        TableHeader(i18.consumer.ARREARS_ON_CREATION, isSortingRequired: false),
+        TableHeader(i18.consumer.CORE_PENALTY_ON_CREATION,
+            isSortingRequired: false),
+        TableHeader(i18.consumer.CORE_ADVANCE_ON_CREATION,
+            isSortingRequired: false),
+        TableHeader(i18.common.CORE_TOTAL_BILL_AMOUNT,
+            isSortingRequired: false),
+        TableHeader(i18.billDetails.TOTAL_AMOUNT_COLLECTED,
+            isSortingRequired: false),
+        TableHeader(i18.common.CORE_ADVANCE_AS_ON_TODAY,
+            isSortingRequired: false),
+        TableHeader(i18.householdRegister.PENDING_COLLECTIONS,
+            isSortingRequired: true,
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'collectionPendingAmount'
+                    ? sortBy!.isAscending
+                    : null,
+            apiKey: 'collectionPendingAmount',
+            callBack: onSort),
+        TableHeader(i18.common.CREATED_ON_DATE, isSortingRequired: false),
+        TableHeader(i18.householdRegister.LAST_BILL_GEN_DATE,
+            isSortingRequired: true,
+            apiKey: 'lastDemandGeneratedDate',
+            isAscendingOrder:
+                sortBy != null && sortBy!.key == 'lastDemandGeneratedDate'
+                    ? sortBy!.isAscending
+                    : null,
+            callBack: onSort),
+        TableHeader(i18.householdRegister.ACTIVE_INACTIVE,
+            isSortingRequired: false, apiKey: 'leadgerReport'),
+        // TableHeader("Ledger", apiKey: '/viewLeadger')
+      ];
   List<TableHeader> get collectionHeaderListOLd => [
         TableHeader(i18.common.CONNECTION_ID,
             isSortingRequired: true,
@@ -220,8 +253,10 @@ class HouseholdRegisterProvider with ChangeNotifier {
                     : null,
             apiKey: 'connectionNumber',
             callBack: onSort),
-        TableHeader(i18.consumer.OLD_CONNECTION_ID,
-            isSortingRequired: false,),
+        TableHeader(
+          i18.consumer.OLD_CONNECTION_ID,
+          isSortingRequired: false,
+        ),
         TableHeader(i18.common.NAME,
             isSortingRequired: true,
             isAscendingOrder: sortBy != null && sortBy!.key == 'name'
@@ -292,27 +327,16 @@ class HouseholdRegisterProvider with ChangeNotifier {
   }
 
   TableDataRow getCollectionRow(WaterConnection connection) {
-    var commonProvider = Provider.of<CommonProvider>(
-        navigatorKey.currentContext!,
-        listen: false);
     String? name =
-        truncateWithEllipsis(connection.connectionHolders?.first.name??'NA');
+        truncateWithEllipsis(connection.connectionHolders?.first.name ?? 'NA');
     String? fatherName = truncateWithEllipsis(
         connection.connectionHolders?.first.fatherOrHusbandName);
     return TableDataRow([
       TableData(
           '${connection.connectionNo?.split('/').first ?? ''}/...${connection.connectionNo?.split('/').last ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
           callBack: onClickOfCollectionNo,
+          iconButtonCallBack: viewLeadger,
           apiKey: connection.connectionNo),
-      // TableData(
-      //   '${commonProvider.userDetails?.selectedtenant?.city?.code ?? 'NA'}',
-      // ),
-      // TableData(
-      //   '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(connection.tenantId ?? 'NA')}',
-      // ),
-      // TableData(
-      //   '${connection.tenantId ?? 'NA'}',
-      // ),
       TableData(
         '${name ?? 'NA'}',
       ),
@@ -323,7 +347,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
         '${fatherName ?? 'NA'}',
       ),
       TableData(
-        maskMobileNumber('${connection.connectionHolders?.first.mobileNumber ?? 'NA'}'),
+        maskMobileNumber(
+            '${connection.connectionHolders?.first.mobileNumber ?? 'NA'}'),
       ),
       TableData(
         '${connection.oldConnectionNo ?? 'NA'}',
@@ -341,13 +366,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(connection.connectionType ?? 'NA')}',
       ),
       TableData(
-        '${connection.connectionType == 'Metered' ?connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? 'NA')) :'NA' :'NA' }',
+        '${connection.connectionType == 'Metered' ? connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? 'NA')) : 'NA' : 'NA'}',
       ),
       TableData(
-        '${connection.connectionType == 'Metered' ? connection.meterId :'NA' }',
+        '${connection.connectionType == 'Metered' ? connection.meterId : 'NA'}',
       ),
       TableData(
-        '${connection.connectionType == 'Metered' ? connection.additionalDetails?.meterReading :'NA' }',
+        '${connection.connectionType == 'Metered' ? connection.additionalDetails?.meterReading : 'NA'}',
       ),
       TableData(
         '${connection.arrears != null ? '₹ ${connection.arrears}' : '-'}',
@@ -377,13 +402,12 @@ class HouseholdRegisterProvider with ChangeNotifier {
         '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
       ),
       TableData(
-          '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+          '${connection.status.toString().toLowerCase() == Constants.CONNECTION_STATUS.last.toLowerCase() ? 'Y' : 'N'}',
           style: TextStyle(
               color: connection.status.toString() ==
                       Constants.CONNECTION_STATUS.last
                   ? ColorCodes.ACTIVE_COL
                   : ColorCodes.INACTIVE_COL)),
-
     ]);
   }
 
@@ -395,6 +419,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
           'waterconnections': waterConnection,
           'mode': 'collect',
           'status': waterConnection?.status
+        });
+  }
+
+  viewLeadger(TableData tableData) {
+    var waterConnection = waterConnectionsDetails?.waterConnection
+        ?.firstWhere((element) => element.connectionNo == tableData.apiKey);
+    Navigator.pushNamed(navigatorKey.currentContext!, Routes.LEDGER_REPORTS,
+        arguments: {
+          'waterconnections': waterConnection,
         });
   }
 
@@ -430,6 +463,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     fetchHouseholdDetails(
         context, localLimit ?? limit, localOffSet ?? 1, isSearch);
   }
+
   String maskMobileNumber(String mobileNumber) {
     if (mobileNumber.length != 10) {
       // Check if the mobile number has the expected length
@@ -529,7 +563,6 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.common.CREATED_ON_DATE,
       i18.householdRegister.LAST_BILL_GEN_DATE,
       i18.householdRegister.ACTIVE_INACTIVE
-
     ];
     var downloadHeaderList = [
       i18.common.VILLAGE_CODE,
@@ -558,63 +591,64 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.common.CREATED_ON_DATE,
       i18.householdRegister.LAST_BILL_GEN_DATE,
       i18.householdRegister.ACTIVE_INACTIVE
-
     ];
 
     var pdfTableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [
-      '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
-      '${connection.connectionHolders?.first.name ?? ''}',
-      '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
-      '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
-      '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '₹ 0' : '₹ 0'}',
-      '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
-      '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
+                  '${connection.connectionNo ?? ''} ${connection.connectionType == 'Metered' ? '- M' : ''}',
+                  '${connection.connectionHolders?.first.name ?? ''}',
+                  '${connection.connectionHolders?.first.fatherOrHusbandName ?? ''}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '₹ 0' : '₹ 0'}',
+                  '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+                  '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}'
                 ])
             .toList() ??
         [];
     var excelTableData = waterConnectionsDetails.waterConnection
             ?.map<List<String>>((connection) => [
-      '${commonProvider.userDetails?.selectedtenant?.city?.code ?? 'NA'}',
-      '${ApplicationLocalizations.of(context).translate(connection.tenantId ?? 'NA')}',
-      '${connection.tenantId ?? 'NA'}',
-      '${connection.connectionHolders?.first.name ?? 'NA'}',
-      '${ApplicationLocalizations.of(context).translate(connection.connectionHolders?.first.gender ?? 'NA')}',
-      '${connection.connectionHolders?.first.fatherOrHusbandName ?? 'NA'}',
-      maskMobileNumber('${connection.connectionHolders?.first.mobileNumber ?? 'NA'}'),
-      '${connection.oldConnectionNo ?? 'NA'}',
-      '${connection.connectionNo ?? 'NA'}',
-      '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.category ?? 'NA')}',
-      '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.subCategory ?? 'NA')}',
-      '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.propertyType ?? 'NA')}',
-      '${ApplicationLocalizations.of(context).translate(connection.connectionType ?? 'NA')}',
-      '${connection.connectionType == 'Metered' ?connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? 'NA')) :'NA' :'NA' }',
-      '${connection.connectionType == 'Metered' ? connection.meterId :'NA' }',
-      '${connection.connectionType == 'Metered' ? connection.additionalDetails?.meterReading :'NA' }',
-      '${connection.arrears != null ? '₹ ${connection.arrears}' : '-'}',
-      '${connection.penalty != null ? '₹ ${connection.penalty}' : '-'}',
-      '${connection.advance != null ? '₹ ${connection.advance}' : '-'}',
-      '${connection.additionalDetails?.totalAmount != null ? '₹ ${connection.additionalDetails?.totalAmount}' : '-'}',
-      '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}',
-      '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-' : '-'}',
-      '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
-      '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
-      '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
-      '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+                  '${commonProvider.userDetails?.selectedtenant?.city?.code ?? 'NA'}',
+                  '${ApplicationLocalizations.of(context).translate(connection.tenantId ?? 'NA')}',
+                  '${connection.tenantId ?? 'NA'}',
+                  '${connection.connectionHolders?.first.name ?? 'NA'}',
+                  '${ApplicationLocalizations.of(context).translate(connection.connectionHolders?.first.gender ?? 'NA')}',
+                  '${connection.connectionHolders?.first.fatherOrHusbandName ?? 'NA'}',
+                  maskMobileNumber(
+                      '${connection.connectionHolders?.first.mobileNumber ?? 'NA'}'),
+                  '${connection.oldConnectionNo ?? 'NA'}',
+                  '${connection.connectionNo ?? 'NA'}',
+                  '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.category ?? 'NA')}',
+                  '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.subCategory ?? 'NA')}',
+                  '${ApplicationLocalizations.of(context).translate(connection.additionalDetails?.propertyType ?? 'NA')}',
+                  '${ApplicationLocalizations.of(context).translate(connection.connectionType ?? 'NA')}',
+                  '${connection.connectionType == 'Metered' ? connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? 'NA')) : 'NA' : 'NA'}',
+                  '${connection.connectionType == 'Metered' ? connection.meterId : 'NA'}',
+                  '${connection.connectionType == 'Metered' ? connection.additionalDetails?.meterReading : 'NA'}',
+                  '${connection.arrears != null ? '₹ ${connection.arrears}' : '-'}',
+                  '${connection.penalty != null ? '₹ ${connection.penalty}' : '-'}',
+                  '${connection.advance != null ? '₹ ${connection.advance}' : '-'}',
+                  '${connection.additionalDetails?.totalAmount != null ? '₹ ${connection.additionalDetails?.totalAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionAmount != null ? '₹ ${connection.additionalDetails?.collectionAmount}' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-' : '-'}',
+                  '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
+                  '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
+                  '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
+                  '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
                 ])
             .toList() ??
         [];
 
     isExcelDownload
         ? generateExcel(
-        downloadHeaderList
+            downloadHeaderList
                 .map<String>((e) =>
                     '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                 .toList(),
             excelTableData)
         : await HouseholdPdfCreator(
                 context,
-        headerList.where((e) => e!=i18.consumer.OLD_CONNECTION_ID)
+                headerList
+                    .where((e) => e != i18.consumer.OLD_CONNECTION_ID)
                     .map<String>((e) =>
                         '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e)}')
                     .toList(),
