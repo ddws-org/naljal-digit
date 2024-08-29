@@ -27,7 +27,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
 
   let roles = STATE_ADMIN
     ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
-    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
+    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER,CHAIRMEN,REVENUE_COLLECTOR,SECRETARY", isStateLevelSearch: false };
 
   let requestBody = {
     criteria: {

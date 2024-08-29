@@ -1,32 +1,32 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   // mode: 'development',
-  entry: "./src/index.js",
-  devtool: "source-map",
+  entry: './src/index.js',
+  devtool: 'source-map',
   module: {
     rules: [
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
-        use: ["babel-loader"],
+        use: ['babel-loader'],
       },
     ],
   },
   output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "build"),
-    publicPath: "/mgramseva-web/",
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'build'),
+    publicPath: '/assam/mgramseva-web/',
   },
   optimization: {
     splitChunks: {
-      chunks: "all",
+      chunks: 'all',
     },
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
+    new HtmlWebpackPlugin({ inject: true, template: 'public/index.html' }),
   ],
 };
