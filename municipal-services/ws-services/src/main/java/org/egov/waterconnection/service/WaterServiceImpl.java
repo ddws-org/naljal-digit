@@ -342,7 +342,8 @@ public class WaterServiceImpl implements WaterService {
 					"Duplicate Old connection number");
 		}
 		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
-		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
+		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+				.equalsIgnoreCase(waterConnection.get(0).getConnectionNo()))
 		{
 			throw new CustomException("DUPLICATE_IMIS_NUMBER",
 					"Duplicate IMIS number");
