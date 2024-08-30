@@ -186,7 +186,7 @@ public class WCConstants {
 
 	public static final String LOCALITY = "locality";
 
-	public static final String VILLAGE_NAME="VillageName";
+	public static final String VILLAGE_NAME="villageName";
 
 	public static final List<String> ADDITIONAL_OBJ_CONSTANT = Collections
 			.unmodifiableList(Arrays.asList(ADHOC_PENALTY, ADHOC_REBATE, ADHOC_PENALTY_REASON, ADHOC_PENALTY_COMMENT,
