@@ -525,7 +525,7 @@ config:
   - name: builds/naljal-digit/frontend/workbench-ui
     build:
       - work-dir: frontend/
-        dockerfile: frontend/workbench-ui/web/docker/Dockerfile
+        dockerfile: frontend/workbench-ui/web/workbench/Dockerfile
         image-name: workbench-ui
   
   #EDCR
