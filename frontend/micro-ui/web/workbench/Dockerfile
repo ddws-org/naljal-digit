@@ -9,6 +9,9 @@ ENV NODE_OPTIONS "--max-old-space-size=4792"
 COPY ${WORK_DIR} .
 RUN ls -lah
 
+# Grant execute permissions to the install-deps.sh script
+RUN chmod +x web/workbench/install-deps.sh
+
 #RUN node web/envs.js
 RUN cd web/ \
     && node -e 'console.log(v8.getHeapStatistics().heap_size_limit/(1024*1024))' \
