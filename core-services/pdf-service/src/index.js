@@ -356,7 +356,7 @@ const uploadFiles = async (
   });
 };
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_create",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -403,7 +403,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_createnosave",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -477,7 +477,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_search",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -550,7 +550,7 @@ app.post(
   })
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_getUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -573,7 +573,7 @@ app.post(
 
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_clearUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
@@ -614,7 +614,7 @@ app.post(
 
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_getBulkPdfRecordsDetails",
   asyncHandler(async (req, res) => {
     let requestInfo, uuid, offset, limit, jobId;
@@ -654,7 +654,7 @@ app.post(
 
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_deleteBulkPdfRecordsDetails",
   asyncHandler(async (req, res) => {
     let requestInfo = get(req.body, "RequestInfo");
@@ -696,7 +696,7 @@ app.post(
 
 );
 
-app.post(
+app.post( envVariables.SERVER_CONTEXT_PATH +
   "/v1/_cancelProcess",
   asyncHandler(async (req, res) => {
     let requestInfo = get(req.body, "RequestInfo");
