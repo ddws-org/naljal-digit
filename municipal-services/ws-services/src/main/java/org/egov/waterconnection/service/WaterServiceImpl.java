@@ -141,11 +141,14 @@ public class WaterServiceImpl implements WaterService {
 			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 					"Duplicate Old connection number");
 		}
-		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
-		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
+		if(waterConnectionRequest.getWaterConnection().getImisNumber()!=null)
 		{
-			throw new CustomException("DUPLICATE_IMIS_NUMBER",
-					"Duplicate IMIS number");
+			List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
+			if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
+			{
+				throw new CustomException("DUPLICATE_IMIS_NUMBER",
+						"Duplicate IMIS number");
+			}
 		}
 		Property property = validateProperty.getOrValidateProperty(waterConnectionRequest);
 		validateProperty.validatePropertyFields(property, waterConnectionRequest.getRequestInfo());
