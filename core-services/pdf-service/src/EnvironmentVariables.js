@@ -1,5 +1,5 @@
 const envVariables = {
-SERVER_CONTEXT_PATH: process.env.SERVER_CONTEXT_PATH || "",
+SERVER_CONTEXT_PATH: process.env.SERVER_CONTEXT_PATH || "pdf-service",
   MAX_NUMBER_PAGES: process.env.MAX_NUMBER_PAGES || 80,
   EGOV_LOCALISATION_HOST:
     process.env.EGOV_LOCALISATION_HOST || "http://egov-localization:8080/",
