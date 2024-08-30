@@ -273,6 +273,12 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
+		if (!StringUtils.isEmpty(criteria.getImisNumber())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.imisnumber = ? ");
+			preparedStatement.add(criteria.getImisNumber());
+		}
+
 		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
 			addClauseIfRequired(preparedStatement, query);
 			
