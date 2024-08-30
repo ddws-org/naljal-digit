@@ -480,6 +480,12 @@ config:
       - work-dir: "utilities/certificate-verification"
         image-name: "certificate-verification"
 
+  - name: "builds/naljal-digit/utilities/rollout-dashboard-cronjob-indexer"
+    build:
+      - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
+        image-name: "rollout-dashboard-cronjob-indexer"
+        dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
     build:
