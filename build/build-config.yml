@@ -537,6 +537,12 @@ config:
       - work-dir: .
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
         image-name: digit-ui
+
+  - name: builds/naljal-digit/workbench-ui
+    build:
+      - work-dir: frontend/micro-ui/
+        dockerfile: frontend/micro-ui/web/workbench/Dockerfile
+        image-name: workbench-ui
   
   #EDCR
   
