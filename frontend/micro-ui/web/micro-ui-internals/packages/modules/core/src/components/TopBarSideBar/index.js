@@ -69,7 +69,7 @@ const TopBarSideBar = ({
           linkData={linkData}
           islinkDataLoading={islinkDataLoading}
         />
-      )} 
+      )}
     </React.Fragment>
   );
 };

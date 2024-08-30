@@ -25,6 +25,12 @@ const ArrowLeft = ({ className }) => (
   </svg>
 );
 
+const ArrowLeftBlack = ({ className, fill = "black", style = {} }) => (
+  <svg width="16" height="16" viewBox="0 0 16 16" className={className} fill="none" style={style} xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" fill={fill} />
+  </svg>
+);
+
 const ArrowLeftWhite = ({ className, fill = "white", style = {} }) => (
   <svg width="16" height="16" viewBox="0 0 16 16" className={className} fill="none" style={style} xmlns="http://www.w3.org/2000/svg">
     <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" fill={fill} />
@@ -1750,20 +1756,16 @@ const HistoryIcon = ({ className = "", fill = "none", style = {} }) => (
   </svg>
 );
 
-const WarningIcon = ({ className = "", fill = "none", style = {} }) => (
-  <svg width="40" height="40" viewBox="0 0 40 40" fill={fill} className={className} style={style} xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_7513_43945)">
-      <path
-        d="M1.66797 35.0007H38.3346L20.0013 3.33398L1.66797 35.0007ZM21.668 30.0007H18.3346V26.6673H21.668V30.0007ZM21.668 23.334H18.3346V16.6673H21.668V23.334Z"
-        fill="#1f4ac4"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_7513_43945">
-        <rect width="40" height="40" fill="white" />
-      </clipPath>
-    </defs>
-  </svg>
+const WarningIcon =({ className = "", fill = "none", style = {} })=>(<svg width="40" height="40" viewBox="0 0 40 40" fill={fill } className={className} style={style}  xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_7513_43945)">
+<path d="M1.66797 35.0007H38.3346L20.0013 3.33398L1.66797 35.0007ZM21.668 30.0007H18.3346V26.6673H21.668V30.0007ZM21.668 23.334H18.3346V16.6673H21.668V23.334Z" fill="#1f4ac4"/>
+</g>
+<defs>
+<clipPath id="clip0_7513_43945">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg>
 );
 const ExpenditureIcon = BillsIcon;
 
@@ -1858,6 +1860,7 @@ export {
   PMBIcon,
   GenericFileIcon,
   ArrowLeftWhite,
+  ArrowLeftBlack,
   WSICon,
   ArrowVectorDown,
   ArrowDirection,
@@ -1917,4 +1920,7 @@ export {
   PaymentIcon,
   HistoryIcon,
   WarningIcon,
+  PasswordEyeEnableSvg,
+  PasswordEyeDisableSvg
+
 };

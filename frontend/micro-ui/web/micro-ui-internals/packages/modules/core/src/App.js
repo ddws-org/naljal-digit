@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import CitizenApp from "./pages/citizen";
 import EmployeeApp from "./pages/employee";
+import CommonApp from "./pages/common";
 
-export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,defaultLanding="citizen"}) => {
+export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "citizen" }) => {
   const history = useHistory();
   const { pathname } = useLocation();
   const innerWidth = window.innerWidth;
@@ -11,7 +12,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,de
   const userDetails = Digit.UserService.getUser();
   const { data: storeData } = Digit.Hooks.useStore.getInitData();
   const { stateInfo } = storeData || {};
-  
+
   const DSO = Digit.UserService.hasAccess(["FSM_DSO"]);
   let CITIZEN = userDetails?.info?.type === "CITIZEN" || !window.location.pathname.split("/").includes("employee") ? true : false;
 
@@ -71,6 +72,9 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,de
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
         <CitizenApp {...commonProps} />
+      </Route>
+      <Route path={`/${window?.contextPath}/common`}>
+        <CommonApp {...commonProps} />
       </Route>
       <Route>
         <Redirect to={`/${window?.contextPath}/${defaultLanding}`} />
