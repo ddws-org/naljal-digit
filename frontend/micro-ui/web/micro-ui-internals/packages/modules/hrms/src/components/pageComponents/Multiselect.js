@@ -24,7 +24,7 @@ const MultiSelectDropdown = ({
   const { t } = useTranslation();
 
   const CheckSvg = ({ className, style = {} }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1f4ac4" className={className} style={style}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#F47738" className={className} style={style}>
       <path d="M0 0h24v24H0z" fill="none" />
       <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
     </svg>
@@ -88,7 +88,12 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => ({ [optionsKey]: e?.[optionsKey], propsData: [null, e] }));
+    return selected?.map((e) => (
+      { 
+        [optionsKey]: e?.i18text? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+        propsData: [null, e] 
+      }
+    ));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
@@ -101,6 +106,17 @@ const MultiSelectDropdown = ({
       );
     }
   }, [active]);
+
+  useEffect(()=>{
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
+      if(alreadyQueuedSelectedState?.length != 0 &&  filteredOptions?.length != 0){
+      setIsSelected(true)
+      }   
+    }else{
+      setIsSelected(false)
+
+    }
+  },[alreadyQueuedSelectedState])
 
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);
@@ -218,14 +234,13 @@ const MultiSelectDropdown = ({
             <p className="label">{t("SELECT_ALL")}</p>
           </div>
         )}
-        {filteredOptions?.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <MenuItem option={option} key={index} index={index} />
         ))}
       </div>
     );
     // return filteredOptions?.map((option, index) => <MenuItem option={option} key={index} index={index} />);
   };
-
   return (
     <div>
       <div className="multi-select-dropdown-wrap" ref={dropdownRef} style={{ marginBottom: "24px" }}>

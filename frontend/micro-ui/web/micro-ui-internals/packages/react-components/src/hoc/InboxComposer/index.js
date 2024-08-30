@@ -149,19 +149,13 @@ const InboxComposer = ({
           </PopUp>
         ) : null}
         {/* {isInboxLoading ? <Loader /> : <DetailsCard {...propsForInboxMobileCards} />} */}
-        {isInboxLoading ? (
-          <Loader />
-        ) : (
+        {isInboxLoading ? <Loader /> :
           <div>
-            {propsForInboxMobileCards?.data?.length < 1 ? (
+            {propsForInboxMobileCards?.data?.length < 1 ?
               <Card className="margin-unset text-align-center">
                 {propsForInboxTable?.noResultsMessage ? t(propsForInboxTable?.noResultsMessage) : t("CS_MYAPPLICATIONS_NO_APPLICATION")}
-              </Card>
-            ) : (
-              <DetailsCard {...propsForInboxMobileCards} />
-            )}
-          </div>
-        )}
+              </Card> : <DetailsCard {...propsForInboxMobileCards} />}
+          </div>}
       </div>
     );
   }
@@ -195,9 +189,9 @@ const InboxComposer = ({
               searchFormState={searchFormState}
               {...{ controlSearchForm }}
               searchFieldComponents={
-                <div style={window.location.href.includes("/citizen/obps") ? { display: "flex" } : {}}>
+                <div style={window.location.href.includes("/citizen/obps") ? {display : "flex"} : {}}>
                   <SubmitBar label={t("ES_COMMON_SEARCH")} submit form="search-form" className="submit-bar-search" />
-                  <p onClick={onResetSearchForm} className="clear-search" style={{ paddingTop: "9px", color: " #1f4ac4" }}>
+                  <p onClick={onResetSearchForm} className="clear-search" style={{ paddingTop: "9px", color: " #f47738" }}>
                     {t(`ES_COMMON_CLEAR_SEARCH`)}
                   </p>
                 </div>
