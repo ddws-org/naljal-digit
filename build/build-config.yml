@@ -485,6 +485,7 @@ config:
       - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
         image-name: "rollout-dashboard-cronjob-indexer"
         dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
     build:
@@ -542,6 +543,12 @@ config:
       - work-dir: .
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
         image-name: digit-ui
+
+  - name: builds/naljal-digit/frontend/workbench-ui
+    build:
+      - work-dir: frontend/workbench-ui/
+        dockerfile: frontend/workbench-ui/web/workbench/Dockerfile
+        image-name: workbench-ui
   
   #EDCR
   
