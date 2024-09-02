@@ -52,7 +52,7 @@
       margin-top: 12px;
 
       .user-img-txt {
-        background: #1f4ac4;
+        background: #f47738;
         padding: 10px 15px;
         border-radius: 50%;
         color: white;
@@ -145,11 +145,11 @@
       padding: 20px 15px 15px;
       font-size: 14px;
       &.active {
-        color: #1f4ac4 !important;
+        color: #f47738 !important;
 
-        border-right: 4px solid #1f4ac4;
+        border-right: 4px solid #f47738;
         svg {
-          fill: #1f4ac4 !important;
+          fill: #f47738 !important;
         }
       }
       .employee-search-input {
@@ -175,12 +175,12 @@
       }
 
       &:hover {
-        color: #1f4ac4 !important;
+        color: #f47738 !important;
         background-color: #486480;
 
         cursor: pointer;
         svg {
-          fill: #1f4ac4 !important;
+          fill: #f47738 !important;
         }
       }
       .search-icon-wrapper {
@@ -222,11 +222,11 @@
         }
       }
       &.active {
-        color: #1f4ac4 !important;
+        color: #f47738 !important;
 
-        border-right: 4px solid #1f4ac4;
+        border-right: 4px solid #f47738;
         svg {
-          fill: #1f4ac4 !important;
+          fill: #f47738 !important;
         }
       }
     }
@@ -520,6 +520,7 @@
   text-align: right;
 }
 
-.resend-otp {
+
+.resend-otp{
   cursor: pointer;
 }

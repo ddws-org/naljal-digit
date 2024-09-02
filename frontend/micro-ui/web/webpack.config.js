@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   // mode: 'development',
@@ -19,6 +20,10 @@ module.exports = {
           }
         }
       },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
   output: {
@@ -34,11 +39,12 @@ module.exports = {
       enforceSizeThreshold: 50000,
       minChunks: 1,
       maxAsyncRequests: 30,
-      maxInitialRequests: 30
+      maxInitialRequests: 30,
     },
   },
   plugins: [
     new CleanWebpackPlugin(),
+    // new BundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
   ],
 };

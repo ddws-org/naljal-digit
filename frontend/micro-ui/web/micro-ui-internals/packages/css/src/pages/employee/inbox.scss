@@ -447,6 +447,16 @@
     height: 263px !important;
   }
 }
+
+@screen dt {
+  .customEmployeeWarnings {
+    margin-left: 2.6rem !important;
+    margin-top: -4rem !important;
+    width: 65% !important;
+  }
+}
+
+
 .employeeTotalLink {
   color: theme(colors.text.secondary);
   font-size: 16px;

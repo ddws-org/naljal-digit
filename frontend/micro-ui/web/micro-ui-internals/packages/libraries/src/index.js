@@ -18,12 +18,13 @@ import * as dateUtils from "./services/atoms/Utils/Date";
 import Download from "./services/atoms/Download";
 import { WorkflowService } from "./services/elements/WorkFlow";
 import { MdmsService } from "./services/elements/MDMS";
+import { MdmsServiceV1 } from "./services/elements/MDMSV1";
+
 import { Complaint } from "./services/elements/Complaint";
 import { UserService } from "./services/elements/User";
 import HrmsService from "./services/elements/HRMS";
 import { InboxGeneral } from "./services/elements/InboxService";
 import EventsServices from "./services/elements/Events";
-
 
 import ShareFiles from "./services/molecules/ShareFiles";
 import { GetServiceDefinitions } from "./services/molecules/ServiceDefinitions";
@@ -79,6 +80,7 @@ const initLibraries = () => {
   setupLibraries("Download", Download);
 
   setupLibraries("AccessControlService", AccessControlService);
+  setupLibraries("MdmsServiceV1", MdmsServiceV1);
 
   return new Promise((resolve) => {
     initI18n(resolve);

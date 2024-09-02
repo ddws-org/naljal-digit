@@ -20,6 +20,7 @@
 @import "./pages/employee/index.scss";
 @import "./components/uploadcomponents.scss";
 
+
 .display-none {
   display: none;
 }
@@ -97,7 +98,7 @@
 }
 
 .clear-search-label {
-  color: #1f4ac4;
+  color: #f47738;
   cursor: pointer;
 }
 
@@ -110,7 +111,7 @@
   @apply flex justify-between items-center;
 
   .download-button {
-    color: #1f4ac4;
+    color: #f47738;
     margin-left: 8px;
   }
 }
@@ -119,13 +120,13 @@
   @apply flex mb-sm;
 
   .download-button {
-    color: #1f4ac4;
+    color: #f47738;
     margin-left: 8px;
   }
 }
 
 .check-page-link-button {
-  color: #1f4ac4 !important;
+  color: #f47738 !important;
 }
 
 .pt-application-download-btn {
@@ -148,10 +149,10 @@
   gap: 10px;
 
   svg {
-    fill: #1f4ac4;
+    fill: #f47738;
   }
 
-  color: #1f4ac4;
+  color: #f47738;
 
   cursor: pointer;
   font-weight: 500;
@@ -446,7 +447,7 @@ input[type="number"] {
       padding: 8px 24px;
       color: white;
       cursor: pointer;
-      background-color: #1f4ac4;
+      background-color: #f47738;
     }
   }
 }
@@ -658,13 +659,13 @@ input[type="number"] {
     font-weight: bolder;
   }
   .disabled {
-    border-color: #9e9e9e;
+    border-color: #9E9E9E;
     pointer-events: none !important;
     input {
-      color: #9e9e9e !important;
+      color: #9E9E9E !important;
     }
     svg {
-      fill: #9e9e9e;
+      fill: #9E9E9E;
     }
   }
 }
@@ -697,7 +698,7 @@ input[type="number"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  padding: 12px;
+  padding: 12px ;
   position: relative;
   font-weight: bolder;
   border: 1px solid #828282;
@@ -708,16 +709,16 @@ input[type="number"] {
   position: absolute;
   right: 10px;
   top: 50%;
-  transform: translate(0%, -50%);
+  transform: translate(0%,-50%);
   cursor: pointer;
 }
 
-.expand-collapse-header .label {
+.expand-collapse-header .label{
   display: block;
   text-align: left;
 }
 
-.expand-collapse-header .value {
+.expand-collapse-header .value{
   display: block;
   text-align: right;
   margin-right: 2rem;
@@ -767,9 +768,9 @@ input[type="number"] {
   top: 0;
   right: 1rem;
   background: white;
-  border: 1px solid #1f4ac4;
+  border: 1px solid #F47738;
   padding: 6px;
-  color: #1f4ac4;
+  color: #F47738;
   display: flex;
   align-items: center;
   svg {
@@ -784,7 +785,7 @@ input[type="number"] {
 
 .no-data-found {
   height: 100%;
-  width: 100%;
+  width : 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -795,19 +796,19 @@ input[type="number"] {
 }
 
 .status-value-link {
-  color: #1f4ac4;
+  color: #F47738;
 }
 
 .info-banner-wrap {
   &.project-banner {
-    background: #ffe2b5;
-    p {
+    background: #FFE2B5;
+    p{
       font-size: 16px;
-      color: #cc7b2f;
-    }
-    h2 {
+      color: #CC7B2F;
+    } 
+    h2{
       font-size: 18px;
-      color: #cc7b2f;
+      color: #CC7B2F;
     }
   }
 }
@@ -818,10 +819,10 @@ input[type="number"] {
     position: relative;
     .sub-projects-details-field-mt {
       margin-top: 1.5rem;
-    }
+    }    
     .projects-subProject-details-error {
-      width: 100%;
-      position: absolute;
+      width : 100%;
+      position : absolute;
       margin-top: 3px;
       &.dropdown-field {
         margin-top: -21px;
@@ -830,8 +831,9 @@ input[type="number"] {
   }
 }
 
-.employee {
-  .user-profile {
-    width: auto;
+
+.employee{
+  .user-profile{
+width: auto;
   }
 }
