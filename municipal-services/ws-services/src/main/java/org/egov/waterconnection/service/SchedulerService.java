@@ -439,7 +439,7 @@ public class SchedulerService {
 //									onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
 //							messages.add(onlineMessage);
 							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-									tenantId, Arrays.asList("COLLECTION_OPERATOR"));
+									tenantId, Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"));
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 							for (OwnerInfo userInfo : userDetailResponse.getUser()) {
