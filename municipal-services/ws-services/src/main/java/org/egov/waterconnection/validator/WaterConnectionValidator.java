@@ -238,8 +238,10 @@ public class WaterConnectionValidator {
 				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
 					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
 				}
-				if(!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
-					errorMap.put("INVALID_UPDATE_IMIS_NO", "IMIS No cannot be modified!!");
+				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null) {
+					if (!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
+						errorMap.put("INVALID_UPDATE_IMIS_NO", "IMIS No cannot be modified!!");
+					}
 				}
 				if(searchResult.getPreviousReadingDate() != request.getWaterConnection().getPreviousReadingDate()) {
 					errorMap.put("INVALID_UPDATE_PRVMETERREADING", "Previous Meter Reading Date cannot be modified cannot be modified!!");
