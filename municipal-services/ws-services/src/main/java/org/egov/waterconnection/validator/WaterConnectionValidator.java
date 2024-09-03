@@ -235,8 +235,10 @@ public class WaterConnectionValidator {
 			List<DemandDetail> collectAdvance = advanceDemands.size() > 0 ? advanceDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
 
 			if(demands.size() > 0 || collectArrears.size() >0  || collectAdvance.size() > 0) {
-				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
-					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+				if (searchResult.getOldConnectionNo() != null && request.getWaterConnection().getOldConnectionNo() != null) {
+					if (!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
+						errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+					}
 				}
 				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null) {
 					if (!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
