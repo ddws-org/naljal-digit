@@ -135,17 +135,6 @@ public class WaterServiceImpl implements WaterService {
 			reqType = WCConstants.MODIFY_CONNECTION;
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
-
-		boolean isFromFrontend = waterConnectionRequest.getWaterConnection().getWaterSource()==null?true:false;
-		WaterConnection wc = waterConnectionRequest.getWaterConnection();
-		if (isFromFrontend) {
-			wc.setWaterSource("online");
-		} else {
-//			if (waterConnection.getWaterSource() == null || waterConnection.getWaterSource().isEmpty()) {
-			wc.setWaterSource("migrated");
-//			}
-		}
-
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
 		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null) {
 			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
