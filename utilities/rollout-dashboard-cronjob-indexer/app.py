@@ -1046,4 +1046,5 @@ def createTable():
 
 
 if __name__ == '__main__':
+    print("main method started")
     process()
