@@ -5,17 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.egov.wscalculation.web.models.AdhocTaxReq;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.BulkDemandResponse;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.CalculationRes;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
+import lombok.extern.slf4j.Slf4j;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.service.DemandService;
 import org.egov.wscalculation.service.WSCalculationService;
 import org.egov.wscalculation.service.WSCalculationServiceImpl;
@@ -34,7 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Slf4j
 @Getter
 @Setter
 @Builder
