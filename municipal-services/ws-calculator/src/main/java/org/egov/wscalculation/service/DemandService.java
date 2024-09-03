@@ -393,7 +393,7 @@ public class DemandService {
 				messageString = messageString.replace("{arrears}", arrears.toString());
 				messageString = messageString.replace("{billamount}", totalAmount.toString());
 				messageString = messageString.replace("{validity}", formattedDate);
-				messageString = messageString.replace("{BILL_LINK}", "https://naljalseva.jjm.gov.in/");
+				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
 				System.out.println("Demand genaration Message get bill::" + messageString);
 
