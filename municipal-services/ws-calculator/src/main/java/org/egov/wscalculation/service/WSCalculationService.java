@@ -15,4 +15,5 @@ public interface WSCalculationService {
 
 	void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean isSendMessage);
 	void generateBulkDemandForTenant(BulkDemand bulkDemand);
+	RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest);
 }
