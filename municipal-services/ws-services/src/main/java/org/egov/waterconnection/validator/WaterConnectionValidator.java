@@ -241,6 +241,7 @@ public class WaterConnectionValidator {
 						errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
 					}
 				}
+
 				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null &&
 						!request.getWaterConnection().getImisNumber().isEmpty()) {
 					if (!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
