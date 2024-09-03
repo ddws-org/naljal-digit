@@ -425,7 +425,7 @@ public class PaymentUpdateService {
 				System.out.println("Complete Link:: " + link );
 				
 				link = waterServiceUtil.getShortnerURL(link);
-				message = message.replace("{RECEIPT_LINK}",link);
+				message = message.replace("{RECEIPT_LINK}","https://naljalseva.jjm.gov.in/");
 			}
 			RequestInfo requestInfo = new RequestInfo();
 			HashMap<String, String> gpwscMap = notificationUtil.getLocalizationMessage(requestInfo, paymentDetail.getTenantId(), paymentDetail.getTenantId());

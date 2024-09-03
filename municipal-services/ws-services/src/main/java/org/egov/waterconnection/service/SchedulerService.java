@@ -134,7 +134,7 @@ public class SchedulerService {
 						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 
 						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("GP_ADMIN"));
+								Arrays.asList("GP_ADMIN","SARPANNCH"));
 
 						String penColLink = config.getUiPath() + config.getMonthRevenueDashboardLink();
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
