@@ -20,6 +20,7 @@ import org.egov.waterconnection.repository.ServiceRequestRepository;
 import org.egov.waterconnection.service.MeterInfoValidator;
 import org.egov.waterconnection.service.PropertyValidator;
 import org.egov.waterconnection.service.WaterFieldValidator;
+import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.models.Demand;
 import org.egov.waterconnection.web.models.DemandDetail;
 import org.egov.waterconnection.web.models.DemandRequest;
@@ -61,6 +62,11 @@ public class WaterConnectionValidator {
 
 	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
+	private WaterServicesUtil waterServiceUtil;
+
+	String businessService = "WS.ONE_TIME_FEE";
 
 	/**Used strategy pattern for avoiding multiple if else condition
 	 * 
@@ -176,18 +182,23 @@ public class WaterConnectionValidator {
 			}
 				Boolean isArrear = false;
 				Boolean isAdvance = false;
-				
+				Boolean hasPayments=false;
+
+				if(!request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
+					hasPayments = checkForPayments(request);
+				}
+
 				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
 					isAdvance =  true;
 				}
 				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
 					isArrear =  true;
 				}
-				if ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
+				if (!hasPayments && ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
 						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null && demList != null && demList.size() > 0
 								|| (isArrear && demList != null && demList.size() > 0))|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
 						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList != null && demList.size() > 0
-						|| isAdvance)) {
+						|| isAdvance))) {
 					for (Demand demand : demList) {
 						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
 					}
@@ -195,8 +206,43 @@ public class WaterConnectionValidator {
 					
 				}
 			}
-			
-		
+	}
+
+	private Boolean checkForPayments(WaterConnectionRequest waterConnectionRequest) {
+		String consumerCode,service;
+		if(StringUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionNo())){
+			consumerCode = waterConnectionRequest.getWaterConnection().getApplicationNo();
+			service = businessService;
+		}
+		else{
+			consumerCode = waterConnectionRequest.getWaterConnection().getConnectionNo();
+			service = "WS";
+		}
+		StringBuilder uri = new StringBuilder();
+		uri.append(waterServiceUtil.getcollectionURL()).append(service).append("/_search").append("?").
+				append("tenantId=").append(waterConnectionRequest.getWaterConnection().getTenantId())
+				.append("&").
+				append("consumerCodes=").append(consumerCode)
+				.append("&").
+				append("businessService").append(service);
+		RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(waterConnectionRequest.getRequestInfo()).build();
+		Object response = serviceRequestRepository.fetchResult(uri,requestInfoWrapper);
+		PaymentResponse paymentResponse=null;
+		try {
+			 paymentResponse = mapper.convertValue(response, PaymentResponse.class);
+		}
+		catch (Exception ex)
+		{
+			log.error("Response not found");
+		}
+		if(paymentResponse.getPayments()!=null)
+		{
+			if(!paymentResponse.getPayments().isEmpty())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 /**
  * GPWSC specific validation

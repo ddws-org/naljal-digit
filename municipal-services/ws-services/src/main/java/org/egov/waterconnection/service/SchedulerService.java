@@ -134,7 +134,7 @@ public class SchedulerService {
 						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 
 						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("GP_ADMIN"));
+								Arrays.asList("GP_ADMIN","SARPANCH"));
 
 						String penColLink = config.getUiPath() + config.getMonthRevenueDashboardLink();
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
@@ -328,7 +328,7 @@ public class SchedulerService {
 	private Recepient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recepient recepient = null;
 		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-				Arrays.asList("GP_ADMIN"));
+				Arrays.asList("GP_ADMIN","SARPANCH"));
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
 		else {
@@ -439,7 +439,7 @@ public class SchedulerService {
 //									onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
 //							messages.add(onlineMessage);
 							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-									tenantId, Arrays.asList("COLLECTION_OPERATOR"));
+									tenantId, Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"));
 							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 							for (OwnerInfo userInfo : userDetailResponse.getUser()) {
