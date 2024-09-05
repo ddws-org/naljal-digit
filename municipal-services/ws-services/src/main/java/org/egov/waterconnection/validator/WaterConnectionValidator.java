@@ -85,9 +85,14 @@ public class WaterConnectionValidator {
 		if(previousMetereReading == null || previousMetereReading <=0) {
 			errorMap.put("PREVIOUS_METER_READIN_INVALID","Previous Meter reading date cannot be null");
 		}
-		if(waterConnectionRequest.getWaterConnection().getOldConnectionNo() == null || waterConnectionRequest.getWaterConnection().getOldConnectionNo() == "") {
-			errorMap.put("INVALID_OLD_CONNECTION_NO","Old connection number cannot be empty");
-		}
+//		if(waterConnectionRequest.getWaterConnection().getOldConnectionNo() == null || waterConnectionRequest.getWaterConnection().getOldConnectionNo() == "") {
+//			errorMap.put("INVALID_OLD_CONNECTION_NO","Old connection number cannot be empty");
+//		}
+//
+//		if(waterConnectionRequest.getWaterConnection().getImisNumber()==null || waterConnectionRequest.getWaterConnection().getImisNumber()=="")
+//		{
+//			errorMap.put("INVALID_IMIS_NO","IMIS number cannot be empty");
+//		}
 		ValidatorResult isMeterInfoValidated = meterInfoValidator.validate(waterConnectionRequest, reqType);
 		if (!isMeterInfoValidated.isStatus())
 			errorMap.putAll(isMeterInfoValidated.getErrorMessage());
@@ -230,8 +235,18 @@ public class WaterConnectionValidator {
 			List<DemandDetail> collectAdvance = advanceDemands.size() > 0 ? advanceDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
 
 			if(demands.size() > 0 || collectArrears.size() >0  || collectAdvance.size() > 0) {
-				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
-					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+				if (searchResult.getOldConnectionNo() != null && request.getWaterConnection().getOldConnectionNo() != null &&
+						!request.getWaterConnection().getOldConnectionNo().isEmpty()) {
+					if (!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
+						errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+					}
+				}
+
+				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null &&
+						!request.getWaterConnection().getImisNumber().isEmpty()) {
+					if (!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
+						errorMap.put("INVALID_UPDATE_IMIS_NO", "IMIS No cannot be modified!!");
+					}
 				}
 				if(searchResult.getPreviousReadingDate() != request.getWaterConnection().getPreviousReadingDate()) {
 					errorMap.put("INVALID_UPDATE_PRVMETERREADING", "Previous Meter Reading Date cannot be modified cannot be modified!!");

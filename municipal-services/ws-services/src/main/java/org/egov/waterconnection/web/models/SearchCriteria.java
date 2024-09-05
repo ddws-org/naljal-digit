@@ -50,6 +50,12 @@ public class SearchCriteria {
 	@JsonProperty("oldConnectionNumber")
 	private String oldConnectionNumber;
 
+	@JsonProperty("imisNumber")
+	private String imisNumber;
+
+	@JsonProperty("villageId")
+	private String villageId;
+
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
 	

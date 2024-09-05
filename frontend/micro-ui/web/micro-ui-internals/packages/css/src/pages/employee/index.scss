@@ -497,27 +497,27 @@
 }
 
 .link {
-  a{
+  a {
     color: inherit;
-    text-decoration: inherit
-    }
+    text-decoration: inherit;
+  }
 }
 
 .breadcrumb {
-  a{
+  a {
     color: inherit;
-    text-decoration: inherit
-    }
-}
-
-.sidebar-link.active{
-.custom-link{
-  text-decoration: none;
-  div{
-    span{
-    color: #f47738;
-    text-decoration: none;
-    }
+    text-decoration: inherit;
   }
 }
+
+.sidebar-link.active {
+  .custom-link {
+    text-decoration: none;
+    div {
+      span {
+        color: #1f4ac4;
+        text-decoration: none;
+      }
+    }
+  }
 }

@@ -53,11 +53,12 @@ class _HomeState extends State<Home> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    String loginUsername = "login user name";
+    if(commonProvider.userDetails != null){   
     final dashboardName = commonProvider.userDetails!.userRequest!.roles!
         .map((e) => e.code)
         .toSet()
         .toList();
-    String loginUsername = "login user name";
     if (dashboardName.contains('CHAIRMEN')) {
       loginUsername = "Chairmen";
     } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
@@ -67,17 +68,18 @@ class _HomeState extends State<Home> {
     } else if (dashboardName.contains('SECRETARY')) {
       loginUsername = "Secretary";
     }
+    }
     return Stack(
       children: [
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: FractionalOffset.topLeft,
-              end: FractionalOffset.bottomRight,
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
               colors: [
-                Color(0xffdbe4f4),
-                Color(0xfff9f3e8),
-                Color(0xfff4e4e3),
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
               ],
             ),
           ),

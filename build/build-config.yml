@@ -161,6 +161,14 @@ config:
         image-name: "egov-mdms-service"
         dockerfile: "build/maven/Dockerfile"
 
+  - name: "builds/naljal-digit/core-services/mdms-v2"
+    build:
+      - work-dir: "core-services/MDMS-v2"
+        image-name: "mdms-v2"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/MDMS-v2/src/main/resources/db"
+        image-name: "mdms-v2-db"
+
   - name: "builds/naljal-digit/core-services/egov-notification-mail"
     build:
       - work-dir: "core-services/egov-notification-mail"
@@ -172,6 +180,8 @@ config:
       - work-dir: "core-services/egov-notification-sms"
         image-name: "egov-notification-sms"
         dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/egov-notification-sms/src/main/resources/db"
+        image-name: "egov-notification-sms-db"
 
   - name: "builds/naljal-digit/core-services/egov-otp"
     build:
@@ -260,6 +270,12 @@ config:
       - work-dir: "core-services/internal-gateway"
         image-name: "internal-gateway"
         dockerfile: "build/maven/Dockerfile"
+
+  - name: "builds/naljal-digit/core-services/gateway"
+    build:
+      - work-dir: "core-services/gateway"
+        image-name: "gateway"
+        dockerfile: "build/maven/Dockerfile"
         
   - name: "builds/naljal-digit/core-services/egov-user-event"
     build:
@@ -330,7 +346,12 @@ config:
     build:
       - work-dir: "core-services/libraries/tracer"
         image-name: "tracer"
-
+        
+  - name: "builds/naljal-digit/core-services/libraries/services-common"
+    build:
+      - work-dir: "core-services/libraries/services-common"
+        image-name: "services-common"
+        
   - name: "builds/naljal-digit/core-services/nlp-engine"
     build:
       - work-dir: "core-services/nlp-engine"
@@ -465,6 +486,12 @@ config:
       - work-dir: "utilities/certificate-verification"
         image-name: "certificate-verification"
 
+  - name: "builds/naljal-digit/utilities/rollout-dashboard-cronjob-indexer"
+    build:
+      - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
+        image-name: "rollout-dashboard-cronjob-indexer"
+        dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
     build:
@@ -522,6 +549,12 @@ config:
       - work-dir: .
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
         image-name: digit-ui
+
+  - name: builds/naljal-digit/frontend/workbench-ui
+    build:
+      - work-dir: frontend/workbench-ui/
+        dockerfile: frontend/workbench-ui/web/workbench/Dockerfile
+        image-name: workbench-ui
   
   #EDCR
   

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.egov.waterconnection.web.models.workflow.ProcessInstance;
 
 import org.springframework.validation.annotation.Validated;
@@ -92,6 +94,12 @@ public class Connection {
 	
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
+
+	@JsonProperty("imisNumber")
+	private String imisNumber=null;
+
+	@JsonProperty("villageId")
+	private String villageId=null;
 
 	@JsonProperty("documents")
 	@Valid
@@ -695,6 +703,8 @@ public class Connection {
 				&& Objects.equals(this.status, connection.status)
 				&& Objects.equals(this.connectionNo, connection.connectionNo)
 				&& Objects.equals(this.oldConnectionNo, connection.oldConnectionNo)
+				&& Objects.equals(this.imisNumber,connection.imisNumber)
+				&& Objects.equals(this.villageId,connection.villageId)
 				&& Objects.equals(this.documents, connection.documents)
 				&& Objects.equals(this.roadCuttingInfo,connection.roadCuttingInfo)
 				&& Objects.equals(this.plumberInfo, connection.plumberInfo)
@@ -713,7 +723,7 @@ public class Connection {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, tenantId, propertyId, applicationNo, applicationStatus, status, connectionNo,
-				oldConnectionNo, documents, roadCuttingInfo, plumberInfo, roadType, roadCuttingArea, connectionExecutionDate,
+				oldConnectionNo, imisNumber,villageId,documents, roadCuttingInfo, plumberInfo, roadType, roadCuttingArea, connectionExecutionDate,
 				connectionCategory, connectionType, additionalDetails, auditDetails, connectionHolders,
 				applicationType, dateEffectiveFrom, oldApplication);
 	}
@@ -731,6 +741,8 @@ public class Connection {
 		sb.append("    status: ").append(toIndentedString(status)).append("\n");
 		sb.append("    connectionNo: ").append(toIndentedString(connectionNo)).append("\n");
 		sb.append("    oldConnectionNo: ").append(toIndentedString(oldConnectionNo)).append("\n");
+		sb.append("    imisNumber: ").append(toIndentedString(imisNumber)).append("\n");
+		sb.append("    villageId: ").append(toIndentedString(villageId)).append("\n");
 		sb.append("    documents: ").append(toIndentedString(documents)).append("\n");
 		sb.append("    roadCuttingInfo: ").append(toIndentedString(roadCuttingInfo)).append("\n");
 		sb.append("    plumberInfo: ").append(toIndentedString(plumberInfo)).append("\n");

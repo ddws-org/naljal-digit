@@ -69,6 +69,7 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                         value: data.key,
                         groupValue: controller,
                         onChanged: (isEnabled ?? true) ? widget1 : null,
+                        activeColor: Color.fromRGBO(0,60,207,0.9),
                         secondary: data.key == refTextRadioBtn
                             ? Container(
                                 width: MediaQuery.of(context).size.width / 3.8,
@@ -98,14 +99,14 @@ class RadioButtonFieldBuilder extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
-                                color: Theme.of(context).primaryColorDark),
+                                ),
                           ),
                           Text(isRequired ? '*' : '',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
-                                  color: Theme.of(context).primaryColorDark)),
+                                  )),
                         ]))),
               ),
               Column(
