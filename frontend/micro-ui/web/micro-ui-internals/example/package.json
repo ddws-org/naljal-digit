@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
-  "homepage": "workbench-ui",
+  "homepage": "mgramseva-web",
   "scripts": {
     "start": "react-scripts start"
   },
