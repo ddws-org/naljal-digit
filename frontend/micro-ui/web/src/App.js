@@ -10,6 +10,9 @@ import "@egovernments/digit-ui-css/dist/index.css";
 
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
+console.log(window.contextPath,"window.contextPath");
+
+
 const enabledModules = ["DSS", "NDSS", "Utilities", "HRMS", "Engagement"];
 
 const moduleReducers = (initData) => ({
@@ -36,6 +39,8 @@ initLibraries().then(() => {
 
 function App() {
   window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
+console.log(window.contextPath,"window.contextPath2");
+
   const stateCode =
     window.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") ||
     process.env.REACT_APP_STATE_LEVEL_TENANT_ID;
