@@ -68,6 +68,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
+  url = `${window?.globalConfigs?.getConfig("STATE_PREFIX_CODE")}${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    

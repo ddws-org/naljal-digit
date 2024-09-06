@@ -18,7 +18,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: "/mgramseva-web/",
+    publicPath: `${window?.globalConfigs?.getConfig("STATE_PREFIX_CODE")}/mgramseva-web/`,
   },
   optimization: {
     splitChunks: {
