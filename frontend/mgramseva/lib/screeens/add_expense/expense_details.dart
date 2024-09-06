@@ -96,35 +96,47 @@ class _ExpenseDetailsState extends State<ExpenseDetails> {
             drawer: DrawerWrapper(
               Drawer(child: SideBar()),
             ),
-            body: SingleChildScrollView(
-                child: Column(children: [
-                  StreamBuilder(
-                      stream: expensesDetailsProvider.streamController.stream,
-                      builder: (context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          if (snapshot.data is String) {
-                            return CommonWidgets.buildEmptyMessage(
-                                snapshot.data, context);
+            body: Container( decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
+              child: SingleChildScrollView(
+                  child: Column(children: [
+                    StreamBuilder(
+                        stream: expensesDetailsProvider.streamController.stream,
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data is String) {
+                              return CommonWidgets.buildEmptyMessage(
+                                  snapshot.data, context);
+                            }
+                            return _buildUserView();
+                          } else if (snapshot.hasError) {
+                            return Notifiers.networkErrorPage(
+                                context,
+                                    () => expensesDetailsProvider.getExpensesDetails(
+                                    context, widget.expensesDetails, widget.id));
+                          } else {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Loaders.circularLoader();
+                              case ConnectionState.active:
+                                return Loaders.circularLoader();
+                              default:
+                                return Container();
+                            }
                           }
-                          return _buildUserView();
-                        } else if (snapshot.hasError) {
-                          return Notifiers.networkErrorPage(
-                              context,
-                                  () => expensesDetailsProvider.getExpensesDetails(
-                                  context, widget.expensesDetails, widget.id));
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return Loaders.circularLoader();
-                            case ConnectionState.active:
-                              return Loaders.circularLoader();
-                            default:
-                              return Container();
-                          }
-                        }
-                      }),
-                  Footer()
-                ])),
+                        }),
+                    Footer()
+                  ])),
+            ),
             bottomNavigationBar: Consumer<ExpensesDetailsProvider>(
               builder: (_, expensesDetailsProvider, child) => BottomButtonBar(
                 i18.common.SUBMIT,

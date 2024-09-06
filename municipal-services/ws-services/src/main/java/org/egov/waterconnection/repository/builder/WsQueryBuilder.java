@@ -13,6 +13,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
+import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.service.WaterServiceImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.controller.WaterController;
@@ -21,6 +22,7 @@ import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -39,6 +41,7 @@ public class WsQueryBuilder {
 	private UserService userService;
 	
 	@Autowired
+	@Lazy
 	WaterServiceImpl waterServiceImpl;
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
@@ -271,6 +274,12 @@ public class WsQueryBuilder {
 			addClauseIfRequired(preparedStatement, query);
 			query.append(" conn.oldconnectionno = ? ");
 			preparedStatement.add(criteria.getOldConnectionNumber());
+		}
+
+		if (!StringUtils.isEmpty(criteria.getImisNumber())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.imisnumber = ? ");
+			preparedStatement.add(criteria.getImisNumber());
 		}
 
 		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {

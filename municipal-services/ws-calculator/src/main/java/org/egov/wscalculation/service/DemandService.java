@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -387,6 +387,7 @@ public class DemandService {
 			if (billNumbers.size() > 0) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
 				messageString = messageString.replace("{consumerno}", consumerCode);
+				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", month.toString());
 				messageString = messageString.replace("{demandamount}", demandAmount.toString());
 				messageString = messageString.replace("{arrears}", arrears.toString());
@@ -504,7 +505,7 @@ public class DemandService {
 
 	private void sendSMSNotification(RequestInfo requestInfo, List<SMSRequest> smsRequests, String billCycle,
 			String consumerCode, List<DemandDetail> demandDetails) {
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				requestInfo.getUserInfo().getTenantId().substring(0,2));
 		for (OwnerInfo ownerInfo : userDetailResponse.getUser()) {
 			String localizationMessage = util.getLocalizationMessages(ownerInfo.getTenantId(), requestInfo);

@@ -37,6 +37,7 @@ public class UserSearchResponseContent {
     private String correspondenceAddress;
     private String correspondenceCity;
     private String correspondencePinCode;
+    private String alternatemobilenumber;
 
     @JsonIgnore
     private Set<Address> addresses;
@@ -66,6 +67,7 @@ public class UserSearchResponseContent {
     private Date dob;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private Date pwdExpiryDate;
+
     private boolean defaultPwdChgd=false;
 
     public UserSearchResponseContent(User user) {
@@ -101,6 +103,7 @@ public class UserSearchResponseContent {
         this.relationship = user.getGuardianRelation();
         this.uuid = user.getUuid();
         this.addresses = user.getAddresses();
+        this.alternatemobilenumber=user.getAlternateMobileNumber();
         this.defaultPwdChgd= user.isDefaultPwdChgd();
         mapPermanentAddress(user);
         mapCorrespondenceAddress(user);

@@ -1,6 +1,7 @@
 package org.egov.pg.web.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.pg.TestConfiguration;
 import org.egov.pg.models.TaxAndPayment;
@@ -26,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,7 +57,7 @@ public class TransactionsApiControllerTest {
     @Before
     public void setUp() {
         user = User.builder().userName("USER001").mobileNumber("9XXXXXXXXX").name("XYZ").tenantId("pb").emailId("").build();
-        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", null);
+        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", PlainAccessRequest.builder().build(),null);
 
     }
 

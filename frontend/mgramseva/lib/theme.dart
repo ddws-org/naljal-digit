@@ -6,7 +6,7 @@ ThemeData get theme => ThemeData(
     hintColor: createMaterialColor(Color(0XFF3498DB)),
     primaryColorDark: Color.fromRGBO(11, 12, 12, 1),
     primaryColorLight: Color.fromRGBO(80, 90, 95, 1),
-    primaryColor: Color.fromRGBO(244, 119, 56, 1),
+    primaryColor: Color.fromRGBO(3, 60, 207, 0.9),
     disabledColor: Colors.grey,
     cardTheme: CardTheme(surfaceTintColor: Colors.white,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3))),
     datePickerTheme: DatePickerThemeData(
@@ -28,7 +28,7 @@ ThemeData get theme => ThemeData(
       labelMedium: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white), // Elevated Button(Orange)
       labelSmall: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: Colors.white), // Elevated Button(Orange)
       titleMedium: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-      titleSmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(244, 119, 56, 1)) // Only for outlined button text
+      titleSmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color.fromRGBO(0, 0, 255, 1)) // Only for outlined button text
     ),
 
     /// Background color

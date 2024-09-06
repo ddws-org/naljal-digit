@@ -2,7 +2,7 @@ package org.egov.waterconnection.web.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;

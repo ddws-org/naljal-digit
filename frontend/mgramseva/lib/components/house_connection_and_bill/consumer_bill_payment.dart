@@ -329,11 +329,11 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                                   "tenantId": commonProvider
                                       .userDetails!.selectedtenant!.code,
                                 }, item.mobileNumber, item, "Download"),
-                                icon: Icon(Icons.download_sharp),
+                                icon: Icon(Icons.download_sharp,color: Color(0xff033ccf),),
                                 label: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(i18.common.RECEIPT_DOWNLOAD),
-                                    style: TextStyle(fontSize: 16)),
+                                    style: TextStyle(fontSize: 16,color: Color(0xff033ccf))),
                               ),
                             ),
                             _getLabeltext(
@@ -397,7 +397,7 @@ class ConsumerBillPaymentsState extends State<ConsumerBillPayments> {
                         child: ElevatedButton.icon(
                             onPressed: () => _capturePng(item),
                             icon: Icon(Icons.print,color: Colors.white,),
-                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(244, 119, 56, 1)),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(3, 60, 207, 0.9)),
                             label: Text(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.consumerReciepts

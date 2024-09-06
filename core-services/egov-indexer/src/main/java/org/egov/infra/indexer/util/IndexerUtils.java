@@ -2,31 +2,41 @@ package org.egov.infra.indexer.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.github.zafarkhaja.semver.UnexpectedCharacterException;
 import com.github.zafarkhaja.semver.Version;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
+import org.egov.infra.indexer.consumer.config.CoreIndexConsumerConfig;
+import org.egov.infra.indexer.consumer.config.LegacyIndexConsumerConfig;
 import org.egov.infra.indexer.consumer.config.ReindexConsumerConfig;
 import org.egov.infra.indexer.models.AuditDetails;
 import org.egov.infra.indexer.producer.IndexerProducer;
+import org.egov.infra.indexer.service.ServiceRequestRepository;
 import org.egov.infra.indexer.web.contract.*;
 import org.egov.mdms.model.MasterDetail;
 import org.egov.mdms.model.MdmsCriteria;
 import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
+import org.egov.tracer.model.ServiceCallException;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import java.util.Base64;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -42,8 +52,8 @@ public class IndexerUtils {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	private ReindexConsumerConfig kafkaConsumerConfig;
+//	@Autowired
+//	private ReindexConsumerConfig kafkaConsumerConfig;
 
 	private Version defaultSemVer;
 
@@ -75,11 +85,20 @@ public class IndexerUtils {
 	@Value("${topic.push.enabled}")
 	private Boolean topicPushEnable;
 
+	@Value("${egov.indexer.es.username}")
+	private String esUsername;
+
+	@Value("${egov.indexer.es.password}")
+	private String esPassword;
+
 	@Value("${id.timezone}")
 	private String timezone;
 
 	@Autowired
 	private IndexerProducer producer;
+
+	@Autowired
+	private ServiceRequestRepository serviceRequestRepository;
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -92,7 +111,9 @@ public class IndexerUtils {
 	 *
 	 */
 	public void orchestrateListenerOnESHealth() {
-		kafkaConsumerConfig.pauseContainer();
+		ReindexConsumerConfig.pauseContainer();
+		CoreIndexConsumerConfig.pauseContainer();
+		LegacyIndexConsumerConfig.pauseContainer();
 		log.info("Polling ES....");
 		final Runnable esPoller = new Runnable() {
 			boolean threadRun = true;
@@ -103,13 +124,18 @@ public class IndexerUtils {
 					try {
 						StringBuilder url = new StringBuilder();
 						url.append(esHostUrl).append("/_search");
-						response = restTemplate.getForObject(url.toString(), Map.class);
+						final HttpHeaders headers = new HttpHeaders();
+						headers.add("Authorization", getESEncodedCredentials());
+						final HttpEntity entity = new HttpEntity( headers);
+						response = restTemplate.exchange(url.toString(), HttpMethod.GET, entity, Map.class);
 					} catch (Exception e) {
 						log.error("ES is DOWN..");
 					}
 					if (response != null) {
 						log.info("ES is UP!");
-						kafkaConsumerConfig.startContainer();
+						ReindexConsumerConfig.resumeContainer();
+						CoreIndexConsumerConfig.resumeContainer();
+						LegacyIndexConsumerConfig.resumeContainer();
 						threadRun = false;
 					}
 				}
@@ -180,9 +206,18 @@ public class IndexerUtils {
 					String[] queryParamExpression = queryParamsArray[i].trim().split("=");
 					Object queryParam = null;
 					try {
-						if (queryParamExpression[1].trim().contains("$.")) {
-							queryParam = JsonPath.read(kafkaJson, queryParamExpression[1].trim());
-						} else {
+						String trimmedParam = queryParamExpression[1].trim();
+						if (trimmedParam.contains("$.")) {
+
+							String[] paramElements= trimmedParam.split("\\+");
+							if(paramElements.length == 1)
+								queryParam = JsonPath.read(kafkaJson, queryParamExpression[1].trim());
+							else {
+								queryParam = JsonPath.read(kafkaJson, paramElements[1]);
+								queryParam = paramElements[0].concat((String)queryParam);
+							}
+
+						}else {
 							queryParam = queryParamExpression[1].trim();
 						}
 					} catch (Exception e) {
@@ -223,6 +258,39 @@ public class IndexerUtils {
 		return serviceCallUri.toString();
 	}
 
+	public void fillJsonPath(Object request, String kafkaJson) {
+		try {
+			if (request instanceof Map) {
+				Map<String, Object> searchParamObject = (Map<String, Object>) request;
+				for (Map.Entry<String, Object> entry : searchParamObject.entrySet()) {
+					String key = entry.getKey();
+					Object value = entry.getValue();
+					if (value instanceof String && ((String) value).contains("$.")) {
+						String filledValue = JsonPath.read(kafkaJson, (String) value).toString();
+						searchParamObject.put(key, filledValue);
+					} else if (value instanceof Map) {
+						fillJsonPath(value, kafkaJson); // Recursive call for nested map
+					} else if (value instanceof List) {
+						List<Object> valueList = (List<Object>) value;
+						for (int i = 0; i < valueList.size(); i++) {
+							Object arrayItem = valueList.get(i);
+							if (arrayItem instanceof String && ((String) arrayItem).contains("$.")) {
+								String filledArrayItem = JsonPath.read(kafkaJson, (String) arrayItem).toString();
+								valueList.set(i, filledArrayItem);
+							} else if (arrayItem instanceof Map) {
+								fillJsonPath(arrayItem, kafkaJson); // Recursive call for nested map within array
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Error while filling JSONPath in searchParam: " + e.getMessage());
+		}
+	}
+
+
+
 
 	@Cacheable(value = "masterData", sync = true)
 	public Object fetchMdmsData(String uri, String tenantId, String moduleName, String masterName, String filter) {
@@ -240,7 +308,19 @@ public class IndexerUtils {
 		RequestInfo requestInfo = new RequestInfo();
 		MdmsCriteriaReq req = MdmsCriteriaReq.builder().requestInfo(requestInfo).mdmsCriteria(mdmsCriteria).build();
 
-		return restTemplate.postForObject(uri, req, Map.class);
+		Object response = null;
+		try {
+			String jsonContent = serviceRequestRepository.fetchResult(uri, req, tenantId);
+			response = mapper.readValue(jsonContent, Map.class);
+		}catch(JsonProcessingException e) {
+			log.error("JsonProcessingException: ",e);
+			throw new ServiceCallException(e.getMessage());
+		}catch(Exception e) {
+			log.error("Exception while fetching from external service: ",e);
+		}
+
+
+		return response;
 	}
 
 
@@ -559,6 +639,21 @@ public class IndexerUtils {
 	}
 
 	/**
+	 * Returns mapper with all the appropriate properties reqd in our
+	 * functionalities.
+	 * Includes null values
+	 * @return ObjectMapper
+	 */
+	public ObjectMapper getObjectMapperWithNull() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		mapper.getFactory().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+		return mapper;
+	}
+
+	/**
 	 * Util method to return Auditdetails for create and update processes
 	 *
 	 * @param by
@@ -710,5 +805,12 @@ public class IndexerUtils {
 		}catch (UnexpectedCharacterException e){
 			return defaultSemVer;
 		}
+	}
+
+	public String getESEncodedCredentials() {
+		String credentials = esUsername + ":" + esPassword;
+		byte[] credentialsBytes = credentials.getBytes();
+		byte[] base64CredentialsBytes = Base64.getEncoder().encode(credentialsBytes);
+		return "Basic " + new String(base64CredentialsBytes);
 	}
 }

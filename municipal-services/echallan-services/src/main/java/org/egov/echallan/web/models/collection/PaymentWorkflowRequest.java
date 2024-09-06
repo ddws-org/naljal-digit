@@ -3,8 +3,8 @@ package org.egov.echallan.web.models.collection;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 import org.egov.common.contract.request.RequestInfo;
 

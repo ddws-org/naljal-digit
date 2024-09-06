@@ -83,6 +83,14 @@ config:
       - work-dir: "egov-mdms-service"
         image-name: "egov-mdms-service"
         dockerfile: "build/maven/Dockerfile"
+        
+  - name: "builds/core-services/mdms-v2"
+    build:
+      - work-dir: "MDMS-v2"
+        image-name: "mdms-v2"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "MDMS-v2/src/main/resources/db"
+        image-name: "mdms-v2-db"
 
   - name: "builds/core-services/egov-notification-mail"
     build:
@@ -247,6 +255,11 @@ config:
     build:
       - work-dir: "libraries/tracer"
         image-name: "tracer"
+  
+  - name: "builds/core-services/libraries/services-common"
+    build:
+      - work-dir: "libraries/services-common"
+        image-name: "services-common"
 
   - name: "builds/core-services/nlp-engine"
     build:
@@ -260,3 +273,11 @@ config:
         image-name: "xstate-chatbot"
       - work-dir: "xstate-chatbot/nodejs/db"
         image-name: "xstate-chatbot-db"
+
+  - name: "builds/core-services/egov-document-uploader"
+    build:
+      - work-dir: "egov-document-uploader"
+        image-name: "egov-document-uploader"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "egov-document-uploader/src/main/resources/db"
+        image-name: "egov-document-uploader-db"

@@ -42,12 +42,23 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
 
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        //backgroundColor: Theme.of(context).colorScheme.background,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
         body: FormWrapper(Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
             child: Column(children: [
           HomeBack(),
           Expanded(

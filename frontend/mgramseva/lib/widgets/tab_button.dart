@@ -24,7 +24,8 @@ class TabButton extends StatelessWidget {
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(0.0)
           ) :  BoxDecoration(
-              color: (isSelected ?? false) ? Colors.white : Color.fromRGBO(244, 119, 56, 0.12),
+              color: (isSelected ?? false) ? Colors.white : Color.fromRGBO(
+                  144, 197, 229, 0.3176470588235294),
               borderRadius: BorderRadius.circular(18.0)
           ),
           padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),

@@ -14,6 +14,6 @@ public class UserSearchResponseContent {
     private String mobileNumber;
 
     public User toDomainUser() {
-        return new User(id, emailId, mobileNumber, false);
+        return new User(id, emailId, mobileNumber);
     }
 }

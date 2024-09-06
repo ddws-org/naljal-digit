@@ -17,6 +17,9 @@ class HomeBack extends StatelessWidget {
           mainAxisAlignment: widget == null ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
           children : [
             TextButton(
+               style: TextButton.styleFrom(
+               foregroundColor: Colors.blue,
+                 ),
             child: Wrap(
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.center,

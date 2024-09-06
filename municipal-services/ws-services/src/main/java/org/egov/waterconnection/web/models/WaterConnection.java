@@ -2,9 +2,9 @@ package org.egov.waterconnection.web.models;
 
 import java.util.Objects;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.SafeHtml;
+
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,16 +15,16 @@ import io.swagger.annotations.ApiModelProperty;
  * WaterConnection
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-03-11T12:10:14.583+05:30[Asia/Kolkata]")
+//@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-03-11T12:10:14.583+05:30[Asia/Kolkata]")
 public class WaterConnection extends Connection {
 
 
 
-	@SafeHtml
+	
 	@JsonProperty("waterSource")
 	private String waterSource = null;
 
-	@SafeHtml
+	
 	@JsonProperty("meterId")
 	private String meterId = null;
 
@@ -45,6 +45,19 @@ public class WaterConnection extends Connection {
 
 	@JsonProperty("paymentType")
 	private String paymentType = null;
+
+	@JsonProperty("ihlDetail")
+	private String ihlDetail = null;
+
+	@JsonProperty("sbmAccountno")
+	private String sbmAccountno = null;
+
+	@JsonProperty("schemeId")
+	private String schemeId = null;
+
+	@JsonProperty("schemeName")
+	private String schemeName = null;
+
 
 	public WaterConnection waterSource(String waterSource) {
 		this.waterSource = waterSource;

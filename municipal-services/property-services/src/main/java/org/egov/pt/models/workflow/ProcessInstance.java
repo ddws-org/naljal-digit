@@ -3,13 +3,12 @@ package org.egov.pt.models.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import org.egov.pt.models.Document;
 import org.egov.pt.models.user.User;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,7 +27,7 @@ import lombok.ToString;
  */
 @ApiModel(description = "A Object holds the basic data for a Trade License")
 @Validated
-@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2018-12-04T11:26:25.532+05:30")
+//@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2018-12-04T11:26:25.532+05:30")
 
 @Getter
 @Setter
@@ -40,36 +39,36 @@ import lombok.ToString;
 public class ProcessInstance {
 
 	@Size(max = 64)
-	@SafeHtml
+	
 	@JsonProperty("id")
 	private String id;
 
 	@NotNull
-	@SafeHtml
+	
 	@Size(max = 128)
 	@JsonProperty("tenantId")
 	private String tenantId;
 
 	@NotNull
-	@SafeHtml
+	
 	@Size(max = 128)
 	@JsonProperty("businessService")
 	private String businessService;
 
 	@NotNull
-	@SafeHtml
+	
 	@Size(max = 128)
 	@JsonProperty("businessId")
 	private String businessId;
 
 	@NotNull
-	@SafeHtml
+	
 	@Size(max = 128)
 	@JsonProperty("action")
 	private String action;
 
 	@NotNull
-	@SafeHtml
+	
 	@Size(max = 64)
 	@JsonProperty("moduleName")
 	private String moduleName;
@@ -80,7 +79,7 @@ public class ProcessInstance {
 	/* for use of notification service in property*/
 	private String notificationAction;
 
-	@SafeHtml
+	
 	@JsonProperty("comment")
 	private String comment;
 

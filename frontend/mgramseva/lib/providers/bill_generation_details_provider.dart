@@ -405,7 +405,8 @@ class BillGenerationProvider with ChangeNotifier {
               ?
           [TextButton(onPressed: (){
             Navigator.pop(context);
-          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}'))]
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}',style: TextStyle(color: Color(
+              0xff033ccf)),))]
               :
           [TextButton(onPressed: () async{
             if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 ){
@@ -444,10 +445,10 @@ class BillGenerationProvider with ChangeNotifier {
                     return ErrorPage(e.toString());
                   }));
             }
-          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.YES)}',style: TextStyle(color: Color.fromRGBO(3,60,207,0.8)),)),
           TextButton(onPressed: (){
             Navigator.pop(context);
-          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),]
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}',style: TextStyle(color: Color.fromRGBO(3,60,207,0.8)))),]
         ,
       ));
     } else {
