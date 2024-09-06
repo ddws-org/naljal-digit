@@ -21,7 +21,7 @@ module.exports = function (app) {
   ["/mdms-v2/v2/_create"].forEach((location) => app.use(location, mdmsProxy));
   [
     "/access/v1/actions/mdms",
-    "/uat/egov-mdms-service",
+    "/egov-mdms-service",
     "/mdms-v2",
     "/egov-idgen",
     "/egov-location",
