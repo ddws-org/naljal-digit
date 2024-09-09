@@ -162,7 +162,7 @@ config:
         dockerfile: "build/maven-java17/Dockerfile"
       - work-dir: "core-services/boundary-service/src/main/resources/db"
         image-name: "boundary-service-db"
-
+        
   - name: "builds/naljal-digit/core-services/egov-mdms-service"
     build:
       - work-dir: "core-services/egov-mdms-service"
