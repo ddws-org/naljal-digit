@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication(scanBasePackages = "org.egov.waterconnection")
-@EnableAutoConfiguration
 @Import({ TracerConfiguration.class })
 public class WaterConnectionApplication{
 	@Value("${app.timezone}")
