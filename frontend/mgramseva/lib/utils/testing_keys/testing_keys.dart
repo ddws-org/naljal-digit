@@ -68,6 +68,8 @@ class CreateConsumerKeys{
   Key get CONSUMER_METER_NUMBER_KEY => Key("consumerMeterNumber");
   Key get CONSUMER_ARREARS_KEY => Key("consumerArrears");
   Key get CREATE_CONSUMER_BTN_KEY => Key("createConsumerBtn");
+  Key get CONSUMER_VERIFY_BTN_KEY => Key("consumerVerifyBtn");
+
 }
 
 class SearchConnectionKeys {

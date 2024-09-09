@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/demand.dart';
@@ -55,12 +57,29 @@ class ConsumerProvider with ChangeNotifier {
   PaymentType? paymentType;
   bool phoneNumberAutoValidation = false;
   GlobalKey<SearchSelectFieldState>? searchPickerKey;
+  bool isConsumerAlreadyVerified = false;
+  bool isConsumerVerified = false;
+  updateConsumerVerified(val){
+      isConsumerVerified = val;
+      notifyListeners();
+  } 
+  updateAlreadyVerifiedConsumer(val){
+      isConsumerAlreadyVerified = val;
+      notifyListeners();
+  } 
+  toggleConsumerVerified(){
+    if(!isConsumerAlreadyVerified){
+      isConsumerVerified = !isConsumerVerified;
+      notifyListeners();
+    }
+  } 
 
   setModel() async {
     waterconnection.BillingCycleCtrl.text = "";
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
@@ -151,6 +170,7 @@ class ConsumerProvider with ChangeNotifier {
       await getPaymentType();
       isEdit = true;
       waterconnection = data;
+      
       waterconnection.getText();
       selectedcycle = {'code':DateTime.fromMillisecondsSinceEpoch(waterconnection.previousReadingDate!),
         'name':"${ApplicationLocalizations.of(navigatorKey.currentContext!)
@@ -232,6 +252,9 @@ class ConsumerProvider with ChangeNotifier {
           paymentDetails.payments!.isNotEmpty) {
         isFirstDemand = true;
       }
+
+      waterconnection.isDataVerified = isConsumerVerified;
+      
       notifyListeners();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
@@ -252,6 +275,7 @@ class ConsumerProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     if (formKey.currentState!.validate()) {
+      waterconnection.isDataVerified = isConsumerVerified;
       waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();
@@ -332,6 +356,8 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
       }
+    
+
 
       try {
         Loaders.showLoadingDialog(context);
@@ -366,6 +392,8 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.arrears = null;
             waterconnection.advance = null;
           }
+
+
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()

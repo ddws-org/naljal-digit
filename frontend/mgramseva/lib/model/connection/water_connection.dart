@@ -71,6 +71,9 @@ class WaterConnection {
   @JsonKey(name: "advance")
   double? advance;
 
+  @JsonKey(name: "isDataVerified")
+  bool? isDataVerified;
+
   @JsonKey(ignore: true)
   BillList? fetchBill;
 
@@ -177,6 +180,7 @@ class WaterConnection {
             )
           : null;
     }
+    
   }
 
   getText() {
