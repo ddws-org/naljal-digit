@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
   }
 
   afterViewBuild() {
-    Provider.of<TenantsProvider>(context, listen: false)..getTenants();
+    Provider.of<TenantsProvider>(context, listen: false).getTenants();
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
 
