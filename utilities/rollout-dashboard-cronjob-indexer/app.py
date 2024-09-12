@@ -19,7 +19,6 @@ def getGPWSCHeirarchy():
     try:
         mdms_url = os.getenv('API_URL')
         state_tenantid = os.getenv('TENANT_ID')
-        url=os.getenv('IFIX_DEP_ENTITY_URL')
         mdms_requestData = {
             "RequestInfo": {
                 "apiId": "mgramseva-common",
@@ -48,80 +47,35 @@ def getGPWSCHeirarchy():
         mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData, verify=False)
 
         mdms_responseData = mdms_response.json()
-        tenantList = mdms_responseData['MdmsRes']['tenant']['tenants']
+        # Extract tenant data
+        tenantList = mdms_responseData.get('MdmsRes', {}).get('tenant', {}).get('tenants', [])
+        if not tenantList:
+            print("No tenants found in the response.")
+            return []
+
         print(len(tenantList))
-        teanant_data_Map = {}
-        for tenant in tenantList:
-            if tenant.get('code') == state_tenantid or tenant.get('code') == (state_tenantid + '.testing'):
-                continue
-            if tenant.get('city') is not None and tenant.get('city').get('code') is not None:
-                teanant_data_Map.update({tenant.get('city').get('code'): tenant.get('code')})
 
-        # url = 'https://mgramseva-dwss.punjab.gov.in/'
-        print(url)
-        requestData = {
-            "requestHeader": {
-                "ts": 1627193067,
-                "version": "2.0.0",
-                "msgId": "Unknown",
-                "signature": "NON",
-                "userInfo": {
-                    "uuid": "admin"
-                }
-            },
-            "criteria": {
-                "tenantId": "as",
-                "getAncestry": True
-            }
-        }
-
-        response = requests.post(url + 'ifix-department-entity/departmentEntity/v1/_search', json=requestData,
-                                 verify=False)
-
-        responseData = response.json()
-        departmentHierarchyList = responseData.get('departmentEntity')
+        # Collect hierarchy data for each tenant
         dataList = []
+        for tenant in tenantList:
+            tenant_code = tenant.get('code', 'Unknown')
 
-        for data in departmentHierarchyList:
-            if (len(data['children']) > 0):
-                if (data.get('hierarchyLevel') == 0):
-                    child = data['children'][0]
-                else:
-                    child = data
-                zone = child.get('name')
-                if (len(child['children']) > 0):
-                    circle = child['children'][0].get('name')
-                    if (len(child['children'][0]['children']) > 0):
-                        division = child['children'][0]['children'][0].get('name')
-                        if (len(child['children'][0]['children'][0]['children']) > 0):
-                            subdivision = child['children'][0]['children'][0]['children'][0].get('name')
-                            if (len(child['children'][0]['children'][0]['children'][0]['children']) > 0):
-                                section = child['children'][0]['children'][0]['children'][0]['children'][0].get('name')
-                                if (len(child['children'][0]['children'][0]['children'][0]['children'][0][
-                                            'children']) > 0):
-                                    tenantName = \
-                                        child['children'][0]['children'][0]['children'][0]['children'][0]['children'][
-                                            0].get(
-                                            'name')
-                                    tenantCode = \
-                                        child['children'][0]['children'][0]['children'][0]['children'][0]['children'][
-                                            0].get(
-                                            'code')
-                                    # tenantId = tenantName.replace(" ", "").lower()
-                                    if teanant_data_Map.get(tenantCode) is not None:
-                                        formatedTenantId = teanant_data_Map.get(tenantCode)
-                                        #tenantName=teanant_data_Map.get(tenantCode)['name']
-                                        print(teanant_data_Map)
-                                        # print(formatedTenantId)
-                                        obj1 = {"tenantId": formatedTenantId, "zone": zone, "circle": circle,
-                                                "division": division, "subdivision": subdivision,
-                                                "section": section, "projectcode": tenantCode,"tenantName":tenantName}
-                                        dataList.append(obj1)
+            # Collect hierarchy information
+            hierarchy_info = {
+                "state": state_tenantid,
+                "tenantId": tenant_code,
+                "districtName": tenant.get('city', {}).get('districtName', 'N/A'),
+                "blockname": tenant.get('city', {}).get('blockname', 'N/A'),
+                "panchayatname": tenant.get('city', {}).get('panchayatname', 'N/A'),
+                "regionName": tenant.get('city', {}).get('regionName', 'N/A')
+            }
+            dataList.append(hierarchy_info)
+
         print("heirarchy collected")
-        # print(dataList)
-        return (dataList)
+        return dataList
+
     except Exception as exception:
-        print("Exception occurred while connecting to the database")
+        print("Exception occurred while fetching hierarchy from MDMS")
         print(exception)
 
 
