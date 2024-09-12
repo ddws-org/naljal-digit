@@ -34,7 +34,6 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
         Map<String,ProcessInstance> processInstanceMap = new LinkedHashMap<>();
 
         while (rs.next()){
-            System.out.println(rs.toString());
             String id = rs.getString("wf_id");
             ProcessInstance processInstance = processInstanceMap.get(id);
 
@@ -44,15 +43,15 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
                     lastModifiedTime = null;
                 }
 
-//                Long sla = rs.getLong("sla");
-//                if (rs.wasNull()) {
-//                    sla = null;
-//                }
-//
-//                Long businessServiceSla = rs.getLong("businessservicesla");
-//                if (rs.wasNull()) {
-//                    businessServiceSla = null;
-//                }
+                Long sla = rs.getLong("sla");
+                if (rs.wasNull()) {
+                    sla = null;
+                }
+
+                Long businessServiceSla = rs.getLong("businessservicesla");
+                if (rs.wasNull()) {
+                    businessServiceSla = null;
+                }
 
                 AuditDetails auditdetails = AuditDetails.builder()
                         .createdBy(rs.getString("wf_createdBy"))
@@ -63,24 +62,24 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
 
 
                 // Building the assigner object
-//                String assignerUuid = rs.getString("assigner");
-//                User assigner;
-//                assigner = User.builder().uuid(assignerUuid).build();
+                String assignerUuid = rs.getString("assigner");
+                User assigner;
+                assigner = User.builder().uuid(assignerUuid).build();
 
 
 
 
-//                State state = State.builder()
-//                        .tenantId(rs.getString("st_tenantId"))
-//                        .uuid(rs.getString("st_uuid"))
-////                        .state(rs.getString("state"))
-////                        .sla(sla)
-////                        .applicationStatus(rs.getString("applicationStatus"))
-////                        .isStartState(rs.getBoolean("isStartState"))
-//                        .isTerminateState(rs.getBoolean("isTerminateState"))
-//                        .docUploadRequired(rs.getBoolean("docuploadrequired"))
-//                        .businessServiceId(rs.getString("businessserviceid"))
-//                        .build();
+                State state = State.builder()
+                        .tenantId(rs.getString("st_tenantId"))
+                        .uuid(rs.getString("st_uuid"))
+                        .state(rs.getString("state"))
+                        .sla(sla)
+                        .applicationStatus(rs.getString("applicationStatus"))
+                        .isStartState(rs.getBoolean("isStartState"))
+                        .isTerminateState(rs.getBoolean("isTerminateState"))
+                        .docUploadRequired(rs.getBoolean("docuploadrequired"))
+                        .businessServiceId(rs.getString("businessserviceid"))
+                        .build();
 
 
                 processInstance = ProcessInstance.builder()
@@ -89,16 +88,16 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
                         .businessService(rs.getString("businessService"))
                         .businessId(rs.getString("businessId"))
                         .action(rs.getString("action"))
-//                        .state(state)
+                        .state(state)
                         .comment(rs.getString("comment"))
-//                        .assigner(assigner)
-//                        .stateSla(sla)
-//                        .businesssServiceSla(businessServiceSla)
+                        .assigner(assigner)
+                        .stateSla(sla)
+                        .businesssServiceSla(businessServiceSla)
                         .previousStatus(rs.getString("previousStatus"))
                         .moduleName(rs.getString("moduleName"))
                         .auditDetails(auditdetails)
                         .rating(rs.getInt("rating"))
-                        .escalated(rs.getBoolean("escalated"))
+//                        .escalated(rs.getBoolean("escalated"))
                         .build();
             }
             addChildrenToProperty(rs,processInstance);
@@ -140,15 +139,15 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
                     .lastModifiedTime(lastModifiedTime)
                     .build();
 
-//            Document document = Document.builder()
-//                    .id(documentId)
-//                    .tenantId(rs.getString("doc_tenantid"))
-////                    .documentUid(rs.getString("documentUid"))
-//                    .documentType(rs.getString("documentType"))
-//                    .fileStoreId(rs.getString("fileStoreId"))
-//                    .auditDetails(auditdetails)
-//                    .build();
-//            processInstance.addDocumentsItem(document);
+            Document document = Document.builder()
+                    .id(documentId)
+                    .tenantId(rs.getString("doc_tenantid"))
+                    .documentUid(rs.getString("documentUid"))
+                    .documentType(rs.getString("documentType"))
+                    .fileStoreId(rs.getString("fileStoreId"))
+                    .auditDetails(auditdetails)
+                    .build();
+            processInstance.addDocumentsItem(document);
         }
 
         String actionUuid = rs.getString("ac_uuid");
@@ -157,18 +156,18 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
          * 
          * also avoiding action related errors on end state
          */
-//        if(null != actionUuid) {
-//        String roles = rs.getString("roles");
-//        Action action = Action.builder()
-//                .tenantId(rs.getString("ac_tenantId"))
-//                .action(rs.getString("ac_action"))
-//                .nextState(rs.getString("nextState"))
-//                .uuid(actionUuid)
-//                .currentState(rs.getString("currentState"))
-//                .roles(StringUtils.isEmpty(roles) ? Arrays.asList() : Arrays.asList(roles.split(",")))
-//                .build();
-//        processInstance.getState().addActionsItem(action);
-//        }
+        if(null != actionUuid) {
+        String roles = rs.getString("roles");
+        Action action = Action.builder()
+                .tenantId(rs.getString("ac_tenantId"))
+                .action(rs.getString("ac_action"))
+                .nextState(rs.getString("nextState"))
+                .uuid(actionUuid)
+                .currentState(rs.getString("currentState"))
+                .roles(StringUtils.isEmpty(roles) ? Arrays.asList() : Arrays.asList(roles.split(","))) 
+                .build();
+        processInstance.getState().addActionsItem(action);
+        }
     }
 
 
