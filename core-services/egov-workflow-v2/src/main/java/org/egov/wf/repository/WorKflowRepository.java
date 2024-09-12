@@ -81,7 +81,7 @@ public class WorKflowRepository {
 
         String query = queryBuilder.getProcessInstanceSearchQueryById(ids, preparedStmtList);
         query = util.replaceSchemaPlaceholder(query, criteria.getTenantId());
-        log.debug("query for status search: "+query+" params: "+preparedStmtList);
+        log.info("query for status search: "+query+" params: "+preparedStmtList);
         return jdbcTemplate.query(query, rowMapper, preparedStmtList.toArray());
     }
 
