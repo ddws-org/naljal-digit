@@ -493,6 +493,7 @@ public class WorkflowUtil {
 
         String finalQuery = null;
         if (config.getIsEnvironmentCentralInstance()) {
+            System.out.println("*******here inside if");
             String multiInstanceSchema = centralInstanceUtil.getStateLevelTenant(tenantId);
             try {
                 finalQuery = centralInstanceUtil.replaceSchemaPlaceholder(query, multiInstanceSchema);
@@ -500,6 +501,8 @@ public class WorkflowUtil {
                 throw new CustomException("EG_WF_SEARCH_ERR", "Invalid tenantId provided as part of search");
             }
         } else {
+            System.out.println("******here inside else");
+            System.out.println(tenantId);
             finalQuery = query.replace(SCHEMA_REPLACE_STRING.concat("."), "assam");
         }
         return finalQuery;
