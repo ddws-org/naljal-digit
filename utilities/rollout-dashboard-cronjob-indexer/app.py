@@ -44,7 +44,7 @@ def getGPWSCHeirarchy():
             }
         }
 
-        mdms_response = requests.post(mdms_url + 'egov-mdms-service/v1/_search', json=mdms_requestData, verify=False)
+        mdms_response = requests.post(mdms_url + 'assam/egov-mdms-service/v1/_search', json=mdms_requestData, verify=False)
 
         mdms_responseData = mdms_response.json()
         # Extract tenant data
@@ -58,12 +58,14 @@ def getGPWSCHeirarchy():
         # Collect hierarchy data for each tenant
         dataList = []
         for tenant in tenantList:
-            tenant_code = tenant.get('code', 'Unknown')
+            tenant_code = tenant.get('code')
+            tenant_name = tenant.get('name')
 
             # Collect hierarchy information
             hierarchy_info = {
                 "state": state_tenantid,
                 "tenantId": tenant_code,
+                "tenantName": tenant_name,
                 "districtName": tenant.get('city', {}).get('districtName', 'N/A'),
                 "blockname": tenant.get('city', {}).get('blockname', 'N/A'),
                 "panchayatname": tenant.get('city', {}).get('panchayatname', 'N/A'),
