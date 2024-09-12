@@ -35,6 +35,8 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
 
         while (rs.next()){
             String id = rs.getString("wf_id");
+            System.out.println("id here");
+            System.out.println(id);
             ProcessInstance processInstance = processInstanceMap.get(id);
 
             if(processInstance==null) {
@@ -117,6 +119,8 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
 
         // Building the assignes object
         String assigneeUuid = rs.getString("assigneeuuid");
+        System.out.println("assigneeUuid");
+        System.out.println(assigneeUuid);
 
         if(!StringUtils.isEmpty(assigneeUuid)){
             processInstance.addUsersItem(User.builder().uuid(assigneeUuid).build());
@@ -148,6 +152,7 @@ public class WorkflowRowMapper implements ResultSetExtractor<List<ProcessInstanc
                     .auditDetails(auditdetails)
                     .build();
             processInstance.addDocumentsItem(document);
+            System.out.println(processInstance.toString());
         }
 
         String actionUuid = rs.getString("ac_uuid");
