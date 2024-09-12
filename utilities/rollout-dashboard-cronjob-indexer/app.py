@@ -44,7 +44,7 @@ def getGPWSCHeirarchy():
             }
         }
 
-        mdms_response = requests.post(mdms_url + 'assam/egov-mdms-service/v1/_search', json=mdms_requestData, verify=False)
+        mdms_response = requests.post(mdms_url + 'assam/mdms-v2/v1/_search', json=mdms_requestData, verify=False)
 
         mdms_responseData = mdms_response.json()
         # Extract tenant data
@@ -884,6 +884,7 @@ def process():
     print("continue is the process")
 
     tenants = getGPWSCHeirarchy()
+    print("Tenants:", tenants)
     for tenant in tenants:
         print("Tenant:", tenant['tenantId'])
         tenantName = tenant['tenantName']
