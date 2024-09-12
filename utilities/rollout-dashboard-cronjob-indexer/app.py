@@ -44,7 +44,7 @@ def getGPWSCHeirarchy():
             }
         }
 
-        mdms_response = requests.post(mdms_url + 'assam/mdms-v2/v1/_search', json=mdms_requestData, verify=False)
+        mdms_response = requests.post(mdms_url + 'mdms-v2/v1/_search', json=mdms_requestData, verify=False)
 
         mdms_responseData = mdms_response.json()
         # Extract tenant data
