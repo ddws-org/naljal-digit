@@ -503,7 +503,7 @@ public class WorkflowUtil {
         } else {
             System.out.println("******here inside else");
             System.out.println(tenantId);
-            finalQuery = query.replace(SCHEMA_REPLACE_STRING.concat("."), "assam");
+            finalQuery = query.replace(SCHEMA_REPLACE_STRING.concat("."), "assam.");
         }
         return finalQuery;
     }
