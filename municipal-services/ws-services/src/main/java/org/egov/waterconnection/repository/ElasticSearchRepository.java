@@ -38,11 +38,14 @@ public class ElasticSearchRepository {
 
     private ObjectMapper mapper;
 
+    private RestTemplate restTemplate;
+
     @Autowired
-    public ElasticSearchRepository(WSConfiguration config, FuzzySearchQueryBuilder queryBuilder, ObjectMapper mapper) {
+    public ElasticSearchRepository(WSConfiguration config, FuzzySearchQueryBuilder queryBuilder, ObjectMapper mapper, RestTemplate restTemplate) {
         this.config = config;
         this.queryBuilder = queryBuilder;
         this.mapper = mapper;
+        this.restTemplate = restTemplate;
     }
 
 
@@ -68,7 +71,7 @@ public class ElasticSearchRepository {
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
         ResponseEntity response = null;
         try {
-            response = this.restTemplate().postForEntity(url, requestEntity, Object.class);
+            response = restTemplate.postForEntity(url, requestEntity, Object.class);
         } catch (Exception e) {
         	log.error("Failed to fetch data from ES: "+e.getMessage());
             throw new CustomException("ES_ERROR","Failed to fetch data from ES");
@@ -98,39 +101,6 @@ public class ElasticSearchRepository {
         byte[] credentialsBytes = credentials.getBytes();
         byte[] base64CredentialsBytes = Base64.getEncoder().encode(credentialsBytes);
         return "Basic " + new String(base64CredentialsBytes);
-    }
-    public static void trustSelfSignedSSL() {
-        try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            X509TrustManager tm = new X509TrustManager() {
-                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
-                }
-
-                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
-                }
-
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            };
-            ctx.init(null, new TrustManager[]{tm}, null);
-            SSLContext.setDefault(ctx);
-
-            // Disable hostname verification
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
-                    return true;
-                }
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Primary
-    public RestTemplate restTemplate() {
-        trustSelfSignedSSL();
-        return new RestTemplate();
     }
 
 
