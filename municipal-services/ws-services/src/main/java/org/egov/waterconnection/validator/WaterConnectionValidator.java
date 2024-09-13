@@ -86,17 +86,10 @@ public class WaterConnectionValidator {
 			errorMap.put("PREVIOUS_METER_READIN_INVALID","Previous Meter reading date cannot be null");
 		}
 
-		boolean isFromFrontend= waterConnectionRequest.getWaterConnection().getWaterSource() == null;
-		WaterConnection wc = waterConnectionRequest.getWaterConnection();
-
-		if (isFromFrontend) {
-			wc.setWaterSource("online");
-		} else {
-			if (wc.getWaterSource() == null || wc.getWaterSource().isEmpty()) {
-				wc.setWaterSource("migrated");
-			}
-		}
-		if (!isFromFrontend && (wc.getImisNumber() == null || wc.getImisNumber().isEmpty())) {
+		if (waterConnectionRequest.getWaterConnection().getWaterSource() != null
+				&& waterConnectionRequest.getWaterConnection().getWaterSource().equalsIgnoreCase("migration")
+				&& (waterConnectionRequest.getWaterConnection().getImisNumber() == null
+				|| waterConnectionRequest.getWaterConnection().getImisNumber().isEmpty())) {
 			errorMap.put("INVALID_IMIS_NO", "IMIS number cannot be empty for migrated data.");
 		}
 //		if(waterConnectionRequest.getWaterConnection().getOldConnectionNo() == null || waterConnectionRequest.getWaterConnection().getOldConnectionNo() == "") {
