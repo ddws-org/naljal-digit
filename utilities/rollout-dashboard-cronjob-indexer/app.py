@@ -947,12 +947,14 @@ def process():
 
 def getConnection():
     dbHost = os.getenv('DB_HOST')
+    dbName = os.getenv('DB_NAME')
     dbSchema = os.getenv('DB_SCHEMA')
     dbUser = os.getenv('DB_USER')
     dbPassword = os.getenv('DB_PWD')
     dbPort = os.getenv('DB_PORT')
 
     print(f"DB Host: {dbHost}")
+    print(f"DB Name: {dbName}")
     print(f"DB Schema: {dbSchema}")
     print(f"DB User: {dbUser}")
     print(f"DB pwd: {dbPassword}")
@@ -962,7 +964,16 @@ def getConnection():
                                   password=dbPassword,
                                   host=dbHost,
                                   port=dbPort,
-                                  database=dbSchema)
+                                  database=dbName)
+    
+    # Create a cursor object
+    cursor = connection.cursor()
+
+    # Set the schema using the environment variable
+    cursor.execute(f'SET search_path TO {dbSchema}')
+
+    # Commit if necessary (optional for SET commands)
+    connection.commit()
 
     return connection
 
