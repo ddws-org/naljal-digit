@@ -952,6 +952,12 @@ def getConnection():
     dbPassword = os.getenv('DB_PWD')
     dbPort = os.getenv('DB_PORT')
 
+    print(f"DB Host: {dbHost}")
+    print(f"DB Schema: {dbSchema}")
+    print(f"DB User: {dbUser}")
+    print(f"DB pwd: {dbPassword}")
+    print(f"DB Port: {dbPort}")
+
     connection = psycopg2.connect(user=dbUser,
                                   password=dbPassword,
                                   host=dbHost,
