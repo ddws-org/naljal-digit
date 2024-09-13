@@ -155,6 +155,9 @@ public class Connection {
 
 	@JsonProperty("oldApplication")
 	private Boolean oldApplication = false;
+
+	@JsonProperty("dataVerified")
+	private Boolean dataVerified = false;
 	
 	 
 	@JsonProperty("previousReadingDate")
@@ -268,6 +271,12 @@ public class Connection {
 
 	public void setOldApplication(Boolean oldApplication) {
 		this.oldApplication = oldApplication;
+	}
+
+	public Boolean getDataVerified() {return dataVerified;}
+
+	public void setDataVerified(Boolean dataVerified) {
+		this.dataVerified = dataVerified;
 	}
 
 	/**
@@ -719,7 +728,8 @@ public class Connection {
 				&& Objects.equals(this.connectionHolders, connection.connectionHolders)
 				&& Objects.equals(this.applicationType, connection.applicationType)
 				&& Objects.equals(this.dateEffectiveFrom, connection.dateEffectiveFrom)
-				&& Objects.equals(this.oldApplication,connection.oldApplication);
+				&& Objects.equals(this.oldApplication,connection.oldApplication)
+				&& Objects.equals(this.dataVerified,connection.dataVerified);
 	}
 
 	@Override
@@ -727,7 +737,7 @@ public class Connection {
 		return Objects.hash(id, tenantId, propertyId, applicationNo, applicationStatus, status, connectionNo,
 				oldConnectionNo, imisNumber,villageId,documents, roadCuttingInfo, plumberInfo, roadType, roadCuttingArea, connectionExecutionDate,
 				connectionCategory, connectionType, additionalDetails, auditDetails, connectionHolders,
-				applicationType, dateEffectiveFrom, oldApplication);
+				applicationType, dateEffectiveFrom, oldApplication,dataVerified);
 	}
 
 	@Override
@@ -759,6 +769,7 @@ public class Connection {
 		sb.append("    applicationType: ").append(toIndentedString(applicationType)).append("\n");
 		sb.append("	   dateEffectiveFrom: ").append(toIndentedString(dateEffectiveFrom)).append("\n");
 		sb.append("	   oldApplication: ").append(toIndentedString(oldApplication)).append("\n");
+		sb.append("	   dataVerified: ").append(toIndentedString(dataVerified)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
