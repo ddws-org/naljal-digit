@@ -156,7 +156,7 @@ export const replaceSchemaPlaceholder = (query, tenantId) => {
 		let schemaName = tenantId.split('.')[getStateSchemaIndexPositionInTenantId()];
 		finalQuery = query.replace(/{schema}/g, schemaName);
 	} else {
-			finalQuery = query.replace(/{schema}./g, "");
+			finalQuery = query.replace(/{schema}/g, "assam");
 	}
 	return finalQuery;
 };
