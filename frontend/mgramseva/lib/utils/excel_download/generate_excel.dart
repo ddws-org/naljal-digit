@@ -48,7 +48,7 @@ Future<void> generateExcel(
   //Save and launch the excel.
   final List<int> bytes = workbook.saveAsStream();
   //Dispose the document.
-  workbook.dispose();
+  // workbook.dispose();
 
   //Save and launch the file.
   await saveAndLaunchFile(bytes, '$title.xlsx');

@@ -134,7 +134,7 @@ class ReportsProvider with ChangeNotifier {
   TableDataRow getCollectionRow(CollectionReportData data,
       {bool isExcel = false}) {
     String? name = CommonMethods.truncateWithEllipsis(20, data.consumerName!);
-    if (data.oldConnectionNo != null && data.oldConnectionNo!.isEmpty) {
+    if (data.oldConnectionNo != null && (data.oldConnectionNo ?? '').isEmpty) {
       data.oldConnectionNo = '-';
     }
     return TableDataRow([
@@ -422,7 +422,7 @@ class ReportsProvider with ChangeNotifier {
                   .map<String>((e) =>
                       '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(e.label)}')
                   .toList(),
-              getCollectionData(collectionreports!, isExcel: true)
+              getCollectionData(collectionreports ?? [], isExcel: true)
                       .map<List<String>>(
                           (e) => e.tableRow.map((e) => e.label).toList())
                       .toList() ??
@@ -437,7 +437,7 @@ class ReportsProvider with ChangeNotifier {
                 'Downloaded On ${DateFormats.timeStampToDate(DateTime.now().millisecondsSinceEpoch, format: 'dd/MMM/yyyy')}'
               ]);
         } else {
-          if (collectionreports != null && collectionreports!.isNotEmpty) {
+          if (collectionreports != null && (collectionreports ?? []).isNotEmpty) {
             this.limit = limit;
             this.offset = offset;
             this.genericTableData = BillsTableData(
@@ -555,47 +555,48 @@ class ReportsProvider with ChangeNotifier {
       sheet.getRangeByName('A2:D2').cellStyle.hAlign = HAlignType.center;
       dataStartRow = 3;
       headersStartRow = 2;
-      for (int i = 0; i < optionalData.length; i++) {
-        sheet
-            .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
-            .setText(
-                optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
-      }
+          for (int i = 0; i < optionalData.length; i++) {
+          sheet
+              .getRangeByName(
+                  '${CommonMethods.getAlphabetsWithKeyValue()[i].label}1')
+              .setText(
+                  optionalData[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+        }
     }
 
-    for (int i = 0; i < headers.length; i++) {
-      sheet
-          .getRangeByName(
-              '${CommonMethods.getAlphabetsWithKeyValue()[i].label}$headersStartRow')
-          .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
+      for (int i = 0; i < headers.length; i++) {
+        sheet
+            .getRangeByName(
+                '${CommonMethods.getAlphabetsWithKeyValue()[i].label}$headersStartRow')
+            .setText(headers[CommonMethods.getAlphabetsWithKeyValue()[i].key]);
     }
 
-    for (int i = dataStartRow; i < tableData.length + dataStartRow; i++) {
-      for (int j = 0; j < headers.length; j++) {
-        sheet
-            .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
-            .setText(tableData[i - dataStartRow][j]);
-        sheet
-            .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
-            .cellStyle
-            .hAlign = HAlignType.center;
-        sheet
-            .getRangeByName(
-                '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
-            .cellStyle
-            .vAlign = VAlignType.center;
+        for (int i = dataStartRow; i < tableData.length + dataStartRow; i++) {
+        for (int j = 0; j < headers.length; j++) {
+          sheet
+              .getRangeByName(
+                  '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+              .setText(tableData[i - dataStartRow][j]);
+          sheet
+              .getRangeByName(
+                  '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+              .cellStyle
+              .hAlign = HAlignType.center;
+          sheet
+              .getRangeByName(
+                  '${CommonMethods.getAlphabetsWithKeyValue()[j].label}$i')
+              .cellStyle
+              .vAlign = VAlignType.center;
+        }
       }
-    }
 
     //Save and launch the excel.
     final List<int> bytes = workbook.saveAsStream();
     //Dispose the document.
-    workbook.dispose();
+    // workbook.dispose();
 
     //Save and launch the file.
+
     await saveAndLaunchFile(bytes, '$title.xlsx');
   }
 }
