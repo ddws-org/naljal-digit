@@ -59,6 +59,11 @@ def getGPWSCHeirarchy():
         dataList = []
         for tenant in tenantList:
             tenant_code = tenant.get('code')
+
+            # Skip tenants that match the state_tenantid or follow 'state_tenantid.testing' pattern
+            if tenant_code == state_tenantid or tenant_code == f"{state_tenantid}.testing":
+                continue
+
             tenant_name = tenant.get('name')
 
             # Collect hierarchy information
@@ -69,7 +74,8 @@ def getGPWSCHeirarchy():
                 "districtName": tenant.get('city', {}).get('districtName', 'N/A'),
                 "blockname": tenant.get('city', {}).get('blockname', 'N/A'),
                 "panchayatname": tenant.get('city', {}).get('panchayatname', 'N/A'),
-                "regionName": tenant.get('city', {}).get('regionName', 'N/A')
+                "regionName": tenant.get('city', {}).get('regionName', 'N/A'),
+                "villageName": tenant.get('city', {}).get('villageName', 'N/A')
             }
             dataList.append(hierarchy_info)
 
@@ -778,10 +784,10 @@ def createEntryForRollout(tenant, activeUsersCount, totalAdvance, totalPenalty, 
         createdTime = datetime.now(tz=tzInfo)
         print("createdtime -->", createdTime)
 
-        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, state,tenantName, districtName, blockname, panchayatname, regionName, active_users_count,total_advance,total_penalty,total_connections,active_connections, last_demand_gen_date, demand_generated_consumer_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        postgres_insert_query = "INSERT INTO roll_out_dashboard (tenantid, state,tenantName, districtName, blockname, panchayatname, regionName, villageName, active_users_count,total_advance,total_penalty,total_connections,active_connections, last_demand_gen_date, demand_generated_consumer_count,total_demand_amount,collection_till_date,last_collection_date,expense_count,count_of_electricity_expense_bills,no_of_paid_expense_bills,last_expense_txn_date,total_amount_of_expense_bills,total_amount_of_electricity_bills,total_amount_of_paid_expense_bills,date_range,createdtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         record_to_insert = (
         tenant['tenantId'],tenant['state'], tenant['tenantName'], tenant['districtName'], tenant['blockname'],
-        tenant['panchayatname'], tenant['regionName'], activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,
+        tenant['panchayatname'], tenant['regionName'], tenant['villageName'], activeUsersCount, totalAdvance, totalPenalty, totalConsumerCount,
         consumerCount, lastDemandGenratedDate, noOfDemandRaised, totaldemAmount, collectionsMade, lastCollectionDate,
         expenseCount, countOfElectricityExpenseBills, noOfPaidExpenseBills, lastExpTrnsDate, totalAmountOfExpenseBills,
         totalAmountOfElectricityBills, totalAmountOfPaidExpenseBills, date, createdTime)
@@ -843,6 +849,7 @@ def createEntryForRolloutToElasticSearch(tenant, activeUsersCount, totalAdvance,
             "blockname": tenant['blockname'],
             "panchayatname": tenant['panchayatname'],
             "regionName": tenant['regionName'],
+            "villageName": tenant['villageName'],
             "activeUsersCount": activeUsersCount,
             "totalAdvance": convert_decimal_to_float(totalAdvance),
             "totalPenalty": convert_decimal_to_float(totalPenalty),
@@ -995,6 +1002,7 @@ def createTable():
         blockname varchar(250),
         panchayatname varchar(250),
         regionName varchar(250),
+        villageName varchar(250),
         active_users_count NUMERIC(10),
         total_advance NUMERIC(10),
         total_penalty NUMERIC(10),
