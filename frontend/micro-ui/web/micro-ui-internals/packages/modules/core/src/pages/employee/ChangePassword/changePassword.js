@@ -1,4 +1,4 @@
-import { BackButton, CardSubHeader, CardText, FormComposer, Toast } from "@egovernments/digit-ui-react-components";
+import { BackButton, CardSubHeader, CardText, FormComposer, FormComposerV2, Toast } from "@egovernments/digit-ui-react-components";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -54,6 +54,8 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       }
       const requestData = {
         ...data,
+        username: mobileNumber,
+
         otpReference: otp,
         tenantId,
         type: getUserType().toUpperCase(),
@@ -71,23 +73,20 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
     history.replace(`/${window?.contextPath}/employee/user/login`);
   };
 
-  const [username, password, confirmPassword] = propsConfig.inputs;
+  const [password, confirmPassword] = propsConfig.inputs;
+
+
   const config = [
     {
       body: [
-        {
-          label: t(username.label),
-          type: username.type,
-          populators: {
-            name: username.name,
-          },
-          isMandatory: true,
-        },
         {
           label: t(password.label),
           type: password.type,
           populators: {
             name: password.name,
+            validation: {
+              maxlength: 10,
+            }
           },
           isMandatory: true,
         },
@@ -96,6 +95,9 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           type: confirmPassword.type,
           populators: {
             name: confirmPassword.name,
+            validation: {
+              maxlength: 10,
+            }
           },
           isMandatory: true,
         },
@@ -108,7 +110,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-      <FormComposer
+      <FormComposerV2
         onSubmit={onChangePassword}
         noBoxShadow
         inline
@@ -140,12 +142,12 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
             {t("CORE_OTP_RESEND")}
           </div>
         </div> */}
-      </FormComposer>
+      </FormComposerV2>
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div className="EmployeeLoginFooter">
         <img
           alt="Powered by DIGIT"
-          src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
+          src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();

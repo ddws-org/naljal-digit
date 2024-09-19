@@ -56,7 +56,7 @@ export const Request = async ({
   headers = {},
   useCache = false,
   params = {},
-  auth,
+  auth=true,
   urlParams = {},
   userService,
   locale = true,
@@ -68,13 +68,14 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
+  url = `/uat${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    
     data.RequestInfo = {
       apiId: "Rainmaker",
     };
-    if (auth || !!Digit.UserService.getUser()?.access_token) {
+    if (auth) {
       data.RequestInfo = { ...data.RequestInfo, ...requestInfo() };
     }
     if (userService) {
