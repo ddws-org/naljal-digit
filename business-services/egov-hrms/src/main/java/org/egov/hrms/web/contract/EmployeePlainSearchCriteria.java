@@ -2,7 +2,7 @@ package org.egov.hrms.web.contract;
 
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 
