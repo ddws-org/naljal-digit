@@ -104,6 +104,9 @@ public class EmployeeService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private FuzzySearchService fuzzySearchService;
+
 	/**
 	 * Service method for create employee. Does following:
 	 * 1. Sets ids to all the objects using idgen service.
@@ -125,6 +128,7 @@ public class EmployeeService {
 			employee.getUser().setPassword(null);
 		});
 		hrmsProducer.push(propertiesManager.getSaveEmployeeTopic(), employeeRequest);
+		hrmsProducer.push(propertiesManager.getSaveEmployeeIndexTopic(), employeeRequest);
 		notificationService.sendNotification(employeeRequest, pwdMap);
 		return generateResponse(employeeRequest);
 	}
@@ -142,6 +146,11 @@ public class EmployeeService {
 			criteria.setIsActive(true);
 		else
 			criteria.setIsActive(false);*/
+		if(criteria.getName()!=null){
+			List<Employee> fuzzyEmployees = fuzzySearchService.getEmployees(requestInfo, criteria);
+			return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
+					.employees(fuzzyEmployees).build();
+		}
         Map<String, User> mapOfUsers = new HashMap<String, User>();
 		if(!StringUtils.isEmpty(criteria.getPhone()) || !CollectionUtils.isEmpty(criteria.getRoles())) {
             Map<String, Object> userSearchCriteria = new HashMap<>();
@@ -213,14 +222,57 @@ public class EmployeeService {
 		return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
 				.employees(employees).build();
 	}
-	
-	
+
 	/**
-	 * Creates user by making call to egov-user.
-	 * 
-	 * @param employee
-	 * @param requestInfo
+	 * Plain search for employees
+	 *
+	 * @param criteria
+	 * @return
 	 */
+	public List<Employee> plainsearch(EmployeePlainSearchCriteria criteria,RequestInfo requestInfo) {
+		if (criteria.getLimit() != null && criteria.getLimit() > propertiesManager.getHrmsMaxLimit())
+			criteria.setLimit(propertiesManager.getHrmsMaxLimit());
+
+		List<String> employeeIds = null;
+
+		if(CollectionUtils.isEmpty(criteria.getUuids()))
+			employeeIds = repository.fetchEmployeeIds(criteria);
+		else
+			employeeIds = criteria.getUuids();
+
+		EmployeePlainSearchCriteria employeePlainSearchCriteria = EmployeePlainSearchCriteria.builder().uuids(employeeIds).build();
+		List<Employee> employees=repository.fetchPlainSearchEmployees(employeePlainSearchCriteria);
+
+		Map<String, User> mapOfUsers = new HashMap<String, User>();
+
+		if(!CollectionUtils.isEmpty(employeeIds)){
+			Map<String, Object> UserSearchCriteria = new HashMap<>();
+			UserSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_UUID,employeeIds);
+			if(mapOfUsers.isEmpty()){
+				UserResponse userResponse = userService.getUser(requestInfo, UserSearchCriteria);
+				if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+					mapOfUsers = userResponse.getUser().stream()
+							.collect(Collectors.toMap(User :: getUuid, Function.identity()));
+				}
+			}
+			for(Employee employee: employees){
+				employee.setUser(mapOfUsers.get(employee.getUuid()));
+			}
+		}
+
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
+
+
+		return employees;
+	}
+
+		/**
+         * Creates user by making call to egov-user.
+         *
+         * @param employee
+         * @param requestInfo
+         */
 	private void createUser(Employee employee, RequestInfo requestInfo) {
 		enrichUser(employee);
 		UserRequest request = UserRequest.builder().requestInfo(requestInfo).user(employee.getUser()).build();
@@ -250,6 +302,7 @@ public class EmployeeService {
 		pwdParams.add(employee.getUser().getMobileNumber());
 		pwdParams.add(employee.getTenantId());
 		pwdParams.add(employee.getUser().getName().toUpperCase());
+		//TODO:Add localition of sms and add template to register SMS
 		employee.getUser().setPassword(hrmsUtils.generatePassword(pwdParams));
 		employee.getUser().setUserName(employee.getCode());
 		employee.getUser().setActive(true);
@@ -343,6 +396,7 @@ public class EmployeeService {
 			updateUser(employee, requestInfo);
 		});
 		hrmsProducer.push(propertiesManager.getUpdateTopic(), employeeRequest);
+		hrmsProducer.push(propertiesManager.getUpdateEmployeeIndexTopic(), employeeRequest);
 		//notificationService.sendReactivationNotification(employeeRequest);
 		return generateResponse(employeeRequest);
 	}
@@ -607,7 +661,11 @@ public class EmployeeService {
 				userSearchCriteria.put(HRMSConstants.HRMS_USER_SEARCH_CRITERA_ROLECODES,criteria.getRoles());
 			UserResponse userResponse = userService.getUserByTenantids(requestInfo, userSearchCriteria);
 			userChecked =true;
-			if(!CollectionUtils.isEmpty(userResponse.getUser())) {
+			if(CollectionUtils.isEmpty(userResponse.getUser())) {
+				List<Employee> employees = new ArrayList<>();
+				return EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
+						.employees(employees).build();
+			} else {
 				mapOfUsers.putAll(userResponse.getUser().stream()
 						.collect(Collectors.toMap(User::getUuid, Function.identity())));
 			}

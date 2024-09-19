@@ -52,4 +52,8 @@ public class EmployeeQueries {
 	public static final String HRMS_GET_ASSIGNMENT = "select distinct(employeeid)  from eg_hrms_assignment assignment where assignment.tenantid notnull  ";
 
 	public static final String HRMS_COUNT_EMP_QUERY = "SELECT active, count(*) FROM eg_hrms_employee WHERE tenantid ";
+
+	public static final String HRMS_GET_EMP_IDS_QUERY = "SELECT employee.uuid FROM eg_hrms_employee employee WHERE";
+
+	public static final String HRMS_QUERY_ORDER_BY_CLAUSE = "employee.createddate";
 }

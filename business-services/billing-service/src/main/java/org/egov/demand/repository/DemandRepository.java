@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.kafka.common.protocol.types.Field;
 import org.egov.demand.model.AuditDetails;
 import org.egov.demand.model.Demand;
 import org.egov.demand.model.DemandCriteria;
@@ -59,15 +60,18 @@ import org.egov.demand.repository.rowmapper.DemandHistoryRowMapper;
 import org.egov.demand.repository.rowmapper.DemandRowMapper;
 import org.egov.demand.util.Util;
 import org.egov.demand.web.contract.DemandRequest;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 @Repository
 @Slf4j
@@ -409,4 +413,24 @@ public class DemandRepository {
 		String searchDemandQuery = demandQueryBuilder.getDemandHistoryQuery(demandCriteria, preparedStatementValues);
 		return jdbcTemplate.query(searchDemandQuery, preparedStatementValues.toArray(), demandHistoryRowMapper);
 	}
+
+	public List<String> getDemandIds(DemandCriteria demandCriteria)
+	{
+		List<Object> preparedStmtList = new ArrayList<>();
+		String searchDemandQuery = demandQueryBuilder.getdemandIdSearchQuery(demandCriteria, preparedStmtList);
+		return jdbcTemplate.query(searchDemandQuery, new SingleColumnRowMapper<>(String.class), preparedStmtList.toArray());
+	}
+
+	public List<Demand> getDemandsPlainSearch(DemandCriteria demandCriteria) {
+
+		if (demandCriteria.getDemandId() == null || CollectionUtils.isEmpty(demandCriteria.getDemandId()))
+			throw new CustomException("PLAIN_SEARCH_ERROR", "Search only allowed by ids!");
+
+		List<Object> preparedStmtList = new ArrayList<>();
+		String query = demandQueryBuilder.getDemandPlainSearchQuery(demandCriteria, preparedStmtList);
+		log.info("Query: " + query);
+		log.info("PS: " + preparedStmtList);
+		return jdbcTemplate.query(query, preparedStmtList.toArray(), demandRowMapper);
+	}
+
 }

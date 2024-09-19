@@ -39,12 +39,10 @@
  */
 package org.egov.demand.repository.querybuilder;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import org.apache.kafka.common.protocol.types.Field;
 import org.egov.demand.model.DemandCriteria;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -136,7 +134,8 @@ public class DemandQueryBuilder {
 	
 	public static final String DEMAND_UPDATE_CONSUMERCODE_QUERY="UPDATE egbs_demand_v1 SET consumercode=?, lastmodifiedby=?, lastmodifiedtime=? "
 			+ " WHERE tenantid=? AND id IN (";
-	
+
+	public static final String FETCH_DEMAND_IDS_QUERY = "SELECT dmd.id AS did FROM egbs_demand_v1 dmd WHERE";
 
 	public String getDemandQueryForConsumerCodes(Map<String,Set<String>> businessConsumercodeMap,List<Object> preparedStmtList, String tenantId){
 		
@@ -174,6 +173,40 @@ public class DemandQueryBuilder {
 
 		StringBuilder demandQuery = new StringBuilder(BASE_DEMAND_QUERY);
 
+		addDemandCriteria(demandQuery, demandCriteria, preparedStatementValues);
+		addOrderByClause(demandQuery, DEMAND_QUERY_ORDER_BY_CLAUSE);
+		addPagingClause(demandQuery, preparedStatementValues);
+
+		log.info("the query String for demand : " + demandQuery.toString());
+		return demandQuery.toString();
+	}
+
+	public String getdemandIdSearchQuery(DemandCriteria demandCriteria, List<Object> preparedStatementValues)
+	{
+		StringBuilder demandIdSearchQuery = new StringBuilder(FETCH_DEMAND_IDS_QUERY);
+		addDemandCriteria(demandIdSearchQuery, demandCriteria, preparedStatementValues);
+		addOrderByClause(demandIdSearchQuery, DEMAND_QUERY_ORDER_BY_CLAUSE);
+		addPagingClauseForDemandIdSearch(demandIdSearchQuery, demandCriteria, preparedStatementValues);
+		log.info("Query for demand id search : " + demandIdSearchQuery.toString());
+		return demandIdSearchQuery.toString();
+
+	}
+
+	public String getDemandPlainSearchQuery(DemandCriteria demandCriteria, List<Object> preparedStmtList) {
+
+		StringBuilder demandQuery = new StringBuilder(BASE_DEMAND_QUERY);
+
+		Set<String> ids = demandCriteria.getDemandId();
+		if (!CollectionUtils.isEmpty(ids)) {
+			demandQuery.append(" dmd.id IN (").append(createQuery( new ArrayList<>(ids))).append(")");
+			addToPreparedStatement(preparedStmtList, ids);
+		}
+
+		return demandQuery.toString();
+	}
+
+	public String addDemandCriteria(StringBuilder demandQuery, DemandCriteria demandCriteria, List<Object> preparedStatementValues)
+	{
 		String tenantId = demandCriteria.getTenantId();
 		String[] tenantIdChunks = tenantId.split("\\.");
 		
@@ -226,7 +259,19 @@ public class DemandQueryBuilder {
 			demandQuery.append("dmd.taxPeriodTo <= ?");
 			preparedStatementValues.add(demandCriteria.getPeriodTo());
 		}
-		
+
+		if(demandCriteria.getFromDate() != null){
+			addAndClause(demandQuery);
+			demandQuery.append(" dmd.createdtime >= ? ");
+			preparedStatementValues.add(demandCriteria.getFromDate());
+		}
+
+		if(demandCriteria.getToDate() != null){
+			addAndClause(demandQuery);
+			demandQuery.append(" dmd.createdtime <= ? ");
+			preparedStatementValues.add(demandCriteria.getToDate());
+		}
+
 		if (demandCriteria.getConsumerCode() != null && !demandCriteria.getConsumerCode().isEmpty()) {
 			addAndClause(demandQuery);
 			demandQuery.append("dmd.consumercode IN ("
@@ -298,5 +343,23 @@ public class DemandQueryBuilder {
 
 		log.info("the query String for demand : " + demandQuery.toString());
 		return demandQuery.toString();
+	}
+
+	private static void addPagingClauseForDemandIdSearch(StringBuilder demandQuery, DemandCriteria demandCriteria, List<Object> preparedStatementValues) {
+		demandQuery.append(" LIMIT ?");
+		preparedStatementValues.add(demandCriteria.getLimit());
+		demandQuery.append(" OFFSET ?");
+		preparedStatementValues.add(demandCriteria.getOffset());
+	}
+
+	private Object createQuery(List<String> ids) {
+		StringBuilder builder = new StringBuilder();
+		int length = ids.size();
+		for (int i = 0; i < length; i++) {
+			builder.append(" ?");
+			if (i != length - 1)
+				builder.append(",");
+		}
+		return builder.toString();
 	}
 }
