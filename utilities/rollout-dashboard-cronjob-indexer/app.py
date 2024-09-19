@@ -119,7 +119,7 @@ def getRateMasters(tenantId):
             }
         }
 
-        response = requests.post(url + 'egov-mdms-service/v1/_search', json=requestData)
+        response = requests.post(url + 'mdms-v2/v1/_search', json=requestData)
 
         responseData = response.json()
         wcBillingSlabList = responseData['MdmsRes']['ws-services-calculation']['WCBillingSlab']
