@@ -4,18 +4,9 @@ package org.egov.wscalculation.web.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
-import org.egov.wscalculation.web.models.AdhocTaxReq;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.BulkDemandResponse;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.CalculationRes;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.service.DemandService;
 import org.egov.wscalculation.service.WSCalculationService;
 import org.egov.wscalculation.service.WSCalculationServiceImpl;
@@ -34,7 +25,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Slf4j
 @Getter
 @Setter
 @Builder
@@ -115,6 +106,23 @@ public class CalculatorController {
 		demandPenaltyResponse = DemandPenaltyResponse.builder().demands(demandPenaltyResponse.getDemands()).
 				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
+	}
+
+	@PostMapping("/_addPenalty")
+	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody PenaltyRequest penaltyRequest) {
+		return demandService.addPenalty(penaltyRequest.getRequestInfo(),penaltyRequest.getAddPenaltyCriteria());
+
+	}
+
+	@PostMapping("/_rollOutDashboardSearch")
+	public ResponseEntity<RollOutDashboardResponse> rollOutDashboardSearch(@RequestBody RollOutDashboardRequest rollOutDashboardRequest)
+	{
+		log.info("Roll out dashboard request"+rollOutDashboardRequest.getRollOutDashboard());
+		RollOutDashboard sendDataForRollOut=wSCalculationService.sendDataForRollOut(rollOutDashboardRequest);
+		RollOutDashboardResponse response = RollOutDashboardResponse.builder().
+				rollOutDashboard(sendDataForRollOut).build();
+
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
 }

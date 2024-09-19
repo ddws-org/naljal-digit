@@ -78,10 +78,23 @@ public class EstimationService {
 		Map<String, JSONArray> billingSlabMaster = new HashMap<>();
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		ArrayList<String> billingSlabIds = new ArrayList<>();
-		billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER,
+		log.info("masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER):"+masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
+		log.info("masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST)" +masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
+		// Convert and assign WC_BILLING_SLAB_MASTER
+		ArrayList<String> wcBillingSlabList = (ArrayList<String>) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER);
+		JSONArray wcBillingSlabArray = new JSONArray();
+		wcBillingSlabArray.addAll(wcBillingSlabList);
+		billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER, wcBillingSlabArray);
+		// Convert and assign CALCULATION_ATTRIBUTE_CONST
+		ArrayList<String> calculationAttributeList = (ArrayList<String>) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST);
+		JSONArray calculationAttributeArray = new JSONArray();
+		calculationAttributeArray.addAll(calculationAttributeList);
+		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST, calculationAttributeArray);
+
+		/*billingSlabMaster.put(WSCalculationConstant.WC_BILLING_SLAB_MASTER,
 				(JSONArray) masterData.get(WSCalculationConstant.WC_BILLING_SLAB_MASTER));
 		billingSlabMaster.put(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST,
-				(JSONArray) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));
+				(JSONArray) masterData.get(WSCalculationConstant.CALCULATION_ATTRIBUTE_CONST));*/
 //		timeBasedExemptionMasterMap.put(WSCalculationConstant.WC_WATER_CESS_MASTER,
 //				(JSONArray) (masterData.getOrDefault(WSCalculationConstant.WC_WATER_CESS_MASTER, null)));
 		// mDataService.setWaterConnectionMasterValues(requestInfo, tenantId,
@@ -273,9 +286,9 @@ public class EstimationService {
 		Property property = wSCalculationUtil.getProperty(
 				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());
 		// get billing Slab
-		log.debug(" the slabs count : " + billingSlabs.size());
-		final String buildingType = (property.getUsageCategory() != null) ? property.getUsageCategory().split("\\.")[0]
-				: "";
+		//final String buildingType = (property.getUsageCategory() != null) ? property.getUsageCategory().split("\\.")[0]: "";
+		//TODO:FIX ME : here before we passing buildingtype as UsageCategory from proerty response . but while creating property usagecategoty is residentialeven when we are creating commercial connection. Hennce we have change this to proertytype
+		final String buildingType = (property.getPropertyType() != null) ? property.getPropertyType().split("\\.")[0]: "";
 		// final String buildingType = "Domestic";
 		final String connectionType = waterConnection.getConnectionType();
 

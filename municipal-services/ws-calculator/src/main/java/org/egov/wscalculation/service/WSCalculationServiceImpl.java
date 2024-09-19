@@ -1,15 +1,16 @@
 package org.egov.wscalculation.service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.mdms.model.MdmsCriteriaReq;
@@ -17,21 +18,9 @@ import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.producer.WSCalculationProducer;
-import org.egov.wscalculation.web.models.AdhocTaxReq;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.CalculationCriteria;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.repository.DemandAuditSeqBuilder;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.TaxHeadCategory;
-import org.egov.wscalculation.web.models.Property;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
-import org.egov.wscalculation.web.models.TaxHeadEstimate;
-import org.egov.wscalculation.web.models.TaxHeadMaster;
-import org.egov.wscalculation.web.models.WaterConnection;
-import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.egov.wscalculation.web.models.enums.Status;
 import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
@@ -39,6 +28,7 @@ import org.egov.wscalculation.repository.WSCalculationDao;
 import org.egov.wscalculation.util.CalculatorUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import com.jayway.jsonpath.JsonPath;
@@ -81,6 +71,15 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	
 	@Autowired
 	private WSCalculationConfiguration config;
+
+	@Autowired
+	private DemandAuditSeqBuilder demandAuditSeqBuilder;
+
+	@Autowired
+	ObjectMapper mapper;
+
+	@Autowired
+	EnrichmentService enrichmentService;
 
 	/**
 	 * Get CalculationReq and Calculate the Tax Head on Water Charge And Estimation Charge
@@ -127,6 +126,21 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 								.getWaterConnection().getPreviousReadingDate().longValue())) {
 			searchResult.get(0).setStatus(StatusEnum.CANCELLED);
 			isWSUpdateSMS = true;
+			if(config.isSaveDemandAuditEnabled()){
+				searchResult.stream().forEach(demand -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(demand.getConsumerCode()).
+							tenant_id(demand.getTenantId()).
+							status(demand.getStatus().toString()).
+							action("GET CALCULATION UPDATE").
+							data(demand).
+							createdby(demand.getAuditDetails().getCreatedBy()).
+							createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					wsCalculationProducer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
+				});
+			}
 			demandRepository.updateDemand(request.getRequestInfo(), searchResult);
 		}
 		
@@ -185,15 +199,33 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		@SuppressWarnings("unchecked")
 		List<String> billingSlabIds = estimatesAndBillingSlabs.get("billingSlabIds");
 		WaterConnection waterConnection = criteria.getWaterConnection();
-		Property property = wSCalculationUtil.getProperty(
-				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());
+		/*Property property = wSCalculationUtil.getProperty(
+				WaterConnectionRequest.builder().waterConnection(waterConnection).requestInfo(requestInfo).build());*/
 		
-		String tenantId = null != property.getTenantId() ? property.getTenantId() : criteria.getTenantId();
+		String tenantId = criteria.getTenantId();
 
-		@SuppressWarnings("unchecked")
-		Map<String, TaxHeadCategory> taxHeadCategoryMap = ((List<TaxHeadMaster>) masterMap
+
+		/*Map<String, TaxHeadCategory> taxHeadCategoryMap = ((List<TaxHeadMaster>) masterMap
 				.get(WSCalculationConstant.TAXHEADMASTER_MASTER_KEY)).stream()
-						.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (OldValue, NewValue) -> NewValue));
+						.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (OldValue, NewValue) -> NewValue));*
+
+		 */
+		Map<String, TaxHeadCategory> taxHeadCategoryMap;
+		try {
+			// Deserialize the list
+			List<TaxHeadMaster> taxHeadMasters = mapper.convertValue(
+					masterMap.get(WSCalculationConstant.TAXHEADMASTER_MASTER_KEY),
+					new TypeReference<List<TaxHeadMaster>>() {}
+			);
+			// Convert to Map
+			taxHeadCategoryMap = taxHeadMasters.stream()
+					.collect(Collectors.toMap(TaxHeadMaster::getCode, TaxHeadMaster::getCategory, (oldValue, newValue) -> newValue));
+			// Output for verification
+			System.out.println(taxHeadCategoryMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw  new CustomException();
+		}
 
 		BigDecimal taxAmt = BigDecimal.ZERO;
 		BigDecimal waterCharge = BigDecimal.ZERO;
@@ -267,6 +299,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		List<Calculation> calculations = new ArrayList<>(request.getCalculationCriteria().size());
 		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Map<String, List> estimationMap = null;
+			log.info("Innside get Calculationn");
 			if(request.getIsAdvanceCalculation() == null || (!request.getIsAdvanceCalculation().booleanValue())) {
 				estimationMap	= estimationService.getEstimationMap(criteria, request.getRequestInfo(),
 						masterMap,request.getIsconnectionCalculation(),false);
@@ -363,12 +396,30 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	
 	public void generateBulkDemandForTenant(BulkDemand bulkDemand) {
 		String tenantId = bulkDemand.getTenantId();
+		String billingPeriod = bulkDemand.getBillingPeriod();
+
+		Integer duplicateHours=config.getDuplicateBulkDemandDurationHours();
+
+		Timestamp durationAgo = Timestamp.from(Instant.now().minus(duplicateHours, ChronoUnit.HOURS));
+
+		// Check for duplicate calls in the last configurable duration
+		boolean isDuplicate = demandService.isDuplicateBulkDemandCall(tenantId, billingPeriod, durationAgo);
+		if (isDuplicate) {
+			throw new CustomException("DUPLICATE_REQUEST", "A bulk demand generation for this tenant and billing Period was already requested in the last "+ duplicateHours +" hours.");
+		}
 		if(tenantId != null && tenantId.split("\\.").length >1) {
 			demandService.generateBulkDemandForTenantId(bulkDemand);
 		}else {
 			throw new CustomException("INVALD_TENANT", "Cannot generate bulk dmeand for this tenant");
 		}
-		
+
+		AuditDetails auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),false);
+		wSCalculationDao.updateStatusForOldRecords(tenantId,durationAgo,billingPeriod,auditDetails);
+
+		auditDetails=enrichmentService.getAuditDetails(bulkDemand.getRequestInfo().getUserInfo().getUuid(),true);
+		// Insert a new record into the table
+		demandService.insertBulkDemandCall(tenantId, billingPeriod, "IN_PROGRESS",auditDetails);
+
 	}
 	/**
 	 * 
@@ -426,6 +477,24 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	}
 
 
+	@Override
+	public RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime date = LocalDateTime.now();
+		log.info("Time schedule start for roll out dashboard on : " + date.format(dateTimeFormatter));
 
+		try {
+			String tenantId = rollOutDashboardRequest.getRollOutDashboard().getTenantid();
+			if (tenantId != null) {
+				rollOutDashboardRequest.getRollOutDashboard().setCreatedTime(new Date());
+				log.info("Role out data sending to kafka topic "+ rollOutDashboardRequest.getRollOutDashboard());
+				wsCalculationProducer.push(config.getRollOutDashBoardTopic(), rollOutDashboardRequest.getRollOutDashboard());
+			}
+		} catch (Exception e) {
+			log.info("Exception occurred while fetching tenantId");
+			throw new DataRetrievalFailureException("Data not found "+e);
+		}
+		return rollOutDashboardRequest.getRollOutDashboard();
+	}
 	
 }
