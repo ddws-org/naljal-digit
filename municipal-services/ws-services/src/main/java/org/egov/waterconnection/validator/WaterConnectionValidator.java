@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.egov.waterconnection.web.models.collection.Payment;
+import org.egov.waterconnection.web.models.collection.PaymentResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

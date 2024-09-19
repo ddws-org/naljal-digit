@@ -1,6 +1,6 @@
 package org.egov.waterconnection.service;
 
-import java.util.List;
+import java.util.*;
 
 import jakarta.validation.Valid;
 
