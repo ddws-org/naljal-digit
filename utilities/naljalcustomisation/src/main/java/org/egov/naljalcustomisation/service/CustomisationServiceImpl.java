@@ -138,7 +138,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 message = message.replace("{Date}", formattedDate);
 
                                 message = message.replace("{Date}", LocalDate.now().toString());
-                                System.out.println("PENDING Coll SMS::" + message);
+                                log.info("PENDING Coll SMS::" + message);
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
                                         .users(new String[] { uuidUsername }).build();
@@ -161,7 +161,7 @@ public class CustomisationServiceImpl implements CustomisationService {
         items.add(item);
         Action action = Action.builder().actionUrls(items).build();
         List<Event> events = new ArrayList<>();
-        System.out.println("Action Link::" + actionLink);
+        log.info("Action Link::" + actionLink);
 
         Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
         additionalDetailsMap.put("localizationCode", CustomConstants.PENDING_COLLECTION_EVENT);
@@ -204,7 +204,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                     message = message.replace(" {PENDING_COLLECTION} ", "0");
                     attributes.put("{PENDING_COLLECTION}", "0");
                 }
-                System.out.println("Final EVENT MEssage is :" + message);
+                log.info("Final EVENT MEssage is :" + message);
             } else if (message.contains("{amount}")) {
                 if (pendingCollection.get(0) != null) {
                     message = message.replace("{amount}", pendingCollection.get(0));
@@ -214,7 +214,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                     message = message.replace("{amount}", "0");
                     attributes.put("{amount}", "0");
                 }
-                System.out.println("Final SMS MEssage is :" + message);
+                log.info("Final SMS MEssage is :" + message);
             }
         if (message.contains("{TODAY_DATE}")) {
             DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -223,7 +223,7 @@ public class CustomisationServiceImpl implements CustomisationService {
             message = message.replace("{TODAY_DATE}", formattedDate);
             attributes.put("{TODAY_DATE}", formattedDate);
         }
-        System.out.println("Final message is :" + message);
+        log.info("Final message is :" + message);
 
         additionalDetailsMap.put("attributes", attributes);
 
@@ -359,7 +359,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                             Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
                             for (OwnerInfo userInfo : userDetailResponse.getUser()) {
-                                System.out.println("TODAY Coll User Info::" + userInfo);
+                                log.info("TODAY Coll User Info::" + userInfo);
                                 if (userInfo.getName() != null) {
                                     mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
                                 } else {
@@ -381,7 +381,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                         Date today = new Date();
                                         String formattedDate = format.format(today);
                                         msg = msg.replace("{date}", formattedDate);
-                                        System.out.println("TODAY Coll SMS::" + msg);
+                                        log.info("TODAY Coll SMS::" + msg);
                                         SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
                                                 .message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
                                                 .users(new String[] { uuidUsername }).build();
@@ -409,7 +409,7 @@ public class CustomisationServiceImpl implements CustomisationService {
         ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
         items.add(item);
         Action action = Action.builder().actionUrls(items).build();
-        System.out.println("Action Link::" + actionLink);
+        log.info("Action Link::" + actionLink);
 
         Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
         additionalDetailsMap.put("localizationCode", CustomConstants.TODAY_CASH_COLLECTION);
@@ -494,7 +494,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                         }
                     }
                 }
-                System.out.println("Final message is :" + message);
+                log.info("Final message is :" + message);
             }
             additionalDetailsMap.put("attributes", attributes);
         }
@@ -509,7 +509,7 @@ public class CustomisationServiceImpl implements CustomisationService {
         ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
         items.add(item);
         Action action = Action.builder().actionUrls(items).build();
-        System.out.println("ActionLink::" + actionLink);
+        log.info("ActionLink::" + actionLink);
 
         Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
         additionalDetailsMap.put("localizationCode", CustomConstants.MONTHLY_SUMMARY_EVENT);
@@ -581,7 +581,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 // <GPWSC> with
                                 // value
                                 message = message.replace("{user}", uuidUsername);
-                                System.out.println("SMS Notification::" + message);
+                                log.info("SMS Notification::" + message);
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -623,7 +623,7 @@ public class CustomisationServiceImpl implements CustomisationService {
             message = message.replace("{PREVIOUS_MONTH_EXPENSE}", previousMonthExpense.get(0));
             attributes.put("{PREVIOUS_MONTH_EXPENSE}", previousMonthExpense.get(0));
         }
-        System.out.println("Final message::" + message);
+        log.info("Final message::" + message);
         additionalDetailsMap.put("attributes", attributes);
         return message;
     }
@@ -664,7 +664,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 tenantId, tenantId);
 
                         String addExpense = config.getUiAppHost() + config.getExpenditureLink();
-                        System.out.println("ADD Expense Link :: " + addExpense);
+                        log.info("ADD Expense Link :: " + addExpense);
                         for (OwnerInfo userInfo : userDetailResponse.getUser())
                             if (userInfo.getName() != null) {
                                 mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
@@ -680,7 +680,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                         && !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
                                         ? gpwscMap.get(NotificationUtil.MSG_KEY)
                                         : tenantId);
-                                System.out.println("New Expenditure SMS :: " + message);
+                                log.info("New Expenditure SMS :: " + message);
 
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
@@ -707,11 +707,11 @@ public class CustomisationServiceImpl implements CustomisationService {
         Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
         List<Event> events = new ArrayList<>();
         additionalDetailsMap.put("localizationCode", CustomConstants.NEW_EXPENDITURE_EVENT);
-        System.out.println("Action Link::" + actionLink);
+        log.info("Action Link::" + actionLink);
         if (tenantId.split("\\.").length >= 2) {
             HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, CustomConstants.NEW_EXPENDITURE_EVENT,
                     tenantId);
-            System.out.println("Final Message ::" + messageMap.get(NotificationUtil.MSG_KEY));
+            log.info("Final Message ::" + messageMap.get(NotificationUtil.MSG_KEY));
             events.add(Event.builder().tenantId(tenantId).description(messageMap.get(NotificationUtil.MSG_KEY))
                     .eventType(CustomConstants.USREVENTS_EVENT_TYPE).name(CustomConstants.NEW_EXPENSE_ENTRY).postedBy(CustomConstants.USREVENTS_EVENT_POSTEDBY)
                     .recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP).eventDetails(null)
@@ -764,7 +764,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                             }
 
                         String addExpense = config.getUiAppHost() + config.getExpenseBillMarkPaidLink();
-                        System.out.println("ADD Expense Link :: " + addExpense);
+                        log.info("ADD Expense Link :: " + addExpense);
 
                         HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
                                 CustomConstants.MARK_PAID_BILL_SMS, tenantId);
@@ -783,7 +783,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                         : tenantId); // TODO Replace
                                 // <GPWSC> with
                                 // value.
-                                System.out.println("Mark expense bills SMS::" + message);
+                                log.info("Mark expense bills SMS::" + message);
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
@@ -806,7 +806,7 @@ public class CustomisationServiceImpl implements CustomisationService {
         ActionItem item = ActionItem.builder().actionUrl(actionLink).build();
         items.add(item);
         Action action = Action.builder().actionUrls(items).build();
-        System.out.println("ActionLink::" + actionLink);
+        log.info("ActionLink::" + actionLink);
         Map<String, Object> additionalDetailsMap = new HashMap<String, Object>();
         additionalDetailsMap.put("localizationCode", CustomConstants.MARK_PAID_BILL_EVENT);
         List<Event> events = new ArrayList<>();
@@ -839,7 +839,7 @@ public class CustomisationServiceImpl implements CustomisationService {
             attributes.put("{BILL_COUNT_AWAIT}", activeExpenseCount.get(0));
             additionalDetailsMap.put("attributes", attributes);
         }
-        System.out.println("Final message for Mark Expense::" + message);
+        log.info("Final message for Mark Expense::" + message);
         return message;
     }
 

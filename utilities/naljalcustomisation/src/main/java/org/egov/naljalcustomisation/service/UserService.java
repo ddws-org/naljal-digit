@@ -1,6 +1,7 @@
 package org.egov.naljalcustomisation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.user.UserSearchRequest;
 import org.egov.naljalcustomisation.config.CustomisationConfiguration;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -115,7 +117,8 @@ public class UserService {
         try {
             d = f.parse(date);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("Failed to parse date: {} with format: {}", date, format, e);
+            throw new CustomException("INVALID_DATE_FORMAT","Failed to parse date format in user");
         }
         return d.getTime();
     }
