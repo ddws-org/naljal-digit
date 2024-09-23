@@ -364,14 +364,18 @@ class BillGenerationProvider with ChangeNotifier {
         surfaceTintColor: Colors.white,
         title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
         content: Container(
-          height: 370,
+          height: MediaQuery.of(context).size.height / 2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
               SizedBox(height: 10,),
-            SingleChildScrollView(
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
                   border: TableBorder.all(
