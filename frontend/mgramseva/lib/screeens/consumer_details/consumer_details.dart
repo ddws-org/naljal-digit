@@ -231,6 +231,8 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             i18.consumer.FATHER_SPOUSE_NAME,
                             property.owners!.first.fatherOrSpouseCtrl,
                             isRequired: true,
+                            isDisabled:  consumerProvider.isEdit ==
+                                    true,
                             validator: (val) =>
                                 Validators.maxCharactersValidator(
                                     val, 50, i18.consumer.FATHER_SPOUSE_NAME),
