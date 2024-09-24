@@ -363,8 +363,7 @@ class BillGenerationProvider with ChangeNotifier {
       showDialog(context: context, builder: (context)=>AlertDialog(
         surfaceTintColor: Colors.white,
         title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
-        content: Container(
-          height: 370,
+        content: SingleChildScrollView(          
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
