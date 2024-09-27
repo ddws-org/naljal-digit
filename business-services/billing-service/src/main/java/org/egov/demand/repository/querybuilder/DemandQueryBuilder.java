@@ -279,8 +279,6 @@ public class DemandQueryBuilder {
 			addToPreparedStatement(preparedStatementValues, demandCriteria.getConsumerCode());
 		}
 
-		addOrderByClause(demandQuery, DEMAND_QUERY_ORDER_BY_CLAUSE);
-		addPagingClause(demandQuery, preparedStatementValues);
 
 		log.info("the query String for demand : " + demandQuery.toString());
 		return demandQuery.toString();
