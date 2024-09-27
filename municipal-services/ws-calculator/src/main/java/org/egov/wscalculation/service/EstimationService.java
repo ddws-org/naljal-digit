@@ -206,47 +206,31 @@ public class EstimationService {
 
 		// WaterCharge Calculation
 		Double totalUOM = getUnitOfMeasurement(waterConnection, calculationAttribute, criteria);
-//		if (totalUOM == 0.0)
-//			return waterCharge;
+		/*if (totalUOM == 0.0)
+			return waterCharge;*/
 		BillingSlab billSlab = billingSlabs.get(0);
 		// IF calculation type is flat then take flat rate else take slab and calculate the charge
 		//For metered connection calculation on graded fee slab
 		//For Non metered connection calculation on normal connection
-		BigDecimal totUOM = new BigDecimal(totalUOM);
-		log.debug("totalUOM" + totalUOM.toString());
 		if (isRangeCalculation(calculationAttribute)) {
 			if (waterConnection.getConnectionType().equalsIgnoreCase(WSCalculationConstant.meteredConnectionType)) {
+				if(billSlab.getMinimumCharge() !=0){
+					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+				}
 				for (Slab slab : billSlab.getSlabs()) {
-
-					/*
-					 * if (totalUOM > slab.getTo()) { waterCharge = waterCharge
-					 * .add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) *
-					 * slab.getCharge())); totalUOM = totalUOM - ((slab.getTo()) -
-					 * (slab.getFrom())); } else if (totalUOM < slab.getTo()) { waterCharge =
-					 * waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge())); totalUOM =
-					 * ((slab.getTo()) - (slab.getFrom())) - totalUOM; break; }
-					 */
-
-//					if (totalUOM >= slab.getFrom() && totalUOM < slab.getTo()) {
-//						waterCharge = BigDecimal.valueOf((totalUOM * slab.getCharge()));
-//						if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
-//							waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
-//						}
-//						break;
-//					}
-					BigDecimal unitsToDeduct = new BigDecimal(slab.getTo()).subtract(new BigDecimal(slab.getFrom()));
-					log.debug("unitsToDeduct" + unitsToDeduct.toString());
-					if (totUOM.compareTo(unitsToDeduct) > 0) {
-						BigDecimal runningUnit = totUOM.subtract(unitsToDeduct);
-						log.debug("runningUnit" + runningUnit.toString());
-						totUOM = runningUnit;
-					}else {
-						waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);	
+					if (totalUOM > (slab.getTo() - slab.getFrom())) {
+						waterCharge = waterCharge.add(BigDecimal.valueOf(((slab.getTo()) - (slab.getFrom())) * slab.getCharge()));
+						totalUOM = totalUOM - ((slab.getTo()) - (slab.getFrom()));
+//					} else if (totalUOM < slab.getTo()) {
+					}else{
+						waterCharge = waterCharge.add(BigDecimal.valueOf(totalUOM * slab.getCharge()));
+//						totalUOM = ((slab.getTo()) - (slab.getFrom())) - totalUOM;
 						break;
 					}
-					waterCharge = calculateTotalWaterCharge(waterCharge, billSlab, slab, totUOM);
-
 				}
+//				if (billSlab.getMinimumCharge() > waterCharge.doubleValue()) {
+//					waterCharge = BigDecimal.valueOf(billSlab.getMinimumCharge());
+//				}
 			} else if (waterConnection.getConnectionType()
 					.equalsIgnoreCase(WSCalculationConstant.nonMeterdConnection)) {
 				for (Slab slab : billSlab.getSlabs()) {

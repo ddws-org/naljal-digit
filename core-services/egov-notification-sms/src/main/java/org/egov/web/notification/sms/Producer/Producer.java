@@ -1,4 +1,4 @@
-package org.egov.web.notification.sms.config;
+package org.egov.web.notification.sms.Producer;
 
 
 import lombok.extern.slf4j.Slf4j;

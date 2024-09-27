@@ -12,7 +12,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 
-@Configuration
+//@Configuration
 public class KafkaConfiguration {
 
         @Autowired
