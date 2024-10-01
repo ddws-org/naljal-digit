@@ -35,7 +35,7 @@ Future getLocalisation(String locale) async {
             "&tenantId=pb"),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
-          'Content-Security-Policy': "default-src 'self';",
+          'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self';",
           'X-Frame-Options': 'DENY',
           'X-XSS-Protection': '1; mode=block',
           'X-Content-Type-Options': 'nosniff',

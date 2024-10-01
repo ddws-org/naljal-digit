@@ -13,6 +13,11 @@
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
   <base href="/mgramseva/">
+  <script type="text/javascript">
+    if (window.top !== window.self) {
+      window.top.location = window.self.location;
+    }
+  </script>
   <script>
     // Get the current URL
     var currentUrl = window.location.href;

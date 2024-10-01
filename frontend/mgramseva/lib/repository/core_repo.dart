@@ -240,7 +240,7 @@ class CoreRepository extends BaseService {
   Future<String?> urlShotner(String inputUrl) async {
     Map<String, String> header = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      'Content-Security-Policy': "default-src 'self';",
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self';",
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
       'X-Content-Type-Options': 'nosniff',
