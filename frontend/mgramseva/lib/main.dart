@@ -74,11 +74,21 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
+ 
+ 
+  // Get API_KEY from --dart-define or fallback to .env if not defined
+  const String apiKeyFromDefine = String.fromEnvironment('API_KEY', defaultValue: '');
+  String apiKey = apiKeyFromDefine.isNotEmpty ? apiKeyFromDefine : dotenv.env['API_KEY'] ?? '';
+
+  // Log the loaded API key and other environment variables
+  print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
+  print("API_KEY: $apiKey");
+    
+    print(dotenv.env);
     await setEnvironment(Environment.dev);
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-          options: FirebaseConfigurations.firebaseOptions);
-    } else {
+    if(kIsWeb){
+      await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
+    }else{
       await Firebase.initializeApp();
     }
     if (Firebase.apps.length == 0) {}
