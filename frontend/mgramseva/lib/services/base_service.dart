@@ -46,30 +46,37 @@ class BaseService {
       body = jsonEncode(body);
     }
 
-var header = {
-  ...?headers,
-  if (headers == null || headers[HttpHeaders.contentTypeHeader]?.isEmpty == true)
-    HttpHeaders.contentTypeHeader: 'application/json',
-  'Content-Security-Policy': "default-src 'self';",
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
-  'X-Content-Type-Options': 'nosniff',
-};
+    var header = {
+      ...?headers,
+      if (headers == null ||
+          headers[HttpHeaders.contentTypeHeader]?.isEmpty == true)
+        HttpHeaders.contentTypeHeader: 'application/json',
+      'Content-Security-Policy': "default-src 'self';",
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'X-Content-Type-Options': 'nosniff',
+    };
 
     http.Response response;
     try {
       switch (method) {
         case RequestType.GET:
-          response = await http.get(uri,headers:header );
+          response = await http.get(uri, headers: header);
           break;
         case RequestType.PUT:
-          response = await http.put(uri, body: json.encode(body),headers:header);
+          response =
+              await http.put(uri, body: json.encode(body), headers: header);
           break;
         case RequestType.POST:
-          response = await http.post(uri, headers: header, body: body,);
+          response = await http.post(
+            uri,
+            headers: header,
+            body: body,
+          );
           break;
         case RequestType.DELETE:
-          response = await http.delete(uri, body: json.encode(body),headers:header);
+          response =
+              await http.delete(uri, body: json.encode(body), headers: header);
       }
       return _response(response);
     } on CustomException catch (e) {
