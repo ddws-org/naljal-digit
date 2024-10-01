@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -32,14 +33,6 @@ class BaseService {
       // uri = Uri.https(apiBaseUrl, url!,  queryParameters);
     }
 
-    // dio.options.baseUrl = baseUrl ?? Urls.baseUrl;
-    // dio.options.connectTimeout = Constants.CONNECTION_TIMEOUT; //5s
-    // dio.options.receiveTimeout = Constants.RECEIVE_TIMEOUT; //5s
-    // dio.options.contentType =  'application/json';
-    // dio.options.headers =  {
-    //   "Connection" : 'Keep-Alive'
-    // };
-
     if (requestInfo != null) {
       if (body != null) {
         body = {"RequestInfo": requestInfo.toJson(), ...body};
@@ -53,25 +46,30 @@ class BaseService {
       body = jsonEncode(body);
     }
 
-    var header = headers ??
-        {
-          HttpHeaders.contentTypeHeader: 'application/json',
-        };
+var header = {
+  ...?headers,
+  if (headers == null || headers[HttpHeaders.contentTypeHeader]?.isEmpty == true)
+    HttpHeaders.contentTypeHeader: 'application/json',
+  'Content-Security-Policy': "default-src 'self';",
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'X-Content-Type-Options': 'nosniff',
+};
 
     http.Response response;
     try {
       switch (method) {
         case RequestType.GET:
-          response = await http.get(uri);
+          response = await http.get(uri,headers:header );
           break;
         case RequestType.PUT:
-          response = await http.put(uri, body: json.encode(body));
+          response = await http.put(uri, body: json.encode(body),headers:header);
           break;
         case RequestType.POST:
-          response = await http.post(uri, headers: header, body: body);
+          response = await http.post(uri, headers: header, body: body,);
           break;
         case RequestType.DELETE:
-          response = await http.delete(uri, body: json.encode(body));
+          response = await http.delete(uri, body: json.encode(body),headers:header);
       }
       return _response(response);
     } on CustomException catch (e) {
