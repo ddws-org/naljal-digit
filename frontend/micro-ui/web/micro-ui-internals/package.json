@@ -42,7 +42,8 @@
   "resolutions": {
     "**/@babel/runtime": "7.20.1",
     "**/babel-preset-react-app": "10.0.0",
-    "**/polished": "4.2.2"
+    "**/polished": "4.2.2",
+    "caniuse-lite": "1.0.30001632"
   },
   "devDependencies": {
     "husky": "7.0.4",
