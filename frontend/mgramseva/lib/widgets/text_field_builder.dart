@@ -75,7 +75,6 @@ class BuildTextField extends StatefulWidget {
 class _BuildTextField extends State<BuildTextField> {
   @override
   Widget build(BuildContext context) {
-    // TextForm
     Widget textFormWidget = ForceFocusWatcher(
         child: TextFormField(
             style: TextStyle(
@@ -90,6 +89,8 @@ class _BuildTextField extends State<BuildTextField> {
                 : true
                 : true,
             controller: widget.controller,
+            autocorrect: false,       
+            autofillHints: [], 
             keyboardType: widget.textInputType ?? TextInputType.text,
             textInputAction: widget.textInputAction??TextInputAction.done,
             inputFormatters: widget.inputFormatter,
@@ -121,7 +122,7 @@ class _BuildTextField extends State<BuildTextField> {
                     ? ApplicationLocalizations.of(context)
                     .translate((widget.placeHolder!))
                     : "",
-                border: widget.inputBorder,
+                border: widget.inputBorder,                
                 focusedBorder:OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
                 disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color.fromRGBO(0,60,207,0.9))),
