@@ -49,7 +49,6 @@ import 'package:mgramseva/utils/notifiers.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-
 import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
@@ -83,8 +82,6 @@ void main() {
   // Log the loaded API key and other environment variables
   print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
   print("API_KEY: $apiKey");
-    
-    print(dotenv.env);
     await setEnvironment(Environment.dev);
     if(kIsWeb){
       await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
