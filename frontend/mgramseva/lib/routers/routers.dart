@@ -82,6 +82,7 @@ class Routes {
   static const String COMMON_DOWNLOAD = '/withoutAuth/mgramseva-common';
 
   static const String NOTIFICATIONS = '/home/notifications';
+  static const String SECURITY_CHECK = '/warning';
   static const String REPORTS = '/home/reports';
   static const String PRIVACY_POLICY = '/privacy';
   static const String TERMS_OF_USE = '/terms';
