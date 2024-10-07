@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -28,7 +29,9 @@ class _SelectLanguage extends State<SelectLanguage> {
         Provider.of<LanguageProvider>(context, listen: false);
     languageProvider.getLocalizationData(context);
      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(!kIsWeb){
       _checkDeviceSafety();
+      }
 
     });
   }

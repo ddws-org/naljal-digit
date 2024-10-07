@@ -18,7 +18,8 @@ class _UnsafeDeviceDialogState extends State<UnsafeDeviceDialog> {
   @override
   void initState() {
     super.initState();
-    _checkDeviceSafety();
+    if(!kIsWeb){
+    _checkDeviceSafety();}
   }
 
 
