@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/firebase_options.dart';
 import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
@@ -82,13 +83,19 @@ void main() {
   // Log the loaded API key and other environment variables
   print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
   print("API_KEY: $apiKey");
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
     await setEnvironment(Environment.dev);
-    if(kIsWeb){
-      await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
-    }else{
-      await Firebase.initializeApp();
+    // if(kIsWeb){
+    //   await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
+    // }else{
+    //   await Firebase.initializeApp();
+    // }
+    if (Firebase.apps.length == 0) {
+
     }
-    if (Firebase.apps.length == 0) {}
 
     if (!kIsWeb) {
       await FlutterDownloader.initialize(

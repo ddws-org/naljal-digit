@@ -1,4 +1,4 @@
-package com.dwss.mgramseva
+package com.jjm.naljalseva
 
 import io.flutter.embedding.android.FlutterActivity
 
