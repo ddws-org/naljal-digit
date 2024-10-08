@@ -82,6 +82,7 @@ void main() async{
 
   // Log the loaded API key and other environment variables
   print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
+  print("API_KEY: ${dotenv.env['API_KEY']}");
   print("API_KEY: $apiKey");
 
   await Firebase.initializeApp(
