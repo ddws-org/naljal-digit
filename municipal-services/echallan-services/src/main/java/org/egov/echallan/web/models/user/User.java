@@ -9,8 +9,8 @@ import java.util.List;
 import lombok.*;
 import org.egov.common.contract.request.Role;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * User

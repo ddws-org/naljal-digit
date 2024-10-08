@@ -1,23 +1,41 @@
 package org.egov.user.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.egov.user.config.UserServiceConstants.USER_CLIENT_ID;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
-import org.egov.user.domain.exception.*;
+import org.egov.user.domain.exception.AtleastOneRoleCodeException;
+import org.egov.user.domain.exception.DuplicateUserNameException;
+import org.egov.user.domain.exception.InvalidUpdatePasswordRequestException;
+import org.egov.user.domain.exception.OtpValidationPendingException;
+import org.egov.user.domain.exception.PasswordMismatchException;
+import org.egov.user.domain.exception.UserNameNotValidException;
+import org.egov.user.domain.exception.UserNotFoundException;
+import org.egov.user.domain.exception.UserProfileUpdateDeniedException;
 import org.egov.user.domain.model.LoggedInUserUpdatePasswordRequest;
 import org.egov.user.domain.model.NonLoggedInUserUpdatePasswordRequest;
 import org.egov.user.domain.model.User;
 import org.egov.user.domain.model.UserSearchCriteria;
 import org.egov.user.domain.model.enums.UserType;
 import org.egov.user.domain.service.utils.EncryptionDecryptionUtil;
+import org.egov.user.domain.service.utils.NotificationUtil;
+import org.egov.user.domain.service.utils.UserUtils;
 import org.egov.user.persistence.dto.FailedLoginAttempt;
 import org.egov.user.persistence.repository.FileStoreRepository;
 import org.egov.user.persistence.repository.OtpRepository;
@@ -40,22 +58,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.egov.user.config.UserServiceConstants.USER_CLIENT_ID;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class UserService {
-
+	
+	private UserUtils userUtils;
     private UserRepository userRepository;
     private OtpRepository otpRepository;
     private PasswordEncoder passwordEncoder;
@@ -94,7 +103,10 @@ public class UserService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public UserService(UserRepository userRepository, OtpRepository otpRepository, FileStoreRepository fileRepository,
+    @Autowired
+    private NotificationUtil notificationUtil;
+
+    public UserService(UserRepository userRepository, OtpRepository otpRepository, FileStoreRepository fileRepository, UserUtils userUtils,
                        PasswordEncoder passwordEncoder, EncryptionDecryptionUtil encryptionDecryptionUtil, TokenStore tokenStore,
                        @Value("${default.password.expiry.in.days}") int defaultPasswordExpiryInDays,
                        @Value("${citizen.login.password.otp.enabled}") boolean isCitizenLoginOtpBased,
@@ -114,6 +126,7 @@ public class UserService {
         this.pwdRegex = pwdRegex;
         this.pwdMaxLength = pwdMaxLength;
         this.pwdMinLength = pwdMinLength;
+        this.userUtils = userUtils;
 
     }
 
@@ -129,7 +142,7 @@ public class UserService {
         UserSearchCriteria userSearchCriteria = UserSearchCriteria.builder()
                 .mobileNumber(userName)
                 .userName(userName)
-                .tenantId(getStateLevelTenantForCitizen(tenantId, userType))
+                .tenantId(userUtils.getStateLevelTenantForCitizen(tenantId, userType))
                 .type(userType)
                 .build();
 
@@ -140,7 +153,7 @@ public class UserService {
 
         /* encrypt here */
 
-        userSearchCriteria = encryptionDecryptionUtil.encryptObject(userSearchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        userSearchCriteria = encryptionDecryptionUtil.encryptObject(userSearchCriteria, "User", UserSearchCriteria.class);
         List<User> users = userRepository.findAll(userSearchCriteria);
 
         if (users.isEmpty())
@@ -181,21 +194,33 @@ public class UserService {
                                                              boolean isInterServiceCall, RequestInfo requestInfo) {
 
         searchCriteria.validate(isInterServiceCall);
+
+//        searchCriteria.setTenantId(userUtils.getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
         if(!ObjectUtils.isEmpty(searchCriteria.getIsStateLevelSearch())) {
             if (searchCriteria.getIsStateLevelSearch()) {
-                searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+                searchCriteria.setTenantId(userUtils.getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
             }
         } else {
-            searchCriteria.setTenantId(getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
+            searchCriteria.setTenantId(userUtils.getStateLevelTenantForCitizen(searchCriteria.getTenantId(), searchCriteria.getType()));
         }
         /* encrypt here / encrypted searchcriteria will be used for search*/
+        String altmobnumber=null;
+        
+        if(searchCriteria.getMobileNumber()!=null) {
+        	altmobnumber = searchCriteria.getMobileNumber();
+        }
 
-        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "User", UserSearchCriteria.class);
+        
+        if(altmobnumber!=null) {
+        	searchCriteria.setAlternatemobilenumber(altmobnumber);
+        }
+        
         List<org.egov.user.domain.model.User> list = userRepository.findAll(searchCriteria);
 
         /* decrypt here / final reponse decrypted*/
 
-        list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
+        list = encryptionDecryptionUtil.decryptObject(list, null, User.class, requestInfo);
 
         setFileStoreUrlsByFileStoreIds(list);
         return list;
@@ -208,21 +233,17 @@ public class UserService {
      * @return
      */
     public User createUser(User user, RequestInfo requestInfo) {
-        
         user.setUuid(UUID.randomUUID().toString());
         user.validateNewUser(createUserValidateName);
         conditionallyValidateOtp(user);
-        
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
-        
-        if(!userRepository.isUserPresent(user.getMobileNumber(), getStateLevelTenantForCitizen(user.getTenantId(), user
-                .getType()), user.getType())) {
-        	
-        	// copy mobie number to username, so that login with mobile number will work.
+        if(!userRepository.isUserPresent(user.getMobileNumber(),
+                userUtils.getStateLevelTenantForCitizen(user.getTenantId(), user.getType()), user.getType())) {
+
+            // copy mobie number to username, so that login with mobile number will work.
             user.setUsername(user.getMobileNumber());
         }
-        
         validateUserUniqueness(user);
         if (isEmpty(user.getPassword())) {
             user.setPassword(UUID.randomUUID().toString());
@@ -231,27 +252,22 @@ public class UserService {
         }
         user.setPassword(encryptPwd(user.getPassword()));
         user.setDefaultPasswordExpiry(defaultPasswordExpiryInDays);
-        user.setTenantId(getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
+        user.setTenantId(userUtils.getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
         User persistedNewUser = persistNewUser(user);
-        return encryptionDecryptionUtil.decryptObject(persistedNewUser, "User", User.class, requestInfo);
+        return encryptionDecryptionUtil.decryptObject(persistedNewUser, "UserSelf", User.class, requestInfo);
 
         /* decrypt here  because encrypted data coming from DB*/
 
     }
 
     private void validateUserUniqueness(User user) {
-        if (userRepository.isUserPresent(user.getUsername(), getStateLevelTenantForCitizen(user.getTenantId(), user
-                .getType()), user.getType()))
-            throw new DuplicateUserNameException(UserSearchCriteria.builder().userName(user.getUsername()).type(user
-                    .getType()).tenantId(user.getTenantId()).build());
-    }
-
-    private String getStateLevelTenantForCitizen(String tenantId, UserType userType) {
-        if (!isNull(userType) && !isEmpty(tenantId) && tenantId.contains("."))
-            return tenantId.split("\\.")[0];
-        else
-            return tenantId;
-    }
+    	
+		String tenantId = userUtils.getStateLevelTenantForCitizen(user.getTenantId(), user.getType());
+		Boolean isUserPresent = userRepository.isUserPresent(user.getUsername(), tenantId, user.getType());
+		if (isUserPresent)
+			throw new DuplicateUserNameException(UserSearchCriteria.builder().userName(user.getUsername())
+					.type(user.getType()).tenantId(user.getTenantId()).build());
+	}
 
     /**
      * api will create the citizen with otp
@@ -266,6 +282,7 @@ public class UserService {
 
 
     private void validateAndEnrichCitizen(User user) {
+    	
         log.info("Validating User........");
         if (isCitizenLoginOtpBased && !StringUtils.isNumeric(user.getUsername()))
             throw new UserNameNotValidException();
@@ -274,7 +291,8 @@ public class UserService {
         if (!isCitizenLoginOtpBased)
             validatePassword(user.getPassword());
         user.setRoleToCitizen();
-        user.setTenantId(getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
+        String tenantId = userUtils.getStateLevelTenantForCitizen(user.getTenantId(),  user.getType());
+        user.setTenantId(tenantId);
     }
 
     /**
@@ -338,7 +356,7 @@ public class UserService {
     public Boolean validateOtp(User user) {
         Otp otp = Otp.builder().otp(user.getOtpReference()).identity(user.getMobileNumber()).tenantId(user.getTenantId())
                 .userType(user.getType()).build();
-        RequestInfo requestInfo = RequestInfo.builder().action("validate").ts(new Date()).build();
+        RequestInfo requestInfo = RequestInfo.builder().action("validate").ts(System.currentTimeMillis()).build();
         OtpValidateRequest otpValidationRequest = OtpValidateRequest.builder().requestInfo(requestInfo).otp(otp)
                 .build();
         return otpRepository.validateOtp(otpValidationRequest);
@@ -355,21 +373,21 @@ public class UserService {
     // TODO Fix date formats
     public User updateWithoutOtpValidation(User user, RequestInfo requestInfo) {
         final User existingUser = getUserByUuid(user.getUuid());
-        user.setTenantId(getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
+        user.setTenantId(userUtils.getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
         validateUserRoles(user);
         user.validateUserModification();
         validatePassword(user.getPassword());
         user.setPassword(encryptPwd(user.getPassword()));
         /* encrypt */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
-        userRepository.update(user, existingUser);
+        userRepository.update(user, existingUser,requestInfo.getUserInfo().getId(), requestInfo.getUserInfo().getUuid() );
 
         // If user is being unlocked via update, reset failed login attempts
         if (user.getAccountLocked() != null && !user.getAccountLocked() && existingUser.getAccountLocked())
             resetFailedLoginAttempts(user);
 
         User encryptedUpdatedUserfromDB = getUserByUuid(user.getUuid());
-        User decryptedupdatedUserfromDB = encryptionDecryptionUtil.decryptObject(encryptedUpdatedUserfromDB, "User", User.class, requestInfo);
+        User decryptedupdatedUserfromDB = encryptionDecryptionUtil.decryptObject(encryptedUpdatedUserfromDB, "UserSelf", User.class, requestInfo);
         return decryptedupdatedUserfromDB;
     }
 
@@ -414,17 +432,28 @@ public class UserService {
         /* encrypt here */
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
 
-        final User existingUser = getUserByUuid(user.getUuid());
+        User existingUser = getUserByUuid(user.getUuid());
         validateProfileUpdateIsDoneByTheSameLoggedInUser(user);
         user.nullifySensitiveFields();
         validatePassword(user.getPassword());
-        userRepository.update(user, existingUser);
+        userRepository.update(user, existingUser,requestInfo.getUserInfo().getId(), requestInfo.getUserInfo().getUuid() );
         User updatedUser = getUserByUuid(user.getUuid());
+        
         /* decrypt here */
-
-        updatedUser = encryptionDecryptionUtil.decryptObject(updatedUser, "User", User.class, requestInfo);
+        existingUser = encryptionDecryptionUtil.decryptObject(existingUser, "UserSelf", User.class, requestInfo);
+        updatedUser = encryptionDecryptionUtil.decryptObject(updatedUser, "UserSelf", User.class, requestInfo);
 
         setFileStoreUrlsByFileStoreIds(Collections.singletonList(updatedUser));
+        String oldEmail = existingUser.getEmailId();
+        String newEmail = updatedUser.getEmailId();
+        if((oldEmail != null && !oldEmail.isEmpty()) && newEmail != null && !(newEmail.equalsIgnoreCase(oldEmail))) {
+            // Sending sms and email to old email to notify that email has been changed
+            try {
+                notificationUtil.sendEmail(requestInfo, existingUser, updatedUser);
+            } catch (Exception ignore){
+                log.error("Not able to send email");
+            }
+        }
         return updatedUser;
     }
 
@@ -447,7 +476,7 @@ public class UserService {
         validatePassword(updatePasswordRequest.getNewPassword());
         user.setDefaultPwdChgd(Boolean.TRUE);
         user.updatePassword(encryptPwd(updatePasswordRequest.getNewPassword()));
-        userRepository.update(user, user);
+        userRepository.update(user, user, user.getId() , user.getUuid());
     }
 
     /**
@@ -478,21 +507,19 @@ public class UserService {
         /* encrypted value is stored in DB*/
         user.setDefaultPwdChgd(Boolean.TRUE);
         user = encryptionDecryptionUtil.encryptObject(user, "User", User.class);
-
-        userRepository.update(user, user);
+        userRepository.update(user, user,user.getId() , user.getUuid());
     }
 
 
     /**
      * Deactivate failed login attempts for provided user
-     * If the failed attment count is zero insert one failed attempt with active false, to indicate that user logged in atleast once.
+     * If the failed attment count is zero insert one failed attempt with active false,
+     * to indicate that user logged in atleast once.
      * @param user whose failed login attempts are to be reset
      */
     public void resetFailedLoginAttempts(User user) {
-        if (user.getUuid() != null) {
-          	 userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
-        }
-           
+        if (user.getUuid() != null)
+            userRepository.resetFailedLoginAttemptsForUser(user.getUuid());
     }
 
     /**
@@ -564,7 +591,7 @@ public class UserService {
      */
     private void validateExistingPassword(User user, String existingRawPassword) {
         if (!passwordEncoder.matches(existingRawPassword, user.getPassword())) {
-            throw new PasswordMismatchException();
+            throw new PasswordMismatchException("Invalid username or password");
         }
     }
 
@@ -656,6 +683,7 @@ public class UserService {
     }
 
     public List<User> searchUsersByTenants(UserSearchCriteria searchCriteria, RequestInfo requestInfo) {
+        log.info("INSIDE USER SEARCH BY TENANT");
         //searchCriteria.validate(isInterServiceCall);
         if(ObjectUtils.isEmpty(searchCriteria.getTenantIds())) {
             return null;
@@ -675,4 +703,6 @@ public class UserService {
         setFileStoreUrlsByFileStoreIds(list);
         return list;
     }
+
+
 }

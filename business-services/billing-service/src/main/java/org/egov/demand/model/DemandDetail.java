@@ -23,22 +23,23 @@ import org.hibernate.validator.constraints.SafeHtml;
 @Builder
 public class DemandDetail   {
 
-        @SafeHtml
         @JsonProperty("id")
         private String id;
 
-        @SafeHtml
         @JsonProperty("demandId")
         private String demandId;
 
-        @SafeHtml
-        @NotNull @JsonProperty("taxHeadMasterCode")
+        @NotNull
+        @JsonProperty("taxHeadMasterCode")
         private String taxHeadMasterCode;
 
-        @NotNull @JsonProperty("taxAmount")
+        @NotNull
+        @JsonProperty("taxAmount")
         private BigDecimal taxAmount;
 
-        @NotNull @JsonProperty("collectionAmount") @Default 
+        @NotNull
+        @JsonProperty("collectionAmount")
+        @Default
         private BigDecimal collectionAmount = BigDecimal.ZERO;
 
         @JsonProperty("additionalDetails")
@@ -47,7 +48,6 @@ public class DemandDetail   {
         @JsonProperty("auditDetails")
         private AuditDetails auditDetails;
 
-        @SafeHtml
         @JsonProperty("tenantId")
         private String tenantId;
 }

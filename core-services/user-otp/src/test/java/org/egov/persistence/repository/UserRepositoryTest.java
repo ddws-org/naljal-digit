@@ -1,5 +1,16 @@
 package org.egov.persistence.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.egov.domain.model.User;
 import org.egov.persistence.contract.UserSearchRequest;
 import org.egov.persistence.contract.UserSearchResponseContent;
@@ -8,20 +19,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRepositoryTest {
@@ -46,12 +47,12 @@ public class UserRepositoryTest {
         list.add(searchContent);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user", list);
-
-        when(restTemplate.postForObject(any(String.class), any(UserSearchRequest.class), eq(Map.class)))
+        
+        when(restTemplate.postForObject(any(String.class), any(HttpEntity.class), eq(Map.class)))
                 .thenReturn(map);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
 
-        final User expectedUser = new User(1L, "test@gmail.com", "123456789",false);
+        final User expectedUser = new User(1L, "test@gmail.com", "123456789");
 
         assertEquals(expectedUser, actualUser);
     }
@@ -64,7 +65,7 @@ public class UserRepositoryTest {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user", list);
 
-        when(restTemplate.postForObject(any(String.class), any(UserSearchRequest.class), eq(Map.class)))
+        when(restTemplate.postForObject(any(String.class), any(HttpEntity.class), eq(Map.class)))
                 .thenReturn(null);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
         assertEquals(actualUser, null);
@@ -77,7 +78,7 @@ public class UserRepositoryTest {
         list.add(searchContent);
         Map<String, Object> map = new HashMap<String, Object>();
 
-        when(restTemplate.postForObject(any(String.class), any(UserSearchRequest.class), eq(Map.class)))
+        when(restTemplate.postForObject(any(String.class), any(HttpEntity.class), eq(Map.class)))
                 .thenReturn(map);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
         assertEquals(actualUser, null);
@@ -91,11 +92,11 @@ public class UserRepositoryTest {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("user", list);
 
-        when(restTemplate.postForObject(any(String.class), any(UserSearchRequest.class), eq(Map.class)))
+        when(restTemplate.postForObject(any(String.class), any(HttpEntity.class), eq(Map.class)))
                 .thenReturn(map);
         User actualUser = userRepository.fetchUser("123456789", "tenantId", "CITIZEN");
 
-        final User expectedUser = new User(2L, "test123@gmail.com", "123456789",false);
+        final User expectedUser = new User(2L, "test123@gmail.com", "123456789");
 
         assertNotEquals(expectedUser, actualUser);
     }

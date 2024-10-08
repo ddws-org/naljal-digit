@@ -241,4 +241,5 @@ public class UserController {
         ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
         return new UserSearchResponse(responseInfo, userContracts);
     }
+
 }

@@ -70,7 +70,7 @@ public class MdmsRepository {
 	@Autowired
 	public MdmsRepository(final RestTemplate restTemplate,
 			@Value("${egov.services.egov_mdms.hostname}") final String mdmsServiceHostname,
-			@Value("${egov.services.egov_mdms.searchpath}") final String mdmsBySearchCriteriaUrl,
+			@Value("${egov.mdms.search.endpoint}") final String mdmsBySearchCriteriaUrl,
 			@Value("${egov.service.egov.mdms.moduleName}") final String moduleName,
 			@Value("${egov.service.egov.mdms.masterName}") final String masterName) {
 

@@ -2,7 +2,7 @@ package org.egov.pt.models;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.pt.models.enums.Status;
 
