@@ -357,30 +357,17 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
-		if(ObjectUtils.isEmpty(criteria.getIsOpenPaymentSearch()) || !criteria.getIsOpenPaymentSearch()) {
+		if (!StringUtils.isEmpty(criteria.getImisNumber())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.imisnumber = ? ");
+			preparedStatement.add(criteria.getImisNumber());
+		}
 
-			if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
-				addClauseIfRequired(preparedStatement, query);
-
-				if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-					query.append(" conn.connectionno ~*  ? ");
-					preparedStatement.add(criteria.getConnectionNumber());
-				} else {
-					query.append(" conn.connectionno ~*  ? ");
-					preparedStatement.add(criteria.getTextSearch());
-				}
-
-
-				if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
-					query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
-					addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
-				}
-			}
-		} else {
-
-			if (!StringUtils.isEmpty(criteria.getConnectionNumber())){
-				addClauseIfRequired(preparedStatement, query);
-				query.append(" conn.connectionno =  ? ");
+		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
+			addClauseIfRequired(preparedStatement, query);
+			
+			if(!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+				query.append(" conn.connectionno ~*  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
 		}

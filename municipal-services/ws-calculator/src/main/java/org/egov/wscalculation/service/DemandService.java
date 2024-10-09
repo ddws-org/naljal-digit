@@ -376,17 +376,12 @@ public class DemandService {
 				messageString = messageString.replace("{ownername}", owner.getName());
 				messageString = messageString.replace("{Period}", billCycle);
 				messageString = messageString.replace("{consumerno}", consumerCode);
-				BigDecimal demandAmount= demandDetails.stream()
-						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-				BigDecimal arrears=totalamount.subtract(demandAmount);
-				if(arrears.compareTo(BigDecimal.ZERO)>0)
-				{
-					messageString = messageString.replace("{billamount}", totalamount.toString());
-				}
-				else
-				{
-					messageString = messageString.replace("{billamount}", totalamount.toString());
-				}
+				messageString = messageString.replace("{ownername}", owner.getName());
+				messageString = messageString.replace("{Period}", month.toString());
+				messageString = messageString.replace("{demandamount}", demandAmount.toString());
+				messageString = messageString.replace("{arrears}", arrears.toString());
+				messageString = messageString.replace("{billamount}", totalAmount.toString());
+				messageString = messageString.replace("{validity}", formattedDate);
 				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
 //				System.out.println("Demand genaration Message get bill::" + messageString);
