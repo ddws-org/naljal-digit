@@ -92,6 +92,22 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         },
       },
       {
+        Header: t("HR_USER_TYPE"),
+        disableSortBy: false,
+        accessor: "typeofuser",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.department}`);
+        },
+      },
+      {
+        Header: t("HR_USER_DESIGNATION"),
+        disableSortBy: false,
+        accessor: "designation",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.designation}`);
+        },
+      },
+      {
         Header: t("HR_STATUS_LABEL"),
         disableSortBy: false,
         accessor: "isActive",

@@ -39,17 +39,17 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
       : formData?.Jurisdictions || [
-        {
-          id: undefined,
-          key: 1,
-          hierarchy: null,
-          boundaryType: null,
-          boundary: null,
-          division: {},
-          divisionBoundary: [],
-          roles: [],
-        },
-      ]
+          {
+            id: undefined,
+            key: 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            division: {},
+            divisionBoundary: [],
+            roles: [],
+          },
+        ]
   );
   const [jurisdictionsData, setJuristictionsData] = useState([]);
   let hierarchylist = [];
@@ -86,9 +86,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     return unique;
   }, []);
 
-
   const uniqueDivisions = divisions?.reduce((unique, obj) => {
-    const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
+    const isDuplicate = unique.some((item) => item.id === obj.id && item.code === obj.code);
     if (!isDuplicate) {
       unique.push(obj);
     }
@@ -107,7 +106,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
     );
     if (uniqueSubDivisionsItems != null) {
       selectSubDivisionList(uniqueSubDivisionsItems);
-
     }
     // selectSectionListList
   }, [data, userData]);
@@ -152,19 +150,20 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
       return res;
     });
+
     if (isEdit && STATE_ADMIN) {
-      let divisionData = [];
+      let divisionDataSet = new Set();
       if (isEdit && jurisdictionData.length > 0) {
-        jurisdictionData?.map((jurisdiction) => {
-          if (jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary?.length > 0 && divisionData.length === 0) {
-            divisionData.push(jurisdiction);
-          } else if (divisionData.length > 0) {
-            if (divisionData[divisionData.length - 1]?.division?.code !== jurisdiction?.division?.code) {
-              divisionData.push(jurisdiction);
+        jurisdictionData?.forEach((jurisdiction) => {
+          if (jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary?.length > 0) {
+            // If divisionData set doesn't already have this division, add it
+            if (!Array.from(divisionDataSet).some((item) => item.division?.code === jurisdiction?.division?.code)) {
+              divisionDataSet.add(jurisdiction);
             }
           }
         });
       }
+      let divisionData = Array.from(divisionDataSet);
 
       let finalData = [];
       divisionData &&
@@ -197,7 +196,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-
   }, [jurisdictions, data?.MdmsRes]);
 
   const reviseIndexKeys = () => {
@@ -235,7 +233,6 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         ]);
         setJuristictionsData((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
       }
-
     } else {
       setjurisdictions((prev) => [
         ...prev,
@@ -250,31 +247,22 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         },
       ]);
       setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
-
     }
-
-
-
   };
 
   function filterJurisdictions(unit, jurisdictions) {
-    const divisionBoundaryCodes = new Set(unit.divisionBoundary.map(item => item.code));
-    return jurisdictions.filter(jurisdiction => {
+    const divisionBoundaryCodes = new Set(unit.divisionBoundary.map((item) => item.code));
+    return jurisdictions.filter((jurisdiction) => {
       return !divisionBoundaryCodes.has(jurisdiction.boundary.code);
     });
   }
   const handleRemoveUnit = (unit) => {
     if (STATE_ADMIN) {
       if (!isEdit) {
-        setjurisdictions(jurisdictions.filter(
-          (element) => element.key !== unit.key
-        ));
+        setjurisdictions(jurisdictions.filter((element) => element.key !== unit.key));
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
-      }
-      else {
-        setJuristictionsData(jurisdictionsData.filter(
-          (element) => element.key !== unit.key
-        ));
+      } else {
+        setJuristictionsData(jurisdictionsData.filter((element) => element.key !== unit.key));
         let filterJurisdictionsItems = filterJurisdictions(unit, jurisdictions);
         setjurisdictions(filterJurisdictionsItems);
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
@@ -283,10 +271,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         clearErrors("Jurisdictions");
       }
       reviseIndexKeys();
-    }
-
-
-    else {
+    } else {
       if (unit.id) {
         let res = {
           id: unit?.id,
@@ -315,14 +300,10 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       }
 
       reviseIndexKeys();
-
     }
-
   };
   let boundaryTypeoption = [];
   const [focusIndex, setFocusIndex] = useState(-1);
-
-
 
   function getroledata() {
     if (STATE_ADMIN) {
@@ -341,8 +322,9 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
-        return !roleCodesToFilter.includes(role.code) &&
-          (role?.name === "Secretary" || role?.name === "Sarpanch" || role?.name === "Revenue Collector");
+        return (
+          !roleCodesToFilter.includes(role.code) && (role?.name === "Secretary" || role?.name === "Sarpanch" || role?.name === "Revenue Collector")
+        );
       })?.map((role) => {
         return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
       });
@@ -407,7 +389,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
             // SUBDIVISION & SECTION
             subDivisionList={subDivisionList}
             sectionList={sectionList}
-          // SUBDIVISION & SECTION
+            // SUBDIVISION & SECTION
           />
         ))
       )}
@@ -457,9 +439,9 @@ function Jurisdiction({
       if (ele.code === currentTenant) {
         defaultjurisdiction = ele;
       }
-    })
+    });
     return defaultjurisdiction;
-  }
+  };
 
   useEffect(() => {
     setDivision(
@@ -488,7 +470,6 @@ function Jurisdiction({
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, boundary: value } : item)));
   };
 
-
   const selectSubDivisionList = (value) => {
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, subDivision: value } : item)));
 
@@ -498,7 +479,7 @@ function Jurisdiction({
         return {
           code: division.sectionCode,
           name: division.sectionName,
-          i18text: Digit.Utils.locale.getCityLocale(division.sectionCode)
+          i18text: Digit.Utils.locale.getCityLocale(division.sectionCode),
         };
       });
     const uniqueSections = sections?.reduce((unique, obj) => {
@@ -771,9 +752,7 @@ function Jurisdiction({
                 <div className="tag-container" style={{ height: jurisdiction?.divisionBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
                   {jurisdiction?.roles.length > 0 &&
                     jurisdiction?.roles.map((value, index) => {
-                      return (
-                        <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />
-                      )
+                      return <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
                     })}
                 </div>
               </div>

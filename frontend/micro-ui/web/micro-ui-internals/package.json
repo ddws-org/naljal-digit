@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/libraries",
     "example",
+     "packages/css",
     "packages/react-components",
     "packages/modules/*"
   ],
@@ -29,6 +30,7 @@
     "dev:core": "cd packages/modules/core && yarn start",
     "dev:example": "cd example && yarn start",
     "build": "run-p build:**",
+    "build:css": "cd packages/css && yarn build:prod",
     "build:libraries": "cd packages/libraries && yarn build",
     "build:components": "cd packages/react-components && yarn build",
     "build:pgr": "cd packages/modules/pgr && yarn build",
@@ -42,8 +44,7 @@
   "resolutions": {
     "**/@babel/runtime": "7.20.1",
     "**/babel-preset-react-app": "10.0.0",
-    "**/polished": "4.2.2",
-    "caniuse-lite": "1.0.30001632"
+    "**/polished": "4.2.2"
   },
   "devDependencies": {
     "husky": "7.0.4",

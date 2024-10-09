@@ -103,6 +103,18 @@ const CreateEmployee = () => {
     return true;
   }
 
+  function hasUniqueDivisions(items) {
+    const uniqueDivisions = new Set();
+    for (const item of items) {
+      const divisionCode = item?.division?.code;
+      if (divisionCode && uniqueDivisions.has(divisionCode)) {
+        return false;
+      }
+      uniqueDivisions.add(divisionCode);
+    }
+    return true;
+  }
+
   const onFormValueChange = (setValue = true, formData) => {
     let isValid = false;
     if (!_.isEqual(sessionFormData, formData)) {
@@ -120,10 +132,13 @@ const CreateEmployee = () => {
         break;
       } else {
         if (!STATE_ADMIN) {
-          if (formData?.SelectUserTypeAndDesignation[0] && formData?.SelectUserTypeAndDesignation[0]?.department != undefined && formData?.SelectUserTypeAndDesignation[0]?.designation != undefined) {
+          if (
+            formData?.SelectUserTypeAndDesignation[0] &&
+            formData?.SelectUserTypeAndDesignation[0]?.department != undefined &&
+            formData?.SelectUserTypeAndDesignation[0]?.designation != undefined
+          ) {
             isValid = true;
-          }
-          else {
+          } else {
             isValid = false;
           }
 
@@ -142,26 +157,23 @@ const CreateEmployee = () => {
     //   , "formData");
     console.log(isValid, "isValid");
 
-
     if (
-
-
       formData?.SelectEmployeeGender?.gender.code &&
-        formData?.SelectEmployeeName?.employeeName &&
-        formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-        formData?.Jurisdictions?.length &&
-        STATE_ADMIN ?
-        (formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
-
-        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0) &&
-
-        isValid &&
-
-        checkfield &&
-        phonecheck &&
-        checkMailNameNum(formData) &&
-        hasUniqueTenantIds(formData?.Jurisdictions)
-
+      formData?.SelectEmployeeName?.employeeName &&
+      formData?.SelectEmployeePhoneNumber?.mobileNumber &&
+      formData?.Jurisdictions?.length &&
+      STATE_ADMIN
+        ? formData?.Jurisdictions.length &&
+          hasUniqueDivisions(formData?.Jurisdictions) &&
+          !formData?.Jurisdictions.some((juris) => juris?.division == undefined || juris?.divisionBoundary?.length === 0)
+        : formData?.Jurisdictions?.length &&
+          formData?.Jurisdictions.length &&
+          !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
+          isValid &&
+          checkfield &&
+          phonecheck &&
+          checkMailNameNum(formData) &&
+          hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
@@ -174,7 +186,6 @@ const CreateEmployee = () => {
   };
 
   const onSubmit = (data) => {
-
     if (!STATE_ADMIN && data.Jurisdictions?.filter((juris) => juris.tenantId == tenantId).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
       closeToast();
@@ -299,8 +310,7 @@ const CreateEmployee = () => {
           {
             fromDate: new Date().getTime(),
             isCurrentAssignment: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.isCurrentAssignment,
-            department: !STATE_ADMIN ? data?.SelectUserTypeAndDesignation[0]?.department?.code :
-              hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.department,
+            department: !STATE_ADMIN ? data?.SelectUserTypeAndDesignation[0]?.department?.code : hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.department,
             designation: STATE_ADMIN
               ? hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => x?.isStateUser)[0]?.code
               : data?.SelectUserTypeAndDesignation[0]?.designation?.code,

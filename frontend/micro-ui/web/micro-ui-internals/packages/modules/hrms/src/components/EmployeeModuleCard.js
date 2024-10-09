@@ -17,7 +17,7 @@ const EmployeeModuleCard = ({
       <path d="M13 0L11.59 1.41L16.17 6H0V8H16.17L11.58 12.59L13 14L20 7L13 0Z" fill="#F47738" />
     </svg>
   );
-
+  
   return (
     <div className={className ? className : "employeeCard customEmployeeCardWarning card-home home-action-cards"} style={styles ? styles : {}}>
       <div className="complaint-links-container">
@@ -44,10 +44,72 @@ const EmployeeModuleCard = ({
               ))}
             </div>
           )}
-          <div className="links-wrapper" style={{ width: "80%" }}>
-            {links.map(({ count, label, link }, index) => (
+
+
+<div className="links-wrapper" style={{ width: "100%" }}>
+
+  
+  {links.reduce((acc, { count, label, link, category }, index) => {
+    const currentCategory = category;
+
+    // Check if category has changed or is the first item
+    if (!acc.currentCategory || acc.currentCategory !== currentCategory) {
+      acc.currentCategory = currentCategory;
+      acc.links.push({ category, items: [] }); // Create new category object
+    }
+
+    // Add link details to the current category
+    acc.links[acc.links.length - 1].items.push({ count, label, link });
+
+    return acc;
+  }, { currentCategory: null, links: [] }) // Initial accumulator state
+  .links.filter(({ items }) => items.length > 0) // Filter out categories with no items
+  .map(({ category, items }, index) => (
+    <>
+      {category && ( // Display category header if category exists
+        <div className="category-header">{category}</div>
+      )}
+      <div className="category-item">
+        {items.map((item, subIndex) => (
+           <div className="link-row" key={`${index}-${subIndex}`}>
+            <span className="link">              
+            { item.link && item.link?.includes("https") ? (
+                  item.label.includes("Dashboard")?
+                  
+                  <a href={item.link} target="_blank">
+                  {item.label}
+                </a> :
+                  <a href={item.link} target="">
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link to={item.link}>{item.label}</Link>
+                )}
+              </span>
+            {item.count ? (
+              <>
+                {FsmHideCount ? null : (
+                  <span className={"inbox-total"}>{item.count || "-"}</span>
+                )}
+                <Link to={item.link}>
+                  <ArrowRightInbox />
+                </Link>
+              </>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </>
+  ))}
+</div>
+
+
+          
+
+          {/* <div className="links-wrapper" style={{ width: "80%" }}>
+            {links.map(({ count, label, link,category }, index) => (
               <span className="link" key={index}>
-                {link && link?.includes("https") ? (
+                { link && link?.includes("https") ? (
                   label.includes("Dashboard")?<a href={link} target="_blank">
                   {label}
                 </a> :
@@ -67,7 +129,7 @@ const EmployeeModuleCard = ({
                 ) : null}
               </span>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

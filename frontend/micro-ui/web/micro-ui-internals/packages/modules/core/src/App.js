@@ -4,7 +4,7 @@ import CitizenApp from "./pages/citizen";
 import EmployeeApp from "./pages/employee";
 import CommonApp from "./pages/common";
 
-export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "citizen" }) => {
+export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "employee" }) => {
   const history = useHistory();
   const { pathname } = useLocation();
   const innerWidth = window.innerWidth;
@@ -65,13 +65,22 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, de
     pathname,
     initData,
   };
+
+  // Do not redirect if it's a payment route under citizen
+  const shouldRedirectToEmployee = () => {
+    if (pathname.startsWith(`/${window?.contextPath}/citizen/payment`)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Switch>
       <Route path={`/${window?.contextPath}/employee`}>
         <EmployeeApp {...commonProps} />
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
-        <CitizenApp {...commonProps} />
+        {shouldRedirectToEmployee() ? <Redirect to={`/${window?.contextPath}/employee`} /> : <CitizenApp {...commonProps} />}
       </Route>
       <Route path={`/${window?.contextPath}/common`}>
         <CommonApp {...commonProps} />

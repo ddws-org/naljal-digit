@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Table, Loader, Card } from "@egovernments/digit-ui-react-components";
 import { Link } from "react-router-dom";
@@ -24,10 +24,10 @@ const SearchUserResults = ({ isLoading, data, ...props }) => {
           console.log(row, "ROW");
 
           return (
-            <span className="link">
-              <Link to={`/${window?.contextPath}/employee/hrms/details/${row.original.tenantId}/${row.original.code}`}>{row.original.code}</Link>
-            </span>
-            // GetCell(`${row.original?.code}`)
+            // <span className="link">
+            //   <Link to={`/${window?.contextPath}/employee/hrms/details/${row.original.tenantId}/${row.original.code}`}>{row.original.code}</Link>
+            // </span>
+            GetCell(`${row.original?.code}`)
           );
         },
       },
@@ -131,11 +131,7 @@ const SearchUserResults = ({ isLoading, data, ...props }) => {
     );
   }
 
-  return (
-    <div>
-      {result}
-    </div>
-  )
-}
+  return <div>{result}</div>;
+};
 
-export default SearchUserResults
+export default SearchUserResults;

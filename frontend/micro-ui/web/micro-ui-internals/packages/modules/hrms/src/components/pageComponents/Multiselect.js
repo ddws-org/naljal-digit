@@ -88,12 +88,10 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => (
-      { 
-        [optionsKey]: e?.i18text? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
-        propsData: [null, e] 
-      }
-    ));
+    return selected?.map((e) => ({
+      [optionsKey]: e?.i18text ? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+      propsData: [null, e],
+    }));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
@@ -107,16 +105,15 @@ const MultiSelectDropdown = ({
     }
   }, [active]);
 
-  useEffect(()=>{
-    if (alreadyQueuedSelectedState?.length === filteredOptions?.length){
-      if(alreadyQueuedSelectedState?.length != 0 &&  filteredOptions?.length != 0){
-      setIsSelected(true)
-      }   
-    }else{
-      setIsSelected(false)
-
+  useEffect(() => {
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length) {
+      if (alreadyQueuedSelectedState?.length != 0 && filteredOptions?.length != 0) {
+        setIsSelected(true);
+      }
+    } else {
+      setIsSelected(false);
     }
-  },[alreadyQueuedSelectedState])
+  }, [alreadyQueuedSelectedState]);
 
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);

@@ -41,6 +41,8 @@
     }
   }
 
+
+
   .links-wrapper {
     @apply pl-md py-sm text-text-btn;
     .link {
@@ -50,6 +52,16 @@
         @apply ml-sm;
       }
     }
+  }
+
+  .category-header{
+    font-weight: 500 !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .category-item{
+    margin-left: 1rem !important;
+    margin-top: 0.25rem !important;
   }
 }
 

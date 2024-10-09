@@ -177,6 +177,11 @@ export const UICustomizations = {
                 updatedCode:`${row.divisionName} - ${row?.name}`
               }
             });
+            result.sort((a, b) => {
+              const nameA = (a.divisionName || "").toLowerCase().trim();
+              const nameB = (b?.divisionName || "").toLowerCase().trim();
+              return nameA.localeCompare(nameB);
+            });
             return result;
           },
         },

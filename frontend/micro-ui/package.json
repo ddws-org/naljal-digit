@@ -1,7 +1,4 @@
 {
   "name": "digit-ui",
-  "version": "1.0.0",
-  "dependencies": {
-    "caniuse-lite": "1.0.30001632"
-  }
+  "version": "1.0.0"
 }

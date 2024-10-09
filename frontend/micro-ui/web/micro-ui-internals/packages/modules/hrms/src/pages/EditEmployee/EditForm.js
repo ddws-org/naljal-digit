@@ -53,7 +53,6 @@ const EditForm = ({ tenantId, data }) => {
     }
   }, [mobileNumber]);
 
-
   let defaultValues = {
     tenantId: tenantId,
     employeeStatus: "EMPLOYED",
@@ -73,9 +72,8 @@ const EditForm = ({ tenantId, data }) => {
     },
     SelectUserTypeAndDesignation: {
       department: data?.assignments[0]?.department,
-      designation: data?.assignments[0]?.designation
+      designation: data?.assignments[0]?.designation,
     },
-
 
     SelectDateofBirthEmployment: { dob: convertEpochToDate(data?.user?.dob) },
     Jurisdictions: data?.jurisdictions?.map((ele, index) => {
@@ -118,7 +116,6 @@ const EditForm = ({ tenantId, data }) => {
     return validEmail && name.match(Digit.Utils.getPattern("Name"));
   };
 
-
   function hasUniqueTenantIds(items) {
     // Create a Set to efficiently store unique tenantIds
     const uniqueTenantIds = new Set();
@@ -134,6 +131,18 @@ const EditForm = ({ tenantId, data }) => {
       uniqueTenantIds.add(tenantId);
     }
     // No duplicates found, all tenantIds are unique
+    return true;
+  }
+
+  function hasUniqueDivisions(items) {
+    const uniqueDivisions = new Set();
+    for (const item of items) {
+      const divisionCode = item?.division?.code;
+      if (divisionCode && uniqueDivisions.has(divisionCode)) {
+        return false;
+      }
+      uniqueDivisions.add(divisionCode);
+    }
     return true;
   }
 
@@ -153,10 +162,13 @@ const EditForm = ({ tenantId, data }) => {
       } else {
         if (!STATE_ADMIN) {
           key?.roles?.length > 0 && setcheck(true);
-          if (formData?.SelectUserTypeAndDesignation[0] && formData?.SelectUserTypeAndDesignation[0]?.department != undefined && formData?.SelectUserTypeAndDesignation[0]?.designation != undefined) {
+          if (
+            formData?.SelectUserTypeAndDesignation[0] &&
+            formData?.SelectUserTypeAndDesignation[0]?.department != undefined &&
+            formData?.SelectUserTypeAndDesignation[0]?.designation != undefined
+          ) {
             isValid = true;
-          }
-          else {
+          } else {
             isValid = false;
           }
         } else if (STATE_ADMIN) {
@@ -168,17 +180,20 @@ const EditForm = ({ tenantId, data }) => {
 
     if (
       formData?.SelectEmployeeGender?.gender.code &&
-        formData?.SelectEmployeeName?.employeeName &&
-        formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-        STATE_ADMIN ?
-        (formData?.Jurisdictions?.length && !formData?.Jurisdictions.some(juris => juris?.division == undefined || juris?.divisionBoundary?.length === 0))
-        : formData?.Jurisdictions?.length && formData?.Jurisdictions.length && !formData?.Jurisdictions.some(juris => juris?.roles?.length === 0)
-        &&
-        isValid &&
-        checkfield &&
-        phonecheck &&
-        checkMailNameNum(formData) &&
-        hasUniqueTenantIds(formData?.Jurisdictions)
+      formData?.SelectEmployeeName?.employeeName &&
+      formData?.SelectEmployeePhoneNumber?.mobileNumber &&
+      STATE_ADMIN
+        ? formData?.Jurisdictions?.length &&
+          !formData?.Jurisdictions.some((juris) => juris?.division == undefined || juris?.divisionBoundary?.length === 0) &&
+          hasUniqueDivisions(formData?.Jurisdictions)
+        : formData?.Jurisdictions?.length &&
+          formData?.Jurisdictions.length &&
+          !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
+          isValid &&
+          checkfield &&
+          phonecheck &&
+          checkMailNameNum(formData) &&
+          hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
@@ -308,7 +323,6 @@ const EditForm = ({ tenantId, data }) => {
     let dataAssignments = data?.assignments;
     dataAssignments[0].department = input.SelectUserTypeAndDesignation[0]?.department?.code;
     dataAssignments[0].designation = input.SelectUserTypeAndDesignation[0]?.designation?.code;
-
 
     requestdata.assignments = input?.Assignments ? input?.Assignments : dataAssignments;
     requestdata.dateOfAppointment = Date.parse(input?.SelectDateofEmployment?.dateOfAppointment);
