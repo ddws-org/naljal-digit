@@ -62,10 +62,6 @@ public class SearchCriteria {
 	@JsonProperty("mobileNumber")
 	private String mobileNumber;
 
-	@JsonProperty("imisNumber")
-	private String imisNumber;
-	
-
 	@JsonProperty("name")
 	private String name;
 	
