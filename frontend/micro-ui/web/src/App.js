@@ -10,7 +10,6 @@ import {
   initPGRComponents,
   PGRReducers,
 } from "@egovernments/digit-ui-module-pgr";
-import "@egovernments/digit-ui-css/dist/index.css";
 window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
 
 const enabledModules = [
