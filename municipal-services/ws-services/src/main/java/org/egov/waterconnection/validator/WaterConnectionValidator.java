@@ -49,16 +49,16 @@ public class WaterConnectionValidator {
 
 	@Autowired
 	private PropertyValidator propertyValidator;
-	
+
 	@Autowired
 	private WaterFieldValidator waterFieldValidator;
-	
+
 	@Autowired
 	private MeterInfoValidator meterInfoValidator;
 
 	@Autowired
 	private ServiceRequestRepository serviceRequestRepository;
-	
+
 	@Autowired
 	private WSConfiguration config;
 
@@ -71,7 +71,7 @@ public class WaterConnectionValidator {
 	String businessService = "WS.ONE_TIME_FEE";
 
 	/**Used strategy pattern for avoiding multiple if else condition
-	 * 
+	 *
 	 * @param waterConnectionRequest
 	 * @param reqType
 	 */
@@ -123,7 +123,7 @@ public class WaterConnectionValidator {
 			if(waterConnectionRequest.getWaterConnection().getPaymentType()
 					.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ARREARS) ||
 					waterConnectionRequest.getWaterConnection().getPaymentType()
-					.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)) {
+							.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)) {
 				if (waterConnectionRequest.getWaterConnection().getPaymentType()
 						.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ARREARS)
 						&& waterConnectionRequest.getWaterConnection().getAdvance() != null) {
@@ -132,22 +132,22 @@ public class WaterConnectionValidator {
 				if (waterConnectionRequest.getWaterConnection().getPaymentType()
 						.equalsIgnoreCase(WCConstants.PAYMENT_TYPE_ADVANCE)
 						&& (waterConnectionRequest.getWaterConnection().getArrears() != null
-								|| waterConnectionRequest.getWaterConnection().getPenalty() != null)) {
+						|| waterConnectionRequest.getWaterConnection().getPenalty() != null)) {
 					errorMap.put("INVALID_PARAMETER",
 							"Arrears and Penalty value is not considered when Paymenttype is Advanced.");
 				}
 			}
-			
+
 			else {
 				errorMap.put("INVALID_PARAMETER",
 						"Payment type not allowed");
 			}
-		}	
-		
+		}
+
 		if (!errorMap.isEmpty())
 			throw new CustomException(errorMap);
 	}
-	
+
 	public void validatePropertyForConnection(List<WaterConnection> waterConnectionList) {
 		waterConnectionList.forEach(waterConnection -> {
 			if (StringUtils.isEmpty(waterConnection.getId())) {
@@ -159,10 +159,10 @@ public class WaterConnectionValidator {
 			}
 		});
 	}
-	
+
 	/**
 	 * Validate for previous data to current data
-	 * 
+	 *
 	 * @param request water connection request
 	 * @param searchResult water connection search result
 	 */
@@ -179,7 +179,7 @@ public class WaterConnectionValidator {
 				demList = new CopyOnWriteArrayList<>(demands);
 				allDemands = new CopyOnWriteArrayList<>(demands);
 			}
-			 
+
 			if(allDemands != null && !allDemands.isEmpty()) {
 				for (Demand demand : allDemands) {
 					if(demand.isPaymentCompleted()) {
@@ -190,35 +190,35 @@ public class WaterConnectionValidator {
 					if(totalTax.compareTo(totalCollection) == 0) {
 						demList.remove(demand);
 					}
-					
+
 				}
 			}
-				Boolean isArrear = false;
-				Boolean isAdvance = false;
+			Boolean isArrear = false;
+			Boolean isAdvance = false;
 				Boolean hasPayments=false;
 
 				if(!request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE)) {
 					hasPayments = checkForPayments(request);
 				}
 
-				if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
-					isAdvance =  true;
-				}
-				if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
-					isArrear =  true;
-				}
-				if (!hasPayments && ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
-						|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null && demList != null && demList.size() > 0
-								|| (isArrear && demList != null && demList.size() > 0))|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
-						|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList != null && demList.size() > 0
-						|| isAdvance))) {
-					for (Demand demand : demList) {
-						demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
-					}
-					updateDemand(request.getRequestInfo(), demList);
-					
-				}
+			if(request.getWaterConnection().getAdvance()!=null && request.getWaterConnection().getAdvance().compareTo(BigDecimal.ZERO) == 0) {
+				isAdvance =  true;
 			}
+			if(request.getWaterConnection().getArrears()!=null && request.getWaterConnection().getArrears().compareTo(BigDecimal.ZERO) == 0) {
+				isArrear =  true;
+			}
+				if (!hasPayments && ((request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
+					|| (searchResult.getArrears() != null && request.getWaterConnection().getArrears() == null && demList != null && demList.size() > 0
+					|| (isArrear && demList != null && demList.size() > 0))|| (request.getWaterConnection().getStatus().equals(StatusEnum.INACTIVE) && demList != null && demList.size() > 0)
+					|| (searchResult.getAdvance() != null && request.getWaterConnection().getAdvance() == null && demList != null && demList.size() > 0
+						|| isAdvance))) {
+				for (Demand demand : demList) {
+					demand.setStatus(org.egov.waterconnection.web.models.Demand.StatusEnum.CANCELLED);
+				}
+				updateDemand(request.getRequestInfo(), demList);
+
+			}
+		}
 	}
 
 	private Boolean checkForPayments(WaterConnectionRequest waterConnectionRequest) {
@@ -257,11 +257,11 @@ public class WaterConnectionValidator {
 		}
 		return false;
 	}
-/**
- * GPWSC specific validation
- * @param request
- * @param searchResult
- */
+	/**
+	 * GPWSC specific validation
+	 * @param request
+	 * @param searchResult
+	 */
 	private DemandResponse validateUpdateForDemand(WaterConnectionRequest request, WaterConnection searchResult) {
 		Map<String, String> errorMap = new HashMap<>();
 		StringBuilder url = new StringBuilder();
@@ -273,13 +273,13 @@ public class WaterConnectionValidator {
 		DemandResponse demandResponse = null;
 		try {
 			Object response = serviceRequestRepository.fetchResult(url, RequestInfoWrapper.builder().requestInfo(request.getRequestInfo()).build());
-			 demandResponse = mapper.convertValue(response, DemandResponse.class);
-			
+			demandResponse = mapper.convertValue(response, DemandResponse.class);
+
 		} catch (Exception ex) {
 			log.error("Calculation response error!!", ex);
 			throw new CustomException("WATER_CALCULATION_EXCEPTION", "Calculation response can not parsed!!!");
 		}
-		
+
 		if( demandResponse!= null && demandResponse.getDemands().size() >0 ) {
 			List<Demand> demands = demandResponse.getDemands().stream().filter( d-> !d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
 			List<Demand> arrearDemands = demandResponse.getDemands().stream().filter( d-> d.getConsumerType().equalsIgnoreCase("waterConnection-arrears")).collect(Collectors.toList());
@@ -289,10 +289,15 @@ public class WaterConnectionValidator {
 			List<DemandDetail> collectAdvance = advanceDemands.size() > 0 ? advanceDemands.get(0).getDemandDetails().stream().filter( d-> d.getCollectionAmount().intValue()>0).collect(Collectors.toList()): new ArrayList<DemandDetail>();
 
 			if(demands.size() > 0 || collectArrears.size() >0  || collectAdvance.size() > 0) {
-				if(!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
-					errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+				if (searchResult.getOldConnectionNo() != null && request.getWaterConnection().getOldConnectionNo() != null &&
+						!request.getWaterConnection().getOldConnectionNo().isEmpty()) {
+					if (!searchResult.getOldConnectionNo().equalsIgnoreCase(request.getWaterConnection().getOldConnectionNo())) {
+						errorMap.put("INVALID_UPDATE_OLD_CONNO", "Old ConnectionNo cannot be modified!!");
+					}
 				}
-				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null) {
+
+				if (searchResult.getImisNumber() != null && request.getWaterConnection().getImisNumber() != null &&
+						!request.getWaterConnection().getImisNumber().isEmpty()) {
 					if (!searchResult.getImisNumber().equalsIgnoreCase(request.getWaterConnection().getImisNumber())) {
 						errorMap.put("INVALID_UPDATE_IMIS_NO", "IMIS No cannot be modified!!");
 					}
@@ -305,14 +310,14 @@ public class WaterConnectionValidator {
 				}
 			}
 		}
-		
+
 		return demandResponse;
 	}
-   
+
 	/**
 	 * Validates if all ids are same as obtained from search result
-	 * 
-	 * @param updateWaterConnection The water connection request from update request 
+	 *
+	 * @param updateWaterConnection The water connection request from update request
 	 * @param searchResult The water connection from search result
 	 */
 	private void validateAllIds(WaterConnection updateWaterConnection, WaterConnection searchResult) {
@@ -323,12 +328,12 @@ public class WaterConnectionValidator {
 		if (!CollectionUtils.isEmpty(errorMap))
 			throw new CustomException(errorMap);
 	}
-    
-    /**
-     * Validates application documents for duplicates
-     * 
-     * @param request The waterConnection Request
-     */
+
+	/**
+	 * Validates application documents for duplicates
+	 *
+	 * @param request The waterConnection Request
+	 */
 	private void validateDuplicateDocuments(WaterConnectionRequest request) {
 		if (request.getWaterConnection().getDocuments() != null) {
 			List<String> documentFileStoreIds = new LinkedList<>();
@@ -343,7 +348,7 @@ public class WaterConnectionValidator {
 	}
 	/**
 	 * Enrich Immutable fields
-	 * 
+	 *
 	 * @param request Water connection request
 	 * @param searchResult water connection search result
 	 */
@@ -353,22 +358,22 @@ public class WaterConnectionValidator {
 		}
 	}
 
-	  /**
-     * Updates the demand
-     * @param requestInfo The RequestInfo of the calculation Request
-     * @param demands The demands to be updated
-     * @return The list of demand updated
-     */
-    private List<Demand> updateDemand(RequestInfo requestInfo, List<Demand> demands){
-        StringBuilder url = new StringBuilder(config.getBillingHost());
-        url.append(config.getDemandUpdateEndPoint());
-        DemandRequest request = new DemandRequest(requestInfo,demands);
-        Object result = serviceRequestRepository.fetchResult(url, request);
-        try{
-            return mapper.convertValue(result,DemandResponse.class).getDemands();
-        }
-        catch(IllegalArgumentException e){
-            throw new CustomException("PARSING_ERROR","Failed to parse response of update demand");
-        }
-    }
+	/**
+	 * Updates the demand
+	 * @param requestInfo The RequestInfo of the calculation Request
+	 * @param demands The demands to be updated
+	 * @return The list of demand updated
+	 */
+	private List<Demand> updateDemand(RequestInfo requestInfo, List<Demand> demands){
+		StringBuilder url = new StringBuilder(config.getBillingHost());
+		url.append(config.getDemandUpdateEndPoint());
+		DemandRequest request = new DemandRequest(requestInfo,demands);
+		Object result = serviceRequestRepository.fetchResult(url, request);
+		try{
+			return mapper.convertValue(result,DemandResponse.class).getDemands();
+		}
+		catch(IllegalArgumentException e){
+			throw new CustomException("PARSING_ERROR","Failed to parse response of update demand");
+		}
+	}
 }
