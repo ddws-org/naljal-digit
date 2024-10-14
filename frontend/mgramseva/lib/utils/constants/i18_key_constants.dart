@@ -737,4 +737,5 @@ class HouseholdRegistry {
   String get EXCEL => 'EXCEL';
   String get LAST_BILL_GEN_DATE => 'LAST_BILL_GEN_DATE';
   String get ACTIVE_INACTIVE => 'ACTIVE_INACTIVE';
+  String get DATA_VERIFIED => 'DATA_VERIFIED';
 }

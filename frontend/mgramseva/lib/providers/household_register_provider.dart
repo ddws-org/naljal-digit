@@ -208,6 +208,7 @@ class HouseholdRegisterProvider with ChangeNotifier {
     TableHeader(i18.householdRegister.PENDING_COLLECTIONS, isSortingRequired: true, isAscendingOrder: sortBy != null && sortBy!.key == 'collectionPendingAmount' ? sortBy!.isAscending : null, apiKey: 'collectionPendingAmount', callBack: onSort),
     TableHeader(i18.common.CREATED_ON_DATE, isSortingRequired: false),
     TableHeader(i18.householdRegister.LAST_BILL_GEN_DATE, isSortingRequired: true, apiKey: 'lastDemandGeneratedDate', isAscendingOrder: sortBy != null && sortBy!.key == 'lastDemandGeneratedDate' ? sortBy!.isAscending : null, callBack: onSort),
+    TableHeader(i18.householdRegister.DATA_VERIFIED, isSortingRequired: false, apiKey: 'dataVerified'),
     TableHeader(i18.householdRegister.ACTIVE_INACTIVE, isSortingRequired: false, apiKey: 'status'),
   ]
   ;
@@ -376,6 +377,15 @@ class HouseholdRegisterProvider with ChangeNotifier {
       TableData(
         '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
       ),
+            TableData(
+        '${connection.dataVerified != null  ? connection.dataVerified == true ? "Y" : 'N' : "-"}',
+         style: TextStyle(
+              color: 
+              connection.dataVerified != null  ?              
+               connection.dataVerified == true
+                  ? ColorCodes.ACTIVE_COL
+                  : ColorCodes.INACTIVE_COL : Colors.black)
+      ),
       TableData(
           '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
           style: TextStyle(
@@ -505,32 +515,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.householdRegister.ACTIVE_INACTIVE,
       i18.householdRegister.LAST_BILL_GEN_DATE
     ];
-    var pdfHeaderList = [
-      i18.common.CONNECTION_ID,
-      i18.common.NAME,
-      i18.common.GENDER,
-      i18.consumer.FATHER_SPOUSE_NAME,
-      i18.common.MOBILE_NUMBER,
-      i18.consumer.OLD_CONNECTION_ID,
-      i18.consumer.CONSUMER_CATEGORY,
-      i18.consumer.CONSUMER_SUBCATEGORY,
-      i18.searchWaterConnection.PROPERTY_TYPE,
-      i18.searchWaterConnection.CONNECTION_TYPE,
-      i18.demandGenerate.METER_READING_DATE,
-      i18.searchWaterConnection.METER_NUMBER,
-      i18.demandGenerate.PREV_METER_READING_LABEL,
-      i18.consumer.ARREARS_ON_CREATION,
-      i18.consumer.CORE_PENALTY_ON_CREATION,
-      i18.consumer.CORE_ADVANCE_ON_CREATION,
-      i18.common.CORE_TOTAL_BILL_AMOUNT,
-      i18.billDetails.TOTAL_AMOUNT_COLLECTED,
-      i18.common.CORE_ADVANCE_AS_ON_TODAY,
-      i18.common.CORE_BALANCE_AS_ON_TODAY,
-      i18.common.CREATED_ON_DATE,
-      i18.householdRegister.LAST_BILL_GEN_DATE,
-      i18.householdRegister.ACTIVE_INACTIVE
 
-    ];
+
     var downloadHeaderList = [
       i18.common.VILLAGE_CODE,
       i18.common.VILLAGE_NAME,
@@ -557,8 +543,8 @@ class HouseholdRegisterProvider with ChangeNotifier {
       i18.common.CORE_BALANCE_AS_ON_TODAY,
       i18.common.CREATED_ON_DATE,
       i18.householdRegister.LAST_BILL_GEN_DATE,
+      i18.householdRegister.DATA_VERIFIED,
       i18.householdRegister.ACTIVE_INACTIVE
-
     ];
 
     var pdfTableData = waterConnectionsDetails.waterConnection
@@ -600,10 +586,13 @@ class HouseholdRegisterProvider with ChangeNotifier {
       '${connection.additionalDetails?.collectionPendingAmount != null ? double.parse(connection.additionalDetails?.collectionPendingAmount ?? '') < 0.0 ? '-' : '₹ ${double.parse(connection.additionalDetails?.collectionPendingAmount ?? '0').abs()}' : '-'}',
       '${connection.additionalDetails?.appCreatedDate != null ? DateFormats.timeStampToDate(connection.additionalDetails?.appCreatedDate?.toInt()) : '-'}',
       '${connection.additionalDetails?.lastDemandGeneratedDate != null && connection.additionalDetails?.lastDemandGeneratedDate != '' ? DateFormats.timeStampToDate(int.parse(connection.additionalDetails?.lastDemandGeneratedDate ?? '')) : '-'}',
-      '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',
+      '${connection.dataVerified != null  ? connection.dataVerified == true ?  'Y' : 'N' : "-"}',      
+      '${connection.status.toString() == Constants.CONNECTION_STATUS.last ? 'Y' : 'N'}',                
                 ])
             .toList() ??
         [];
+
+        
 
     isExcelDownload
         ? generateExcel(

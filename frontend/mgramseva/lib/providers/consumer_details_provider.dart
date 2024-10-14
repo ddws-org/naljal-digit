@@ -253,7 +253,7 @@ class ConsumerProvider with ChangeNotifier {
         isFirstDemand = true;
       }
 
-      waterconnection.isDataVerified = isConsumerVerified;
+      waterconnection.dataVerified = isConsumerVerified;
       
       notifyListeners();
     } catch (e, s) {
@@ -275,7 +275,7 @@ class ConsumerProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     if (formKey.currentState!.validate()) {
-      waterconnection.isDataVerified = isConsumerVerified;
+      waterconnection.dataVerified = isConsumerVerified;
       waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();

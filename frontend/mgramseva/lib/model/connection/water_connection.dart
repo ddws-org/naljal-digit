@@ -71,8 +71,8 @@ class WaterConnection {
   @JsonKey(name: "advance")
   double? advance;
 
-  @JsonKey(name: "isDataVerified")
-  bool? isDataVerified;
+  @JsonKey(name: "dataVerified")
+  bool? dataVerified;
 
   @JsonKey(ignore: true)
   BillList? fetchBill;
