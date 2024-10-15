@@ -323,8 +323,8 @@ class CommonProvider with ChangeNotifier {
     }
     return userDetails;
   }
-
-  void onLogout() async {
+  
+    void onLogout() async {
     await AuthenticationRepository().logoutUser().then((onValue) {
       navigatorKey.currentState
           ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
@@ -536,9 +536,11 @@ class CommonProvider with ChangeNotifier {
     for (int i = 65; i <= 90; i++) {
       alphabets.add(String.fromCharCode(i));
     }
+  
     for (int i = 0; i < 26; i++) {
       excelColumns.add(KeyValue(alphabets[i], i));
     }
+    excelColumns.add(KeyValue("AA", 26));
     return excelColumns;
   }
 

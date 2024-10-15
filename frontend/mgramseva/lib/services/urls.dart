@@ -113,5 +113,5 @@ class UserUrl {
   static const String USER_PROFILE = 'user/_search';
   static const String EDIT_PROFILE = 'user/profile/_update';
   static const String CHANGE_PASSWORD = 'user/password/_update';
-  static const String LOGOUT_USER = 'user/_logout';
+   static const String LOGOUT_USER = 'user/_logout';
 }

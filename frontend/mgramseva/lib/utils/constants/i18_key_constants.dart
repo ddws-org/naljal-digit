@@ -462,6 +462,10 @@ class CreateConsumer {
   String get ML_DOWNLOADED_ON => 'ML_DOWNLOADED_ON';
 
   // Monthly Ledger
+  String get CONSUMER_VERIFY_TEXT => 'CONSUMER_VERIFY_TEXT';
+  String get CONSUMER_VERIFIED_BTN_LABEL => 'CONSUMER_VERIFIED_BTN_LABEL';
+  String get CONSUMER_NOT_VERIFIED_BTN_LABEL => 'CONSUMER_NOT_VERIFIED_BTN_LABEL';
+
 }
 
 class SearchWaterConnection {
@@ -810,4 +814,5 @@ class HouseholdRegistry {
   String get EXCEL => 'EXCEL';
   String get LAST_BILL_GEN_DATE => 'LAST_BILL_GEN_DATE';
   String get ACTIVE_INACTIVE => 'ACTIVE_INACTIVE';
+  String get DATA_VERIFIED => 'DATA_VERIFIED';
 }

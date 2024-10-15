@@ -72,7 +72,6 @@ dependencies:
   package_info_plus: ^4.0.2
   open_filex: ^4.3.4
   syncfusion_flutter_xlsio: ^25.2.4
-  # syncfusion_flutter_xlsio: ^23.2.4
   print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6

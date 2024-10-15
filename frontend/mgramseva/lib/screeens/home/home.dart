@@ -53,11 +53,12 @@ class _HomeState extends State<Home> {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+    String loginUsername = "login user name";
+    if(commonProvider.userDetails != null){   
     final dashboardName = commonProvider.userDetails!.userRequest!.roles!
         .map((e) => e.code)
         .toSet()
         .toList();
-    String loginUsername = "login user name";
     if (dashboardName.contains('CHAIRMEN')) {
       loginUsername = "Chairmen";
     } else if (dashboardName.contains('REVENUE_COLLECTOR')) {
@@ -66,6 +67,7 @@ class _HomeState extends State<Home> {
       loginUsername = "Division User";
     } else if (dashboardName.contains('SECRETARY')) {
       loginUsername = "Secretary";
+    }
     }
     return Stack(
       children: [

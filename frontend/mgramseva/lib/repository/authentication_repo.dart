@@ -49,6 +49,9 @@ class AuthenticationRepository extends BaseService {
     return userProfile;
   }
 
+
+
+
   Future<dynamic> logoutUser() async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,

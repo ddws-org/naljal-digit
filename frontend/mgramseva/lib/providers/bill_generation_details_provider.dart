@@ -403,169 +403,104 @@ class BillGenerationProvider with ChangeNotifier {
       var rateProvider = Provider.of<IfixHierarchyProvider>(
           navigatorKey.currentContext!,
           listen: false);
-      var rate = rateProvider.wcBillingSlabs!.wCBillingSlabs!
-          .where((element) => element.connectionType == 'Non_Metered')
-          .toList();
-      if (selectedBillPeriod != null) {
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  surfaceTintColor: Colors.white,
-                  title: Text(
-                      '${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
-                  content: Container(
-                    height: 370,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        FittedBox(
-                          child: DataTable(
-                            border: TableBorder.all(
-                              width: 0.5,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              color: Colors.grey,
-                            ),
-                            columns: [
-                              DataColumn(
-                                  label: Text(
-                                "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                              DataColumn(
-                                  label: Text(
-                                "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                            ],
-                            rows: [
-                              ...rate
-                                  .map((e) => DataRow(cells: [
-                                        DataCell(Text(
-                                            "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
-                                        DataCell(Text("${e.minimumCharge}"))
-                                      ]))
-                                  .toList()
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                            '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_DEMAND_GEN_WITH_RATE_0)}'), //* Note : No Demand will be generated for the Service Type with rate set to 0.
-                      ],
-                    ),
-                  ),
-                  actions: (rateProvider.wcBillingSlabs!.wCBillingSlabs!
-                                  .where((element) =>
-                                      element.connectionType == 'Non_Metered')
-                                  .length -
-                              rateProvider.wcBillingSlabs!.wCBillingSlabs!
-                                  .where((element) =>
-                                      element.connectionType == 'Non_Metered' &&
-                                      element.minimumCharge == 0)
-                                  .length ==
-                          0)
-                      ? [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}'))
-                        ]
-                      : [
-                          TextButton(
-                              onPressed: () async {
-                                if (rateProvider.wcBillingSlabs!.wCBillingSlabs!
-                                            .where((element) =>
-                                                element.connectionType ==
-                                                'Non_Metered')
-                                            .length -
-                                        rateProvider
-                                            .wcBillingSlabs!.wCBillingSlabs!
-                                            .where((element) =>
-                                                element.connectionType ==
-                                                    'Non_Metered' &&
-                                                element.minimumCharge == 0)
-                                            .length ==
-                                    0) {
-                                  Navigator.pop(context);
-                                  Notifiers.getToastMessage(
-                                      context,
-                                      '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_SERVICE_PRESENT_WITH_RATE_MORE_THAN_0)}',
-                                      'ERROR'); //No Service type present with rate more than 0.
-                                  return;
-                                }
-                                try {
-                                  Loaders.showLoadingDialog(context);
-                                  var commonProvider =
-                                      Provider.of<CommonProvider>(
-                                          navigatorKey.currentContext!,
-                                          listen: false);
-                                  var res2 = {
-                                    "tenantId": commonProvider
-                                        .userDetails!.selectedtenant!.code,
-                                    "billingPeriod": selectedBillPeriod
-                                  };
-                                  var billResponse2 =
-                                      await BillGenerateRepository()
-                                          .bulkDemand(res2);
-                                  Navigator.pop(context);
-                                  String localizationText =
-                                      getSubtitleText(context);
-                                  Navigator.of(context).pushReplacement(
-                                      new MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                    return CommonSuccess(SuccessHandler(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(i18.demandGenerate
-                                                .GENERATE_DEMAND_SUCCESS),
-                                        localizationText,
-                                        i18.common.BACK_HOME,
-                                        Routes.BILL_GENERATE,
-                                        subHeader:
-                                            '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
-                                        subTextFun: () =>
-                                            getLocalizedText(context),
-                                        subtitleFun: () =>
-                                            getSubtitleText(context)));
-                                  }));
-                                } catch (e) {
-                                  Navigator.of(context).pushReplacement(
-                                      new MaterialPageRoute(
-                                          builder: (BuildContext context) {
-                                    return ErrorPage(e.toString());
-                                  }));
-                                }
-                              },
-                              child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),
-                        ],
-                ));
-      } else {
-        Notifiers.getToastMessage(
-            context,
-            '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
-            'ERROR'); //Please select billing cycle
-      }
+      var rate = rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').toList();
+      showDialog(context: context, builder: (context)=>AlertDialog(
+        surfaceTintColor: Colors.white,
+        title: Text('${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
+        content: Container(
+          height: MediaQuery.of(context).size.height / 2.5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.ARE_YOU_SURE_TO_GENERATE_DEMAND_FOR)} "${ApplicationLocalizations.of(context).translate(billGenerateDetails.serviceType!)}" ${ApplicationLocalizations.of(context).translate(i18.demandGenerate.WITH_MINIMUM_CHARGE_OF)} : '),
+              SizedBox(height: 10,),
+             SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,                
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                    border: TableBorder.all(
+                        width: 0.5, borderRadius: BorderRadius.all(Radius.circular(5))), columns: [
+                          DataColumn(
+                    label: Text(
+                      "${ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_TYPE)}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    )),
+                  DataColumn(
+                      label: Text(
+                        "${ApplicationLocalizations.of(context).translate(i18.common.RATE_PERCENTAGE)}",
+                        style:
+                        TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                      )),], rows: [
+                        ...rate.map((e) => DataRow(cells: [
+                          DataCell(Text(
+                              "${ApplicationLocalizations.of(context).translate("${e.buildingType}")}")),
+                          DataCell(Text("${e.minimumCharge}"))
+                        ])).toList()
+                ],),
+              ),
+            ),
+            ),
+              SizedBox(height: 10,),
+              Text('${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_DEMAND_GEN_WITH_RATE_0)}'), //* Note : No Demand will be generated for the Service Type with rate set to 0.
+            ],
+          ),
+        ),
+        actions:
+          (rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 )
+              ?
+          [TextButton(onPressed: (){
+            Navigator.pop(context);
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.consumerReciepts.CLOSE)}',style: TextStyle(color: Color(
+              0xff033ccf)),))]
+              :
+          [TextButton(onPressed: () async{
+            if(rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered').length- rateProvider.wcBillingSlabs!.wCBillingSlabs!.where((element) => element.connectionType=='Non_Metered' && element.minimumCharge==0).length == 0 ){
+              Navigator.pop(context);
+              Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.NO_SERVICE_PRESENT_WITH_RATE_MORE_THAN_0)}', 'ERROR'); //No Service type present with rate more than 0.
+              return;
+            }
+            try {
+              Loaders.showLoadingDialog(context);
+              var commonProvider = Provider.of<CommonProvider>(
+                  navigatorKey.currentContext!,
+                  listen: false);
+              var res2 = {
+                "tenantId": commonProvider.userDetails!.selectedtenant!.code,
+                "billingPeriod": selectedBillPeriod
+              };
+              var billResponse2 = await BillGenerateRepository().bulkDemand(res2);
+              Navigator.pop(context);
+              String localizationText = getSubtitleText(context);
+              Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(builder: (BuildContext context) {
+                    return CommonSuccess(SuccessHandler(
+                        ApplicationLocalizations.of(context)
+                            .translate(i18.demandGenerate.GENERATE_DEMAND_SUCCESS),
+                        localizationText,
+                        i18.common.BACK_HOME,
+                        Routes.BILL_GENERATE,
+                        subHeader:
+                        '${ApplicationLocalizations.of(context).translate(i18.demandGenerate.BILLING_CYCLE_LABEL)}',
+                        subTextFun: () => getLocalizedText(context),
+                        subtitleFun: () => getSubtitleText(context)));
+                  }));
+            } catch (e) {
+              Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(builder: (BuildContext context) {
+                    return ErrorPage(e.toString());
+                  }));
+            }
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.YES)}',style: TextStyle(color: Color.fromRGBO(3,60,207,0.8)),)),
+          TextButton(onPressed: (){
+            Navigator.pop(context);
+          }, child: Text('${ApplicationLocalizations.of(context).translate(i18.common.NO)}',style: TextStyle(color: Color.fromRGBO(3,60,207,0.8)))),]
+        ,
+      ));
     } else {
       autoValidation = true;
       notifyListeners();
