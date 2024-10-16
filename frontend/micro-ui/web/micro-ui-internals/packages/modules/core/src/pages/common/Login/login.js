@@ -203,7 +203,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
               {links.map((link, index) => (
                 <li key={index} className="link-item">
                   <div className="link" style={{ 
-                    color: "#f47738 !important",
+                    color: "#1f4ac4 !important",
                     marginRight: "8px" }}>
                     {<svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.7917 15.7991L14.2223 14.3676C16.5926 11.9959 16.5926 8.15054 14.2223 5.7788C11.8521 3.40707 8.0091 3.40707 5.63885 5.7788L2.77769 8.64174C0.407436 11.0135 0.407436 14.8588 2.77769 17.2306C3.87688 18.3304 5.29279 18.9202 6.73165 19" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
@@ -211,7 +211,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
                     </svg>}
                   </div>
                   <a href={link.href} target="_blank" rel="noopener noreferrer" className="link" style={{ textDecoration: "none",
-                  color: "#f47738",
+                  color: "#1f4ac4",
                   cursor: 'pointer'
 
                    }}>

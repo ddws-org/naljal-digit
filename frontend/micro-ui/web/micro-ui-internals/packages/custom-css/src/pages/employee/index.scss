@@ -52,7 +52,7 @@
       margin-top: 12px;
 
       .user-img-txt {
-        background: #f47738;
+        background: #1f4ac4;
         padding: 10px 15px;
         border-radius: 50%;
         color: white;
@@ -145,11 +145,11 @@
       padding: 20px 15px 15px;
       font-size: 14px;
       &.active {
-        color: #f47738 !important;
+        color: #1f4ac4 !important;
 
-        border-right: 4px solid #f47738;
+        border-right: 4px solid #1f4ac4;
         svg {
-          fill: #f47738 !important;
+          fill: #1f4ac4 !important;
         }
       }
       .employee-search-input {
@@ -175,12 +175,12 @@
       }
 
       &:hover {
-        color: #f47738 !important;
+        color: #1f4ac4 !important;
         background-color: #486480;
 
         cursor: pointer;
         svg {
-          fill: #f47738 !important;
+          fill: #1f4ac4 !important;
         }
       }
       .search-icon-wrapper {
@@ -222,11 +222,11 @@
         }
       }
       &.active {
-        color: #f47738 !important;
+        color: #1f4ac4 !important;
 
-        border-right: 4px solid #f47738;
+        border-right: 4px solid #1f4ac4;
         svg {
-          fill: #f47738 !important;
+          fill: #1f4ac4 !important;
         }
       }
     }

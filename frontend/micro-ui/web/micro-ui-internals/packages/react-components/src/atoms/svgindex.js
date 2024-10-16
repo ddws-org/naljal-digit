@@ -301,7 +301,7 @@ const PDFSvg = ({
 );
 
 const SearchIconSvg = ({ className, onClick }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f47738" className={className} width="24px" height="24px" onClick={onClick}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1f4ac4" className={className} width="24px" height="24px" onClick={onClick}>
     <path d="M0 0h24v24H0z" fill="none" />
     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
   </svg>
@@ -331,7 +331,7 @@ const Calender = ({ className, onClick }) => (
 const Phone = ({ className, fillcolor, style }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill={fillcolor ? fillcolor : "#f47738"}
+    fill={fillcolor ? fillcolor : "#1f4ac4"}
     viewBox="0 0 24 24"
     style={style ? style : {}}
     className={className}
@@ -342,7 +342,7 @@ const Phone = ({ className, fillcolor, style }) => (
 );
 
 const FilterSvg = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="#f47738" width="24" height="24" viewBox="0 0 24 24" className={className}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#1f4ac4" width="24" height="24" viewBox="0 0 24 24" className={className}>
     <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
   </svg>
 );
@@ -368,7 +368,7 @@ const Feedback = ({ className }) => (
 // Download Icon
 
 const GetApp = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#f47738" className={className}>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1f4ac4" className={className}>
     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
   </svg>
 );
@@ -508,7 +508,7 @@ const ExternalLinkIcon = () => (
 );
 
 const PrimaryDownlaodIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#f47738">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1f4ac4">
     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
   </svg>
 );
