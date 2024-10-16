@@ -58,12 +58,29 @@ class ConsumerProvider with ChangeNotifier {
   PaymentType? paymentType;
   bool phoneNumberAutoValidation = false;
   GlobalKey<SearchSelectFieldState>? searchPickerKey;
+  bool isConsumerAlreadyVerified = false;
+  bool isConsumerVerified = false;
+  updateConsumerVerified(val){
+      isConsumerVerified = val;
+      notifyListeners();
+  } 
+  updateAlreadyVerifiedConsumer(val){
+      isConsumerAlreadyVerified = val;
+      notifyListeners();
+  } 
+  toggleConsumerVerified(){
+    if(!isConsumerAlreadyVerified){
+      isConsumerVerified = !isConsumerVerified;
+      notifyListeners();
+    }
+  } 
 
   setModel() async {
     waterconnection.BillingCycleCtrl.text = "";
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
@@ -158,6 +175,7 @@ class ConsumerProvider with ChangeNotifier {
       await getPaymentType();
       isEdit = true;
       waterconnection = data;
+      
       waterconnection.getText();
       selectedcycle = {
         'code': DateTime.fromMillisecondsSinceEpoch(
@@ -237,6 +255,8 @@ class ConsumerProvider with ChangeNotifier {
         isFirstDemand = true;
       }
 
+      waterconnection.dataVerified = isConsumerVerified;
+      
       notifyListeners();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
@@ -257,6 +277,7 @@ class ConsumerProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     if (formKey.currentState!.validate()) {
+      waterconnection.dataVerified = isConsumerVerified;
       waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();
@@ -341,6 +362,8 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.additionalDetails!.remarks =  waterconnection.status == "Inactive" ?
             property.owners?.first.remarks : "";
       }
+    
+
 
       try {
         Loaders.showLoadingDialog(context);

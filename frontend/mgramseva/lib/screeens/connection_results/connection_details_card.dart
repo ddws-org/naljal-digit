@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -284,28 +285,36 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                         ? i18.searchWaterConnection
                                             .HOUSE_DETAILS_VIEW
                                         : i18.searchWaterConnection
-                                            .HOUSE_DETAILS_EDIT, () {
-                              Navigator.pushNamed(
-                                  context,
-                                  (arguments['Mode'] == 'collect'
-                                      ? Routes.HOUSEHOLD_DETAILS
-                                      : arguments['Mode'] == 'receipts'
-                                          ? Routes.HOUSEHOLD_DETAILS
-                                          : Routes.CONSUMER_UPDATE),
-                                  arguments: {
-                                    "waterconnections": isNameSearch == true
-                                        ? waterconnections
-                                            .waterConnectionData![index]
-                                        : waterconnections
-                                            .waterConnection![index],
-                                    "mode": arguments['Mode'],
-                                    "status": isNameSearch == true
-                                        ? waterconnections
-                                            .waterConnectionData![index].status
-                                        : waterconnections
-                                            .waterConnection![index].status
-                                  });
-                            }),
+                                            .HOUSE_DETAILS_EDIT,
+                                (){
+                                    
+                                  var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false);                                 
+                                  if(waterconnections.waterConnection![index].dataVerified == true){
+                                    consumerProvider.updateAlreadyVerifiedConsumer(true);
+                                    consumerProvider.updateConsumerVerified(true);
+                                  }
+                                  else{
+                                    consumerProvider.updateAlreadyVerifiedConsumer(false);
+                                    consumerProvider.updateConsumerVerified(false);
+                                  }                                  
+                                  Navigator.pushNamed(
+                                        context,
+                                        (arguments['Mode'] == 'collect'
+                                            ? Routes.HOUSEHOLD_DETAILS
+                                            : arguments['Mode'] == 'receipts'
+                                                ? Routes.HOUSEHOLD_DETAILS
+                                                : Routes.CONSUMER_UPDATE),
+                                        arguments: {
+                                          "waterconnections": isNameSearch == true ? waterconnections
+                                              .waterConnectionData![index] : waterconnections
+                                              .waterConnection![index],
+                                          "mode": arguments['Mode'],
+                                          "status": isNameSearch == true ? waterconnections
+                                              .waterConnectionData![index].status : waterconnections
+                                              .waterConnection![index].status
+                                        });
+                                }
+                                        ),
                             SizedBox(
                               height: 8,
                             ),
