@@ -46,8 +46,7 @@ Future<Map<String, dynamic>> get devConstants async {
     return {
       // _baseUrl: "https://naljalseva.jjm.gov.in/" + state + (state.isNotEmpty?"/":''),
       // _baseUrl: "https://naljal-uat.digit.org/" + state + (state.isNotEmpty?"/":''),
-      // _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
-      _baseUrl: "https://naljalseva.jjm.gov.in/assam/",
+      _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
     };
 }
 Future<Map<String, dynamic>> get devConstantsMobile async {
@@ -62,7 +61,7 @@ Future<Map<String, dynamic>> get devConstantsMobile async {
     }
     return {
       // _baseUrl: "https://naljalseva.jjm.gov.in/"+state+"/",
-      _baseUrl: "https://naljalseva.jjm.gov.in/assam/",
+      _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
       // _baseUrl: "https://naljal-uat.digit.org/",
 };
 }
