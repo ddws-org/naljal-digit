@@ -90,7 +90,7 @@ class _BuildTextField extends State<BuildTextField> {
                 : true,
             controller: widget.controller,
             autocorrect: false,       
-            autofillHints: [], 
+            autofillHints: null, 
             keyboardType: widget.textInputType ?? TextInputType.text,
             textInputAction: widget.textInputAction??TextInputAction.done,
             inputFormatters: widget.inputFormatter,
