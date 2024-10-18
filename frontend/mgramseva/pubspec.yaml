@@ -75,7 +75,9 @@ dependencies:
   print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6
-  safe_device: ^1.1.9
+  device_info_plus: ^11.1.0
+  flutter_jailbreak_detection: ^1.10.0
+  # safe_device: ^1.1.9
 #  webview_flutter: ^2.0.13 #TODO Uncomment this code on mobile
 
 dev_dependencies:

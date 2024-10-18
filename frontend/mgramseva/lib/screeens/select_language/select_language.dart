@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/routers/routers.dart';
@@ -11,7 +14,6 @@ import 'package:mgramseva/screeens/select_language/language_select_mobile_view.d
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
-import 'package:safe_device/safe_device.dart';
 
 // ignore: must_be_immutable
 class SelectLanguage extends StatefulWidget {
@@ -21,35 +23,76 @@ class SelectLanguage extends StatefulWidget {
 
 class _SelectLanguage extends State<SelectLanguage> {
   bool isDeviceSafe = true;
+  bool? _jailbroken;
 
   @override
   void initState() {
     super.initState();
+    
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     languageProvider.getLocalizationData(context);
      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(!kIsWeb){
+        rootcheck();
       _checkDeviceSafety();
       }
 
     });
   }
 
+    // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> rootcheck() async {
+    bool jailbroken;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      jailbroken = await FlutterJailbreakDetection.jailbroken;
+    } on PlatformException {
+      jailbroken = true;
+    }
 
-  Future<void> _checkDeviceSafety() async {
-    bool isDeviceRooted = await SafeDevice.isJailBroken;
-    bool isDeviceEmulator = await SafeDevice.isRealDevice;
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
 
+    setState(() {
+      _jailbroken = jailbroken;
+    });
+  }
+
+
+   _checkDeviceSafety() async {
+    bool isDeviceEmulator = false;
+    bool isDeviceRooted  = false;
+    var deviceInfo = DeviceInfoPlugin();
+
+     if (Platform.isIOS) {
+      isDeviceRooted = await FlutterJailbreakDetection.jailbroken;
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      isDeviceEmulator =iosDeviceInfo.isPhysicalDevice; 
+    } else if(Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      isDeviceEmulator =androidDeviceInfo.isPhysicalDevice;
+    }
 
     setState(() {
       if(isDeviceEmulator){
         isDeviceSafe = false;
-      }else if(isDeviceRooted){
+      }
+      if(_jailbroken == null){
+        // UNKNOWN      
+      }
+      else if(_jailbroken!){
+        isDeviceRooted = true;
         isDeviceSafe = false;
-      }else{
+
+      }
+      else if(_jailbroken! == false){
+        isDeviceRooted = false;
         isDeviceSafe = true;
       }
+
 
       log("${isDeviceEmulator} isDeviceEmulator");
       log("${isDeviceSafe} isDeviceSafe");
@@ -62,6 +105,8 @@ class _SelectLanguage extends State<SelectLanguage> {
     });
     
   }
+
+
 
 
   @override
