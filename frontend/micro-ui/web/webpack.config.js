@@ -12,6 +12,7 @@ console.log("##ENV_HELM ENV_PUBLIC_PATH: ", process.env.PUBLIC_PATH);
 console.log("##ENV_HELM NODE_ENV: ", process.env.NODE_ENV);
 console.log("##ENV_HELM REACT_APP_STATE_LEVEL_TENANT_ID: ", process.env.REACT_APP_STATE_LEVEL_TENANT_ID);
 console.log("##ENV_HELM API_KEY: ", JSON.stringify(process.API_KEY));
+console.log("##ENV_HELM PUBLIC_PATH: ", JSON.stringify(process.PUBLIC_PATH));
 console.log("##ENV_HELM API_ENV: ", JSON.stringify(process.env));
 
 module.exports = {
