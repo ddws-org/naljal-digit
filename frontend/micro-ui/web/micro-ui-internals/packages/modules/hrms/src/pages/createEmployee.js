@@ -155,7 +155,7 @@ const CreateEmployee = () => {
     // console.log(formData.
     //   SelectUserTypeAndDesignation[0].designation != undefined
     //   , "formData");
-    console.log(isValid, "isValid");
+    // console.log(isValid, "isValid");
 
     if (
       formData?.SelectEmployeeGender?.gender.code &&
@@ -292,7 +292,7 @@ const CreateEmployee = () => {
     roles.push({
       name: "EMPLOYEE",
       code: "EMPLOYEE",
-      tenantId: "pb",
+      tenantId: tenantId
     });
 
     const mappedroles = [].concat.apply([], roles);
