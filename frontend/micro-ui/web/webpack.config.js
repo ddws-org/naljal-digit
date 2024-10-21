@@ -1,7 +1,16 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const webpack = require("webpack");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+// Read the public path from environment variable or use a default value
+const ENV_PUBLIC_PATH = process.env.PUBLIC_PATH || '/uat/mgramseva-web/'; // Default to 'uat'\
+
+
+console.log("##ENV_HELM ENV_PUBLIC_PATH: ", process.env.PUBLIC_PATH);
+console.log("##ENV_HELM NODE_ENV: ", process.env.NODE_ENV);
+console.log("##ENV_HELM REACT_APP_STATE_LEVEL_TENANT_ID: ", process.env.REACT_APP_STATE_LEVEL_TENANT_ID);
 
 module.exports = {
   // mode: 'development',
@@ -29,7 +38,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: `/uat/mgramseva-web/`,
+    publicPath: ENV_PUBLIC_PATH, 
   },
   optimization: {
     splitChunks: {
@@ -45,5 +54,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
+    new webpack.DefinePlugin({
+      'process.env.PUBLIC_PATH': JSON.stringify(ENV_PUBLIC_PATH),
+    }),
   ],
 };
