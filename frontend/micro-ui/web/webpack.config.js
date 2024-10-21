@@ -5,7 +5,8 @@ const webpack = require("webpack");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // Read the public path from environment variable or use a default value
-const ENV_PUBLIC_PATH = process.env.PUBLIC_PATH || '/uat/mgramseva-web/'; // Default to 'uat'\
+const ENV_PUBLIC_PATH = process.env.PUBLIC_PATH || '/mgramseva-web/'; // Default to 'uat'\
+// const ENV_PUBLIC_PATH = process.env.PUBLIC_PATH || '/uat/mgramseva-web/'; // Default to 'uat'\
 
 
 console.log("##ENV_HELM ENV_PUBLIC_PATH: ", process.env.PUBLIC_PATH);
