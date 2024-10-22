@@ -39,7 +39,7 @@ class _UnsafeDeviceDialogState extends State<UnsafeDeviceDialog> {
       }
     });
     // Show the popup dialog if the device is unsafe
-    if (isDeviceSafe) {
+    if (isDeviceSafe == false) {
       showDialog(
         barrierDismissible: false,
         context: context,

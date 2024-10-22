@@ -50,12 +50,7 @@ class _SelectLanguage extends State<SelectLanguage> {
       }else{
         isDeviceSafe = true;
       }
-
-      log("${isDeviceEmulator} isDeviceEmulator");
-      log("${isDeviceSafe} isDeviceSafe");
-      log("${isDeviceRooted} isDeviceRooted");
-
-      if(isDeviceSafe){      
+      if(isDeviceSafe == false){      
         Navigator.of(context)
     .pushNamedAndRemoveUntil(Routes.SECURITY_CHECK, (Route<dynamic> route) => false);
       }

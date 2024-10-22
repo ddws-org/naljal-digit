@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mgramseva/screeens/security_check/security_check.dart';
-import 'package:mgramseva/utils/constants/i18_key_constants.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
-import 'package:mgramseva/widgets/footer_banner.dart';
-import 'package:mgramseva/widgets/heading_text.dart';
-import 'package:mgramseva/widgets/logo.dart';
 
 class SecurityLayer extends StatefulWidget {
   const SecurityLayer({Key? key}) : super(key: key);
