@@ -30,7 +30,7 @@ class _UnsafeDeviceDialogState extends State<UnsafeDeviceDialog> {
     bool isDeviceEmulator = await SafeDevice.isRealDevice;
 
     setState(() {
-      if(isDeviceEmulator){
+      if(isDeviceEmulator == false){
         isDeviceSafe = false;
       }else if(isDeviceRooted){
         isDeviceSafe = false;
