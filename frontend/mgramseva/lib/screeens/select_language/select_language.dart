@@ -43,7 +43,10 @@ class _SelectLanguage extends State<SelectLanguage> {
 
 
     setState(() {
-      if(isDeviceEmulator){
+        log(isDeviceRooted.toString());
+        log(isDeviceEmulator.toString());
+
+      if(isDeviceEmulator == false){
         isDeviceSafe = false;
       }else if(isDeviceRooted){
         isDeviceSafe = false;
