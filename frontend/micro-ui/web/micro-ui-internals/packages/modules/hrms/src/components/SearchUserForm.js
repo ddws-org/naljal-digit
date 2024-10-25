@@ -222,7 +222,7 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
           ?.filter(
             (row) =>
               !excludeCodes.includes(row?.code) &&
-              (row?.name === "Secretary" || row?.name === "Sarpanch" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
+              (row?.name === "Secretary" || row?.name === "Chairman" || row?.name === "Revenue Collector" || row?.name === "DIVISION ADMIN")
           )
           ?.map((role) => ({
             ...role,
