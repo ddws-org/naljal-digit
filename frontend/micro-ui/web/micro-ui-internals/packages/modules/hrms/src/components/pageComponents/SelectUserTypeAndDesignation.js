@@ -403,7 +403,7 @@ function Jurisdiction({
       getUserTypes?.forEach((ele) => {
         if (ele.code === responseData?.Employees[0]?.assignments[0]?.department) {
           setDepamentValue(ele);
-          const filteredItems = getdesignationdata.filter(val => val.department.includes(ele.code));
+          const filteredItems = getdesignationdata.filter(val => val.department?.includes(ele.code));
           setDesignationList(filteredItems);
           setjurisdictions((pre) => pre.map((item) => (item.key == jurisdiction.key ? { ...item, department: ele } : item)));
           // setDesignationValue(filteredItems[0]);
