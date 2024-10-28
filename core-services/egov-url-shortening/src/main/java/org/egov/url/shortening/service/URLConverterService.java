@@ -120,7 +120,7 @@ public class URLConverterService {
         	serverContextPath = serverContextPath.substring(1);
         shortenedUrl.append(stateSpecificHostName).append("/").append(serverContextPath);
         if(!serverContextPath.endsWith("/")) {
-        	shortenedUrl.append("/");
+        	shortenedUrl.append("?id=");
         }
     	shortenedUrl.append(uniqueID);
     	
