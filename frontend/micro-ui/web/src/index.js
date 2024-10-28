@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { initLibraries } from "@egovernments/digit-ui-libraries";
 import "./index.css";
 import App from './App';
+import App from '../micro-ui-internals/packages/modules/utilities/setPublicPath';
 import { TLCustomisations } from './Customisations/tl/TLCustomisation';
 
 
