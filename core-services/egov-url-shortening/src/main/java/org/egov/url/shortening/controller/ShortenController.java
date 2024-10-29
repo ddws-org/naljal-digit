@@ -72,7 +72,7 @@ public class ShortenController {
         return redirectView;
     }
     @RequestMapping(method=RequestMethod.GET)
-    public RedirectView redirectUrlShortlink(@PathVariable String id, HttpServletRequest request) throws IOException, URISyntaxException, Exception {
+    public RedirectView redirectUrlShortlink(@RequestParam String id, HttpServletRequest request) throws IOException, URISyntaxException, Exception {
         String redirectUrlString = urlConverterService.getLongURLFromID(id);
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl(redirectUrlString);
