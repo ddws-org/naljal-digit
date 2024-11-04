@@ -90,7 +90,7 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => PaymentFeedBack(query: localQuery),
             settings: RouteSettings(name: routePath));
-      } else if (Routes.COMMON_DOWNLOAD == path && settings.arguments == null) {
+      } else if ((Routes.COMMON_DOWNLOAD == path || "${Routes.COMMON_DOWNLOAD}/consumerDownloadBill" == path ) settings.arguments == null) {
         Map localQuery;
         String routePath;
         if (settings.arguments != null) {
