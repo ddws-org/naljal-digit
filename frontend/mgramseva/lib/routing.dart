@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +59,8 @@ class Routing {
     Uri uri = Uri.parse(settings.name ?? '');
     Map<String, dynamic>? query = uri.queryParameters;
     String? path = uri.path;
+        // log(jsonEncode(query),name: "QUERY");
+    
     if (kIsWeb) {
       if (settings.name == Routes.PRIVACY_POLICY || settings.name == Routes.PRIVACY_POLICY_S) {
         bool q = settings.arguments==null?false:settings.arguments as bool;
@@ -86,7 +91,7 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => PaymentFeedBack(query: localQuery),
             settings: RouteSettings(name: routePath));
-      } else if (Routes.COMMON_DOWNLOAD == path && settings.arguments == null) {
+      } else if ((Routes.COMMON_DOWNLOAD == path || "${Routes.COMMON_DOWNLOAD}/consumerDownloadBill" == path ) && settings.arguments == null) {
         Map localQuery;
         String routePath;
         if (settings.arguments != null) {
