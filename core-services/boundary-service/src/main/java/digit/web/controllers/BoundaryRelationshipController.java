@@ -1,5 +1,7 @@
 package digit.web.controllers;
 
+import org.egov.common.contract.response.ResponseInfo;
+import org.egov.common.utils.ResponseInfoUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import digit.service.BoundaryRelationshipService;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/boundary-relationships")
@@ -54,6 +58,15 @@ public class BoundaryRelationshipController {
     public ResponseEntity<BoundaryRelationshipResponse> update(@Valid @RequestBody BoundaryRelationshipRequest body) {
         BoundaryRelationshipResponse boundaryRelationshipResponse = boundaryRelationshipService.updateBoundaryRelationship(body);
         return new ResponseEntity<>(boundaryRelationshipResponse, HttpStatus.ACCEPTED);
+    }
+
+    @RequestMapping(value = "/_pushBoundary", method = RequestMethod.POST)
+    public ResponseEntity<PushBoundaryResponse> pushBoundary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @RequestParam String tenantId, @RequestParam String hierarchyType,
+                                                             @RequestParam boolean includeChildren) {
+        List<String> message = boundaryRelationshipService.fetchBoundaryAndProcess(tenantId, hierarchyType, includeChildren, requestInfoWrapper.getRequestInfo());
+        PushBoundaryResponse pushBoundaryResponse = PushBoundaryResponse.builder().message(message).
+                responseInfo(ResponseInfoUtil.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), Boolean.TRUE)).build();
+        return new ResponseEntity<>(pushBoundaryResponse, HttpStatus.ACCEPTED);
     }
 
 }

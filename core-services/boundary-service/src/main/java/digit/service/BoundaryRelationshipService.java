@@ -1,19 +1,26 @@
 package digit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import digit.config.ApplicationProperties;
+import digit.kafka.Producer;
 import digit.repository.BoundaryRelationshipRepository;
 import digit.service.enrichment.BoundaryRelationshipEnricher;
 import digit.service.validator.BoundaryRelationshipValidator;
 import digit.util.HierarchyUtil;
 import digit.web.models.*;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.utils.ResponseInfoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BoundaryRelationshipService {
 
     private BoundaryRelationshipValidator boundaryRelationshipValidator;
@@ -23,6 +30,12 @@ public class BoundaryRelationshipService {
     private BoundaryRelationshipRepository boundaryRelationshipRepository;
 
     private HierarchyUtil hierarchyUtil;
+
+    @Autowired
+    private ApplicationProperties config;
+
+    @Autowired
+    private Producer producer;
 
     public BoundaryRelationshipService(BoundaryRelationshipValidator boundaryRelationshipValidator, BoundaryRelationshipEnricher boundaryRelationshipEnricher,
                                        BoundaryRelationshipRepository boundaryRelationshipRepository, HierarchyUtil hierarchyUtil) {
@@ -207,4 +220,122 @@ public class BoundaryRelationshipService {
         boundaries.addAll(childrenBoundaries);
     }
 
+    public List<String> fetchBoundaryAndProcess(String tenantId, String hierarchyType, boolean includeChildren, RequestInfo requestInfo) {
+        String url = config.getBoundaryServiceHost() + config.getBoundaryServiceUri() +
+                "?tenantId=" + tenantId +
+                "&hierarchyType=" + hierarchyType +
+                "&includeChildren=" + includeChildren;
+
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, Object> response = restTemplate.postForObject(url, requestInfo, Map.class);
+
+        if (response == null || !response.containsKey("TenantBoundary")) {
+            throw new IllegalStateException("Invalid response received from boundary service. Response: " + response);
+        }
+        List<Map<String, Object>> tenantBoundaries = (List<Map<String, Object>>) response.get("TenantBoundary");
+        if (CollectionUtils.isEmpty(tenantBoundaries)) {
+            return List.of("No tenant boundary data found for hierarchyType: " + hierarchyType);
+        }
+        return processBoundaryData(tenantBoundaries,requestInfo);
+    }
+
+    private List<String> processBoundaryData(List<Map<String, Object>> tenantBoundaries,RequestInfo requestInfo) {
+        List<String> messages = new ArrayList<>();
+        for (Map<String, Object> tenantBoundary : tenantBoundaries) {
+            List<Map<String, Object>> boundaries = (List<Map<String, Object>>) tenantBoundary.get("boundary");
+            if (!CollectionUtils.isEmpty(boundaries)) {
+                searchForVillageBoundaries(boundaries, new HashMap<>(), messages,requestInfo);
+            } else {
+                throw new IllegalStateException("Boundaries list is empty or null for tenantBoundary: " + tenantBoundary);
+            }
+        }
+        return messages;
+    }
+
+    private List<String> searchForVillageBoundaries(List<Map<String, Object>> boundaries, Map<String, String> parentDetails, List<String> messages,RequestInfo requestInfo) {
+        for (Map<String, Object> boundary : boundaries) {
+            if (boundary == null) {
+                continue;
+            }
+
+            String boundaryType = (String) boundary.get("boundaryType");
+            String code = (String) boundary.get("code");
+
+            if (boundaryType == null || code == null) {
+                throw new IllegalArgumentException("BoundaryType or Code is null for boundary: " + boundary);
+            }
+            updateParentDetails(boundaryType, code, parentDetails);
+            if ("village".equalsIgnoreCase(boundaryType)) {
+                Map<String, String> villageData = createVillageData(code, parentDetails);
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String requestInfoJson = objectMapper.writeValueAsString(requestInfo);
+//                    log.info("requestInfo is "+requestInfo);
+                    log.info("requestInfoJson is "+requestInfoJson);
+                    villageData.put("requestInfo", requestInfoJson);
+                    producer.push(config.getCreateNewTenantTopic(), villageData);
+                    messages.add("Village " + code + " pushed successfully.");
+                } catch (Exception e) {
+                    messages.add("Village " + code + " failed to push: " + e.getMessage());
+                }
+            } else {
+                List<Map<String, Object>> children = (List<Map<String, Object>>) boundary.get("children");
+                if (children != null && !children.isEmpty()) {
+                    searchForVillageBoundaries(children, parentDetails, messages,requestInfo);
+                }
+//                messages.add("Boundary '" + code + "' at level '" + boundaryType + "' has no children as 'village'. No data pushed.");
+            }
+        }
+        if (CollectionUtils.isEmpty(messages)) {
+            messages.add("No data pushed as last level was not found as village");
+        }
+        return messages;
+    }
+
+    private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {
+        switch (boundaryType.toLowerCase()) {
+            case "zone":
+                parentDetails.put("zoneCode", code);
+                parentDetails.put("zoneName", extractNameFromCode(code));
+                break;
+            case "circle":
+                parentDetails.put("circleCode", code);
+                parentDetails.put("circleName", extractNameFromCode(code));
+                break;
+            case "division":
+                parentDetails.put("divisionCode", code);
+                parentDetails.put("divisionName", extractNameFromCode(code));
+                break;
+            case "sub division":
+                parentDetails.put("subDivisionCode", code);
+                parentDetails.put("subDivisionName", extractNameFromCode(code));
+                break;
+            case "section":
+                parentDetails.put("sectionCode", code);
+                parentDetails.put("sectionName", extractNameFromCode(code));
+                break;
+        }
+    }
+
+    private Map<String, String> createVillageData(String code, Map<String, String> parentDetails) {
+        Map<String, String> villageData = new HashMap<>();
+        villageData.put("code", code);
+        villageData.put("name", extractNameFromCode(code));
+        villageData.put("address", extractNameFromCode(code));
+        villageData.put("description", extractNameFromCode(code));
+        villageData.put("schemeCode", code);
+        villageData.put("schemeName", extractNameFromCode(code));
+
+        villageData.putAll(parentDetails);
+
+        return villageData;
+    }
+
+    private String extractNameFromCode(String code) {
+        if (code == null || code.isEmpty()) {
+            throw new IllegalArgumentException("Code is null or empty");
+        }
+        String[] parts = code.split("_");
+        return parts[parts.length - 1];  // Extract the last part of the code as the name
+    }
 }
