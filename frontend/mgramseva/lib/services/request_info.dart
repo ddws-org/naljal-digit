@@ -25,7 +25,10 @@ class RequestInfo {
         "action": action == null ? null : action,
         "did": did == null ? null : did,
         "key": key == null ? null : key,
-        "msgId":'20170310130900|' + 'en_IN',   
+        "msgId": languageProvider.selectedLanguage != null
+            ? '20170310130900|' +
+                languageProvider.selectedLanguage!.value.toString()
+            : "",
         "authToken": authToken == null ? null : authToken,
         "userInfo": userInfo
       };
