@@ -51,14 +51,16 @@ public class EmployeeSearchCriteria {
 
 	@Size(max = 250)
 	public String tenantId;
+
+	public List<String> tenantIds;
 	
 	public String phone;
 
-	public List<String> tenantIds;
-
-	public Integer offset;
+	public Long offset;
 	
-	public Integer limit;
+	public Long limit;
+
+	private String name;
 	
 	
 	public boolean isCriteriaEmpty(EmployeeSearchCriteria criteria) {

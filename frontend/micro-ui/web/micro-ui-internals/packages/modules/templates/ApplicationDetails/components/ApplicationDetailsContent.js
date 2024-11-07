@@ -37,6 +37,8 @@ import InfoDetails from "./InfoDetails";
 import ViewBreakup from "./ViewBreakup";
 import SubWorkTableDetails from "./SubWorkTableDetails";
 
+
+
 function ApplicationDetailsContent({
   applicationDetails,
   workflowDetails,
@@ -52,10 +54,11 @@ function ApplicationDetailsContent({
   noBoxShadow = false,
   sectionHeadStyle = false,
   modify,
-  setSaveAttendanceState,
+  setSaveAttendanceState
 }) {
   const { t } = useTranslation();
   const [localSearchParams, setLocalSearchParams] = useState(() => ({}));
+  
 
   const handleDateRangeChange = useCallback((data) => {
     setLocalSearchParams(() => ({ ...data }));
@@ -128,44 +131,49 @@ function ApplicationDetailsContent({
     window.location.href.includes("employee/tl") || window.location.href.includes("employee/obps") || window.location.href.includes("employee/noc");
   const isNocLocation = window.location.href.includes("employee/noc");
   const isBPALocation = window.location.href.includes("employee/obps");
-  let isWS =
-    window.location.href.includes("employee/ws") ||
-    window.location.href.includes("employee/works") ||
-    window.location.href.includes("employee/project") ||
-    window.location.href.includes("employee/estimate");
+  let isWS = window.location.href.includes("employee/ws") || window.location.href.includes("employee/works")|| window.location.href.includes("employee/project") || window.location.href.includes("employee/estimate") ;
 
-  const getRowStyles = (tab = "") => {
+  
+
+  const getRowStyles = (tab="") => {
+    
     if (window.location.href.includes("employee/obps") || window.location.href.includes("employee/noc")) {
       return { justifyContent: "space-between", fontSize: "16px", lineHeight: "19px", color: "#0B0C0C" };
     } else if (checkLocation) {
       return { justifyContent: "space-between", fontSize: "16px", lineHeight: "19px", color: "#0B0C0C" };
-    } else if (tab === "fieldSurvey") {
-      return {
-        justifyContent: "space-between",
-        flexDirection: "column",
-      };
-    } else {
+    }
+    else if ( tab==="fieldSurvey")  {
+        return {
+          justifyContent: "space-between", flexDirection:"column"
+        }
+    }
+     else {
       return {};
     }
+    
   };
-  const getTextStyles = (tab = "") => {
-    if (tab === "fieldSurvey") {
+  const getTextStyles = (tab="") => {
+    if ( tab==="fieldSurvey" ) {
       return {
-        marginTop: "1rem",
-        marginBottom: "1rem",
-      };
-    } else {
+        marginTop:"1rem",
+        marginBottom:"1rem"
+      }
+    }
+    else {
       return {};
     }
+
   };
   const getLabelStyles = (tab = "") => {
-    if (tab === "fieldSurvey") {
+    if ( tab === "fieldSurvey") {
       return {
-        width: "100%",
-      };
-    } else {
+        width:"100%"
+      }
+    }
+    else {
       return {};
     }
+
   };
 
   const getTableStyles = () => {
@@ -197,9 +205,8 @@ function ApplicationDetailsContent({
   const getTextValue = (value) => {
     if (value?.skip) return value.value;
     else if (value?.isUnit) return value?.value ? `${getTranslatedValues(value?.value, value?.isNotTranslated)} ${t(value?.isUnit)}` : t("N/A");
-    else if (value?.value === "Approved")
-      return <span style={{ color: "#0B6623" }}>{`${getTranslatedValues(value?.value, value?.isNotTranslated)}`}</span>;
-    else if (value?.value === "Rejected") return <span style={{ color: "#FF0000" }}>{t(value?.value)}</span>;
+    else if (value?.value === "Approved") return <span style={{"color":"#0B6623"}}>{ `${getTranslatedValues(value?.value, value?.isNotTranslated)}`}</span>
+    else if (value?.value === "Rejected") return <span style={{"color":"#FF0000"}}>{t(value?.value)}</span>
     else return value?.value ? getTranslatedValues(value?.value, value?.isNotTranslated) : t("N/A");
   };
 
@@ -220,60 +227,47 @@ function ApplicationDetailsContent({
   };
 
   const getCardStyles = () => {
-    let styles = { position: "relative" };
+    let styles = { position: "relative" }
     if (noBoxShadow) styles = { ...styles, boxShadow: "none" };
     return styles;
   };
 
   return (
-    <CollapseAndExpandGroups
-      groupElements={applicationDetails?.CollapseConfig?.collapseAll}
-      groupHeader={applicationDetails?.CollapseConfig?.groupHeader}
-      headerLabel={applicationDetails?.CollapseConfig?.headerLabel}
-      headerValue={applicationDetails?.CollapseConfig?.headerValue}
-    >
-      <Card style={getCardStyles()} className={"employeeCard-override"}>
-        {isInfoLabel ? (
-          <InfoDetails
-            t={t}
-            userType={false}
-            infoBannerLabel={"CS_FILE_APPLICATION_INFO_LABEL"}
-            infoClickLable={"WS_CLICK_ON_LABEL"}
-            infoClickInfoLabel={getClickInfoDetails()}
-            infoClickInfoLabel1={getClickInfoDetails1()}
-          />
-        ) : null}
-        {applicationDetails?.applicationDetails?.map((detail, index) => (
-          <CollapseAndExpandGroups
-            groupElements={detail?.expandAndCollapse?.groupComponents}
-            groupHeader={detail?.expandAndCollapse?.groupHeader}
-            headerLabel={detail?.expandAndCollapse?.headerLabel}
-            headerValue={detail?.expandAndCollapse?.headerValue}
-            customClass={detail?.expandAndCollapse?.customClass}
-          >
-            <React.Fragment key={index}>
-              <div style={getMainDivStyles()}>
-                {index === 0 && !detail.asSectionHeader ? (
-                  <CardSubHeader style={{ marginBottom: "16px", fontSize: "24px" }}>{t(detail.title)}</CardSubHeader>
-                ) : (
-                  <React.Fragment>
-                    <CardSectionHeader
-                      style={
-                        index == 0 && checkLocation
-                          ? { marginBottom: "16px", fontSize: "24px" }
-                          : sectionHeadStyle
-                          ? sectionHeadStyle
-                          : { marginBottom: "16px", marginTop: "32px", fontSize: "24px" }
-                      }
-                    >
-                      {isNocLocation ? `${t(detail.title)}` : t(detail.title)}
-                      {detail?.Component ? <detail.Component /> : null}
-                    </CardSectionHeader>
-                  </React.Fragment>
-                )}
-                {/* TODO, Later will move to classes */}
-                {/* Here Render the table for adjustment amount details detail.isTable is true for that table*/}
-                {/* {detail?.isTable && (
+    <CollapseAndExpandGroups groupElements={applicationDetails?.CollapseConfig?.collapseAll} groupHeader={applicationDetails?.CollapseConfig?.groupHeader} headerLabel={applicationDetails?.CollapseConfig?.headerLabel} headerValue={applicationDetails?.CollapseConfig?.headerValue}>
+    <Card style={getCardStyles()} className={"employeeCard-override"}>
+      {isInfoLabel ? (
+        <InfoDetails
+          t={t}
+          userType={false}
+          infoBannerLabel={"CS_FILE_APPLICATION_INFO_LABEL"}
+          infoClickLable={"WS_CLICK_ON_LABEL"}
+          infoClickInfoLabel={getClickInfoDetails()}
+          infoClickInfoLabel1={getClickInfoDetails1()}
+        />
+      ) : null}
+      {applicationDetails?.applicationDetails?.map((detail, index) => (
+        <CollapseAndExpandGroups groupElements={detail?.expandAndCollapse?.groupComponents} groupHeader={detail?.expandAndCollapse?.groupHeader} headerLabel={detail?.expandAndCollapse?.headerLabel} headerValue={detail?.expandAndCollapse?.headerValue} customClass={detail?.expandAndCollapse?.customClass}>
+          <React.Fragment key={index}>
+          <div style={getMainDivStyles()}>
+            {index === 0 && !detail.asSectionHeader ? (
+              <CardSubHeader style={{ marginBottom: "16px", fontSize: "24px" }}>{t(detail.title)}</CardSubHeader>
+            ) : (
+              <React.Fragment>
+                <CardSectionHeader
+                  style={
+                    index == 0 && checkLocation
+                      ? { marginBottom: "16px", fontSize: "24px" } :
+                      (sectionHeadStyle ? sectionHeadStyle : { marginBottom: "16px", marginTop: "32px", fontSize: "24px" })
+                  }
+                >
+                  {isNocLocation ? `${t(detail.title)}` : t(detail.title)}
+                  {detail?.Component ? <detail.Component /> : null}
+                </CardSectionHeader>
+              </React.Fragment>
+            )}
+            {/* TODO, Later will move to classes */}
+            {/* Here Render the table for adjustment amount details detail.isTable is true for that table*/}
+            {/* {detail?.isTable && (
               <table style={{ tableLayout: "fixed", width: "100%", borderCollapse: "collapse" }}>
                 <tr style={{ textAlign: "left" }}>
                   {detail?.headers.map((header) => (
@@ -295,95 +289,90 @@ function ApplicationDetailsContent({
                 </tr>})}
               </table>
             )} */}
-                {detail?.isTable && <SubWorkTableDetails data={detail} />}
+            {detail?.isTable && <SubWorkTableDetails data={detail} />}
 
-                <StatusTable style={getTableStyles()}>
-                  {detail?.title &&
-                    !detail?.title.includes("NOC") &&
-                    detail?.values?.map((value, index) => {
-                      if (value.map === true && value.value !== "N/A") {
-                        return (
-                          <Row key={t(value.title)} label={t(value.title)} text={<img src={t(value.value)} alt="" privacy={value?.privacy} />} />
-                        );
-                      }
-                      if (value?.isLink == true) {
-                        return (
-                          <Row
-                            key={t(value.title)}
-                            label={
-                              window.location.href.includes("tl") || window.location.href.includes("ws") ? (
-                                <div style={{ width: "200%" }}>
-                                  <Link to={value?.to}>
-                                    <span className="link" style={{ color: "#1f4ac4" }}>
-                                      {t(value?.title)}
-                                    </span>
-                                  </Link>
-                                </div>
-                              ) : isNocLocation || isBPALocation ? (
-                                `${t(value.title)}`
-                              ) : (
-                                t(value.title)
-                              )
-                            }
-                            text={
-                              <div>
-                                <Link to={value?.to}>
-                                  <span className="link" style={{ color: "#1f4ac4" }}>
-                                    {value?.value}
-                                  </span>
-                                </Link>
-                              </div>
-                            }
-                            last={index === detail?.values?.length - 1}
-                            caption={value.caption}
-                            className="border-none"
-                            rowContainerStyle={getRowStyles()}
-                          />
-                        );
-                      }
-                      return (
-                        <Row
-                          key={t(value.title)}
-                          label={isWS ? `${t(value.title)}:` : t(value.title)}
-                          text={
-                            value?.isImages ? (
-                              <ViewImages fileStoreIds={value?.fileStoreIds} tenantId={value?.tenant} onClick={() => {}} />
-                            ) : (
-                              getTextValue(value)
-                            )
-                          }
-                          last={index === detail?.values?.length - 1}
-                          caption={value.caption}
-                          className="border-none"
-                          /* privacy object set to the Row Component */
-                          privacy={value?.privacy}
-                          // TODO, Later will move to classes
-                          rowContainerStyle={getRowStyles(detail?.tab)}
-                          textStyle={getTextStyles(detail?.tab)}
-                          labelStyle={getLabelStyles(detail?.tab)}
-                        />
-                      );
-                    })}
-                </StatusTable>
-              </div>
-
-              {detail?.additionalDetails?.table
-                ? detail?.additionalDetails?.table?.weekTable?.tableHeader && (
-                    <>
-                      <CardSectionHeader style={{ marginBottom: "16px", marginTop: "32px", fontSize: "24px" }}>
-                        {t(detail?.additionalDetails?.table?.weekTable?.tableHeader)}
-                      </CardSectionHeader>
-                    </>
-                  )
-                : null}
-
-              {detail?.additionalDetails?.inspectionReport && (
-                <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} paymentsList={paymentsList} />
-              )}
-              {applicationDetails?.applicationData?.additionalDetails?.fieldinspection_pending?.length > 0 && detail?.additionalDetails?.fiReport && (
-                <InspectionReport fiReport={applicationDetails?.applicationData?.additionalDetails?.fieldinspection_pending} />
-              )}
-              {/* {detail?.additionalDetails?.FIdocuments && detail?.additionalDetails?.values?.map((doc,index) => (
+            <StatusTable style={getTableStyles()}>
+              {detail?.title &&
+                !detail?.title.includes("NOC") &&
+                detail?.values?.map((value, index) => {
+                  if (value.map === true && value.value !== "N/A") {
+                    return <Row key={t(value.title)} label={t(value.title)} text={<img src={t(value.value)} alt="" privacy={value?.privacy} />} />;
+                  }
+                  if (value?.isLink == true) {
+                    return (
+                      <Row
+                        key={t(value.title)}
+                        label={
+                          window.location.href.includes("tl") || window.location.href.includes("ws") ? (
+                            <div style={{ width: "200%" }}>
+                              <Link to={value?.to}>
+                                <span className="link" style={{ color: "#F47738" }}>
+                                  {t(value?.title)}
+                                </span>
+                              </Link>
+                            </div>
+                          ) : isNocLocation || isBPALocation ? (
+                            `${t(value.title)}`
+                          ) : (
+                            t(value.title)
+                          )
+                        }
+                        text={
+                          <div>
+                            <Link to={value?.to}>
+                              <span className="link" style={{ color: "#F47738" }}>
+                                {value?.value}
+                              </span>
+                            </Link>
+                          </div>
+                        }
+                        last={index === detail?.values?.length - 1}
+                        caption={value.caption}
+                        className="border-none"
+                        rowContainerStyle={getRowStyles()}
+                      />
+                    );
+                  }
+                  return (
+                    <Row
+                      key={t(value.title)}
+                      label={isWS ? `${t(value.title)}:` : t(value.title)}
+                      text={value?.isImages ? <ViewImages fileStoreIds={value?.fileStoreIds}
+                        tenantId={value?.tenant}
+                        onClick={() => { }} />: getTextValue(value)}
+                      last={index === detail?.values?.length - 1}
+                      caption={value.caption}
+                      className="border-none"
+                      /* privacy object set to the Row Component */
+                      privacy={value?.privacy}
+                      // TODO, Later will move to classes
+                      rowContainerStyle={getRowStyles(detail?.tab)}
+                      textStyle={getTextStyles(detail?.tab)}
+                      labelStyle={getLabelStyles(detail?.tab)}
+                    />
+                  );
+                })}
+            </StatusTable>
+          </div>
+   
+          
+          {detail?.additionalDetails?.table
+            ? detail?.additionalDetails?.table?.weekTable?.tableHeader && (
+                <>
+                  <CardSectionHeader style={{ marginBottom: "16px", marginTop: "32px", fontSize: "24px" }}>
+                    {t(detail?.additionalDetails?.table?.weekTable?.tableHeader)}
+                  </CardSectionHeader>
+                </>
+              )
+            : null}
+            
+          {detail?.additionalDetails?.inspectionReport && (
+            <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} paymentsList={paymentsList} />
+          )}
+          {applicationDetails?.applicationData?.additionalDetails?.fieldinspection_pending?.length > 0 && detail?.additionalDetails?.fiReport && (
+            <InspectionReport fiReport={applicationDetails?.applicationData?.additionalDetails?.fieldinspection_pending} />
+          )}
+          {/* {detail?.additionalDetails?.FIdocuments && detail?.additionalDetails?.values?.map((doc,index) => (
             <div key={index}>
             {doc.isNotDuplicate && <div> 
              <StatusTable>
@@ -394,100 +383,100 @@ function ApplicationDetailsContent({
              </div>}
              </div>
           )) } */}
-              {detail?.additionalDetails?.floors && <PropertyFloors floors={detail?.additionalDetails?.floors} />}
-              {detail?.additionalDetails?.owners && <PropertyOwners owners={detail?.additionalDetails?.owners} />}
-              {detail?.additionalDetails?.units && <TLTradeUnits units={detail?.additionalDetails?.units} />}
-              {detail?.additionalDetails?.accessories && <TLTradeAccessories units={detail?.additionalDetails?.accessories} />}
-              {detail?.additionalDetails?.permissions && workflowDetails?.data?.nextActions?.length > 0 && (
-                <PermissionCheck applicationData={applicationDetails?.applicationData} t={t} permissions={detail?.additionalDetails?.permissions} />
-              )}
-              {detail?.additionalDetails?.obpsDocuments && (
-                <BPADocuments
-                  t={t}
-                  applicationData={applicationDetails?.applicationData}
-                  docs={detail.additionalDetails.obpsDocuments}
-                  bpaActionsDetails={workflowDetails}
+          {detail?.additionalDetails?.floors && <PropertyFloors floors={detail?.additionalDetails?.floors} />}
+          {detail?.additionalDetails?.owners && <PropertyOwners owners={detail?.additionalDetails?.owners} />}
+          {detail?.additionalDetails?.units && <TLTradeUnits units={detail?.additionalDetails?.units} />}
+          {detail?.additionalDetails?.accessories && <TLTradeAccessories units={detail?.additionalDetails?.accessories} />}
+          {detail?.additionalDetails?.permissions && workflowDetails?.data?.nextActions?.length > 0 && (
+            <PermissionCheck applicationData={applicationDetails?.applicationData} t={t} permissions={detail?.additionalDetails?.permissions} />
+          )}
+          {detail?.additionalDetails?.obpsDocuments && (
+            <BPADocuments
+              t={t}
+              applicationData={applicationDetails?.applicationData}
+              docs={detail.additionalDetails.obpsDocuments}
+              bpaActionsDetails={workflowDetails}
+            />
+          )}
+          {detail?.additionalDetails?.noc && (
+            <NOCDocuments
+              t={t}
+              isNoc={true}
+              NOCdata={detail.values}
+              applicationData={applicationDetails?.applicationData}
+              docs={detail.additionalDetails.noc}
+              noc={detail.additionalDetails?.data}
+              bpaActionsDetails={workflowDetails}
+            />
+          )}
+          {detail?.additionalDetails?.scruntinyDetails && <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} />}
+          {detail?.additionalDetails?.buildingExtractionDetails && <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} />}
+          {detail?.additionalDetails?.subOccupancyTableDetails && (
+            <SubOccupancyTable edcrDetails={detail?.additionalDetails} applicationData={applicationDetails?.applicationData} />
+          )}
+          {detail?.additionalDetails?.documentsWithUrl && <DocumentsPreview documents={detail?.additionalDetails?.documentsWithUrl} />}
+          {detail?.additionalDetails?.documents && <PropertyDocuments documents={detail?.additionalDetails?.documents} />}
+          {detail?.additionalDetails?.taxHeadEstimatesCalculation && (
+            <PropertyEstimates taxHeadEstimatesCalculation={detail?.additionalDetails?.taxHeadEstimatesCalculation} />
+          )}
+          {/* {detail?.isWaterConnectionDetails && <WSAdditonalDetails wsAdditionalDetails={detail} oldValue={oldValue} />} */}
+          {detail?.additionalDetails?.redirectUrl && (
+            <div style={{ fontSize: "16px", lineHeight: "24px", fontWeight: "400", padding: "10px 0px" }}>
+              <Link to={detail?.additionalDetails?.redirectUrl?.url}>
+                <span className="link" style={{ color: "#F47738" }}>
+                  {detail?.additionalDetails?.redirectUrl?.title}
+                </span>
+              </Link>
+            </div>
+          )}
+          {detail?.additionalDetails?.estimationDetails && <WSFeeEstimation wsAdditionalDetails={detail} workflowDetails={workflowDetails} />}
+          {detail?.additionalDetails?.estimationDetails && <ViewBreakup wsAdditionalDetails={detail} workflowDetails={workflowDetails} />}
+        </React.Fragment>
+        </CollapseAndExpandGroups>
+      ))}
+      {showTimeLine && workflowDetails?.data?.timeline?.length > 0 && (
+        <React.Fragment>
+          {workflowDetails?.breakLineRequired === undefined ? <BreakLine /> : workflowDetails?.breakLineRequired ? <BreakLine /> : null}
+          {(workflowDetails?.isLoading || isDataLoading) && <Loader />}
+          {!workflowDetails?.isLoading && !isDataLoading && (
+            <Fragment>
+              <CardSectionHeader style={{ marginBottom: "16px", marginTop: "32px" }}>
+                {/* {t("ES_APPLICATION_DETAILS_APPLICATION_TIMELINE")} */}
+                {t("WORKS_WORKFLOW_HISTORY")}
+              </CardSectionHeader>
+              {workflowDetails?.data?.timeline && workflowDetails?.data?.timeline?.length === 1 ? (
+                <CheckPoint
+                  isCompleted={true}
+                  label={t(`${timelineStatusPrefix}${workflowDetails?.data?.timeline[0]?.state}`)}
+                  customChild={getTimelineCaptions(workflowDetails?.data?.timeline[0])}
                 />
+              ) : (
+                <ConnectingCheckPoints>
+                  {workflowDetails?.data?.timeline &&
+                    workflowDetails?.data?.timeline.map((checkpoint, index, arr) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <CheckPoint
+                            keyValue={index}
+                            isCompleted={index === 0}
+                            info={checkpoint.comment}
+                            label={t(
+                              `${timelineStatusPrefix}${
+                                checkpoint?.performedAction === "EDIT" ? `${checkpoint?.performedAction}_ACTION` : checkpoint?.[statusAttribute]
+                              }`
+                            )}
+                            customChild={getTimelineCaptions(checkpoint)}
+                          />
+                        </React.Fragment>
+                      );
+                    })}
+                </ConnectingCheckPoints>
               )}
-              {detail?.additionalDetails?.noc && (
-                <NOCDocuments
-                  t={t}
-                  isNoc={true}
-                  NOCdata={detail.values}
-                  applicationData={applicationDetails?.applicationData}
-                  docs={detail.additionalDetails.noc}
-                  noc={detail.additionalDetails?.data}
-                  bpaActionsDetails={workflowDetails}
-                />
-              )}
-              {detail?.additionalDetails?.scruntinyDetails && <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} />}
-              {detail?.additionalDetails?.buildingExtractionDetails && <ScruntinyDetails scrutinyDetails={detail?.additionalDetails} />}
-              {detail?.additionalDetails?.subOccupancyTableDetails && (
-                <SubOccupancyTable edcrDetails={detail?.additionalDetails} applicationData={applicationDetails?.applicationData} />
-              )}
-              {detail?.additionalDetails?.documentsWithUrl && <DocumentsPreview documents={detail?.additionalDetails?.documentsWithUrl} />}
-              {detail?.additionalDetails?.documents && <PropertyDocuments documents={detail?.additionalDetails?.documents} />}
-              {detail?.additionalDetails?.taxHeadEstimatesCalculation && (
-                <PropertyEstimates taxHeadEstimatesCalculation={detail?.additionalDetails?.taxHeadEstimatesCalculation} />
-              )}
-              {/* {detail?.isWaterConnectionDetails && <WSAdditonalDetails wsAdditionalDetails={detail} oldValue={oldValue} />} */}
-              {detail?.additionalDetails?.redirectUrl && (
-                <div style={{ fontSize: "16px", lineHeight: "24px", fontWeight: "400", padding: "10px 0px" }}>
-                  <Link to={detail?.additionalDetails?.redirectUrl?.url}>
-                    <span className="link" style={{ color: "#1f4ac4" }}>
-                      {detail?.additionalDetails?.redirectUrl?.title}
-                    </span>
-                  </Link>
-                </div>
-              )}
-              {detail?.additionalDetails?.estimationDetails && <WSFeeEstimation wsAdditionalDetails={detail} workflowDetails={workflowDetails} />}
-              {detail?.additionalDetails?.estimationDetails && <ViewBreakup wsAdditionalDetails={detail} workflowDetails={workflowDetails} />}
-            </React.Fragment>
-          </CollapseAndExpandGroups>
-        ))}
-        {showTimeLine && workflowDetails?.data?.timeline?.length > 0 && (
-          <React.Fragment>
-            {workflowDetails?.breakLineRequired === undefined ? <BreakLine /> : workflowDetails?.breakLineRequired ? <BreakLine /> : null}
-            {(workflowDetails?.isLoading || isDataLoading) && <Loader />}
-            {!workflowDetails?.isLoading && !isDataLoading && (
-              <Fragment>
-                <CardSectionHeader style={{ marginBottom: "16px", marginTop: "32px" }}>
-                  {/* {t("ES_APPLICATION_DETAILS_APPLICATION_TIMELINE")} */}
-                  {t("WORKS_WORKFLOW_HISTORY")}
-                </CardSectionHeader>
-                {workflowDetails?.data?.timeline && workflowDetails?.data?.timeline?.length === 1 ? (
-                  <CheckPoint
-                    isCompleted={true}
-                    label={t(`${timelineStatusPrefix}${workflowDetails?.data?.timeline[0]?.state}`)}
-                    customChild={getTimelineCaptions(workflowDetails?.data?.timeline[0])}
-                  />
-                ) : (
-                  <ConnectingCheckPoints>
-                    {workflowDetails?.data?.timeline &&
-                      workflowDetails?.data?.timeline.map((checkpoint, index, arr) => {
-                        return (
-                          <React.Fragment key={index}>
-                            <CheckPoint
-                              keyValue={index}
-                              isCompleted={index === 0}
-                              info={checkpoint.comment}
-                              label={t(
-                                `${timelineStatusPrefix}${
-                                  checkpoint?.performedAction === "EDIT" ? `${checkpoint?.performedAction}_ACTION` : checkpoint?.[statusAttribute]
-                                }`
-                              )}
-                              customChild={getTimelineCaptions(checkpoint)}
-                            />
-                          </React.Fragment>
-                        );
-                      })}
-                  </ConnectingCheckPoints>
-                )}
-              </Fragment>
-            )}
-          </React.Fragment>
-        )}
-      </Card>
+            </Fragment>
+          )}
+        </React.Fragment>
+      )}
+    </Card>
     </CollapseAndExpandGroups>
   );
 }

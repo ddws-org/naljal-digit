@@ -78,7 +78,8 @@ class TableData {
   final TextStyle? style;
   final String? apiKey;
   ValueChanged<TableData>? callBack;
-  TableData(this.label, {this.style, this.callBack, this.apiKey});
+  ValueChanged<TableData>? iconButtonCallBack;
+  TableData(this.label, {this.style, this.callBack,this. iconButtonCallBack, this.apiKey});
 }
 
 class SortBy {

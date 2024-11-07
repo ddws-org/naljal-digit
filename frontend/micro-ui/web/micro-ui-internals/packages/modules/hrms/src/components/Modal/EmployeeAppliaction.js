@@ -58,7 +58,7 @@ export const configEmployeeApplication = ({ t, action, selectFile, uploadedFile,
               </div>
             ),
           },
-          
+
           {
             label: t("HR_REMARKS"),
             type: "text",

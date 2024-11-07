@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -213,6 +214,10 @@ public class WaterServiceImpl implements WaterService {
 		return waterConnection;
 	}
 
+	public WaterConnectionByDemandGenerationDateResponse countWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+		return getWCbyDemandGennerationDate(criteria, requestInfo);
+	}
+
 	/**
 	 *
 	 * @param criteria    WaterConnectionSearchCriteria contains search criteria on
@@ -222,6 +227,9 @@ public class WaterServiceImpl implements WaterService {
 	 */
 	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
 		return waterDaoImpl.getWaterConnectionList(criteria, requestInfo);
+	}
+	public WaterConnectionByDemandGenerationDateResponse getWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+		return waterDaoImpl.getWaterConnectionByDemandDate(criteria, requestInfo);
 	}
 
 	/**
@@ -364,6 +372,12 @@ public class WaterServiceImpl implements WaterService {
 				throw new CustomException("DUPLICATE_IMIS_NUMBER",
 						"Duplicate IMIS number");
 			}
+		}
+		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
+		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
+		{
+			throw new CustomException("DUPLICATE_IMIS_NUMBER",
+					"Duplicate IMIS number");
 		}
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
@@ -876,5 +890,46 @@ public class WaterServiceImpl implements WaterService {
 		Long mothEndDateTime=LocalDateTime.of(endDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		List<InactiveConsumerReportData> inactiveConsumerReport=waterDaoImpl.getInactiveConsumerReport(monthStartDateTime,mothEndDateTime,tenantId,offset,limit);
 		return inactiveConsumerReport;
+	}
+
+	@Override
+	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
+	{
+		Long previousReadingEpoch;
+		try {
+			previousReadingEpoch = Long.parseLong(previousMeterReading);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid format for previousMeterReading. Expected a timestamp in milliseconds.", e);
+		}
+
+		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch,tenantId);
+		Set<String> connectionNo=new HashSet<>();
+		for(ConsumersDemandNotGenerated connection:list)
+		{
+			connectionNo.add(connection.getConsumerCode());
+		}
+		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
+		 return search(criteria,requestInfo);
+	}
+
+	@Override
+	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper)
+	{
+		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
+		return list;
+	}
+
+
+	@Override
+	public List<MonthReport> monthReport(String startDate, String endDate, String tenantId, Integer offset, Integer limit,String sortOrder)
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate monthStartDate = LocalDate.parse(startDate, formatter);
+		LocalDate monthEndDate = LocalDate.parse(endDate, formatter);
+
+		Long monthStartDateTime = LocalDateTime.of(monthStartDate.getYear(), monthStartDate.getMonth(), monthStartDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long monthEndDateTime = LocalDateTime.of(monthEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		return waterDaoImpl.getMonthReport(monthStartDateTime,monthEndDateTime,tenantId,offset,limit,sortOrder);
 	}
 }

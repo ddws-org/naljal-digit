@@ -54,6 +54,9 @@ public class Connection {
 	@JsonProperty("applicationStatus")
 	private String applicationStatus = null;
 
+	@JsonProperty("imisNumber")
+	private String imisNumber=null;
+
 	/**
 	 * Gets or Sets status
 	 */
@@ -96,9 +99,6 @@ public class Connection {
 	
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
-
-	@JsonProperty("imisNumber")
-	private String imisNumber=null;
 
 	@JsonProperty("villageId")
 	private String villageId=null;

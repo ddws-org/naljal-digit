@@ -85,6 +85,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     passwordDetails.currentpasswordCtrl,
                     obscureText: true,
                     isRequired: true,
+                    maxLength: 10,
                     maxLines: 1,
                     onChange: (value) => saveInput(value),
                     key: Keys.changePassword.CURRENT_PASSWORD_KEY,
@@ -94,6 +95,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     passwordDetails.newpasswordCtrl,
                     obscureText: true,
                     isRequired: true,
+                    maxLength: 10,
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
                         val, ApplicationLocalizations.of(context).translate(i18.password.NEW_PASSWORD_ENTER)),
@@ -105,6 +107,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     passwordDetails.confirmpasswordCtrl,
                     obscureText: true,
                     isRequired: true,
+                    maxLength: 10,
                     maxLines: 1,
                     validator: (val) => Validators.passwordComparision(
                         val,
