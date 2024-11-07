@@ -495,26 +495,4 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 		return rollOutDashboardRequest.getRollOutDashboard();
 	}
-
-
-	@Override
-	public RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime date = LocalDateTime.now();
-		log.info("Time schedule start for roll out dashboard on : " + date.format(dateTimeFormatter));
-
-		try {
-			String tenantId = rollOutDashboardRequest.getRollOutDashboard().getTenantid();
-			if (tenantId != null) {
-				rollOutDashboardRequest.getRollOutDashboard().setCreatedTime(new Date());
-				log.info("Role out data sending to kafka topic "+ rollOutDashboardRequest.getRollOutDashboard());
-				wsCalculationProducer.push(config.getRollOutDashBoardTopic(), rollOutDashboardRequest.getRollOutDashboard());
-			}
-		} catch (Exception e) {
-			log.info("Exception occurred while fetching tenantId");
-			throw new DataRetrievalFailureException("Data not found "+e);
-		}
-		return rollOutDashboardRequest.getRollOutDashboard();
-	}
-	
 }
