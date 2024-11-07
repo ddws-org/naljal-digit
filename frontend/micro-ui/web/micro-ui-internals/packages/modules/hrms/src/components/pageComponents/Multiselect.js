@@ -88,7 +88,10 @@ const MultiSelectDropdown = ({
   }, [selected?.length]);
 
   function fnToSelectOptionThroughProvidedSelection(selected) {
-    return selected?.map((e) => ({ [optionsKey]: e?.[optionsKey], propsData: [null, e] }));
+    return selected?.map((e) => ({
+      [optionsKey]: e?.i18text ? e.i18text : `ACCESSCONTROL_ROLES_ROLES_${e.code}`,
+      propsData: [null, e],
+    }));
   }
 
   const [alreadyQueuedSelectedState, dispatch] = useReducer(reducer, selected, fnToSelectOptionThroughProvidedSelection);
@@ -101,6 +104,16 @@ const MultiSelectDropdown = ({
       );
     }
   }, [active]);
+
+  useEffect(() => {
+    if (alreadyQueuedSelectedState?.length === filteredOptions?.length) {
+      if (alreadyQueuedSelectedState?.length != 0 && filteredOptions?.length != 0) {
+        setIsSelected(true);
+      }
+    } else {
+      setIsSelected(false);
+    }
+  }, [alreadyQueuedSelectedState]);
 
   function handleOutsideClickAndSubmitSimultaneously() {
     setActive(false);
@@ -218,14 +231,13 @@ const MultiSelectDropdown = ({
             <p className="label">{t("SELECT_ALL")}</p>
           </div>
         )}
-        {filteredOptions?.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <MenuItem option={option} key={index} index={index} />
         ))}
       </div>
     );
     // return filteredOptions?.map((option, index) => <MenuItem option={option} key={index} index={index} />);
   };
-
   return (
     <div>
       <div className="multi-select-dropdown-wrap" ref={dropdownRef} style={{ marginBottom: "24px" }}>

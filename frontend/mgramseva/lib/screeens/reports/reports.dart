@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
+import 'package:mgramseva/screeens/reports/monthly_ledger_report.dart';
+import 'package:mgramseva/screeens/reports/vendor_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
@@ -83,9 +86,19 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
-      backgroundColor: Color.fromRGBO(238, 238, 238, 1),
       body: LayoutBuilder(
         builder: (context, constraints) => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
+              ],
+            ),
+          ),
           alignment: Alignment.center,
           margin: constraints.maxWidth < 760
               ? null
@@ -95,7 +108,6 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                color: Color.fromRGBO(238, 238, 238, 1),
                 margin: constraints.maxWidth < 760
                     ? null
                     : EdgeInsets.symmetric(
@@ -214,7 +226,18 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
-                                    InactiveConsumerReport(onViewClick: showTable,)
+                                    InactiveConsumerReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    ExpenseBillReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    VendorReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    MonthlyLedgerReport(
+                                      onViewClick: showTable,
+                                    )
                                   ],
                                 ),
                               ),

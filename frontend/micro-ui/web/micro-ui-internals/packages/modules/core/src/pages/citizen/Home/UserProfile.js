@@ -11,6 +11,7 @@ import {
   BackButton,
   Loader,
   SubmitBar,
+  Password,
 } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,7 +48,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const stateId = Digit.ULBService.getStateId();
   const tenant = Digit.ULBService.getCurrentTenantId();
   const userInfo = Digit.UserService.getUser()?.info || {};
-  console.log(userInfo, "userInfo");
   const [userDetails, setUserDetails] = useState(null);
   const [name, setName] = useState(userInfo?.name ? userInfo.name : "");
   const [email, setEmail] = useState(userInfo?.emailId ? userInfo.emailId : "");
@@ -136,7 +136,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserMobileNumber = (value) => {
     setMobileNo(value);
 
-    if (userType === "employee" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(value)) {
+    if (userType === "employee" && !new RegExp(/^[4-9]{1}[0-9]{9}$/).test(value)) {
       setErrors({ ...errors, mobileNumber: { type: "pattern", message: "CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID" } });
     } else {
       setErrors({ ...errors, mobileNumber: null });
@@ -156,7 +156,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserNewPassword = (value) => {
     setNewPassword(value);
 
-    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,15})$/i).test(value)) {
+    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(value)) {
       setErrors({ ...errors, newPassword: { type: "pattern", message: "CORE_COMMON_PROFILE_PASSWORD_INVALID" } });
     } else {
       setErrors({ ...errors, newPassword: null });
@@ -166,7 +166,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserConfirmPassword = (value) => {
     setConfirmPassword(value);
 
-    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,15})$/i).test(value)) {
+    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(value)) {
       setErrors({ ...errors, confirmPassword: { type: "pattern", message: "CORE_COMMON_PROFILE_PASSWORD_INVALID" } });
     } else {
       setErrors({ ...errors, confirmPassword: null });
@@ -200,7 +200,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_NAME_INVALID") });
       }
 
-      if (userType === "employee" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(mobileNumber)) {
+      if (userType === "employee" && !new RegExp(/^[4-9]{1}[0-9]{9}$/).test(mobileNumber)) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
       }
 
@@ -217,7 +217,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
           throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_PASSWORD_INVALID") });
         }
 
-        if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,15})$/i).test(newPassword) && !new RegExp(/^([a-zA-Z0-9@#$%]{8,15})$/i).test(confirmPassword)) {
+        if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(newPassword) && !new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(confirmPassword)) {
           throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_PASSWORD_INVALID") });
         }
       }
@@ -598,14 +598,12 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                           style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}
                         >{`${t("CORE_COMMON_PROFILE_CURRENT_PASSWORD")}`}</CardLabel>
                         <div style={{ width: "100%" }}>
-                          <TextInput
-                            t={t}
-                            type={"password"}
+                          <Password
                             isMandatory={false}
                             name="name"
-                            pattern="^([a-zA-Z0-9@#$%])+$"
-                            onChange={(e) => setUserCurrentPassword(e.target.value)}
+                            onChange={(value) => setUserCurrentPassword(value)}
                             disable={editScreen}
+                            maxlength={10}
                           />
                           {errors?.currentPassword && <CardLabelError>{t(errors?.currentPassword?.message)}</CardLabelError>}
                         </div>
@@ -617,14 +615,12 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                           style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}
                         >{`${t("CORE_COMMON_PROFILE_NEW_PASSWORD")}`}</CardLabel>
                         <div style={{ width: "100%" }}>
-                          <TextInput
-                            t={t}
-                            type={"password"}
-                            isMandatory={false}
+                          <Password
                             name="name"
-                            pattern="^([a-zA-Z0-9@#$%])+$"
-                            onChange={(e) => setUserNewPassword(e.target.value)}
-                            disable={editScreen}
+                            value={newPassword}
+                            isMandatory={false}
+                            onChange={(value) => setUserNewPassword(value)}
+                            disable={false}
                           />
                           {errors?.newPassword && <CardLabelError>{t(errors?.newPassword?.message)}</CardLabelError>}
                         </div>
@@ -636,14 +632,15 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                           style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}
                         >{`${t("CORE_COMMON_PROFILE_CONFIRM_PASSWORD")}`}</CardLabel>
                         <div style={{ width: "100%" }}>
-                          <TextInput
+                          <Password
                             t={t}
                             type={"password"}
                             isMandatory={false}
                             name="name"
                             pattern="^([a-zA-Z0-9@#$%])+$"
-                            onChange={(e) => setUserConfirmPassword(e.target.value)}
+                            onChange={(value) => setUserConfirmPassword(value)}
                             disable={editScreen}
+                            maxlength={10}
                           />
                           {errors?.confirmPassword && <CardLabelError>{t(errors?.confirmPassword?.message)}</CardLabelError>}
                         </div>

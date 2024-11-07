@@ -58,6 +58,7 @@ export const StoreService = {
     const { MdmsRes } = await MdmsService.init(stateCode);
     const stateInfo = MdmsRes["common-masters"]?.StateInfo?.[0] || {};
     const uiHomePage = MdmsRes["common-masters"]?.uiHomePage?.[0] || {};
+
     const localities = {};
     const revenue_localities = {};
     const initData = {
@@ -80,21 +81,12 @@ export const StoreService = {
 
     initData.selectedLanguage =
       Digit.SessionStorage.get("locale") || initData?.languages[2] ? initData?.languages[2]?.value : initData?.languages[1]?.value;
-
     ApiCacheService.saveSetting(MdmsRes["DIGIT-UI"]?.ApiCachingSettings);
-
-    const moduleTenants = initData?.modules
-      .map((module) => module.tenants)
-      .flat()
-      .reduce((unique, ele) => (unique.find((item) => item.code === ele.code) ? unique : [...unique, ele]), []);
     initData.tenants = MdmsRes?.tenant?.tenants
       .map((tenant) => ({
         i18nKey: `TENANT_TENANTS_${tenant.code.replace(".", "_").toUpperCase()}`,
         ...tenant,
       }));
-    // .filter((item) => !!moduleTenants.find((mt) => mt.code === item.code))
-    // .map((tenant) => ({ i18nKey: `TENANT_TENANTS_${tenant.code.replace(".", "_").toUpperCase()}`, ...tenant }));
-
     await LocalizationService.getLocale({
       modules: [`rainmaker-common`],
       locale: initData.selectedLanguage,

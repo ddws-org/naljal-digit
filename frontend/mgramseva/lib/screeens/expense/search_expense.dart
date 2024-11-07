@@ -45,12 +45,23 @@ class _SearchExpenseState extends State<SearchExpense> {
   @override
   Widget build(BuildContext context) {
     return KeyboardFocusWatcher(child:Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+    //  backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppBar(),
       drawer: DrawerWrapper(
         Drawer(child: SideBar()),
       ),
-      body: SingleChildScrollView(
+      body: Container( decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: FractionalOffset.topCenter,
+          end: FractionalOffset.bottomCenter,
+          colors: [
+            Color(0xff90c5e5),
+            Color(0xffeef7f2),
+            Color(0xffffeca7),
+          ],
+        ),
+      ),
+        child: SingleChildScrollView(
           child: Column(children: [
         FormWrapper(
           Column(
@@ -118,6 +129,7 @@ class _SearchExpenseState extends State<SearchExpense> {
         ),
         Footer()
       ])),
+      ),
       bottomNavigationBar: BottomButtonBar(i18.common.SEARCH, onSubmit, key: Keys.expense.SEARCH_EXPENSES),
     ));
   }

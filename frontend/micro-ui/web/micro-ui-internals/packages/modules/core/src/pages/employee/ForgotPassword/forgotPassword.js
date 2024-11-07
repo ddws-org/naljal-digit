@@ -1,4 +1,4 @@
-import { BackButton, Dropdown, FormComposer, Loader, Toast } from "@egovernments/digit-ui-react-components";
+import { BackButton, Dropdown, FormComposer, FormComposerV2, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -11,6 +11,8 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   const history = useHistory();
   const [showToast, setShowToast] = useState(null);
   const getUserType = () => Digit.UserService.getType();
+
+  const tenantId = Digit.ULBService.getCurrentTenantId();
 
   useEffect(() => {
     if (!user) {
@@ -26,22 +28,18 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
     setShowToast(null);
   };
 
-  const onForgotPassword = async (data) => {
-    if (!data.city) {
-      alert("Please Select City!");
-      return;
-    }
+  const onForgotPassword = async (data) => {  
     const requestData = {
       otp: {
         mobileNumber: data.mobileNumber,
         userType: getUserType().toUpperCase(),
         type: "passwordreset",
-        tenantId: data.city.code,
+        tenantId: tenantId,
       },
     };
     try {
-      await Digit.UserService.sendOtp(requestData, data.city.code);
-      history.push(`/${window?.contextPath}/employee/user/change-password?mobile_number=${data.mobileNumber}&tenantId=${data.city.code}`);
+      await Digit.UserService.sendOtp(requestData, tenantId);
+      history.push(`/${window?.contextPath}/employee/user/change-password?mobile_number=${data.mobileNumber}&tenantId=${tenantId}`);
     } catch (err) {
       setShowToast(err?.response?.data?.error?.fields?.[0]?.message || "Invalid login credentials!");
       setTimeout(closeToast, 5000);
@@ -58,34 +56,14 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
       body: [
         {
           label: t(userId.label),
-          type: userId.type,
+          type: "mobileNumber",
           populators: {
             name: userId.name,
             componentInFront: "+91",
           },
           isMandatory: true,
         },
-        {
-          label: t(city.label),
-          type: city.type,
-          populators: {
-            name: city.name,
-            customProps: {},
-            component: (props, customProps) => (
-              <Dropdown
-                option={cities}
-                optionKey="name"
-                id={city.name}
-                className="login-city-dd"
-                select={(d) => {
-                  props.onChange(d);
-                }}
-                {...customProps}
-              />
-            ),
-          },
-          isMandatory: true,
-        },
+        
       ],
     },
   ];
@@ -93,13 +71,12 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
   if (isLoading) {
     return <Loader />;
   }
-
   return (
     <Background>
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-      <FormComposer
+      <FormComposerV2
         onSubmit={onForgotPassword}
         noBoxShadow
         inline
@@ -115,12 +92,12 @@ const ForgotPassword = ({ config: propsConfig, t }) => {
         className="employeeForgotPassword"
       >
         <Header />
-      </FormComposer>
+      </FormComposerV2>
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div className="EmployeeLoginFooter">
         <img
           alt="Powered by DIGIT"
-          src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
+          src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
@@ -33,7 +36,11 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
   }
 
   buildconsumerView(WaterConnections waterConnections) {
-    return SearchConnectionDetailCard(waterConnections, widget.arguments, isNameSearch: widget.arguments['isNameSearch'],);
+    return SearchConnectionDetailCard(
+      waterConnections,
+      widget.arguments,
+      isNameSearch: widget.arguments['isNameSearch'],
+    );
   }
 
   @override
@@ -42,12 +49,23 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
 
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        //backgroundColor: Theme.of(context).colorScheme.background,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
         body: FormWrapper(Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
             child: Column(children: [
           HomeBack(),
           Expanded(

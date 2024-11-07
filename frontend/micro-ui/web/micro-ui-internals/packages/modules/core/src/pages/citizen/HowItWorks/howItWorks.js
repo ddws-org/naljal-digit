@@ -62,11 +62,11 @@ const HowItWorks = ({ module }) => {
           <Header>{t("HOW_IT_WORKS")}</Header>
         </div>
         <div className="language-selector" style={{ margin: "10px" }}>
-          {languages?.map((language, index) => (
+          {languages.map((language, index) => (
             <div className="language-button-container" key={index}>
               <CustomButton
                 selected={language?.value === selected}
-                text={language.label}
+                text={language?.label}
                 onClick={() => handleChangeLanguage(language)}
               ></CustomButton>
             </div>

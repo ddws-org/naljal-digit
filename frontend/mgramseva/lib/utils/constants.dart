@@ -57,11 +57,11 @@ class Constants {
       Routes.HOUSEHOLD_REGISTER,
       {},
     ),
-    HomeItem(
+/*    HomeItem(
         "CORE_CONSUMER_CREATE",
         (i18.homeWalkThroughMSg.CREATE_CONSUMER_MSG),
         HomeIcons.createconsumer,
-        Routes.CONSUMER_CREATE, {}),
+        Routes.CONSUMER_CREATE, {}),*/
 
     HomeItem(
         "CORE_UPDATE_CONSUMER_DETAILS",
