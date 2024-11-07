@@ -186,3 +186,41 @@
   }
 }
 
+
+.link-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex; /* Adjust display for layout preference */
+  justify-content: space-between; /* Adjust spacing as needed */
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  margin: 10px; /* Adjust margin as needed */
+  padding: 10px;
+  border: 1px solid #ccc; /* Adjust border if desired */
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease-in-out; /* Add generic transition for styling */
+}
+
+.link-item:hover {
+  transform: scale(1.05); /* Add scale effect on hover */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow on hover */
+}
+
+.link-item a {
+  text-decoration: none;
+  color: inherit; /* Inherit color from parent element */
+}
+
+.link-icon {
+  margin-right: 10px; /* Adjust margin as needed */
+  transition: transform 0.3s ease-in-out; /* Add transition for icon animation */
+}
+
+.link-item:hover .link-icon {
+  transform: rotate(360deg); /* Add rotation animation on hover */
+}

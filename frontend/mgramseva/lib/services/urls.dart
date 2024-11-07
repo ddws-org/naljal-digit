@@ -44,6 +44,8 @@ class Url {
   static const String FETCH_DEMAND = 'billing-service/demand/_search';
   static const String FETCH_UPDATE_DEMAND =
       'ws-calculator/waterCalculator/_getPenaltyDetails';
+  static const String FETCH_AGGREGATE_DEMAND =
+      'billing-service/demand/_getAggregateDemandDetails';
 
   static const String FETCH_BILL = 'billing-service/bill/v2/_fetchbill';
   static const String SEARCH_BILL = 'billing-service/bill/v2/_search';
@@ -51,6 +53,7 @@ class Url {
   static const String FETCH_WC_CONNECTION = 'ws-services/wc/_search';
   static const String VENDOR_SEARCH = 'vendor/v1/_search';
   static const String CREATE_VENDOR = 'vendor/v1/_create';
+  static const String VENDOR_REPORT = 'vendor/v1/_vendorReport';
   static const String EGOV_LOCATIONS =
       'egov-location/location/v11/boundarys/_search';
 
@@ -87,15 +90,21 @@ class Url {
       'ifix-department-entity/departmentEntity/v1/_search';
   static const String ADAPTER_MASTER_DATA_PROJECT_SEARCH=
       'adapter-master-data/project/v1/_search';
-  ///Reports
-  static const String BILL_REPORT=
-      'ws-services/wc/_billReport';
-  static const String COLLECTION_REPORT=
-      'ws-services/wc/_collectionReport';
-  static const String INACTIVE_CONSUMER_REPORT=
-      'ws-services/wc/_inactiveConsumerReport';
-}
 
+  ///Reports
+  static const String LEDGER_REPORT = 'ws-services/wc/ledger-report';
+  static const String MONTHLY_LEDGER_REPORT = 'ws-services/wc/month-report';
+  static const String BILL_REPORT = 'ws-services/wc/_billReport';
+  static const String COLLECTION_REPORT = 'ws-services/wc/_collectionReport';
+  static const String INACTIVE_CONSUMER_REPORT =
+      'ws-services/wc/_inactiveConsumerReport';
+  static const String EXPENSE_BILL_REPORT =
+      'echallan-services/eChallan/v1/_expenseBillReport';
+  static const String WATER_CONNECTION_COUNT =
+      'ws-services/wc/_countWCbyDemandGenerationDate';
+  static const String WATER_CONNECTION_DEMAND_NOT_GENERATED =
+      'ws-services/wc/consumers/demand-not-generated';
+}
 
 class UserUrl {
   static const String RESET_PASSWORD = 'user/password/nologin/_update';
@@ -104,4 +113,5 @@ class UserUrl {
   static const String USER_PROFILE = 'user/_search';
   static const String EDIT_PROFILE = 'user/profile/_update';
   static const String CHANGE_PASSWORD = 'user/password/_update';
+   static const String LOGOUT_USER = 'user/_logout';
 }

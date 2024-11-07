@@ -42,12 +42,24 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
         Provider.of<SearchConnectionProvider>(context, listen: false);
     return FocusWatcher(
         child: Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+     // backgroundColor: Theme.of(context).colorScheme.background,
           appBar: CustomAppBar(),
           drawer: DrawerWrapper(
             Drawer(child: SideBar()),
           ),
           body: SingleChildScrollView(
+            child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      Color(0xff90c5e5),
+                      Color(0xffeef7f2),
+                      Color(0xffffeca7),
+                    ],
+                  ),
+                ),
             child: Column(children: [
               FormWrapper(Consumer<SearchConnectionProvider>(
                 builder: (_, searchConnectionProvider, child) => Column(
@@ -136,7 +148,9 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                     Text(
                                         '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                         textAlign: TextAlign.center),
-                                    BuildTextField(
+                                      Visibility(
+                                        visible: false,
+                                        child: BuildTextField(
                                       i18.searchWaterConnection
                                           .OLD_CONNECTION_ID,
                                       searchConnectionProvider
@@ -159,9 +173,13 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                                               ? true : false);
                                         }
                                     ),
-                                    Text(
+                                      ),
+                                      Visibility(
+                                        visible: false,
+                                        child: Text(
                                         '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
                                         textAlign: TextAlign.center),
+                                      ),
                                     BuildTextField(
                                       i18.searchWaterConnection
                                           .NEW_CONNECTION_ID,
@@ -190,7 +208,8 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
               ]),
         )),
         Footer()
-      ])),
+                    ]),
+            )),
       bottomNavigationBar: BottomButtonBar(
           i18.searchWaterConnection.SEARCH_CONNECTION_BUTTON,
           () => searchConnectionProvider.validatesearchConnectionDetails(

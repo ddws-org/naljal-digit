@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/household_register/household_card.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
@@ -44,15 +46,14 @@ class _HouseholdRegister extends State<HouseholdRegister>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     var householdRegisterProvider =
         Provider.of<HouseholdRegisterProvider>(context, listen: false);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (householdRegisterProvider.removeOverLay(_overlayEntry))
-          return false;
-        return true;
-      },
+    return PopScope(
+      canPop: householdRegisterProvider.removeOverLay(_overlayEntry) ? false: true,
+      onPopInvoked : (didPop){
+  },
       child: GestureDetector(
         onTap: () => householdRegisterProvider.removeOverLay(_overlayEntry),
         child: FocusWatcher(
@@ -63,6 +64,17 @@ class _HouseholdRegister extends State<HouseholdRegister>
           ),
           body: LayoutBuilder(
             builder: (context, constraints) => Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Color(0xff90c5e5),
+                    Color(0xffeef7f2),
+                    Color(0xffffeca7),
+                  ],
+                ),
+              ),
               alignment: Alignment.center,
               margin: constraints.maxWidth < 760
                   ? null
@@ -76,14 +88,25 @@ class _HouseholdRegister extends State<HouseholdRegister>
                     child: CustomScrollView(slivers: [
                       SliverList(
                           delegate: SliverChildListDelegate([
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            HomeBack(),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [_buildDownload, _buildShare])
-                          ],
+                        SizedBox(
+                          width: size.width,
+                          child: Row(
+                            children: [
+                              HomeBack(),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: _buildDownload)),
+                                    _buildShare
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Container(key: key, child: HouseholdCard()),
                       ])),
@@ -128,9 +151,9 @@ class _HouseholdRegister extends State<HouseholdRegister>
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
-      icon: Icon(Icons.download_sharp),
+      icon: Icon(Icons.download_sharp,color: Color.fromRGBO(3, 60, 207, 0.7),),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD)));
+          ApplicationLocalizations.of(context).translate(i18.common.DOWNLOAD), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7)),));
 }
 
 showDownloadList(List<String> result, BuildContext context) {

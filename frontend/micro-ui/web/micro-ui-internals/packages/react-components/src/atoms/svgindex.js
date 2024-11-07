@@ -25,6 +25,12 @@ const ArrowLeft = ({ className }) => (
   </svg>
 );
 
+const ArrowLeftBlack = ({ className, fill = "black", style = {} }) => (
+  <svg width="16" height="16" viewBox="0 0 16 16" className={className} fill="none" style={style} xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" fill={fill} />
+  </svg>
+);
+
 const ArrowLeftWhite = ({ className, fill = "white", style = {} }) => (
   <svg width="16" height="16" viewBox="0 0 16 16" className={className} fill="none" style={style} xmlns="http://www.w3.org/2000/svg">
     <path d="M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z" fill={fill} />
@@ -295,7 +301,7 @@ const PDFSvg = ({
 );
 
 const SearchIconSvg = ({ className, onClick }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f47738" className={className} width="24px" height="24px" onClick={onClick}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1f4ac4" className={className} width="24px" height="24px" onClick={onClick}>
     <path d="M0 0h24v24H0z" fill="none" />
     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
   </svg>
@@ -325,7 +331,7 @@ const Calender = ({ className, onClick }) => (
 const Phone = ({ className, fillcolor, style }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill={fillcolor ? fillcolor : "#f47738"}
+    fill={fillcolor ? fillcolor : "#1f4ac4"}
     viewBox="0 0 24 24"
     style={style ? style : {}}
     className={className}
@@ -336,7 +342,7 @@ const Phone = ({ className, fillcolor, style }) => (
 );
 
 const FilterSvg = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="#f47738" width="24" height="24" viewBox="0 0 24 24" className={className}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#1f4ac4" width="24" height="24" viewBox="0 0 24 24" className={className}>
     <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
   </svg>
 );
@@ -362,7 +368,7 @@ const Feedback = ({ className }) => (
 // Download Icon
 
 const GetApp = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#f47738" className={className}>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1f4ac4" className={className}>
     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
   </svg>
 );
@@ -502,7 +508,7 @@ const ExternalLinkIcon = () => (
 );
 
 const PrimaryDownlaodIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#f47738">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#1f4ac4">
     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
   </svg>
 );
@@ -1735,6 +1741,15 @@ const WarningIcon =({ className = "", fill = "none", style = {} })=>(<svg width=
 </defs>
 </svg>
 )
+
+const PasswordEyeEnableSvg = ({ className, fill = "white", style = {} }) => (
+  <svg width="24" height="24" class=" digit-text-input-customIcon  " viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_1205)"><path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="#505A5F"></path></g><defs><clipPath id="clip0_105_1205"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg>
+);
+
+const PasswordEyeDisableSvg = ({ className, fill = "white", style = {} }) => (
+  <svg width="24" height="24" class=" digit-text-input-customIcon  " viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_105_1208)"><path d="M12 7C14.76 7 17 9.24 17 12C17 12.65 16.87 13.26 16.64 13.83L19.56 16.75C21.07 15.49 22.26 13.86 22.99 12C21.26 7.61 16.99 4.5 11.99 4.5C10.59 4.5 9.25 4.75 8.01 5.2L10.17 7.36C10.74 7.13 11.35 7 12 7ZM2 4.27L4.28 6.55L4.74 7.01C3.08 8.3 1.78 10.02 1 12C2.73 16.39 7 19.5 12 19.5C13.55 19.5 15.03 19.2 16.38 18.66L16.8 19.08L19.73 22L21 20.73L3.27 3L2 4.27ZM7.53 9.8L9.08 11.35C9.03 11.56 9 11.78 9 12C9 13.66 10.34 15 12 15C12.22 15 12.44 14.97 12.65 14.92L14.2 16.47C13.53 16.8 12.79 17 12 17C9.24 17 7 14.76 7 12C7 11.21 7.2 10.47 7.53 9.8V9.8ZM11.84 9.02L14.99 12.17L15.01 12.01C15.01 10.35 13.67 9.01 12.01 9.01L11.84 9.02Z" fill="#505A5F"></path></g><defs><clipPath id="clip0_105_1208"><rect width="24" height="24" fill="white"></rect></clipPath></defs></svg>
+);
+
 const ExpenditureIcon = BillsIcon;
 
 export {
@@ -1828,6 +1843,7 @@ export {
   PMBIcon,
   GenericFileIcon,
   ArrowLeftWhite,
+  ArrowLeftBlack,
   WSICon,
   ArrowVectorDown,
   ArrowDirection,
@@ -1886,5 +1902,8 @@ export {
   InfoIcon,
   PaymentIcon,
   HistoryIcon,
-  WarningIcon
+  WarningIcon,
+  PasswordEyeEnableSvg,
+  PasswordEyeDisableSvg
+
 };

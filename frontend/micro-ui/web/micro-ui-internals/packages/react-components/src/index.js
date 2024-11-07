@@ -220,6 +220,7 @@ import WhatsNewCard from "./atoms/WhatsNewCard";
 import EventCalendarView from "./atoms/EventCalendarView";
 import InboxLinks from "./atoms/InboxLinks";
 import PopupHeadingLabel from "./atoms/PopupHeadingLabel";
+import Password from "./atoms/Password";
 
 import { FormComposer } from "./hoc/FormComposer";
 import { FormComposer as FormComposerV2 } from "./hoc/FormComposerV2";
@@ -552,5 +553,6 @@ export {
   ExpenditureIcon,
   PaymentIcon,
   HistoryIcon,
-  WarningIcon
+  WarningIcon,
+  Password
 };

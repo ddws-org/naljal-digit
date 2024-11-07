@@ -6,6 +6,7 @@ import 'package:mgramseva/providers/home_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/services/urls.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:mgramseva/utils/role_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,32 +36,32 @@ class _HomeCard extends State<HomeCard> {
       return GridTile(
         child: new GestureDetector(
             onTap: () {
-                if(kIsWeb && item.link == Routes.HRMS){
-                  launchUrl(Uri.parse('${'$apiBaseUrl'+Url.HRMS}'));
-                }else{
-                  Navigator.pushNamed(context, item.link,
-                      arguments: item.arguments);
-                }
+                    if (kIsWeb && item.link == Routes.HRMS) {
+                launchUrl(Uri.parse('${'$apiBaseUrl' + Url.HRMS}'));
+              }else{
+                Navigator.pushNamed(context, item.link,
+                    arguments: item.arguments);
+              }
               },
             child: new Card(
-                color: Color(0xfffff6f6),
+              color: Color(0xffffffff),
+
                 shape: RoundedRectangleBorder(
-                    side: new BorderSide(color: Color(0xfffa7a39), width: 1),
+
+                    side: new BorderSide(color: Color(0xff2494d4), width: 1),
+
                     borderRadius: BorderRadius.circular(4.0)),
-                key: homeProvider.homeWalkthroughList
-                        .where((element) => element.label == item.label)
-                        .isNotEmpty
-                    ? homeProvider.homeWalkthroughList
-                        .where((element) => element.label == item.label)
-                        .first
-                        .key
-                    : Key(item.label),
+              key :Key(item.label),
+                // key: homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).isNotEmpty?homeProvider.homeWalkthroughList
+                //     .where((element) => element.label == item.label).first
+                //     .key:Key(item.label),
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(item.iconData, size: 30),
+                    Icon(item.iconData, size: 30,color: Color(0xff033ccf),),
                     Container(
                       margin: EdgeInsets.all(10),
                       child: Center(

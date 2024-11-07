@@ -1,3 +1,7 @@
+.links-font-high{
+    font-weight: 700 !important;
+    font-size: "larger" !important;
+}
 .inbox-search-wrapper {
     height: 100%;
     .inbox-search-component-wrapper {
@@ -11,10 +15,10 @@
             &.inbox {
                 .links{
                     .inbox-links-icon{
-                        color:#f47738;
-                        fill:#f47738;
+                        color:#1f4ac4;
+                        fill:#1f4ac4;
                         path{
-                            fill:#f47738;
+                            fill:#1f4ac4;
                         }
                     }
                 }
@@ -62,7 +66,7 @@
                 }
                 &.links {
                     height: 100%;
-                    color : #f47738;
+                    color : #1f4ac4;
                     .inbox-search-links-component {
                         height: 100% !important;
                         width: 100%;

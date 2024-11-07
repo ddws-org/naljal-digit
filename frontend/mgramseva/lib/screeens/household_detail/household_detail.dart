@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/house_connection_and_bill/consumer_bill_payment.dart';
 import 'package:mgramseva/components/house_connection_and_bill/generate_new_bill.dart';
@@ -25,7 +28,6 @@ class HouseholdDetail extends StatefulWidget {
   final String? mode;
   final String? status;
   final WaterConnection? waterConnection;
-
   HouseholdDetail(
       {Key? key, this.id, this.mode, this.status, this.waterConnection});
   @override
@@ -50,6 +52,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   buildDemandView(DemandList data) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+
     return Column(
       children: [
         data.demands!.isEmpty
@@ -90,13 +93,26 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   Widget build(BuildContext context) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+       // backgroundColor: Colors.blue,
         appBar: CustomAppBar(),
         drawer: DrawerWrapper(
           Drawer(child: SideBar()),
         ),
-        body: SingleChildScrollView(
+        body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  Color(0xff90c5e5),
+                  Color(0xffeef7f2),
+                  Color(0xffffeca7),
+                ],
+              ),
+            ),
+          child: SingleChildScrollView(
             child: FormWrapper(Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,6 +148,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
                     }
                   }),
               Footer()
-            ]))));
+              ]))),
+        ));
   }
 }

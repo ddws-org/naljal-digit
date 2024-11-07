@@ -85,7 +85,38 @@ const CreateEmployee = () => {
   const employeeCreateSession = Digit.Hooks.useSessionStorage("NEW_EMPLOYEE_CREATE", {});
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
 
+  function hasUniqueTenantIds(items) {
+    // Create a Set to efficiently store unique tenantIds
+    const uniqueTenantIds = new Set();
+    // Iterate through each item
+    for (const item of items) {
+      const tenantId = item.tenantId;
+      // Check if tenantId already exists in the Set
+      if (uniqueTenantIds.has(tenantId)) {
+        // Duplicate found, return false
+        return false;
+      }
+      // Add unique tenantId to the Set
+      uniqueTenantIds.add(tenantId);
+    }
+    // No duplicates found, all tenantIds are unique
+    return true;
+  }
+
+  function hasUniqueDivisions(items) {
+    const uniqueDivisions = new Set();
+    for (const item of items) {
+      const divisionCode = item?.division?.code;
+      if (divisionCode && uniqueDivisions.has(divisionCode)) {
+        return false;
+      }
+      uniqueDivisions.add(divisionCode);
+    }
+    return true;
+  }
+
   const onFormValueChange = (setValue = true, formData) => {
+    let isValid = false;
     if (!_.isEqual(sessionFormData, formData)) {
       setSessionFormData({ ...sessionFormData, ...formData });
     }
@@ -101,20 +132,48 @@ const CreateEmployee = () => {
         break;
       } else {
         if (!STATE_ADMIN) {
+          if (
+            formData?.SelectUserTypeAndDesignation[0] &&
+            formData?.SelectUserTypeAndDesignation[0]?.department != undefined &&
+            formData?.SelectUserTypeAndDesignation[0]?.designation != undefined
+          ) {
+            isValid = true;
+          } else {
+            isValid = false;
+          }
+
           key?.roles?.length > 0 && setcheck(true);
         } else if (STATE_ADMIN) {
           setcheck(true);
+          isValid = false;
         }
       }
     }
+    // console.log(formData.
+    //   SelectUserTypeAndDesignation[0].department != undefined
+    //   , "formData");
+    // console.log(formData.
+    //   SelectUserTypeAndDesignation[0].designation != undefined
+    //   , "formData");
+    console.log(isValid, "isValid");
 
     if (
       formData?.SelectEmployeeGender?.gender.code &&
       formData?.SelectEmployeeName?.employeeName &&
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
-      checkfield &&
-      phonecheck &&
-      checkMailNameNum(formData)
+      formData?.Jurisdictions?.length &&
+      STATE_ADMIN
+        ? formData?.Jurisdictions.length &&
+          hasUniqueDivisions(formData?.Jurisdictions) &&
+          !formData?.Jurisdictions.some((juris) => juris?.division == undefined || juris?.divisionBoundary?.length === 0)
+        : formData?.Jurisdictions?.length &&
+          formData?.Jurisdictions.length &&
+          !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
+          isValid &&
+          checkfield &&
+          phonecheck &&
+          checkMailNameNum(formData) &&
+          hasUniqueTenantIds(formData?.Jurisdictions)
     ) {
       setSubmitValve(true);
     } else {
@@ -125,6 +184,7 @@ const CreateEmployee = () => {
   const navigateToAcknowledgement = (Employees) => {
     history.replace(`/${window?.contextPath}/employee/hrms/response`, { Employees, key: "CREATE", action: "CREATE" });
   };
+
   const onSubmit = (data) => {
     if (!STATE_ADMIN && data.Jurisdictions?.filter((juris) => juris.tenantId == tenantId).length == 0) {
       setShowToast({ key: true, label: "ERR_BASE_TENANT_MANDATORY" });
@@ -211,10 +271,10 @@ const CreateEmployee = () => {
       });
 
       // Map the data and add tenantId to roles array
-      const mappedData = jurisdictions?.map((jurisdiction) => {
+      const mappedData = jurisdictions.map((jurisdiction) => {
         return {
           ...jurisdiction,
-          roles: jurisdiction?.roles?.map((role) => ({
+          roles: jurisdiction.roles.map((role) => ({
             ...role,
             tenantId: jurisdiction.tenantId,
           })),
@@ -223,17 +283,6 @@ const CreateEmployee = () => {
       jurisdictions = mappedData;
     } else {
       roles = data?.Jurisdictions?.map((ele) => {
-        // Check if the roles array contains an object with code 'CHAIRMEN'
-        const hasChairmen = ele.roles.some((role) => role.code === "CHAIRMEN");
-        // If the roles array contains an object with code 'CHAIRMEN', push the DIV Admin role into the roles array
-        if (hasChairmen) {
-          ele.roles.push({
-            code: "HRMS_ADMIN",
-            name: "HRMS_ADMIN",
-            labelKey: "HRMS_ADMIN",
-            tenantId: ele.boundary,
-          });
-        }
         return ele.roles?.map((item) => {
           item["tenantId"] = ele.boundary;
           return item;
@@ -243,9 +292,9 @@ const CreateEmployee = () => {
     roles.push({
       name: "EMPLOYEE",
       code: "EMPLOYEE",
-      tenantId: "ka",
+      tenantId: tenantId,
     });
-    console.log("roles!!!!!", roles);
+
     const mappedroles = [].concat.apply([], roles);
     let dateOfAppointment = new Date();
     dateOfAppointment.setDate(dateOfAppointment.getDate() - 1);
@@ -253,7 +302,6 @@ const CreateEmployee = () => {
       {
         tenantId: tenantId,
         employeeStatus: "EMPLOYED",
-
         code: data?.SelectEmployeeId?.code ? data?.SelectEmployeeId?.code : undefined,
         dateOfAppointment: dateOfAppointment.getTime(),
         employeeType: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.employeeType,
@@ -262,10 +310,10 @@ const CreateEmployee = () => {
           {
             fromDate: new Date().getTime(),
             isCurrentAssignment: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.isCurrentAssignment,
-            department: hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.department,
+            department: !STATE_ADMIN ? data?.SelectUserTypeAndDesignation[0]?.department?.code : hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.department,
             designation: STATE_ADMIN
               ? hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => x?.isStateUser)[0]?.code
-              : hrmsData?.["egov-hrms"]?.HRMSConfig[0]?.designation?.filter((x) => !x?.isStateUser)[0]?.code,
+              : data?.SelectUserTypeAndDesignation[0]?.designation?.code,
           },
         ],
         user: {
@@ -303,6 +351,7 @@ const CreateEmployee = () => {
   if (isLoading) {
     return <Loader />;
   }
+
   const config = mdmsData?.config ? mdmsData.config : newConfig;
   return (
     <div>

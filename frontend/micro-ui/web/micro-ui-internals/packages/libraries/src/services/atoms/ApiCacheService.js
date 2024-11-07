@@ -24,6 +24,17 @@ const defaultApiCachingSettings = [
       },
     ],
   },
+  {
+    serviceName: "mdms-v2",
+    cacheTimeInSecs: 3600,
+    debounceTimeInMS: 100,
+    moduleSettings: [
+      {
+        moduleName: "FSM",
+        cacheTimeInSecs: 7200,
+      },
+    ],
+  },
 ];
 
 const storageKey = "cachingService";
@@ -39,8 +50,8 @@ const getSetting = (serviceName, moduleName) => {
   const setting = getCachedSetting();
   const serviceSetting = setting.find((item) => item.serviceName === serviceName);
   const responseSetting = {
-    cacheTimeInSecs: serviceSetting.cacheTimeInSecs,
-    debounceTimeInMS: serviceSetting.debounceTimeInMS || 100,
+    cacheTimeInSecs: serviceSetting?.cacheTimeInSecs,
+    debounceTimeInMS: serviceSetting?.debounceTimeInMS || 100,
   };
   if (!moduleName) {
     return responseSetting;

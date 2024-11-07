@@ -86,14 +86,14 @@ class _CollectionReport extends State<InactiveConsumerReport>
                     TextButton.icon(
                       onPressed: () {
                         if (reportProvider.selectedBillPeriod == null) {
-                          Notifiers.getToastMessage(context, 'Select Billing Cycle', 'ERROR');
+                          Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                         } else {
                           reportProvider.getInactiveConsumerReport(download: true);
                         }
                       },
-                      icon: Icon(Icons.download_sharp),
+                      icon: Icon(Icons.download_sharp,color: Color(0xff033ccf),),
                       label: Text(ApplicationLocalizations.of(context)
-                          .translate(i18.common.CORE_DOWNLOAD)),
+                          .translate(i18.common.CORE_DOWNLOAD),style: TextStyle(color: Color(0xff033ccf)),),
                     ),
                   ],
                 ),

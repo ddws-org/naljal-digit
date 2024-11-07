@@ -54,11 +54,18 @@ class _GpwscDetails extends State<GPWSCDetails>
       backgroundColor: Color.fromRGBO(238, 238, 238, 1),
       body: LayoutBuilder(
     builder: (context, constraints) => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Color(0xff90c5e5),
+                Color(0xffeef7f2),
+                Color(0xffffeca7),
+              ],
+            ),
+          ),
       alignment: Alignment.center,
-      margin: constraints.maxWidth < 760
-          ? null
-          : EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,14 +76,17 @@ class _GpwscDetails extends State<GPWSCDetails>
             ],
           ),
           Container(
-            color: Color.fromRGBO(238, 238, 238, 1),
+                margin: constraints.maxWidth < 760
+                    ? null
+                    : EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 25),
             padding: EdgeInsets.only(left: 8, right: 8),
-            height: constraints.maxHeight - 52,
+            height: constraints.maxHeight - 50,
             child: SingleChildScrollView(
               controller: scrollController,
               child: Column(
                 children: [
-                  // GPWSCBoundaryDetailCard(),
+                      // GPWSCBoundaryDetailCard(),
                   SizedBox(
                     height: 10,
                   ),

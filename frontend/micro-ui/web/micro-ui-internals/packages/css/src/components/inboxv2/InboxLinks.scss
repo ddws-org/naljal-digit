@@ -12,7 +12,7 @@
             align-items: center;
             justify-content: flex-start;
             .inbox-search-icon--projects {
-                fill : #f47738;
+                fill : #1f4ac4;
                 height: 2rem;
                 width: 2rem;
             }
@@ -46,8 +46,8 @@
         .link {
             padding: 8px;
             --text-opacity: 1;
-            color: #f47738;
-            color: rgba(244, 119, 56, var(--text-opacity));
+            color: #1f4ac4;
+            color: rgba(31, 74, 196, var(--text-opacity));
         }
     }
 }
