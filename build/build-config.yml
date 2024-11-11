@@ -361,6 +361,14 @@ config:
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "municipal-services/egov-user-event/src/main/resources/db"
         image-name: "egov-user-event-db"
+        
+  - name: "builds/naljal-digit/municipal-services/mgramseva-ifix-adapter"
+    build:
+      - work-dir: "municipal-services/mgramseva-ifix-adapter"
+        image-name: "mgramseva-ifix-adapter"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "municipal-services/mgramseva-ifix-adapter/src/main/resources/db"
+        image-name: "mgramseva-ifix-adapter"
 
   - name: "builds/naljal-digit/municipal-services/ws-services"
     build:
