@@ -7,7 +7,7 @@ WORKDIR /app
 COPY ${WORK_DIR} .
 RUN flutter doctor
 RUN flutter pub get
-RUN flutter build web
+RUN flutter build web --web-renderer html
 # Create runtime image
 FROM dwssio/nginx:mainline-alpine
 ENV WEB_DIR=/var/web/mgramseva
