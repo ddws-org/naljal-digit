@@ -75,10 +75,13 @@ dependencies:
   print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6
+  safe_device: ^1.1.9
+#  webview_flutter: ^2.0.13 #TODO Uncomment this code on mobile
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   build_runner: ^2.1.2
+  change_app_package_name: ^1.4.0
   flutter_test:
     sdk: flutter
   integration_test:
@@ -113,6 +116,7 @@ flutter:
     - assets/svg/
     - assets/.env
     - assets/json/
+
 
   # To add assets to your application, add an assets section, like this:
 
