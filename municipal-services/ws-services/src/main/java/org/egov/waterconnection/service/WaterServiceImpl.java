@@ -252,8 +252,8 @@ public class WaterServiceImpl implements WaterService {
 					"Duplicate Old connection number");
 		}
 		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
-		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
-		{
+		if (waterConnectionForImisNUmber != null && waterConnectionForImisNUmber.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
+				.equalsIgnoreCase(waterConnectionForImisNUmber.get(0).getConnectionNo())) {
 			throw new CustomException("DUPLICATE_IMIS_NUMBER",
 					"Duplicate IMIS number");
 		}
@@ -365,12 +365,6 @@ public class WaterServiceImpl implements WaterService {
 				throw new CustomException("DUPLICATE_IMIS_NUMBER",
 						"Duplicate IMIS number");
 			}
-		}
-		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
-		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
-		{
-			throw new CustomException("DUPLICATE_IMIS_NUMBER",
-					"Duplicate IMIS number");
 		}
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
