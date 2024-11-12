@@ -354,7 +354,7 @@ public class WaterServiceImpl implements WaterService {
 			if(waterConnection != null && waterConnection.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
 					.equalsIgnoreCase(waterConnection.get(0).getConnectionNo())) {
 				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
-						"Duplicate Old connection number");
+						"Duplicate Old connection number first is returning ");
 			}
 		}
 		if (waterConnectionRequest.getWaterConnection().getImisNumber() != null
@@ -363,14 +363,14 @@ public class WaterServiceImpl implements WaterService {
 			if (waterConnectionForImisNUmber != null && waterConnectionForImisNUmber.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()
 					.equalsIgnoreCase(waterConnectionForImisNUmber.get(0).getConnectionNo())) {
 				throw new CustomException("DUPLICATE_IMIS_NUMBER",
-						"Duplicate IMIS number");
+						"Duplicate IMIS number second is returning ");
 			}
 		}
 		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
 		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
 		{
 			throw new CustomException("DUPLICATE_IMIS_NUMBER",
-					"Duplicate IMIS number");
+					"Duplicate IMIS number third is returning ");
 		}
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
