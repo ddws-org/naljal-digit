@@ -366,12 +366,12 @@ public class WaterServiceImpl implements WaterService {
 						"Duplicate IMIS number second is returning ");
 			}
 		}
-		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
+	/*	List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
 		if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
 		{
 			throw new CustomException("DUPLICATE_IMIS_NUMBER",
 					"Duplicate IMIS number third is returning ");
-		}
+		}*/
 		mDMSValidator.validateMasterData(waterConnectionRequest, WCConstants.MODIFY_CONNECTION);
 		BusinessService businessService = workflowService.getBusinessService(
 				waterConnectionRequest.getWaterConnection().getTenantId(), waterConnectionRequest.getRequestInfo(),
