@@ -31,6 +31,7 @@ import 'package:mgramseva/screeens/leadger_report/ledger_report.dart';
 import 'package:mgramseva/screeens/reports/reports.dart';
 import 'package:mgramseva/screeens/reset_password/reset_password.dart';
 import 'package:mgramseva/screeens/reset_password/update_password.dart';
+import 'package:mgramseva/screeens/security_check/security_layer.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/screeens/common/consumer_collect_payment.dart';
 import 'package:mgramseva/screeens/common/payment_success.dart';
@@ -187,7 +188,9 @@ class Routing {
     currentRoute = settings.name;
     switch (path) {
       case Routes.LANDING_PAGE:
-        return MaterialPageRoute(builder: (_) => LandingPage());
+        return MaterialPageRoute(builder: (_) => LandingPage(),settings: RouteSettings(name:Routes.LANDING_PAGE));
+        // return MaterialPageRoute(builder: (_) => (kIsWeb)?LandingPage():LandingPageNew(),settings: RouteSettings(name: (kIsWeb)?Routes.LANDING_PAGE:Routes.SELECT_STATE));
+        // return MaterialPageRoute(builder: (_) => LandingPageNew());
       case Routes.LOGIN:
         return MaterialPageRoute(
             builder: (_) => Login(),
@@ -196,6 +199,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => SelectLanguage(),
             settings: RouteSettings(name: Routes.SELECT_LANGUAGE));
+      case Routes.SELECT_STATE:
+        return MaterialPageRoute(
+            builder: (_) => LandingPage(),
+            settings: RouteSettings(name: Routes.LANDING_PAGE));
       case Routes.FORGOT_PASSWORD:
         return MaterialPageRoute(
             builder: (_) => ForgotPassword(),
@@ -520,6 +527,10 @@ class Routing {
         return MaterialPageRoute(
             builder: (_) => NotificationScreen(),
             settings: RouteSettings(name: Routes.NOTIFICATIONS));
+      case Routes.SECURITY_CHECK:
+        return MaterialPageRoute(
+            builder: (_) => SecurityLayer(),
+            settings: RouteSettings(name: Routes.SECURITY_CHECK));
       default:
         return MaterialPageRoute(
           builder: (_) => SelectLanguage(),

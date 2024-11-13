@@ -1,13 +1,19 @@
-# Changelog
 
+# Changelog
 All notable changes to this module will be documented in this file.
 
-## 1.1.4 - 2022-02-02
-- Updated to log4j2 version 2.17.1
+## 2.9.0 - 2024-02-29
+- Upgraded spring boot version from 2.2.13.RELEASE to 3.2.2
+- Upgraded java version from 1.8 to 17
+- Upgraded lombok version from 1.18.8 to 1.18.22
 
-## 1.1.3 - 25-11-2021
+## 1.2.0 - 15-03-2023
 
-- added NIC Support
+- Added new API for sms bounce-back tracking 
+
+## 1.1.3 - 15-12-2021
+
+- Added flag for sms enable
 
 ## 1.1.2 - 11-05-2021
 

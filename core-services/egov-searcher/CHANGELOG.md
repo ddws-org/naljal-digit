@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.1.6 - 2022-06-22
+- Enhanced searcher service for the implementation of privacy feature.
+
+## 1.1.5 - 2022-01-13
+- Updated to log4j2 version 2.17.1
+
 ## 1.1.4 - 23-07-2021
 
 - Fixed the like operator issue

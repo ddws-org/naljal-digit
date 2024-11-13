@@ -1,7 +1,10 @@
 package org.egov.wf.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+import java.util.TimeZone;
+
+
+import jakarta.annotation.PostConstruct;
+import org.egov.common.utils.MultiStateInstanceUtil;
 import org.egov.tracer.config.TracerConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +13,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.TimeZone;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 
-@Import({TracerConfiguration.class})
+@Import({TracerConfiguration.class, MultiStateInstanceUtil.class})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -83,12 +91,18 @@ public class WorkflowConfig {
 
 
     // Statelevel tenantId required for escalation
-    @Value("${egov.statelevel.tenantid}")
+    @Value("${state.level.tenant.id}")
     private String stateLevelTenantId;
 
     @Value("${egov.wf.escalation.batch.size}")
     private Integer escalationBatchSize;
 
+    // Central instance configs
+    @Value("${state.level.tenantid.length}")
+    private Integer stateLevelTenantIdLength;
+
+    @Value("${is.environment.central.instance}")
+    private Boolean isEnvironmentCentralInstance;
 
 
 

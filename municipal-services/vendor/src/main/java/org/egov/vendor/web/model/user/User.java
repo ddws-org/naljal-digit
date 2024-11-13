@@ -2,10 +2,10 @@ package org.egov.vendor.web.model.user;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import org.egov.common.contract.request.Role;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -64,7 +64,7 @@ public class User {
 
     @NotNull
     @SafeHtml
-    @Pattern(regexp = "^[1-9][0-9]{9}$", message = "Invalid mobile number")
+    @Pattern(regexp = "^[6-9][0-9]{9}$", message = "Invalid mobile number")
     @JsonProperty("mobileNumber")
     private String mobileNumber;
 

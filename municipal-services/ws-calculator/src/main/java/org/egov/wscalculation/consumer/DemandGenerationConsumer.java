@@ -33,22 +33,11 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.Action;
-import org.egov.wscalculation.web.models.ActionItem;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.CalculationCriteria;
-import org.egov.wscalculation.web.models.CalculationReq;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
-import org.egov.wscalculation.web.models.Event;
-import org.egov.wscalculation.web.models.EventRequest;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.Source;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -82,6 +71,9 @@ public class DemandGenerationConsumer {
 
 	@Autowired
 	private NotificationUtil util;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
 	@Autowired
 	private CalculatorUtil calculatorUtils;
@@ -199,17 +191,17 @@ public class DemandGenerationConsumer {
 	 */
 	private void generateDemandInBatch(CalculationReq request, Map<String, Object> masterMap, String errorTopic,
 			boolean isSendMessage) throws Exception {
-		for (CalculationCriteria criteria : request.getCalculationCriteria()) {
+		/*for (CalculationCriteria criteria : request.getCalculationCriteria()) {
 			Boolean genratedemand = true;
 			wsCalulationWorkflowValidator.applicationValidation(request.getRequestInfo(), criteria.getTenantId(),
 					criteria.getConnectionNo(), genratedemand);
-		}
-		System.out.println("Calling Bulk Demand generation");
+		}*/
+		//System.out.println("Calling Bulk Demand generation connection Number" + request.getCalculationCriteria().get(0).getConnectionNo());
 		wSCalculationServiceImpl.bulkDemandGeneration(request, masterMap);
-		String connectionNoStrings = request.getCalculationCriteria().stream()
+		/*String connectionNoStrings = request.getCalculationCriteria().stream()
 				.map(criteria -> criteria.getConnectionNo()).collect(Collectors.toSet()).toString();
 		StringBuilder str = new StringBuilder("Demand generated Successfully. For records : ")
-				.append(connectionNoStrings);
+				.append(connectionNoStrings);*/
 //			producer.push(errorTopic, request);
 //			remove the try catch or throw the exception to the previous method to catch it.
 
@@ -280,15 +272,13 @@ public class DemandGenerationConsumer {
 		Long dayEndTime = LocalDateTime
 				.of(toDate.getYear(), toDate.getMonth(), toDate.getDayOfMonth(), 23, 59, 59, 999000000)
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-
+		Long StartTimeForGetConnetion = System.currentTimeMillis();
 		
 		List<String> connectionNos = waterCalculatorDao.getNonMeterConnectionsList(tenantId, dayStartTime, dayEndTime);
 
-		List<String> meteredConnectionNos = waterCalculatorDao.getConnectionsNoList(tenantId,
-				WSCalculationConstant.meteredConnectionType);
 		
 		
-		Calendar previousFromDate = Calendar.getInstance();
+		/*Calendar previousFromDate = Calendar.getInstance();
 		Calendar previousToDate = Calendar.getInstance();
 		
 		previousFromDate.setTimeInMillis(dayStartTime);
@@ -297,11 +287,19 @@ public class DemandGenerationConsumer {
 		previousFromDate.add(Calendar.MONTH, -1); //assuming billing cycle will be first day of month
 		previousToDate.add(Calendar.MONTH, -1); 
 		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
-		previousToDate.set(Calendar.DAY_OF_MONTH, max);
-		
+		previousToDate.set(Calendar.DAY_OF_MONTH, max);*/
 		String assessmentYear = estimationService.getAssessmentYear();
 		ArrayList<String> failedConnectionNos = new ArrayList<String>();
+
+		Long startTimeForMdms= System.
+				currentTimeMillis();
+		Map<String, Object> masterMap = mDataService.loadMasterData(requestInfo,
+				tenantId);
+
+		log.info("connectionNos" + connectionNos.size());
+		long startTimeForLoop= System.currentTimeMillis();
 		for (String connectionNo : connectionNos) {
+			long timeBeforePushToKafka = System.currentTimeMillis();
 			CalculationCriteria calculationCriteria = CalculationCriteria.builder().tenantId(tenantId)
 					.assessmentYear(assessmentYear).connectionNo(connectionNo).from(dayStartTime).to(dayEndTime).build();
 			List<CalculationCriteria> calculationCriteriaList = new ArrayList<>();
@@ -309,9 +307,7 @@ public class DemandGenerationConsumer {
 			CalculationReq calculationReq = CalculationReq.builder().calculationCriteria(calculationCriteriaList)
 					.requestInfo(requestInfo).isconnectionCalculation(true).isAdvanceCalculation(false).build();
 
-			Map<String, Object> masterMap = mDataService.loadMasterData(calculationReq.getRequestInfo(),
-					calculationReq.getCalculationCriteria().get(0).getTenantId());
-			Set<String> consumerCodes = new LinkedHashSet<String>();
+			/*Set<String> consumerCodes = new LinkedHashSet<String>();
 			consumerCodes.add(connectionNo);
 
 			if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
@@ -321,8 +317,14 @@ public class DemandGenerationConsumer {
 				log.warn("this connection doen't have the demand in previous billing cycle :" + connectionNo);
 				failedConnectionNos.add(connectionNo);
 				continue;
-			}
-			
+			}*/
+			HashMap<Object, Object> genarateDemandData = new HashMap<Object, Object>();
+			genarateDemandData.put("calculationReq", calculationReq);
+			genarateDemandData.put("billingCycle",billingCycle);
+			genarateDemandData.put("masterMap",masterMap);
+			genarateDemandData.put("isSendMessage",isSendMessage);
+			genarateDemandData.put("tenantId",tenantId);
+
 			/*
 			 * List<Demand> demands = demandService.searchDemand(tenantId, consumerCodes,
 			 * previousFromDate.getTimeInMillis(), previousToDate.getTimeInMillis(),
@@ -330,18 +332,48 @@ public class DemandGenerationConsumer {
 			 * log.warn("this connection doen't have the demand in previous billing cycle :"
 			 * + connectionNo ); continue; }
 			 */
-			try {
-					if(!tenantId.equals(config.getSmsExcludeTenant())) {
-						generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
-					}
 
-			} catch (Exception e) {
-				System.out.println("Got the exception while genating the demands:" + connectionNo);
-				failedConnectionNos.add(connectionNo);
+			long timetakenToPush= System.currentTimeMillis();
+			kafkaTemplate.send(config.getWsGenerateDemandBulktopic(),genarateDemandData);
+
+		}
+		log.info("Time taken for the for loop : "+(System.currentTimeMillis()-startTimeForLoop)/1000+ " Secondss");
+
+		Long starttimeforNotification= System.currentTimeMillis();
+		HashMap<String, String> demandMessage = util.getLocalizationMessage(requestInfo,
+				WSCalculationConstant.mGram_Consumer_NewDemand, tenantId);
+		HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+				Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"), tenantId);
+		Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+		String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
+		for (OwnerInfo userInfo : userDetailResponse.getUser()) {
+			if (userInfo.getName() != null) {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+			} else {
+				mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 			}
 		}
-		System.out.println("demand Failed event Messages to the GP users ");
-		if (isSendMessage && failedConnectionNos.size() > 0) {
+		mobileNumberIdMap.entrySet().stream().forEach(map -> {
+			String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
+			msg = msg.replace("{ownername}", map.getValue());
+			msg = msg.replace("{villagename}",
+					(gpwscMap != null && !StringUtils.isEmpty(gpwscMap.get(WSCalculationConstant.MSG_KEY)))
+							? gpwscMap.get(WSCalculationConstant.MSG_KEY)
+							: tenantId);
+			msg = msg.replace("{billingcycle}", billingCycle);
+			msg = msg.replace("{LINK}", msgLink);
+			if(!map.getKey().equals(config.getPspclVendorNumber())) {
+				SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
+						.tenantid(tenantId)
+						.category(Category.TRANSACTION).build();
+				if(config.isSmsForDemandEnable()) {
+					producer.push(config.getSmsNotifTopic(), smsRequest);
+				}
+			}
+			log.info("Time taken for notification : "+(System.currentTimeMillis()-starttimeforNotification)/1000+ " Secondss");
+		});
+	/*	if (isSendMessage && failedConnectionNos.size() > 0) {
 			List<ActionItem> actionItems = new ArrayList<>();
 			String actionLink = config.getBulkDemandFailedLink();
 			ActionItem actionItem = ActionItem.builder().actionUrl(actionLink).build();
@@ -356,7 +388,7 @@ public class DemandGenerationConsumer {
 					WSCalculationConstant.GENERATE_DEMAND_EVENT, tenantId);
 			String messages = failedMessage.get(WSCalculationConstant.MSG_KEY);
 			messages = messages.replace("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
-			
+
 			additionals.put("localizationCode", WSCalculationConstant.GENERATE_DEMAND_EVENT);
 			HashMap<String, String> attributes = new HashMap<String, String>();
 			attributes.put("{BILLING_CYCLE}", LocalDate.now().getMonth().toString());
@@ -456,20 +488,18 @@ public class DemandGenerationConsumer {
 
 			HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 			UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-					Arrays.asList("COLLECTION_OPERATOR"), tenantId);
+					Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"), tenantId);
 			Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 			String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
 
 			for (OwnerInfo userInfo : userDetailResponse.getUser()) {
-				log.info("USER NUMBER:" + userInfo.getMobileNumber() + " USER ROLE:" + userInfo.getRoles());
 				if (userInfo.getName() != null) {
 					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
 				} else {
 					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
 				}
 			}
-			log.info("MOBILENUMBER MAPPINNG USERROLE:" +mobileNumberIdMap);
 			mobileNumberIdMap.entrySet().stream().forEach(map -> {
 				String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
 				msg = msg.replace("{ownername}", map.getValue());
@@ -491,7 +521,23 @@ public class DemandGenerationConsumer {
 				}
 
 			});
+		}*/
+	}
+
+	public void generateDemandInBulk(CalculationReq calculationReq, String billingCycle, Map<String, Object> masterMap,
+									 boolean isSendMessage,String tenantId) {
+		try {
+			if(!tenantId.equals(config.getSmsExcludeTenant())) {
+				generateDemandInBatch(calculationReq, masterMap, billingCycle, isSendMessage);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Got the exception while genating the demands:" + e);
+			log.info("Errro in Apllication no :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+
 		}
+
 	}
 
 	/**
@@ -512,7 +558,7 @@ public class DemandGenerationConsumer {
 
 	private Recipient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recipient recepient = null;
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				tenantId);
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
@@ -541,10 +587,75 @@ public class DemandGenerationConsumer {
 		String billingPeriod = bulkDemand.getBillingPeriod();
 		if (StringUtils.isEmpty(billingPeriod))
 			throw new CustomException("BILLING_PERIOD_PARSING_ISSUE", "Billing Period can not be empty!!");
+		log.info("CALL FROM TOPIC egov.generate.bulk.demand.manually.topic for tenantid:"
+				+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" Start Time:"+System.currentTimeMillis() );
+		Long starTime = System.currentTimeMillis();
 		log.info("CALL FROM TOPIC egov.generate.bulk.demand.manually.topic" );
 		generateDemandAndSendnotification(bulkDemand.getRequestInfo(), bulkDemand.getTenantId(), billingPeriod, billingMasterData,
 				isSendMessage, isManual);
-		
+		long endTime=System.currentTimeMillis();
+		long diff = endTime-starTime;
+		log.info("time takenn to generate demand for Tenantid:"+bulkDemand.getTenantId()+" BillPeriod:"+billingPeriod+" is : "+diff/1000 +" seconds");
+	}
+	@KafkaListener(topics = {
+			"${egov.update.demand.add.penalty}" })
+	public void updateAddPenalty(HashMap<Object, Object> messageData) {
+		DemandRequest demandRequest = mapper.convertValue(messageData, DemandRequest.class);
+		demandService.updateDemandAddPenalty(demandRequest.getRequestInfo(), demandRequest.getDemands());
+	}
+
+	@KafkaListener(topics = {
+			"${ws.generate.demand.bulk}" })
+	public void generateDemandInBulkListner(HashMap<Object, Object> messageData) {
+		CalculationReq calculationReq= new CalculationReq();
+		Map<String, Object> masterMap = new HashMap<>();
+		String billingCycle ;
+		boolean isSendMessage = true;
+		String tenantId="";
+		HashMap<Object, Object> genarateDemandData = (HashMap<Object, Object>) messageData;
+		masterMap = (Map<String, Object>) genarateDemandData.get("masterMap");
+		calculationReq = mapper.convertValue(genarateDemandData.get("calculationReq"), CalculationReq.class);
+		billingCycle= (String) genarateDemandData.get("billingCycle");
+		isSendMessage= (boolean) genarateDemandData.get("isSendMessage");
+		tenantId=(String) genarateDemandData.get("tenantId");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
+
+		LocalDate fromDate = LocalDate.parse(billingCycle.split("-")[0].trim(), formatter);
+		LocalDate toDate = LocalDate.parse(billingCycle.split("-")[1].trim(), formatter);
+
+		Long dayStartTime = LocalDateTime
+				.of(fromDate.getYear(), fromDate.getMonth(), fromDate.getDayOfMonth(), 0, 0, 0)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long dayEndTime = LocalDateTime
+				.of(toDate.getYear(), toDate.getMonth(), toDate.getDayOfMonth(), 23, 59, 59, 999000000)
+				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Calendar previousFromDate = Calendar.getInstance();
+		Calendar previousToDate = Calendar.getInstance();
+
+		previousFromDate.setTimeInMillis(dayStartTime);
+		previousToDate.setTimeInMillis(dayEndTime);
+
+		previousFromDate.add(Calendar.MONTH, -1); //assuming billing cycle will be first day of month
+		previousToDate.add(Calendar.MONTH, -1);
+		int max = previousToDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+		previousToDate.set(Calendar.DAY_OF_MONTH, max);
+		//log.info("got generate demand call for :"+calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		Set<String> consumerCodes = new LinkedHashSet<String>();
+		consumerCodes.add(calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		if (!waterCalculatorDao.isDemandExists(tenantId, previousFromDate.getTimeInMillis(),
+				previousToDate.getTimeInMillis(), consumerCodes)
+				&& !waterCalculatorDao.isConnectionExists(tenantId, previousFromDate.getTimeInMillis(),
+				previousToDate.getTimeInMillis(), consumerCodes)) {
+			log.warn("this connection doen't have the demand in previous billing cycle :" + calculationReq.getCalculationCriteria().get(0).getConnectionNo());
+		} else {
+			Long starttime = System.currentTimeMillis();
+			generateDemandInBulk(calculationReq, billingCycle, masterMap, isSendMessage, tenantId);
+			log.info("GOt call inn ws-gennerate-demand-bulk topic end time:" + System.currentTimeMillis());
+			Long endtime = System.currentTimeMillis();
+			long diff = endtime - starttime;
+			log.info("Time taken to process request for :" + calculationReq.getCalculationCriteria().get(0).getConnectionNo() + " is :" + diff / 1000 + " secs");
+		}
 	}
 
 }

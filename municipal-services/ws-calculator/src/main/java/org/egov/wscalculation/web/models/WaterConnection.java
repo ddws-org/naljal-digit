@@ -2,7 +2,7 @@ package org.egov.wscalculation.web.models;
 
 import java.util.Objects;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.springframework.validation.annotation.Validated;
 
@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * WaterConnection
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-12-02T14:30:33.286+05:30[Asia/Kolkata]")
+//@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-12-02T14:30:33.286+05:30[Asia/Kolkata]")
  public class WaterConnection extends Connection {
 
 	

@@ -49,9 +49,10 @@ public class UserResultSetExtractor implements ResultSetExtractor<List<User>> {
                                 lastModifiedBy(rs.getLong("lastmodifiedby")).lastModifiedDate(rs.getTimestamp("lastmodifieddate"))
                         .pan(rs.getString("pan")).aadhaarNumber(rs.getString("aadhaarnumber")).createdBy(rs.getLong("createdby"))
                         .createdDate(rs.getTimestamp("createddate")).guardian(rs.getString("guardian")).signature(rs.getString("signature"))
-                        .accountLocked(rs.getBoolean("accountlocked")).photo(rs.getString("photo")).defaultPwdChgd(rs.getBoolean("defaultpwdchgd"))
+                        .accountLocked(rs.getBoolean("accountlocked")).photo(rs.getString("photo"))
+                        .defaultPwdChgd(rs.getBoolean("defaultpwdchgd"))
                         .identificationMark(rs.getString("identificationmark")).uuid(rs.getString("uuid"))
-                        .accountLockedDate(rs.getLong("accountlockeddate"))
+                        .accountLockedDate(rs.getLong("accountlockeddate")).alternateMobileNumber(rs.getString("alternatemobilenumber"))
                         .build();
 
                 for (UserType type : UserType.values()) {

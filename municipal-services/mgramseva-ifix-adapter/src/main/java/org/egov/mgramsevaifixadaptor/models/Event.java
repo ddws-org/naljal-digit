@@ -2,7 +2,7 @@ package org.egov.mgramsevaifixadaptor.models;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +20,6 @@ import lombok.ToString;
  * Captures the finacial event attributes
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-08-06T14:55:47.021Z[GMT]")
 
 @Setter
 @Getter

@@ -227,7 +227,7 @@ public class SchedulerService {
 					if (config.getIsSMSEnabled()) {
 
 						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING"));
+								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
@@ -421,7 +421,7 @@ public class SchedulerService {
 					if (config.getIsSMSEnabled()) {
 
 						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING"));
+								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
 						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
 						for (UserInfo userInfo : userDetailResponse.getUser())
@@ -559,7 +559,7 @@ public class SchedulerService {
 						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 
 						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING"));
+								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
 
 						String revenueLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
 
@@ -603,7 +603,7 @@ public class SchedulerService {
 	private Recepient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recepient recepient = null;
 		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-				Arrays.asList("GP_ADMIN"));
+				Arrays.asList("GP_ADMIN","SARPANCH"));
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
 		else {

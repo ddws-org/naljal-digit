@@ -13,6 +13,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
+import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.service.WaterServiceImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
 import org.egov.waterconnection.web.controller.WaterController;
@@ -21,8 +22,10 @@ import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.egov.waterconnection.web.models.WaterConnectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,6 +42,7 @@ public class WsQueryBuilder {
 	private UserService userService;
 	
 	@Autowired
+	@Lazy
 	WaterServiceImpl waterServiceImpl;
 
 	private static final String INNER_JOIN_STRING = "INNER JOIN";
@@ -66,6 +70,32 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
+	private static final String WATER_PLANE_SEARCH_QUERY = "SELECT count(*) OVER() AS full_count, conn.*, wc.*, document.*, plumber.*, wc.connectionCategory, wc.connectionType, wc.waterSource,"
+			+ " wc.meterId, wc.meterInstallationDate, wc.pipeSize, wc.noOfTaps, wc.proposedPipeSize, wc.proposedTaps, wc.connection_id as connection_Id, wc.connectionExecutionDate, wc.initialmeterreading, wc.appCreatedDate,"
+			+ " wc.detailsprovidedby, wc.estimationfileStoreId , wc.sanctionfileStoreId , wc.estimationLetterDate,"
+			+ " conn.id as conn_id, conn.tenantid, conn.applicationNo, conn.applicationStatus, conn.status, conn.connectionNo, conn.oldConnectionNo, conn.property_id, conn.roadcuttingarea,"
+			+ " conn.action, conn.adhocpenalty, conn.adhocrebate, conn.adhocpenaltyreason, conn.applicationType, conn.dateEffectiveFrom,"
+			+ " conn.adhocpenaltycomment, conn.adhocrebatereason, conn.adhocrebatecomment, conn.createdBy as ws_createdBy, conn.lastModifiedBy as ws_lastModifiedBy,"
+			+ " conn.createdTime as ws_createdTime, conn.lastModifiedTime as ws_lastModifiedTime,conn.additionaldetails, "
+			+ " conn.locality, conn.isoldapplication, conn.roadtype, document.id as doc_Id, document.documenttype, document.filestoreid, document.active as doc_active, plumber.id as plumber_id,"
+			+ " plumber.name as plumber_name, plumber.licenseno, roadcuttingInfo.id as roadcutting_id, roadcuttingInfo.roadtype as roadcutting_roadtype, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea, roadcuttingInfo.roadcuttingarea as roadcutting_roadcuttingarea,"
+			+ " roadcuttingInfo.active as roadcutting_active, plumber.mobilenumber as plumber_mobileNumber, plumber.gender as plumber_gender, plumber.fatherorhusbandname, plumber.correspondenceaddress,"
+			+ " plumber.relationship, " + " {holderSelectValues}, " + " COALESCE(0) AS pendingamount, " + " COALESCE(0) AS taxamount, " + "{lastDemandDate}"
+			+ " FROM eg_ws_connection conn " + INNER_JOIN_STRING + " eg_ws_service wc ON wc.connection_id = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_applicationdocument document ON document.wsid = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_plumberinfo plumber ON plumber.wsid = conn.id" + LEFT_OUTER_JOIN_STRING
+			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
+			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
+
+
+	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT ((select distinct d.taxperiodto as taxperiodto from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
+	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE = " and  dd.taxheadcode='10101' and d.status = 'ACTIVE' and d.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.taxperiodto desc limit 1))" +
+			" as taxperiodto, count(*) as count ";
+	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_FROM	=" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and wc.connectiontype='Non_Metered'and conn.status='Active' ";
+
+	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection conn";
+
+	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
 	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 
 	private static final String ORDER_BY_CLAUSE = " ORDER BY wc.appCreatedDate DESC";
@@ -160,7 +190,61 @@ public class WsQueryBuilder {
 			+ " connectionno IN (SELECT distinct connectionno FROM eg_ws_connection WHERE status='Inactive' AND"
 			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid=?) "
 			+ " order by connectionno,lastmodifiedtime desc";
-			
+
+	public static final String DEMAND_NOT_GENERATED_QUERY="select distinct conn.connectionno as connectionno from eg_ws_connection conn " +
+			"INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' " +
+			"AND  conn.tenantid=? and wc.connectiontype='Non_Metered' and conn.previousreadingdate=? and connectionno NOT IN " +
+			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
+			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
+			"d.tenantid=?) order by connectionno;";
+
+	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
+			"dem.taxperiodfrom as startdate,dem.taxperiodto as enddate," +
+			"dem.createdtime as demandGenerationDate," +
+			"dd.taxheadcode as code,dd.taxamount as taxamount " +
+			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
+			"ON connectionholder.connectionid = conn.id " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
+			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
+			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND dem.status = 'ACTIVE' " +
+			"AND taxperiodfrom>=? AND taxperiodto<=? "+
+			"ORDER BY startdate";
+
+	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
+			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodto < ? AND status='ACTIVE') and taxheadcode!= 'WS_ADVANCE_CARRYFORWARD';";
+
+	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
+			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
+			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
+
+	public static final String TILL_DATE_CONSUMER="select conn.tenantId as tenantId,conn.connectionno as connectionno, " +
+			" conn.oldconnectionno as oldconnectionno ,conn.createdTime as consumerCreatedOnDate," +
+			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
+			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
+			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
+			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno  ";
+
+	public static final String MONTH_DEMAND_QUERY ="SELECT " +
+			"conn.connectionno as connectionNo, " +
+			"dem.createdtime as demandGenerationDate, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
+			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
+			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance " +
+			"FROM eg_ws_connection conn " +
+			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
+			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
+			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND dem.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
+			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime ";
+//			"ORDER BY conn.connectionno";
+
+	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
+			"FROM egcl_payment p INNER JOIN eg_ws_connection c ON p.tenantid = c.tenantid " +
+			"WHERE p.tenantid = ? AND c.connectionno = ? AND p.transactiondate BETWEEN ? AND ? " +
+			"AND p.id IN (SELECT pd.paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid = ? " +
+			"AND pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
+			" AND bd.tenantid = ? )) AND p.instrumentstatus = 'APPROVED' " +
+			"AND p.paymentstatus NOT IN ('CANCELLED');";
+
 	/**
 	 * 
 	 * @param criteria          The WaterCriteria
@@ -273,6 +357,12 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getOldConnectionNumber());
 		}
 
+		if (!StringUtils.isEmpty(criteria.getImisNumber())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.imisnumber = ? ");
+			preparedStatement.add(criteria.getImisNumber());
+		}
+
 		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
 			addClauseIfRequired(preparedStatement, query);
 			
@@ -280,16 +370,12 @@ public class WsQueryBuilder {
 				query.append(" conn.connectionno ~*  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
-			else {
-				query.append(" conn.connectionno ~*  ? ");
-				preparedStatement.add(criteria.getTextSearch());
-			}
-			
+		}
 
-			if(!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
-				query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
-				addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
-			}
+		if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+			addClauseIfRequired(preparedStatement, query);
+			query.append(" conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+			addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
 		}
 
 		if (!StringUtils.isEmpty(criteria.getStatus())) {
@@ -631,7 +717,7 @@ public class WsQueryBuilder {
 			RequestInfo requestInfo) {
 		if (criteria.isEmpty())
 			return null;
-		StringBuilder query = new StringBuilder(WATER_SEARCH_QUERY);
+		StringBuilder query = new StringBuilder(WATER_PLANE_SEARCH_QUERY);
 		query = applyFiltersForPlaneSearch(query, preparedStatement, criteria);
 		return addPaginationWrapperForPlaneSearch(query.toString(), preparedStatement, criteria);
 	}
@@ -645,6 +731,16 @@ public class WsQueryBuilder {
 			} else {
 				query.append(" conn.tenantid = ? ");
 				preparedStatement.add(criteria.getTenantId());
+			}
+			if(criteria.getFromDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime>=? ");
+				preparedStatement.add(criteria.getFromDate());
+			}
+			if(criteria.getToDate()!=null){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.createdtime<=?");
+				preparedStatement.add(criteria.getToDate());
 			}
 		}
 		return query;
@@ -695,13 +791,37 @@ public class WsQueryBuilder {
 	
 	private String addOrderByClauseForPlaneSearch(SearchCriteria criteria) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(" ORDER BY wc.appCreatedDate ");
+		builder.append(" ORDER BY conn.createdTime");
 		if (criteria.getSortOrder() == SearchCriteria.SortOrder.ASC)
 			builder.append(" ASC ");
 		else
 			builder.append(" DESC ");
 
 		return builder.toString();
+	}
+
+	public String getQueryForWCCountbyDemandDate(SearchCriteria criteria, List<Object> preparedStatement,
+									   RequestInfo requestInfo) {
+		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
+			return null;
+		StringBuilder query = new StringBuilder(WATER_CONNNECTION_BY_DEMANNDDATE);
+		query.append( "WHERE d.tenantid  = '" +criteria.getTenantId()+"' " );
+		query.append(WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE);
+		query.append(WATER_CONNNECTION_BY_DEMANNDDATE_FROM);
+		applyFiltersForPlaneSearch(query,preparedStatement,criteria);
+		query.append(" GROUP BY taxperiodto ");
+		return query.toString();
+	}
+
+	public String getQueryForWCCountForPreviousreadingdate(SearchCriteria criteria, List<Object> preparedStatement,
+												 RequestInfo requestInfo) {
+		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
+			return null;
+		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
+		query.append(" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' AND  conn.tenantid='"+criteria.getTenantId()+"'" +
+				" and wc.connectiontype='Non_Metered' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
+		query.append(" GROUP BY taxperiodto ");
+		return query.toString();
 	}
 
 }

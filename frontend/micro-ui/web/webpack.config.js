@@ -7,7 +7,6 @@ console.log("PUBLIC_PATH:", process.env.PUBLIC_PATH);
 const publicPath = process.env.PUBLIC_PATH || "/mgramseva-web/";
 
 
-
 module.exports = {
   // mode: 'development',
   entry: "./src/index.js",
@@ -34,9 +33,10 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
+
     publicPath: "/uat/mgramseva-web/",
     // publicPath: publicPath,
-    
+
   },
   optimization: {
     splitChunks: {

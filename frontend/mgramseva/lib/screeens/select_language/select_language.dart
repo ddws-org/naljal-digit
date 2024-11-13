@@ -1,11 +1,17 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/select_language/language_selection_desktop_view.dart';
 import 'package:mgramseva/screeens/select_language/language_select_mobile_view.dart';
 import 'package:mgramseva/utils/loaders.dart';
 import 'package:mgramseva/utils/notifiers.dart';
 import 'package:provider/provider.dart';
+import 'package:safe_device/safe_device.dart';
 
 // ignore: must_be_immutable
 class SelectLanguage extends StatefulWidget {
@@ -14,13 +20,47 @@ class SelectLanguage extends StatefulWidget {
 }
 
 class _SelectLanguage extends State<SelectLanguage> {
+  bool isDeviceSafe = true;
+
   @override
   void initState() {
     super.initState();
     var languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     languageProvider.getLocalizationData(context);
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(!kIsWeb){
+      _checkDeviceSafety();
+      }
+
+    });
   }
+
+
+  Future<void> _checkDeviceSafety() async {
+    bool isDeviceRooted = await SafeDevice.isJailBroken;
+    bool isDeviceEmulator = await SafeDevice.isRealDevice;
+
+
+    setState(() {
+        log(isDeviceRooted.toString());
+        log(isDeviceEmulator.toString());
+
+      if(isDeviceEmulator == false){
+        isDeviceSafe = false;
+      }else if(isDeviceRooted){
+        isDeviceSafe = false;
+      }else{
+        isDeviceSafe = true;
+      }
+      if(isDeviceSafe == false){      
+        Navigator.of(context)
+    .pushNamedAndRemoveUntil(Routes.SECURITY_CHECK, (Route<dynamic> route) => false);
+      }
+    });
+    
+  }
+
 
   @override
   Widget build(BuildContext context) {

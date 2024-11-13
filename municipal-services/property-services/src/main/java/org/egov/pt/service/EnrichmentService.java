@@ -199,7 +199,7 @@ public class EnrichmentService {
      */
     public void enrichBoundary(Property property, RequestInfo requestInfo){
     	
-        boundaryService.getAreaType(property, requestInfo, PTConstants.BOUNDARY_HEIRARCHY_CODE);
+//        boundaryService.getAreaType(property, requestInfo, PTConstants.BOUNDARY_HEIRARCHY_CODE);
     }
     
     /**

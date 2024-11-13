@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS  eg_enc_symmetric_keys;
 DROP TABLE IF EXISTS  eg_enc_asymmetric_keys;
 
 
-CREATE TABLE "eg_enc_symmetric_keys"
+CREATE TABLE public."eg_enc_symmetric_keys"
 (
   id SERIAL,
   key_id integer NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE "eg_enc_symmetric_keys"
 CREATE UNIQUE INDEX eg_symmetric_key_id ON eg_enc_symmetric_keys (key_id);
 CREATE UNIQUE INDEX active_tenant_symmetric_keys ON eg_enc_symmetric_keys (tenant_id) WHERE (active is true);
 
-CREATE TABLE "eg_enc_asymmetric_keys"
+CREATE TABLE public."eg_enc_asymmetric_keys"
 (
   id SERIAL,
   key_id integer NOT NULL,

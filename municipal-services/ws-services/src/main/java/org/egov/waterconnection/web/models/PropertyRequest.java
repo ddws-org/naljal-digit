@@ -1,6 +1,6 @@
 package org.egov.waterconnection.web.models;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 
