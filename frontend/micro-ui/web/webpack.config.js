@@ -3,6 +3,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+console.log("PUBLIC_PATH:", process.env.PUBLIC_PATH);
+const publicPath = process.env.PUBLIC_PATH || "/mgramseva-web/";
+
+
 module.exports = {
   // mode: 'development',
   entry: "./src/index.js",
@@ -29,8 +33,10 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: '/temp-placeholder/', 
-    // publicPath: "/uat/mgramseva-web/",
+
+    publicPath: "/uat/mgramseva-web/",
+    // publicPath: publicPath,
+
   },
   optimization: {
     splitChunks: {

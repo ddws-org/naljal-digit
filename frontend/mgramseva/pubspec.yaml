@@ -76,7 +76,6 @@ dependencies:
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6
   safe_device: ^1.1.9
-#  webview_flutter: ^2.0.13 #TODO Uncomment this code on mobile
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
