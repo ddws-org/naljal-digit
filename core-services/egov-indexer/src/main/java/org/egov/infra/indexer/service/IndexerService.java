@@ -123,7 +123,12 @@ public class IndexerService {
 		Long startTime = null;
 		log.debug("index: " + index.getCustomJsonMapping());
 		StringBuilder url = new StringBuilder();
+		//url.append(esHostUrl).append(index.getName()).append("/").append(index.getType()).append("/").append("_bulk");
+		//if(this.isLegacyVersionES) {
+		//	url.append(esHostUrl).append(index.getName()).append("/").append(index.getType()).append("/").append("_bulk");
+		//} else {
 		url.append(esHostUrl).append(index.getName()).append("/").append("_bulk");
+		//}
 		startTime = new Date().getTime();
 		String jsonToBeIndexed;
 		if (null != index.getCustomJsonMapping()) {

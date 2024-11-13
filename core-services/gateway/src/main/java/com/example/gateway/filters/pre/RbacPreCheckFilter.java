@@ -39,6 +39,10 @@ public class RbacPreCheckFilter implements GlobalFilter, Ordered {
 
         String contentType = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
 
+        if(applicationProperties.getOpenEndpointsWhitelist().contains(endPointPath) || applicationProperties.getMixedModeEndpointsWhitelist().contains(endPointPath)){
+            exchange.getAttributes().put(RBAC_BOOLEAN_FLAG_NAME, false);
+            log.info(SKIP_RBAC, endPointPath);
+        }
         if (contentType != null && (contentType.contains(FORM_DATA) || contentType.contains(X_WWW_FORM_URLENCODED_TYPE))) {
             return modifyRequestBodyFilter.apply(new ModifyRequestBodyGatewayFilterFactory.Config()
                             .setRewriteFunction(MultiValueMap.class, MultiValueMap.class,rbacPreCheckFormDataFilterHelper ))

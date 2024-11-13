@@ -3,12 +3,8 @@ package com.example.gateway.filters.pre;
 import com.example.gateway.config.ApplicationProperties;
 import com.example.gateway.filters.pre.helpers.CorrIdFormDataFilterHelper;
 import com.example.gateway.filters.pre.helpers.CorrelationIdFilterHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
-import org.egov.common.utils.MultiStateInstanceUtil;
-import org.egov.tracer.model.CustomException;
-import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyRequestBodyGatewayFilterFactory;
@@ -19,8 +15,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import static com.example.gateway.constants.GatewayConstants.*;
 

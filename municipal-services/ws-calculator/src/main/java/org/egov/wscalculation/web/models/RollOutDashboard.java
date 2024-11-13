@@ -12,6 +12,12 @@ import java.util.Date;
 public class RollOutDashboard {
     private String id;
     private String tenantid;
+    private String state;
+    private String tenantName;
+    private String districtName;
+    private String blockname;
+    private String panchayatname;
+    private String regionName;
     private String projectcode;
     private String zone;
     private String circle;
@@ -37,5 +43,4 @@ public class RollOutDashboard {
     private double totalAmountOfPaidExpenseBills;
     private String dateRange;
     private Date createdTime;
-    private String tenantName;
 }

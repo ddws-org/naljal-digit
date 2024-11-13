@@ -476,7 +476,6 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		return demandService.updateDemandForAdhocTax(adhocTaxReq.getRequestInfo(), calculations);
 	}
 
-
 	@Override
 	public RollOutDashboard sendDataForRollOut(RollOutDashboardRequest rollOutDashboardRequest) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -496,5 +495,4 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 		}
 		return rollOutDashboardRequest.getRollOutDashboard();
 	}
-	
 }

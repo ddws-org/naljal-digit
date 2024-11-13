@@ -137,14 +137,16 @@ public class WaterServiceImpl implements WaterService {
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, reqType);
-		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null) {
+		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null
+				&& !waterConnectionRequest.getWaterConnection().getOldConnectionNo().isEmpty()) {
 			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
 			if (waterConnection != null && waterConnection.size() > 0) {
 				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
 						"Duplicate Old connection number");
 			}
 		}
-		if(waterConnectionRequest.getWaterConnection().getImisNumber()!=null)
+		if(waterConnectionRequest.getWaterConnection().getImisNumber()!=null
+				&& !waterConnectionRequest.getWaterConnection().getImisNumber().isEmpty())
 		{
 			List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
 			if(waterConnectionForImisNUmber!=null && waterConnectionForImisNUmber.size()>0)
@@ -188,7 +190,6 @@ public class WaterServiceImpl implements WaterService {
 
 		return Arrays.asList(waterConnectionRequest.getWaterConnection());
 	}
-
 	/**
 	 *
 	 * @param criteria    WaterConnectionSearchCriteria contains search criteria on
@@ -246,10 +247,14 @@ public class WaterServiceImpl implements WaterService {
 		}
 		mDMSValidator.validateMISFields(waterConnectionRequest);
 		waterConnectionValidator.validateWaterConnection(waterConnectionRequest, WCConstants.UPDATE_APPLICATION);
-		List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
-		if(waterConnection != null && waterConnection.size() > 0) {
-			throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
-					"Duplicate Old connection number");
+
+		if (waterConnectionRequest.getWaterConnection().getOldConnectionNo() != null
+				&& !waterConnectionRequest.getWaterConnection().getOldConnectionNo().isEmpty()) {
+			List<WaterConnection> waterConnection = getWaterConnectionForOldConnectionNo(waterConnectionRequest);
+			if (waterConnection != null && waterConnection.size() > 0) {
+				throw new CustomException("DUPLICATE_OLD_CONNECTION_NUMBER",
+						"Duplicate Old connection number");
+			}
 		}
 		List<WaterConnection> waterConnectionForImisNUmber=getWaterConnectionForImisNUmber(waterConnectionRequest);
 		if (waterConnectionForImisNUmber != null && waterConnectionForImisNUmber.size() > 0 && !waterConnectionRequest.getWaterConnection().getConnectionNo()

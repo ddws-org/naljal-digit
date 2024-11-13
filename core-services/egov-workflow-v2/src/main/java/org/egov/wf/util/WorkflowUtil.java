@@ -500,7 +500,7 @@ public class WorkflowUtil {
                 throw new CustomException("EG_WF_SEARCH_ERR", "Invalid tenantId provided as part of search");
             }
         } else {
-            finalQuery = query.replace(SCHEMA_REPLACE_STRING.concat("."), "");
+            finalQuery = query.replace(SCHEMA_REPLACE_STRING, "assam");
         }
         return finalQuery;
     }
