@@ -137,7 +137,7 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     // Use the filter method to extract roles with the specified codes
     const roles = data?.MdmsRes?.["ws-services-masters"]?.WSServiceRoles?.filter((role) => {
       return !roleCodesToFilter.includes(role.code) &&
-        (role?.name === "Secretary" || role?.name === "Chairman" || role?.name === "Revenue Collector");
+      (role?.name === "SECRETARY" || role?.name === "CHAIRMEN" || role?.name === "Revenue Collector");
     })?.map((role) => {
       return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
     });

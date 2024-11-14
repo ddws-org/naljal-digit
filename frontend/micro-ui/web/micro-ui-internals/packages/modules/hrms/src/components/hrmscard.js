@@ -2,6 +2,7 @@ import { PersonIcon } from "@egovernments/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import EmployeeModuleCard from "./EmployeeModuleCard";
+// import EmployeeModuleCard from "./EmployeeModuleCard";
 
 const HRMSCard = () => {
   const ADMIN = Digit.Utils.hrmsAccess();
@@ -38,6 +39,12 @@ const HRMSCard = () => {
           {
             label: t("WORK_BENCH_URL_MASTER_DATA"),
             link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+            category: t("HR_EDIT_MASTER"),
+          },
+
+          {
+            label: t("WORK_BENCH_URL_LOCALISATION"),
+            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
             category: t("HR_EDIT_MASTER"),
           },
         ]

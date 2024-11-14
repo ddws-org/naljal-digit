@@ -60,12 +60,12 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
   let subDivisionsItems = [];
   let sectionItems = [];
   divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    ?.filter((items) => items?.divisionCode)
+    ?.filter((items) => items?.city?.blockcode)
     ?.map((item) => {
       return {
-        code: item.divisionCode,
-        name: item.divisionName,
-        i18text: Digit.Utils.locale.getCityLocale(item.divisionCode),
+        code: item.blockcode,
+        name: item.blockname,
+        i18text: Digit.Utils.locale.getCityLocale(item?.city?.blockcode),
       };
     });
   subDivisionsItems = data?.MdmsRes?.["tenant"]["tenants"]
@@ -135,8 +135,8 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
         data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
           if (items?.code === jurisdiction?.boundary?.code) {
             res["division"] = {
-              code: items?.divisionCode,
-              i18text: Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"),
+              code: items?.city?.blockcode,
+              i18text: Digit.Utils.locale.convertToLocale(items?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
             };
             res["divisionBoundary"] = [
               {
@@ -323,7 +323,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
       // Use the filter method to extract roles with the specified codes
       return data?.MdmsRes?.["ws-services-masters"].WSServiceRoles?.filter((role) => {
         return (
-          !roleCodesToFilter.includes(role.code) && (role?.name === "Secretary" || role?.name === "Chairman" || role?.name === "Revenue Collector")
+          !roleCodesToFilter.includes(role.code) && (role?.name === "SECRETARY" || role?.name === "CHAIRMEN" || role?.name === "Revenue Collector")
         );
       })?.map((role) => {
         return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
@@ -446,7 +446,7 @@ function Jurisdiction({
   useEffect(() => {
     setDivision(
       divisions?.map((item) => {
-        return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_DIVISION") };
+        return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_BLOCK") };
       })
     );
   }, [divisions]);
@@ -498,7 +498,7 @@ function Jurisdiction({
 
   const selectDivision = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value.code);
     const finalProjects = project?.map((project) => ({
       name: project.name,
       code: project.code,
@@ -531,7 +531,7 @@ function Jurisdiction({
 
   const getboundarydata = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value?.code);
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj?.city?.blockcode === value?.code);
     const finalProjects = project?.map((project) => ({
       name: project.name,
       code: project.code,
