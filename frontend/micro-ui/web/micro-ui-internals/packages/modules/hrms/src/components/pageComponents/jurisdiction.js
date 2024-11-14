@@ -136,7 +136,7 @@ const Jurisdictions = ({ t, config, onSelect, userType, formData }) => {
           if (items?.code === jurisdiction?.boundary?.code) {
             res["division"] = {
               code: items?.city?.blockcode,
-              i18text: Digit.Utils.locale.convertToLocale(items?.city?.blockcode, "EGOV_LOCATION_DIVISION"),
+              i18text: Digit.Utils.locale.convertToLocale(items?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
             };
             res["divisionBoundary"] = [
               {
@@ -446,7 +446,7 @@ function Jurisdiction({
   useEffect(() => {
     setDivision(
       divisions?.map((item) => {
-        return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_DIVISION") };
+        return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_BLOCK") };
       })
     );
   }, [divisions]);
