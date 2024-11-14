@@ -2,6 +2,7 @@ import { PersonIcon } from "@egovernments/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import EmployeeModuleCard from "./EmployeeModuleCard";
+// import EmployeeModuleCard from "./EmployeeModuleCard";
 
 const HRMSCard = () => {
   const ADMIN = Digit.Utils.hrmsAccess();
