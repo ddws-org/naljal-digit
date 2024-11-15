@@ -31,6 +31,20 @@ const HRMSCard = () => {
           // },
         ]
       : [];
+
+  const moduleForSomeSTATEUser =
+    STATE_ADMIN && MDMS_ADMIN
+      ? [
+          {
+            label: t("CREATE_BOUNDARY_RELATIONSHIP"),
+            link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
+          },
+          {
+            label: t("CREATE_NEW_HIERARCHY"),
+            link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
+          },
+        ]
+      : [];
   const propsForModuleCard = {
     Icon: <PersonIcon />,
     moduleName: t("ACTION_TEST_HRMS"),
@@ -60,6 +74,7 @@ const HRMSCard = () => {
       //   link: "https://ifix-dwss.psegs.in/digit-ui/employee/dss/dashboard/ifix",
       // },
       ...moduleForSomeDIVAdmin,
+      ...moduleForSomeSTATEUser,
     ],
   };
 
