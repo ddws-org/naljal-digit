@@ -39,6 +39,14 @@ const HRMSCard = () => {
     STATE_ADMIN && MDMS_ADMIN
       ? [
         {
+          label: t("CREATE_BOUNDARY_RELATIONSHIP"),
+          link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
+        },
+        {
+          label: t("CREATE_NEW_HIERARCHY"),
+          link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
+        },
+        {
           label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
           link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=tenant&masterName=tenants`,
           category: t("HR_EDIT_MASTER"),
@@ -48,6 +56,7 @@ const HRMSCard = () => {
           link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/localisation-search`,
           category: t("HR_EDIT_MASTER"),
         },
+        
       ]
       : [];
 
@@ -105,7 +114,6 @@ const HRMSCard = () => {
         link: `/${window?.contextPath}/employee/hrms/inbox`,
         category: t("SEARCH_USER_HEADER"),
       },
-      // Dashborads are Temporarly Disabled
       {
         label: t("HR_STATE_ REPORTS"),
         link: `/${window?.contextPath}/employee/hrms/dashboard?moduleName=dashboard&pageName=state`,

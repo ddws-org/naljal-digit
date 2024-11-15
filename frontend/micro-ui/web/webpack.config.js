@@ -3,27 +3,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-console.log("PUBLIC_PATH:1", process.env);
-// console.log("PUBLIC_PATH:2", process[env]);
-// console.log("PUBLIC_PATH:3", process[env].PUBLIC_PATH);
-
-// console.log("PUBLIC_PATH:4",JSON.stringify(process.env));
-// console.log("PUBLIC_PATH:5",JSON.stringify(process[env].PUBLIC_PATH));
-// console.log("PUBLIC_PATH:6",JSON.stringify(process[env]));
-
-// for (const key in process.env) {
-//   console.log(`${"PUBLIC_PATH:7-1"}` `${key}: ${process.env[key]}`);
-// console.log("PUBLIC_PATH:7",JSON.stringify((`${key}: ${process.env[key]}`)));
-
-
-
-// }
-
-const publicPath = process.env.REACT_APP_PUBLIC_PATH;
-
-
-
-
 module.exports = {
   // mode: 'development',
   entry: "./src/index.js",
@@ -50,9 +29,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    // publicPath: "",
-    publicPath: "/uat/mgramseva-web/",
-    // publicPath: publicPath,
+    publicPath: "auto", // Use runtime public path
   },
   optimization: {
     splitChunks: {
@@ -70,3 +47,18 @@ module.exports = {
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
   ],
 };
+
+// Dynamically set the publicPath based on the environment
+if (typeof window !== "undefined") {
+  const pathName = window.location.pathname;
+
+  if (pathName.includes('/uat')) {
+    __webpack_public_path__ = `${window.location.origin}/uat/mgramseva-web/`;
+  } else if (pathName.includes('/assam')) {
+    __webpack_public_path__ = `${window.location.origin}/assam/mgramseva-web/`;
+  } else if (pathName.includes('/keala')) {
+    __webpack_public_path__ = `${window.location.origin}/keala/mgramseva-web/`;
+  } else {
+    __webpack_public_path__ = `${window.location.origin}/mgramseva-web/`;  // Default path
+  }
+}

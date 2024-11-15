@@ -72,6 +72,7 @@ module.exports = function (app) {
     "/egov-pdf/download/WORKSESTIMATE/estimatepdf",
     "/muster-roll",
     "/individual",
+    "/boundary-service",
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));
 };
