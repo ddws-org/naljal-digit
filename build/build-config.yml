@@ -499,11 +499,11 @@ config:
       - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
         image-name: "rollout-dashboard-cronjob-indexer"
         dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
-  - name: "builds/naljal-digit/utilities/naljalcustomisation"
+  - name: "builds/naljal-digit/utilities/naljal-custom-service"
     build:
-      - work-dir: "utilities/naljalcustomisation"
-        image-name: "naljalcustomisation"
-        dockerfile: "utilities/naljalcustomisation/Dockerfile"
+      - work-dir: "utilities/naljal-custom-service"
+        image-name: "naljal-custom-service"
+        dockerfile: "utilities/naljal-custom-service/Dockerfile"
 
 
 # Frontend
