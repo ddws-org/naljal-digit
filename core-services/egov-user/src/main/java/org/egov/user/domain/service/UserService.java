@@ -698,7 +698,7 @@ public class UserService {
 
         /* decrypt here / final reponse decrypted*/
 
-        list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
+        //list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
 
         setFileStoreUrlsByFileStoreIds(list);
         return list;
