@@ -131,24 +131,24 @@ public class EncryptionDecryptionUtil {
         Map<String,String> keyPurposeMap = new HashMap<>();
 
         if (!abacEnabled){
-            keyPurposeMap.put("key","UserSelf");
+            keyPurposeMap.put("key","ALL_ACCESS");
             keyPurposeMap.put("purpose","AbacDisabled");
         }
 
 
         else if (isUserDecryptingForSelf(objectToDecrypt, userInfo)){
-            keyPurposeMap.put("key","UserSelf");
+            keyPurposeMap.put("key","UserListSelf");
             keyPurposeMap.put("purpose","Self");
         }
 
 
         else if (isDecryptionForIndividualUser(objectToDecrypt)){
-            keyPurposeMap.put("key","User");
+            keyPurposeMap.put("key","UserListOtherIndividual");
             keyPurposeMap.put("purpose","SingleSearchResult");
         }
 
         else{
-            keyPurposeMap.put("key","User");
+            keyPurposeMap.put("key","UserListOtherBulk");
             keyPurposeMap.put("purpose","BulkSearchResult");
         }
 
