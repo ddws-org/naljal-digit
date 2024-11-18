@@ -693,7 +693,7 @@ public class UserService {
         /* encrypt here / encrypted searchcriteria will be used for search*/
 
 
-        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        //searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
         List<org.egov.user.domain.model.User> list = userRepository.findUserByTenant(searchCriteria);
 
         /* decrypt here / final reponse decrypted*/
