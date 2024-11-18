@@ -500,6 +500,13 @@ config:
         image-name: "rollout-dashboard-cronjob-indexer"
         dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
 
+  - name: "builds/naljal-digit/utilities/naljalcustomisation"
+    build:
+      - work-dir: "utilities/naljalcustomisation"
+        image-name: "naljalcustomisation"
+        dockerfile: "utilities/naljalcustomisation/Dockerfile"
+
+
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
     build:
