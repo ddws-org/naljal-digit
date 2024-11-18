@@ -2,9 +2,8 @@ package org.egov.userevent.web.contract;
 
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,13 +25,11 @@ import lombok.ToString;
 @ToString
 @Builder
 public class Action {
-	@SafeHtml
+
 	private String tenantId;
 
-	@SafeHtml
 	private String id;
 
-	@SafeHtml
 	private String eventId;
 	
 	@NotNull

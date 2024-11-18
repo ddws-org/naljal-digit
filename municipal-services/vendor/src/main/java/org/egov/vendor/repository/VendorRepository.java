@@ -3,7 +3,7 @@ package org.egov.vendor.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.tracer.model.CustomException;
 import org.egov.vendor.config.VendorConfiguration;

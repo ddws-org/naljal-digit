@@ -55,17 +55,6 @@ import {
 } from "./utils/commons";
 
 
-const { initializeProducer } = require("./kafka/producer");
-
-// Initialize Kafka producer
-initializeProducer().then(() => {
-  logger.info('Kafka producer connected');
-}).catch((error) => {
-  logger.error(error.stack || error);
-  process.exit(1);
-});
-
-
 let v8 = require("v8");
 let totalHeapSizeInGB = (((v8.getHeapStatistics().total_available_size) / 1024 / 1024 / 1024).toFixed(2));
 console.log(`*******************************************`);
@@ -368,7 +357,7 @@ const uploadFiles = async (
 };
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_create",
+  "/v1/_create",
   asyncHandler(async (req, res) => {
     let requestInfo;
     try {
@@ -415,7 +404,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_createnosave",
+  "/v1/_createnosave",
   asyncHandler(async (req, res) => {
     let requestInfo;
     try {
@@ -489,7 +478,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_search",
+  "/v1/_search",
   asyncHandler(async (req, res) => {
     let requestInfo;
     try {
@@ -562,7 +551,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_getUnrigesteredCodes",
+  "/v1/_getUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
     try {
@@ -585,7 +574,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_clearUnrigesteredCodes",
+  "/v1/_clearUnrigesteredCodes",
   asyncHandler(async (req, res) => {
     let requestInfo;
     var headers = JSON.parse(JSON.stringify(req.headers));
@@ -626,7 +615,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_getBulkPdfRecordsDetails",
+  "/v1/_getBulkPdfRecordsDetails",
   asyncHandler(async (req, res) => {
     let requestInfo, uuid, offset, limit, jobId;
     try {
@@ -666,7 +655,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_deleteBulkPdfRecordsDetails",
+  "/v1/_deleteBulkPdfRecordsDetails",
   asyncHandler(async (req, res) => {
     let requestInfo = get(req.body, "RequestInfo");
     try {
@@ -708,7 +697,7 @@ app.post( envVariables.SERVER_CONTEXT_PATH +
 );
 
 app.post( envVariables.SERVER_CONTEXT_PATH +
-  "/pdf-service/v1/_cancelProcess",
+  "/v1/_cancelProcess",
   asyncHandler(async (req, res) => {
     let requestInfo = get(req.body, "RequestInfo");
     let jobId = get(req.query, "jobId");

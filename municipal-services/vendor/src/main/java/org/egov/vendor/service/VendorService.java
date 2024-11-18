@@ -10,12 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.vendor.config.VendorConfiguration;
 import org.egov.vendor.repository.VendorRepository;
+import org.egov.vendor.util.VendorErrorConstants;
 import org.egov.vendor.validator.VendorValidator;
 import org.egov.vendor.web.model.Vendor;
 import org.egov.vendor.web.model.VendorReportData;

@@ -97,6 +97,23 @@ class PasswordHint extends StatelessWidget {
                     color: Colors.green[900],
                   )
                 : Text("")
+          ]),
+          SizedBox(height: 5),
+          Row(children: [
+            Text(
+              ApplicationLocalizations.of(context).translate(i18.password.PASS_HINT_ATLEAST_ONE_UPPERCASE),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: RegExp(r'^(?=.*[A-Z])').hasMatch(inputPassword)
+                      ? Colors.green[900]
+                      : Theme.of(context).hintColor),
+            ),
+            new RegExp(r'^(?=.*[A-Z])').hasMatch(inputPassword)
+                ? Icon(
+                    Icons.check,
+                    color: Colors.green[900],
+                  )
+                : Text("")
           ])
         ],
       )),

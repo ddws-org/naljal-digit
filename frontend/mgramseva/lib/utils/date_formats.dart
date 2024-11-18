@@ -43,6 +43,17 @@ class DateFormats {
     }
   }
 
+  static String leadgerTimeStampToDate(int? timeInMillis, {String? format}) {
+  if (timeInMillis == null || timeInMillis == 0) return '-';
+  try {
+    var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+    return DateFormat('dd-MMM-yyyy').format(date);
+
+  } catch (e) {
+    return '';
+  }
+}
+
   static String getTime(String date) {
     if (date.trim().isEmpty) return '';
     try {
@@ -119,7 +130,7 @@ class DateFormats {
 
   static String getMonthAndYearFromDateTime(DateTime date) {
     try {
-      return '${DateFormat.MMM().format(date)}-${DateFormat.y().format(date)}';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(Constants.MONTHS[date.month-1])}-${DateFormat.y().format(date)}';
     } catch (e) {
       return '';
     }

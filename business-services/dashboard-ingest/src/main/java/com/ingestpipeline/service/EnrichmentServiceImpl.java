@@ -2,6 +2,8 @@ package com.ingestpipeline.service;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.Map;
 
 import com.ingestpipeline.model.SourceReferences;
 import com.ingestpipeline.model.TargetReferences;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ import com.ingestpipeline.repository.ElasticSearchRepository;
 import com.ingestpipeline.repository.TargetDataDao;
 import com.ingestpipeline.util.Constants;
 import com.ingestpipeline.util.JSONUtil;
+
+import static jakarta.servlet.http.HttpServletRequest.BASIC_AUTH;
 
 /**
  * This is a Service Implementation for all the actions which are with respect
@@ -217,8 +220,8 @@ public class EnrichmentServiceImpl implements EnrichmentService {
 	 */
 	private String getBase64Value(String userName, String password) {
 		String authString = String.format("%s:%s", userName, password);
-		byte[] encodedAuthString = Base64.encodeBase64(authString.getBytes(Charset.forName(US_ASCII)));
-		return String.format(BASIC_AUTH, new String(encodedAuthString));
+		byte[] encodedAuthString = Base64.getEncoder().encode(authString.getBytes(StandardCharsets.US_ASCII));
+		return String.format(BASIC_AUTH, new String(encodedAuthString, StandardCharsets.US_ASCII));
 	}
 	
 	/**

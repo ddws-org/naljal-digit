@@ -216,6 +216,7 @@ function Assignment({
   const ValidateDatePickers = (value) => {
     assignments;
   };
+  console.log(assignment,"assignment");
   return (
     <div key={index + 1} style={{ marginBottom: "16px" }}>
       <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>

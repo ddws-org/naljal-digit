@@ -1,10 +1,10 @@
 package org.egov;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.egov.infra.persist.web.contract.Mapping;
 import org.egov.infra.persist.web.contract.Service;
 import org.egov.infra.persist.web.contract.TopicMap;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +84,7 @@ public class EgovPersistApplication {
         return configFolderList;
     }
 
-    @PostConstruct
+    //@PostConstruct
     @Bean
     public TopicMap loadConfigs() {
         TopicMap topicMap = new TopicMap();
@@ -96,6 +96,7 @@ public class EgovPersistApplication {
             log.info("====================== EGOV PERSISTER ======================");
             log.info("LOADING CONFIGS: " + configPaths);
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             List<String> fileUrls = Arrays.asList(configPaths.split(","));
             String fileTypes = "yaml,yml";
@@ -134,7 +135,9 @@ public class EgovPersistApplication {
                     failed = true;
                 }
                 finally {
-                    IOUtils.closeQuietly(inputStream);
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
                 }
             }
 

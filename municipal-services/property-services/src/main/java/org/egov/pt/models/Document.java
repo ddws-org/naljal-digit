@@ -1,6 +1,6 @@
 package org.egov.pt.models;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.egov.pt.models.enums.Status;
 
@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.SafeHtml;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,21 +18,21 @@ import org.hibernate.validator.constraints.SafeHtml;
 @EqualsAndHashCode(of= {"fileStoreId","documentUid","id"})
 public class Document {
 
-  @SafeHtml
+  
   @JsonProperty("id")
   private String id ;
 
   @JsonProperty("documentType")
-  @SafeHtml
+  
   @NotNull
   private String documentType ;
 
   @JsonProperty("fileStoreId")
-  @SafeHtml
+  
   @NotNull
   private String fileStoreId ;
 
-  @SafeHtml
+  
   @JsonProperty("documentUid")
   private String documentUid ;
 

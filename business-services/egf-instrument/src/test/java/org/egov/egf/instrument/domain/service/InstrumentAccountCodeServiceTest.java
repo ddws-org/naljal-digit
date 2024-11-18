@@ -1,7 +1,7 @@
 package org.egov.egf.instrument.domain.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import org.egov.egf.master.web.repository.ChartOfAccountContractRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -285,7 +285,7 @@ public class InstrumentAccountCodeServiceTest {
 
         instrumentAccountCodes.get(0).setAccountCode(expextedResult);
 
-        when(chartOfAccountContractRepository.findByGlcode(any(ChartOfAccountContract.class), Matchers.anyObject()))
+        when(chartOfAccountContractRepository.findByGlcode(any(ChartOfAccountContract.class), ArgumentMatchers.any()))
                 .thenReturn(expextedResult);
 
         List<InstrumentAccountCode> actualResult = instrumentAccountCodeService.fetchRelated(instrumentAccountCodes,

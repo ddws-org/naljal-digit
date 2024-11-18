@@ -114,12 +114,12 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   useEffect(() => {
     let divisions = [];
     divisions = data?.MdmsRes?.["tenant"]["tenants"]
-      ?.filter((items) => items?.city?.blockcode)
+      ?.filter((items) => items?.divisionCode)
       ?.map((item) => {
         return {
-          code: item?.city?.blockcode,
-          name: item?.city.blockname,
-          i18text: Digit.Utils.locale.convertToLocale(item?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
+          code: item.divisionCode,
+          name: item.divisionName,
+          i18text: Digit.Utils.locale.convertToLocale(item?.divisionCode, "EGOV_LOCATION_DIVISION"),
         };
       });
     const uniqueDivisions = divisions?.reduce((unique, obj) => {
@@ -136,7 +136,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
     // Use the filter method to extract roles with the specified codes
     const roles = data?.MdmsRes?.["ws-services-masters"]?.WSServiceRoles?.filter((role) => {
-      return !roleCodesToFilter.includes(role.code);
+      return !roleCodesToFilter.includes(role.code) &&
+      (role?.name === "SECRETARY" || role?.name === "CHAIRMEN" || role?.name === "Revenue Collector");
     })?.map((role) => {
       return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
     });
@@ -218,14 +219,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
           <div>
             {STATE_ADMIN ? (
               <div>
-                <div className="filter-label">{t("HR_BLOCK_LABEL")}</div>
-                <Dropdown
-                  option={Divisions?.filter((items) => items?.code === "2595")}
-                  selected={selectedDivision}
-                  select={selectDivision}
-                  optionKey={"i18text"}
-                  t={t}
-                />
+                <div className="filter-label">{t("HR_DIVISIONS_LABEL")}</div>
+                <Dropdown option={Divisions} selected={selectedDivision} select={selectDivision} optionKey={"i18text"} t={t} />
               </div>
             ) : (
               <div>

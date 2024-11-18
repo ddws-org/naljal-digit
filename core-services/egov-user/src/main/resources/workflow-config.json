@@ -9,47 +9,47 @@
     "ts": 1513579888683,
     "ver": ".01",
     "authToken":  "{{SUPER_USER_TOKEN}}"
-    },
+  },
   "BusinessServices": [
     {
-            "tenantId": "pb",
-            "businessService": "NewWS1",
-            "business": "WS",
-            "businessServiceSla": 0,
-            "states": [
-                {
-                    "tenantId": "pb",
-                    "sla": null,
-                    "state": null,
-                    "applicationStatus": "DRAFT",
-                    "docUploadRequired": false,
-                    "isStartState": true,
-                    "isTerminateState": false,
-                    "isStateUpdatable": false,
-                    "actions": [
-                        {
-                            "tenantId": "pb",
-                            "currentState":null,
-                            "action": "SUBMIT",
-                            "nextState": "APPROVED",
-                            "roles": [
-                                "GP_ADMIN"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "tenantId": "pb",
-                    "sla": null,
-                    "state": "APPROVED",
-                    "applicationStatus": "ACTIVE",
-                    "docUploadRequired": false,
-                    "isStartState": false,
-                    "isTerminateState": true,
-                    "isStateUpdatable": true,
-                    "actions": null
-                }
-            ]
+      "tenantId": "pb",
+      "businessService": "NewWS1",
+      "business": "WS",
+      "businessServiceSla": 0,
+      "states": [
+        {
+          "tenantId": "pb",
+          "sla": null,
+          "state": null,
+          "applicationStatus": "DRAFT",
+          "docUploadRequired": false,
+          "isStartState": true,
+          "isTerminateState": false,
+          "isStateUpdatable": false,
+          "actions": [
+            {
+              "tenantId": "pb",
+              "currentState":null,
+              "action": "SUBMIT",
+              "nextState": "APPROVED",
+              "roles": [
+                "GP_ADMIN"
+              ]
+            }
+          ]
+        },
+        {
+          "tenantId": "pb",
+          "sla": null,
+          "state": "APPROVED",
+          "applicationStatus": "ACTIVE",
+          "docUploadRequired": false,
+          "isStartState": false,
+          "isTerminateState": true,
+          "isStateUpdatable": true,
+          "actions": null
         }
+      ]
+    }
   ]
 }

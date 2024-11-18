@@ -75,9 +75,6 @@ public class ReindexService {
 	@Value("${egov.core.index.thread.poll.ms}")
 	private Long indexThreadPollInterval;
 
-	@Value("${egov.infra.indexer.legacy.version}")
-	private Boolean isLegacyVersionES;
-
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 	private final ScheduledExecutorService schedulerofChildThreads = Executors.newScheduledThreadPool(1);
 

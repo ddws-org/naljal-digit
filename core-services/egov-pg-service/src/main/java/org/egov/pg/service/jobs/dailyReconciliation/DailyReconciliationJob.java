@@ -1,6 +1,7 @@
 package org.egov.pg.service.jobs.dailyReconciliation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.pg.config.AppProperties;
@@ -14,7 +15,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,9 @@ public class DailyReconciliationJob implements Job {
                 .type("SYSTEM")
                 .roles(Collections.emptyList()).id(0L).build();
 
-        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", userInfo);
+        requestInfo = new RequestInfo("","",0L,"","","","","","", PlainAccessRequest.builder().build(),userInfo);
+
+
     }
 
     @Autowired

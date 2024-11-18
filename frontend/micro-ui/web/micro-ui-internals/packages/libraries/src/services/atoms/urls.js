@@ -1,5 +1,8 @@
 const Urls = {
-  MDMS: `/mdms-v2/v1/_search`,
+  MDMSV1: "/egov-mdms-service/v1/_search",
+  // MDMS: "/egov-mdms-service/v1/_search",
+
+  MDMS: "/mdms-v2/v1/_search",
   WorkFlow: `/egov-workflow-v2/egov-wf/businessservice/_search`,
   WorkFlowProcessSearch: `/egov-workflow-v2/egov-wf/process/_search`,
   localization: `/localization/messages/v1/_search`,

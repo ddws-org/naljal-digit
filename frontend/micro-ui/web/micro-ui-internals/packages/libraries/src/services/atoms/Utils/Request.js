@@ -49,6 +49,7 @@ const userServiceData = () => ({ userInfo: Digit.UserService.getUser()?.info });
 
 window.Digit = window.Digit || {};
 window.Digit = { ...window.Digit, RequestCache: window.Digit.RequestCache || {} };
+
 export const Request = async ({
   method = "POST",
   url,
@@ -56,7 +57,7 @@ export const Request = async ({
   headers = {},
   useCache = false,
   params = {},
-  auth,
+  auth=true,
   urlParams = {},
   userService,
   locale = true,
@@ -68,13 +69,15 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
+  url = `/uat${url}`;
+  //url = `/${window.globalConfigs.getConfig("STATE_PREFIX_CODE")}${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    
     data.RequestInfo = {
       apiId: "Rainmaker",
     };
-    if (auth || !!Digit.UserService.getUser()?.access_token) {
+    if (auth) {
       data.RequestInfo = { ...data.RequestInfo, ...requestInfo() };
     }
     if (userService) {

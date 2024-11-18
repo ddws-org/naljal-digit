@@ -5,12 +5,12 @@ const createProxy = createProxyMiddleware({
   // target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   target: process.env.REACT_APP_PROXY_API || "https://works-dev.digit.org",
   changeOrigin: true,
-  secure: false,
+  secure: true,
 });
 const assetsProxy = createProxyMiddleware({
   target: process.env.REACT_APP_PROXY_ASSETS || "https://works-dev.digit.org",
   changeOrigin: true,
-  secure: false,
+  secure: true,
 });
 module.exports = function (app) {
   [

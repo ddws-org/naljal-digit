@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import sun.util.resources.cldr.chr.CalendarData_chr_US;
+//import sun.util.resources.cldr.chr.CalendarData_chr_US;
 
 /**
  * Description : IdGenerationService have methods related to the IdGeneration
@@ -259,7 +259,7 @@ public class IdGenerationService {
                     }
                     idFormat = idFormat.replace("[" + attributeName + "]", cityName);
                 }
-                else if (attributeName.substring(0,8).equalsIgnoreCase("district"))
+                else if (attributeName.length()>=8 && attributeName.substring(0,8).equalsIgnoreCase("district"))
                 {
                     log.info("inside else part of district code");
                     if(districtCode==null) {

@@ -1,6 +1,5 @@
 package org.egov.echallan.web.models.vendor;
 
-import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -17,7 +16,6 @@ import lombok.Setter;
  * Capture the vendor information in the system.
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-01-06T05:34:12.238Z[GMT]")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -25,30 +23,30 @@ import lombok.Setter;
 @Setter
 public class Vendor {
 
-	@SafeHtml
+
 	@JsonProperty("id")
 	private String id = null;
 
-	@SafeHtml
+
 	@JsonProperty("tenantId")
 	private String tenantId = null;
 
-	@SafeHtml
+
 	@JsonProperty("name")
 	private String name = null;
 
 	@JsonProperty("additionalDetails")
 	private Object additionalDetails = null;
 
-	@SafeHtml
+
 	@JsonProperty("source")
 	private String source = null;
 
-	@SafeHtml
+
 	@JsonProperty("description")
 	private String description = null;
 
-	@SafeHtml
+
 	@JsonProperty("ownerId")
 	private String ownerId = null;
 

@@ -1,6 +1,6 @@
 package org.egov.mgramsevaifixadaptor.models;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 import org.egov.mgramsevaifixadaptor.contract.*;
 

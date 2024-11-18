@@ -10,6 +10,8 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Getter
 @Setter
 @Builder
@@ -32,6 +34,7 @@ public class UserSearchCriteria {
     private List<String> tenantIds;
     private Boolean isStateLevelSearch;
     private List<String> roleCodes;
+    private String alternatemobilenumber;
 
     public void validate(boolean isInterServiceCall) {
         if (validateIfEmptySearch(isInterServiceCall) || validateIfTenantIdExists(isInterServiceCall)) {

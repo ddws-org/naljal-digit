@@ -27,14 +27,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.SafeHtml;
 
-import javax.validation.constraints.Min;
+
+import jakarta.validation.constraints.Min;
 
 /**
  * Capture the challan amount details
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-10T16:46:24.044+05:30[Asia/Calcutta]")
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -43,7 +43,6 @@ import javax.validation.constraints.Min;
 public class Amount {
 
   @JsonProperty("taxHeadCode")
-  @SafeHtml
   private String taxHeadCode = null;
 
   @JsonProperty("amount")

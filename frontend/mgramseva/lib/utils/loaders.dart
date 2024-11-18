@@ -7,7 +7,7 @@ class Loaders {
       height: height,
       color: color,
       alignment: Alignment.center,
-      child: CircularProgressIndicator(color: Color.fromRGBO(3, 60, 207, 0.9),),
+      child: CircularProgressIndicator(),
     );
   }
 
@@ -17,8 +17,8 @@ class Loaders {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return WillPopScope(
-              onWillPop: () async => false,
+          return PopScope(
+              canPop: false,
               child: Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -60,16 +60,14 @@ class Loaders {
         barrierColor: Colors.black.withOpacity(0.2),
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () async => false,
+          return PopScope(
+              canPop: false,
             child: Dialog(
               // backgroundColor:CustomColors.BLACK,
               shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(15)),
-              child: WillPopScope(
-                onWillPop: () async {
-                  return true;
-                },
+              child:PopScope(
+              canPop: true,
                 child: Container(
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     child: Wrap(
@@ -94,16 +92,14 @@ class Loaders {
         });
   }
   static Widget loaderBox(BuildContext context, {String? text, Color? loaderColor , Color? textColor}){
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+              canPop: false,
       child: Dialog(
         // backgroundColor:CustomColors.BLACK,
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(15)),
-        child: WillPopScope(
-          onWillPop: () async {
-            return true;
-          },
+        child:PopScope(
+              canPop: true,
           child: Container(
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle
@@ -136,16 +132,14 @@ class Loaders {
     );
   }
   static Widget loaderBoxCircularLoader(BuildContext context, {String? text, Color? loaderColor , Color? textColor}){
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+              canPop: false,
       child: Dialog(
         // backgroundColor:CustomColors.BLACK,
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(15)),
-        child: WillPopScope(
-          onWillPop: () async {
-            return true;
-          },
+        child: PopScope(
+              canPop: true,
           child: Container(
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle
