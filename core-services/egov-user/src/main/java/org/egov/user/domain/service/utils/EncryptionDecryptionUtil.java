@@ -47,6 +47,7 @@ public class EncryptionDecryptionUtil {
             if (objectToEncrypt == null) {
                 return null;
             }
+            log.info("stateleveltenantid"+stateLevelTenantId);
             T encryptedObject = encryptionService.encryptJson(objectToEncrypt, key, stateLevelTenantId, classType);
             if (encryptedObject == null) {
                 throw new CustomException("ENCRYPTION_NULL_ERROR", "Null object found on performing encryption");
@@ -135,24 +136,24 @@ public class EncryptionDecryptionUtil {
         Map<String,String> keyPurposeMap = new HashMap<>();
 
         if (!abacEnabled){
-            keyPurposeMap.put("key","ALL_ACCESS");
+            keyPurposeMap.put("key","UserSelf");
             keyPurposeMap.put("purpose","AbacDisabled");
         }
 
 
         else if (isUserDecryptingForSelf(objectToDecrypt, userInfo)){
-            keyPurposeMap.put("key","UserListSelf");
+            keyPurposeMap.put("key","UserSelf");
             keyPurposeMap.put("purpose","Self");
         }
 
 
         else if (isDecryptionForIndividualUser(objectToDecrypt)){
-            keyPurposeMap.put("key","UserListOtherIndividual");
+            keyPurposeMap.put("key","User");
             keyPurposeMap.put("purpose","SingleSearchResult");
         }
 
         else{
-            keyPurposeMap.put("key","UserListOtherBulk");
+            keyPurposeMap.put("key","User");
             keyPurposeMap.put("purpose","BulkSearchResult");
         }
 
