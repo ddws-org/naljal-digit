@@ -153,7 +153,7 @@ public class UserService {
 
         /* encrypt here */
 
-        userSearchCriteria = encryptionDecryptionUtil.encryptObject(userSearchCriteria, "User", UserSearchCriteria.class);
+        userSearchCriteria = encryptionDecryptionUtil.encryptObject(userSearchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
         List<User> users = userRepository.findAll(userSearchCriteria);
 
         if (users.isEmpty())
@@ -220,7 +220,7 @@ public class UserService {
 
         /* decrypt here / final reponse decrypted*/
 
-        list = encryptionDecryptionUtil.decryptObject(list, null, User.class, requestInfo);
+        list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
 
         setFileStoreUrlsByFileStoreIds(list);
         return list;
@@ -254,7 +254,7 @@ public class UserService {
         user.setDefaultPasswordExpiry(defaultPasswordExpiryInDays);
         user.setTenantId(userUtils.getStateLevelTenantForCitizen(user.getTenantId(), user.getType()));
         User persistedNewUser = persistNewUser(user);
-        return encryptionDecryptionUtil.decryptObject(persistedNewUser, "UserSelf", User.class, requestInfo);
+        return encryptionDecryptionUtil.decryptObject(persistedNewUser, "User", User.class, requestInfo);
 
         /* decrypt here  because encrypted data coming from DB*/
 
@@ -387,7 +387,7 @@ public class UserService {
             resetFailedLoginAttempts(user);
 
         User encryptedUpdatedUserfromDB = getUserByUuid(user.getUuid());
-        User decryptedupdatedUserfromDB = encryptionDecryptionUtil.decryptObject(encryptedUpdatedUserfromDB, "UserSelf", User.class, requestInfo);
+        User decryptedupdatedUserfromDB = encryptionDecryptionUtil.decryptObject(encryptedUpdatedUserfromDB, "User", User.class, requestInfo);
         return decryptedupdatedUserfromDB;
     }
 
