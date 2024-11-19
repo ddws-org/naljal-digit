@@ -210,7 +210,7 @@ public class UserService {
         	altmobnumber = searchCriteria.getMobileNumber();
         }
 
-        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "User", UserSearchCriteria.class);
         
         if(altmobnumber!=null) {
         	searchCriteria.setAlternatemobilenumber(altmobnumber);
@@ -693,12 +693,12 @@ public class UserService {
         /* encrypt here / encrypted searchcriteria will be used for search*/
 
 
-        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "UserSearchCriteria", UserSearchCriteria.class);
+        searchCriteria = encryptionDecryptionUtil.encryptObject(searchCriteria, "User", UserSearchCriteria.class);
         List<org.egov.user.domain.model.User> list = userRepository.findUserByTenant(searchCriteria);
 
         /* decrypt here / final reponse decrypted*/
 
-        list = encryptionDecryptionUtil.decryptObject(list, "UserList", User.class, requestInfo);
+        list = encryptionDecryptionUtil.decryptObject(list, null, User.class, requestInfo);
 
         setFileStoreUrlsByFileStoreIds(list);
         return list;
