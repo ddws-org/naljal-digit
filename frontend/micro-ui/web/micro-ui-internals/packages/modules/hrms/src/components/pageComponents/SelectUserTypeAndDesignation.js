@@ -14,14 +14,12 @@ const makeDefaultValues = (sessionFormData) => {
       },
       boundaryType: { label: ele?.boundaryType, i18text: ele.boundaryType ? `EGOV_LOCATION_BOUNDARYTYPE_${ele.boundaryType?.toUpperCase()}` : null },
       boundary: { code: ele?.boundary },
-      divisionBoundary: ele?.divisionBoundary,
-      division: ele?.division,
+      blockBoundary: ele?.blockBoundary,
+      block: ele?.block,
       designation: ele?.designation,
       roles: ele?.roles,
       department: ele?.department,
-      designation: ele?.designation
-
-
+      designation: ele?.designation,
     };
   });
 };
@@ -44,40 +42,38 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
       : formData?.Jurisdictions || [
-        {
-          id: undefined,
-          key: 1,
-          hierarchy: null,
-          boundaryType: null,
-          boundary: null,
-          division: {},
-          divisionBoundary: [],
-          roles: [],
-          department: {},
-          designation: {}
-        },
-      ]
+          {
+            id: undefined,
+            key: 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            block: {},
+            blockBoundary: [],
+            roles: [],
+            department: {},
+            designation: {},
+          },
+        ]
   );
-
-
 
   const [userTypeDesignation, setUserTypeDesignation] = useState(
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
       ? makeDefaultValues(sessionFormData)
       : formData?.Jurisdictions || [
-        {
-          id: undefined,
-          key: 1,
-          hierarchy: null,
-          boundaryType: null,
-          boundary: null,
-          division: {},
-          department: {},
-          designation: {},
-          divisionBoundary: [],
-          roles: [],
-        },
-      ]
+          {
+            id: undefined,
+            key: 1,
+            hierarchy: null,
+            boundaryType: null,
+            boundary: null,
+            block: {},
+            department: {},
+            designation: {},
+            blockBoundary: [],
+            roles: [],
+          },
+        ]
   );
   const [jurisdictionsData, setJuristictionsData] = useState([]);
   let hierarchylist = [];
@@ -85,21 +81,24 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
   // hierarchylist.push(hierarchyData);
 
   // User Details
-  const { isLoadingDesignation, isError, error, data: responseData, ...rest } = Digit.Hooks.hrms.useHRMSSearch({ codes: employeeId }, tenantId, null, isupdate);
+  const { isLoadingDesignation, isError, error, data: responseData, ...rest } = Digit.Hooks.hrms.useHRMSSearch(
+    { codes: employeeId },
+    tenantId,
+    null,
+    isupdate
+  );
 
-
-
-  let divisions = [];
-  divisions = data?.MdmsRes?.["tenant"]["tenants"]
-    ?.filter((items) => items?.divisionCode)
+  let blocks = [];
+  blocks = data?.MdmsRes?.["tenant"]["tenants"]
+    ?.filter((items) => items?.blockcode)
     ?.map((item) => {
       return {
-        code: item.divisionCode,
-        name: item.divisionName,
-        i18text: Digit.Utils.locale.getCityLocale(item.divisionCode),
+        code: item.blockcode,
+        name: item.blockname,
+        i18text: Digit.Utils.locale.getCityLocale(item.blockcode),
       };
     });
-  const uniqueDivisions = divisions?.reduce((unique, obj) => {
+  const uniqueBlocks = blocks?.reduce((unique, obj) => {
     const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
     if (!isDuplicate) {
       unique.push(obj);
@@ -126,11 +125,11 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
         hierarchy: jurisdiction?.boundary?.code,
         boundaryType: "City",
         boundary: jurisdiction?.boundary?.code,
-        tenantId: STATE_ADMIN ? jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary[0]?.code : jurisdiction?.boundary?.code,
+        tenantId: STATE_ADMIN ? jurisdiction?.blockBoundary && jurisdiction?.blockBoundary[0]?.code : jurisdiction?.boundary?.code,
         auditDetails: jurisdiction?.auditDetails,
-        division: jurisdiction?.division,
+        block: jurisdiction?.block,
         department: jurisdiction?.department,
-        designation: jurisdiction?.designation
+        designation: jurisdiction?.designation,
       };
       res = cleanup(res);
       if (jurisdiction?.roles) {
@@ -139,17 +138,17 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
           return ele;
         });
       }
-      if (jurisdiction?.divisionBoundary) {
-        res["divisionBoundary"] = jurisdiction?.divisionBoundary;
+      if (jurisdiction?.blockBoundary) {
+        res["blockBoundary"] = jurisdiction?.blockBoundary;
       }
       if (isEdit && STATE_ADMIN) {
         data?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
           if (items?.code === jurisdiction?.boundary?.code) {
-            res["division"] = {
-              code: items?.divisionCode,
-              i18text: Digit.Utils.locale.convertToLocale(items?.divisionCode, "EGOV_LOCATION_DIVISION"),
+            res["block"] = {
+              code: items?.blockcode,
+              i18text: Digit.Utils.locale.convertToLocale(items?.blockcode, "EGOV_LOCATION_DIVISION"),
             };
-            res["divisionBoundary"] = [
+            res["blockBoundary"] = [
               {
                 name: items.name,
                 code: items.code,
@@ -162,31 +161,31 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
       return res;
     });
     if (isEdit && STATE_ADMIN) {
-      let divisionData = [];
+      let blockData = [];
       if (isEdit && jurisdictionData.length > 0) {
         jurisdictionData?.map((jurisdiction) => {
-          if (jurisdiction?.divisionBoundary && jurisdiction?.divisionBoundary?.length > 0 && divisionData.length === 0) {
-            divisionData.push(jurisdiction);
-          } else if (divisionData.length > 0) {
-            if (divisionData[divisionData.length - 1]?.division?.code !== jurisdiction?.division?.code) {
-              divisionData.push(jurisdiction);
+          if (jurisdiction?.blockBoundary && jurisdiction?.blockBoundary?.length > 0 && blockData.length === 0) {
+            blockData.push(jurisdiction);
+          } else if (blockData.length > 0) {
+            if (blockData[blockData.length - 1]?.block?.code !== jurisdiction?.block?.code) {
+              blockData.push(jurisdiction);
             }
           }
         });
       }
 
       let finalData = [];
-      divisionData &&
-        divisionData?.length > 0 &&
-        divisionData?.map((data, index) => {
-          let divisionBoundarydata = [];
+      blockData &&
+        blockData?.length > 0 &&
+        blockData?.map((data, index) => {
+          let blockBoundarydata = [];
           jurisdictionData?.map((jurisdiction) => {
-            if (data?.division?.code === jurisdiction?.division?.code) {
-              if (divisionBoundarydata?.length === 0) {
-                jurisdiction?.divisionBoundary[0] !== undefined && divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
-              } else if (divisionBoundarydata?.length > 0) {
-                if (divisionBoundarydata[divisionBoundarydata?.length - 1]?.code !== jurisdiction?.divisionBoundary[0]) {
-                  jurisdiction?.divisionBoundary[0] !== undefined && divisionBoundarydata.push(jurisdiction?.divisionBoundary[0]);
+            if (data?.block?.code === jurisdiction?.block?.code) {
+              if (blockBoundarydata?.length === 0) {
+                jurisdiction?.blockBoundary[0] !== undefined && blockBoundarydata.push(jurisdiction?.blockBoundary[0]);
+              } else if (blockBoundarydata?.length > 0) {
+                if (blockBoundarydata[blockBoundarydata?.length - 1]?.code !== jurisdiction?.blockBoundary[0]) {
+                  jurisdiction?.blockBoundary[0] !== undefined && blockBoundarydata.push(jurisdiction?.blockBoundary[0]);
                 }
               }
             }
@@ -194,7 +193,7 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
           let obj = {
             ...data,
             key: index,
-            divisionBoundary: divisionBoundarydata,
+            blockBoundary: blockBoundarydata,
           };
           finalData.push(obj);
         });
@@ -206,7 +205,6 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
       config.key,
       [...jurisdictionData, ...inactiveJurisdictions].filter((value) => Object.keys(value).length !== 0)
     );
-
   }, [jurisdictions, data?.MdmsRes]);
 
   const reviseIndexKeys = () => {
@@ -214,23 +212,18 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
   };
 
   function filterJurisdictions(unit, jurisdictions) {
-    const divisionBoundaryCodes = new Set(unit.divisionBoundary.map(item => item.code));
-    return jurisdictions.filter(jurisdiction => {
-      return !divisionBoundaryCodes.has(jurisdiction.boundary.code);
+    const blockBoundaryCodes = new Set(unit.blockBoundary.map((item) => item.code));
+    return jurisdictions.filter((jurisdiction) => {
+      return !blockBoundaryCodes.has(jurisdiction.boundary.code);
     });
   }
   const handleRemoveUnit = (unit) => {
     if (STATE_ADMIN) {
       if (!isEdit) {
-        setjurisdictions(jurisdictions.filter(
-          (element) => element.key !== unit.key
-        ));
+        setjurisdictions(jurisdictions.filter((element) => element.key !== unit.key));
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
-      }
-      else {
-        setJuristictionsData(jurisdictionsData.filter(
-          (element) => element.key !== unit.key
-        ));
+      } else {
+        setJuristictionsData(jurisdictionsData.filter((element) => element.key !== unit.key));
         let filterJurisdictionsItems = filterJurisdictions(unit, jurisdictions);
         setjurisdictions(filterJurisdictionsItems);
         setjurisdictions((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
@@ -239,15 +232,14 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
         clearErrors("Jurisdictions");
       }
       reviseIndexKeys();
-    }
-    else {
+    } else {
       if (unit.id) {
         let res = {
           id: unit?.id,
           hierarchy: unit?.hierarchy?.code,
           boundaryType: unit?.boundaryType?.label,
           boundary: unit?.boundary?.code,
-          division: unit?.division?.code,
+          block: unit?.block?.code,
           tenantId: unit?.boundary?.code,
           auditDetails: unit?.auditDetails,
           isdeleted: true,
@@ -269,14 +261,10 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
       }
 
       reviseIndexKeys();
-
     }
-
   };
   let boundaryTypeoption = [];
   const [focusIndex, setFocusIndex] = useState(-1);
-
-
 
   function getroledata() {
     if (STATE_ADMIN) {
@@ -303,7 +291,6 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
   }
 
   function getdesignationdata() {
-
     return data?.MdmsRes?.["common-masters"]?.Designation?.map((ele) => {
       ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
       return ele;
@@ -336,7 +323,7 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
         focusIndex={focusIndex}
         setFocusIndex={setFocusIndex}
         hierarchylist={hierarchylist}
-        divisions={uniqueDivisions}
+        blocks={uniqueBlocks}
         boundaryTypeoption={boundaryTypeoption}
         getroledata={getroledata}
         handleRemoveUnit={handleRemoveUnit}
@@ -365,25 +352,25 @@ function Jurisdiction({
   config,
   handleRemoveUnit,
   hierarchylist,
-  divisions,
+  blocks,
   getroledata,
   roleoption,
   index,
   Boundary,
   getdesignationdata,
   getUserTypes,
-  responseData
+  responseData,
 }) {
   // console.log(responseData?.Employees[0]?.assignments[0]?.department, "responseData");
   // console.log(responseData?.Employees[0]?.assignments[0]?.designation, "responseData");
 
   const [BoundaryType, selectBoundaryType] = useState([]);
-  const [divisionBoundary, setDivisionBoundary] = useState([]);
+  const [blockBoundary, setBlockBoundary] = useState([]);
   const [designationList, setDesignationList] = useState([]);
   const [depamentValue, setDepamentValue] = useState("");
   const [designationValue, setDesignationValue] = useState("");
 
-  const [Division, setDivision] = useState([]);
+  const [Block, setBlock] = useState([]);
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   let isMobile = window.Digit.Utils.browser.isMobile();
   const isEdit = window.location.href?.includes("hrms/edit");
@@ -394,16 +381,15 @@ function Jurisdiction({
       if (ele.code === currentTenant) {
         defaultjurisdiction = ele;
       }
-    })
+    });
     return defaultjurisdiction;
-  }
+  };
   useEffect(() => {
-
     if (responseData != null && depamentValue == "" && isEdit) {
       getUserTypes?.forEach((ele) => {
         if (ele.code === responseData?.Employees[0]?.assignments[0]?.department) {
           setDepamentValue(ele);
-          const filteredItems = getdesignationdata.filter(val => val.department?.includes(ele.code));
+          const filteredItems = getdesignationdata.filter((val) => val.department?.includes(ele.code));
           setDesignationList(filteredItems);
           setjurisdictions((pre) => pre.map((item) => (item.key == jurisdiction.key ? { ...item, department: ele } : item)));
           // setDesignationValue(filteredItems[0]);
@@ -411,7 +397,7 @@ function Jurisdiction({
         }
       });
     }
-  },);
+  });
 
   useEffect(() => {
     if (responseData != null) {
@@ -424,12 +410,12 @@ function Jurisdiction({
     }
   }, [depamentValue]);
   useEffect(() => {
-    setDivision(
-      divisions?.map((item) => {
+    setBlock(
+      blocks?.map((item) => {
         return { ...item, i18text: Digit.Utils.locale.convertToLocale(item.code, "EGOV_LOCATION_DIVISION") };
       })
     );
-  }, [divisions]);
+  }, [blocks]);
 
   const tenant = Digit.ULBService.getCurrentTenantId();
 
@@ -445,58 +431,55 @@ function Jurisdiction({
   const selectDepartment = (value) => {
     setDesignationList([]);
     setjurisdictions((pre) => pre.map((item) => (item.key == jurisdiction.key ? { ...item, department: value } : item)));
-    const filteredItems = getdesignationdata.filter(val => val.department.includes(value.code));
+    const filteredItems = getdesignationdata.filter((val) => val.department.includes(value.code));
     setDesignationList(filteredItems);
     setDesignationValue(filteredItems[0]);
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: filteredItems[0] } : item)));
   };
   const selectDesignation = (value) => {
     setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, designation: value } : item)));
-
   };
 
   return (
     <div key={jurisdiction?.keys} style={{ marginBottom: "16px" }}>
-      {
-        !STATE_ADMIN && (
-          <div>
-            <div style={{ marginTop: "10px" }}>
-              <React.Fragment>
-                <LabelFieldPair>
-                  <CardLabel className="card-label-smaller">{`${t("HR_COMMON_DEPARTMENT")} * `}</CardLabel>
-                  <Dropdown
-                    className="form-field"
-                    isMandatory={true}
-                    selected={depamentValue}
-                    option={getUserTypes}
-                    select={selectDepartment}
-                    optionKey="name"
-                    t={t}
-                  />
-                </LabelFieldPair>
-              </React.Fragment>
-            </div>
-            <div style={{ marginTop: "10px" }}>
-              <React.Fragment>
-                <LabelFieldPair>
-                  <CardLabel className="card-label-smaller">{`${t("HR_COMMON_USER_DESIGNATION")} * `}</CardLabel>
-                  <Dropdown
-                    className="form-field"
-                    isMandatory={true}
-                    selected={designationValue}
-                    option={designationList}
-                    select={selectDesignation}
-                    optionKey="name"
-                    t={t}
-                  />
-                </LabelFieldPair>
-              </React.Fragment>
-            </div>
-          </div>)
-      }
+      {!STATE_ADMIN && (
+        <div>
+          <div style={{ marginTop: "10px" }}>
+            <React.Fragment>
+              <LabelFieldPair>
+                <CardLabel className="card-label-smaller">{`${t("HR_COMMON_DEPARTMENT")} * `}</CardLabel>
+                <Dropdown
+                  className="form-field"
+                  isMandatory={true}
+                  selected={depamentValue}
+                  option={getUserTypes}
+                  select={selectDepartment}
+                  optionKey="name"
+                  t={t}
+                />
+              </LabelFieldPair>
+            </React.Fragment>
+          </div>
+          <div style={{ marginTop: "10px" }}>
+            <React.Fragment>
+              <LabelFieldPair>
+                <CardLabel className="card-label-smaller">{`${t("HR_COMMON_USER_DESIGNATION")} * `}</CardLabel>
+                <Dropdown
+                  className="form-field"
+                  isMandatory={true}
+                  selected={designationValue}
+                  option={designationList}
+                  select={selectDesignation}
+                  optionKey="name"
+                  t={t}
+                />
+              </LabelFieldPair>
+            </React.Fragment>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default SelectUserTypeAndDesignation;
-
