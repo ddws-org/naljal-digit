@@ -44,7 +44,7 @@ const HRMSCard = () => {
 
           {
             label: t("WORK_BENCH_URL_LOCALISATION"),
-            link: `${window?.location?.origin}/workbench-ui/employee/workbench/localisation-search`,
+            link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/localisation-search`,
             category: t("HR_EDIT_MASTER"),
           },
         ]
