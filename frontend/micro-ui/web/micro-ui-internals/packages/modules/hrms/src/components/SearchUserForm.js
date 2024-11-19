@@ -196,7 +196,7 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       cacheTime: Infinity,
       select: (data) => {
         const requiredKeys = ["code", "name", "blockcode", "blockname", "panchayatcode", "panchayatname", "villageCode", "villageName"];
-        const result = mapTenantProperties(data?.MdmsRes?.tenant?.tenants);
+        const result = data?.MdmsRes?.tenant?.tenants;
         const filteredResult = filterKeys(result, requiredKeys);
         const resultInTree = buildTree(filteredResult, hierarchy);
         const excludeCodes = ["HRMS_ADMIN", "LOC_ADMIN", "MDMS_ADMIN", "EMPLOYEE", "SYSTEM"];
@@ -244,7 +244,7 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       select: (data) => {
         const requiredKeys = ["code", "name", "blockcode", "blockname", "panchayatcode", "panchayatname", "villageCode", "villageName"];
 
-        const result = mapTenantProperties(data?.MdmsRes?.tenant?.tenants);
+        const result = data?.MdmsRes?.tenant?.tenants;
 
         formData.villageCode = result[0];
         formData.panchayatcode = result[0];
@@ -355,6 +355,8 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       return;
     }
 
+    // debugger;
+
     //here apply a logic to compute the subtree based on the hierarchy selected
     const levels = hierarchy.map(({ level }) => level);
 
@@ -377,12 +379,17 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       currentLevel = currentLevel[code];
     }
 
+    console.log(currentLevel,"currentLevel ONSUBMIT");
+    
+
+    
+
     //this is the list of tenants under the current subtree
     const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => data?.roles?.filter((row) => row.code)?.map((role) => role.code));
   };
-  const [blockTree, setBlockTree] = useState(null);
+  const [blockTree, setBlockTree] = useState(null);  
 
   useEffect(() => {
     if (userData) {
@@ -395,8 +402,8 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
   }, [userData, tree]);
 
   const setRequiredOptions = (formData) => {
-    formData.villageCode = userData[0];
-    formData.panchayatcode = userData[0];
+    // formData.villageCode = userData[0];
+    // formData.panchayatcode = userData[0];
     formData.blockcode = userData[0];
   };
 
@@ -419,6 +426,10 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       currentLevel = currentLevel[code];
     }
 
+    console.log(currentLevel,"currentLevel");
+    
+    // console.log(getUniqueLeafCodes(blockTree),"TREE");
+// 
     if (blockAdmin) setRequiredOptions(formData);
     return currentLevel?.options || [];
   };
