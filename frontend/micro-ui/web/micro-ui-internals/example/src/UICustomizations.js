@@ -567,10 +567,10 @@ export const UICustomizations = {
           enabled: true,
           select: (data) => {
             const result = data?.MdmsRes?.tenant?.tenants
-              ?.filter((row) => row?.divisionCode && row?.divisionName)
+              ?.filter((row) => row?.blockcode && row?.blockname)
               ?.map((row) => ({
                 ...row,
-                updatedCode: `${row?.divisionName} - ${t(row?.code)}`,
+                updatedCode: `${row?.blockname} - ${t(row?.code)}`,
               }));
             return result;
           },

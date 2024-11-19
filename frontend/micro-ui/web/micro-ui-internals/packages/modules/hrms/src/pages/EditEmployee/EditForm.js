@@ -86,8 +86,8 @@ const EditForm = ({ tenantId, data }) => {
         boundaryType: { label: ele.boundaryType, i18text: `EGOV_LOCATION_BOUNDARYTYPE_${ele.boundaryType.toUpperCase()}` },
         boundary: { code: ele.boundary },
         roles: data?.user?.roles?.filter((item) => item.tenantId == ele.boundary),
-        division: {},
-        divisionBoundary: [],
+        block: {},
+        blockBoundary: [],
       };
 
       return obj;
@@ -134,14 +134,14 @@ const EditForm = ({ tenantId, data }) => {
     return true;
   }
 
-  function hasUniqueDivisions(items) {
-    const uniqueDivisions = new Set();
+  function hasUniqueBlocks(items) {
+    const uniqueBlocks = new Set();
     for (const item of items) {
-      const divisionCode = item?.division?.code;
-      if (divisionCode && uniqueDivisions.has(divisionCode)) {
+      const blockcode = item?.block?.code;
+      if (blockcode && uniqueBlocks.has(blockcode)) {
         return false;
       }
-      uniqueDivisions.add(divisionCode);
+      uniqueBlocks.add(blockcode);
     }
     return true;
   }
@@ -156,7 +156,7 @@ const EditForm = ({ tenantId, data }) => {
 
     for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
       let key = formData?.Jurisdictions[i];
-      if (!((key?.boundary || key?.divisionBoundary) && (key?.boundaryType || key?.division))) {
+      if (!((key?.boundary || key?.blockBoundary) && (key?.boundaryType || key?.block))) {
         setcheck(false);
         break;
       } else {
@@ -184,8 +184,8 @@ const EditForm = ({ tenantId, data }) => {
       formData?.SelectEmployeePhoneNumber?.mobileNumber &&
       STATE_ADMIN
         ? formData?.Jurisdictions?.length &&
-          !formData?.Jurisdictions.some((juris) => juris?.division == undefined || juris?.divisionBoundary?.length === 0) &&
-          hasUniqueDivisions(formData?.Jurisdictions)
+          !formData?.Jurisdictions.some((juris) => juris?.block == undefined || juris?.blockBoundary?.length === 0) &&
+          hasUniqueBlocks(formData?.Jurisdictions)
         : formData?.Jurisdictions?.length &&
           formData?.Jurisdictions.length &&
           !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
@@ -225,7 +225,7 @@ const EditForm = ({ tenantId, data }) => {
     let roles = [];
     let jurisdictions = [];
     if (STATE_ADMIN) {
-      const divisionBoundaryCodes = input?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
+      const blockBoundaryCodes = input?.Jurisdictions.flatMap((j) => j.blockBoundary.map((item) => item.code));
       let stateRoles = [
         {
           code: "EMPLOYEE",
@@ -248,9 +248,9 @@ const EditForm = ({ tenantId, data }) => {
           description: "Mdms admin",
         },
       ];
-      divisionBoundaryCodes &&
-        divisionBoundaryCodes.length > 0 &&
-        divisionBoundaryCodes.map((item) => {
+      blockBoundaryCodes &&
+        blockBoundaryCodes.length > 0 &&
+        blockBoundaryCodes.map((item) => {
           stateRoles?.map((role) => {
             roles.push({
               code: role.code,
@@ -261,7 +261,7 @@ const EditForm = ({ tenantId, data }) => {
           });
         });
       input?.Jurisdictions?.map((items) => {
-        items?.divisionBoundary.map((item) => {
+        items?.blockBoundary.map((item) => {
           let obj = {
             hierarchy: "REVENUE",
             boundaryType: "City",

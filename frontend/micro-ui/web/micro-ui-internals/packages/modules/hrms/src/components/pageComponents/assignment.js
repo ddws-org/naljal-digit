@@ -51,7 +51,7 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
 
   function getdesignationdata() {
     if (STATE_ADMIN) {
-      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin")?.map((ele) => {
+      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Block Admin")?.map((ele) => {
         ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
         return ele;
       });
@@ -216,7 +216,6 @@ function Assignment({
   const ValidateDatePickers = (value) => {
     assignments;
   };
-  console.log(assignment,"assignment");
   return (
     <div key={index + 1} style={{ marginBottom: "16px" }}>
       <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>

@@ -29,9 +29,9 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   let roles = STATE_ADMIN
     ? { roles: "DIV_ADMIN", isStateLevelSearch: true }
     : {
-      roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, CHAIRMAN, REVENUE_COLLECTOR, SECRETARY",
-      isStateLevelSearch: false,
-    };
+        roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, CHAIRMAN, REVENUE_COLLECTOR, SECRETARY",
+        isStateLevelSearch: false,
+      };
 
   let requestBody = {
     criteria: {
@@ -48,13 +48,14 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     };
   }
 
-
   const checkRoles = requestBody.criteria.roles[0] !== "DIV_ADMIN";
-  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
-    enabled: !STATE_ADMIN ? false : (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
+  const { data: blockData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
+    enabled: !STATE_ADMIN
+      ? false
+      : (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds")
+      ? true
+      : false,
   });
-
-
 
   if (searchParams?.hasOwnProperty("roles")) {
     roles.roles = searchParams?.roles;
@@ -75,7 +76,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     // setTotalReacords(res?.EmployeCount?.totalEmployee);
   }, [res]);
 
-  useEffect(() => { }, [hookLoading, rest]);
+  useEffect(() => {}, [hookLoading, rest]);
 
   useEffect(() => {
     setPageOffset(0);
@@ -151,7 +152,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
       return (
         <MobileInbox
           businessService={businessService}
-          data={divisionData ? divisionData : data}
+          data={blockData ? blockData : data}
           isLoading={hookLoading}
           defaultSearchParams={initialStates.searchParams}
           isSearch={!isInbox}
@@ -181,7 +182,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
           {isInbox && <Header>{t("HR_HOME_SEARCH_RESULTS_HEADING")}</Header>}
           <DesktopInbox
             businessService={businessService}
-            data={divisionData ? divisionData : data}
+            data={blockData ? blockData : data}
             isLoading={hookLoading}
             defaultSearchParams={initialStates.searchParams}
             isSearch={!isInbox}
