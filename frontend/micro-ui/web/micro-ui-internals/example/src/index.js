@@ -8,7 +8,7 @@ import { initEngagementComponents } from "@egovernments/digit-ui-module-engageme
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
 import { initPGRComponents, PGRReducers } from "@egovernments/digit-ui-module-pgr";
 import {initPaymentComponents} from "@egovernments/digit-ui-module-payment";
-import "@egovernments/digit-ui-css/example/index.css";
+// import "@egovernments/digit-ui-css/example/index.css";
 
 import { pgrCustomizations } from "./pgr";
 import { UICustomizations } from "./UICustomizations";
