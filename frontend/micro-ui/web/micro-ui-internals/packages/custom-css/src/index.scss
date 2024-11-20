@@ -98,7 +98,7 @@
 }
 
 .clear-search-label {
-  color: #1f4ac4;
+  color: #1f4ac4 !important;
   cursor: pointer;
 }
 
@@ -111,7 +111,7 @@
   @apply flex justify-between items-center;
 
   .download-button {
-    color: #1f4ac4;
+    color: #1f4ac4 !important;
     margin-left: 8px;
   }
 }
@@ -120,7 +120,7 @@
   @apply flex mb-sm;
 
   .download-button {
-    color: #1f4ac4;
+    color: #1f4ac4 !important;
     margin-left: 8px;
   }
 }
@@ -149,10 +149,10 @@
   gap: 10px;
 
   svg {
-    fill: #1f4ac4;
+    fill: #1f4ac4 !important;
   }
 
-  color: #1f4ac4;
+  color: #1f4ac4 !important;
 
   cursor: pointer;
   font-weight: 500;
@@ -447,7 +447,7 @@ input[type="number"] {
       padding: 8px 24px;
       color: white;
       cursor: pointer;
-      background-color: #1f4ac4;
+      background-color: #1f4ac4 !important;
     }
   }
 }

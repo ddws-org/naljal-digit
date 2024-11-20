@@ -52,7 +52,7 @@
       margin-top: 12px;
 
       .user-img-txt {
-        background: #1f4ac4;
+        background: #1f4ac4 !important;
         padding: 10px 15px;
         border-radius: 50%;
         color: white;
@@ -147,7 +147,7 @@
       &.active {
         color: #1f4ac4 !important;
 
-        border-right: 4px solid #1f4ac4;
+        border-right: 4px solid #1f4ac4 !important;
         svg {
           fill: #1f4ac4 !important;
         }
@@ -224,7 +224,7 @@
       &.active {
         color: #1f4ac4 !important;
 
-        border-right: 4px solid #1f4ac4;
+        border-right: 4px solid #1f4ac4 !important;
         svg {
           fill: #1f4ac4 !important;
         }
