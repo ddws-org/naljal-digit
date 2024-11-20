@@ -54,7 +54,7 @@ const ChangeCity = (prop) => {
 
     const filteredArray = mdmsData.MdmsRes["tenant"]["tenants"]
       .filter((item) => {
-        if (item.code !== "pb") {
+        if (item.code !== "as") {
           // Exclude "pb" tenants
           return tenantIds?.includes(item.code);
         } else {
@@ -63,7 +63,7 @@ const ChangeCity = (prop) => {
       })
       .map((item) => ({
         label:
-          item.code !== "pb"
+          item.code !== "as"
             ? `${prop?.t(Digit.Utils.locale.convertToLocale(item?.blockcode, "EGOV_LOCATION_BLOCK"))} - ${prop?.t(
                 `TENANT_TENANTS_${stringReplaceAll(item.code, ".", "_")?.toUpperCase()}`
               )}`
