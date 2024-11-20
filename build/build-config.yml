@@ -504,6 +504,7 @@ config:
     build:
       - work-dir: "utilities/naljal-custom-service"
         image-name: "naljal-custom-service"
+        dockerfile: "build/maven/Dockerfile"
 
 
 # Frontend
