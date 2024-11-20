@@ -256,5 +256,7 @@ public class WSCalculationConfiguration {
 
 	@Value("${bill.expriy.time}")
 	private Long expiriyTime;
-	
+
+	@Value("${kafka.topic.roll.out.dashboard}")
+	private String rollOutDashBoardTopic;
 }
