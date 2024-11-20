@@ -160,11 +160,11 @@
 				<configuration>
 					<jsonLibrary>jackson2</jsonLibrary>
 					<classes>
-						<class>org.egov.echallan.model.Action</class>
-						<class>org.egov.echallan.model.ActionItem</class>
-						<class>org.egov.echallan.model.AuditDetails</class>
-						<class>org.egov.echallan.model.Document</class>
-						<class>org.egov.echallan.model.Event</class>
+						<class>org.egov.naljalcustomisation.web.model.Action</class>
+						<class>org.egov.naljalcustomisation.web.model.ActionItem</class>
+						<class>org.egov.naljalcustomisation.web.model.AuditDetails</class>
+						<class>org.egov.naljalcustomisation.web.model.Document</class>
+						<class>org.egov.naljalcustomisation.web.model.Event</class>
 						<class>org.egov.naljalcustomisation.web.model.EventDetails</class>
 						<class>org.egov.naljalcustomisation.web.model.EventRequest</class>
 						<class>org.egov.naljalcustomisation.web.model.OwnerInfo</class>
