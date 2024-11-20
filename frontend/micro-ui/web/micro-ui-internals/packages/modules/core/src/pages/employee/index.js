@@ -63,7 +63,12 @@ const EmployeeApp = ({
             style={
               isUserProfile
                 ? { padding: 0, paddingTop: "80px", marginLeft: mobileView ? "" : "64px" }
-                : { "--banner-url": `url(${stateInfo?.bannerUrl})`, padding: "0px" }
+                : {
+                    ...(stateInfo?.bannerUrl
+                      ? { "--banner-url": `url(${stateInfo.bannerUrl})` }
+                      : { background: "linear-gradient(rgb(166, 212, 238), rgb(233 244 251), rgb(254, 235, 164))" }),
+                    padding: "0px",
+                  }
             }
           >
             <Switch>
