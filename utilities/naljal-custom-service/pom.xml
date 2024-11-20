@@ -5,7 +5,7 @@
 
 	<groupId>org.egov</groupId>
 	<artifactId>naljal-custom-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>naljal-custom-service</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -157,6 +157,32 @@
 						<phase>process-classes</phase>
 					</execution>
 				</executions>
+				<configuration>
+					<jsonLibrary>jackson2</jsonLibrary>
+					<classes>
+						<class>org.egov.echallan.model.Action</class>
+						<class>org.egov.echallan.model.ActionItem</class>
+						<class>org.egov.echallan.model.AuditDetails</class>
+						<class>org.egov.echallan.model.Document</class>
+						<class>org.egov.echallan.model.Event</class>
+						<class>org.egov.naljalcustomisation.web.model.EventDetails</class>
+						<class>org.egov.naljalcustomisation.web.model.EventRequest</class>
+						<class>org.egov.naljalcustomisation.web.model.OwnerInfo</class>
+						<class>org.egov.naljalcustomisation.web.model.Recepient</class>
+						<class>org.egov.naljalcustomisation.web.model.RequestInfoWrapper</class>
+						<class>org.egov.naljalcustomisation.web.model.SMSRequest</class>
+						<class>org.egov.naljalcustomisation.web.model.TenantRole</class>
+						<class>org.egov.naljalcustomisation.web.model.UserInfo</class>
+						<class>org.egov.naljalcustomisation.web.model.users.User</class>
+						<class>org.egov.naljalcustomisation.web.model.users.UserDetailResponse</class>
+					</classes>
+					<excludeClasses>
+						<class>org.egov.common.contract.request.User</class>
+					</excludeClasses>
+					<namespace>Digit</namespace>
+					<debug>true</debug>
+					<outputKind>module</outputKind>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
