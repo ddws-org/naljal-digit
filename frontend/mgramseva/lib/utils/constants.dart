@@ -147,10 +147,12 @@ class Constants {
   ];
 
   static List<KeyValue> EMPLOYEE_PAYMENT_METHOD = [
-    KeyValue(i18.common.CASH, 'CASH'),
+    // KeyValue(i18.common.CASH, 'CASH'),
     KeyValue(i18.common.OFFLINE_NEFT, 'OFFLINE_NEFT'),
     KeyValue(i18.common.OFFLINE_RTGS, 'OFFLINE_RTGS'),
     KeyValue(i18.common.POSTAL_ORDER, 'POSTAL_ORDER'),
+    KeyValue(i18.common.SBI_E_PAY, 'SBIePay'),
+
   ];
 
   static List<String> MONTHS = [

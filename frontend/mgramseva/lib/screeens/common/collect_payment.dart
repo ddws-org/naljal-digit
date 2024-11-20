@@ -54,6 +54,7 @@ class ConnectionPaymentView extends StatefulWidget {
 class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
   final formKey = GlobalKey<FormState>();
   var autoValidation = false;
+  var checkValue = false;
 
   @override
   void initState() {
@@ -609,10 +610,21 @@ class _ConnectionPaymentViewState extends State<ConnectionPaymentView> {
         Provider.of<CollectPaymentProvider>(context, listen: false);
     if (formKey.currentState!.validate()) {
       autoValidation = false;
-      consumerPaymentProvider.updatePaymentInformation(fetchBill, widget.query,context);
+      if (fetchBill.paymentMethod == 'SBIEPAY') {
+        consumerPaymentProvider.createTransaction(
+            fetchBill, widget.query['tenantId'], context, widget.query);
+        setState(() {
+          checkValue = false;
+        });
+      }
+      // consumerPaymentProvider.updatePaymentInformation(
+      //     fetchBill, widget.query, context);
     } else {
       setState(() {
+                checkValue = false;
+
         autoValidation = true;
+        
       });
     }
   }

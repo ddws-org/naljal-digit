@@ -1,5 +1,8 @@
 import 'package:mgramseva/model/transaction/update_transaction.dart';
 import 'package:mgramseva/services/urls.dart';
+import 'package:mgramseva/providers/common_provider.dart';
+import 'package:provider/provider.dart';
+
 
 import '../model/bill/bill_payments.dart';
 import '../services/base_service.dart';
@@ -10,11 +13,15 @@ import '../utils/models.dart';
 class TransactionRepository extends BaseService {
   Future<UpdateTransactionDetails?> updateTransaction(
       Map<String, dynamic> queryparams) async {
+
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
     UpdateTransactionDetails? response;
     var res = await makeRequest(
         url: Url.UPDATE_TRANSACTION,
         method: RequestType.POST,
-        body: {"RequestInfo": {}},
+        body: {"RequestInfo": {"authToken":commonProvider.userDetails?.accessToken,}},
         queryParameters: queryparams);
 
     if (res != null) {
@@ -25,6 +32,7 @@ class TransactionRepository extends BaseService {
 
   Future<BillPayments?> createPayment(Map body) async {
     BillPayments? response;
+ 
 
     var res = await makeRequest(
         url: Url.COLLECT_PAYMENT,
@@ -38,7 +46,8 @@ class TransactionRepository extends BaseService {
             APIConstants.API_DID,
             APIConstants.API_KEY,
             APIConstants.API_MESSAGE_ID,
-            null));
+            null
+            ));
 
     if (res != null) {
       response = BillPayments.fromJson(res);
