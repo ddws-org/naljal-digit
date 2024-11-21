@@ -394,7 +394,7 @@ class ReportsProvider with ChangeNotifier {
       TableData('${data.connectionNo}'),
       if(!hideSerialNo)
       TableData('${index + 1}'),
-      TableData('${data.oldConnectionNo}'),
+      TableData('${data.oldConnectionNo ?? "-" }'),
       TableData('${data.consumerName ?? "NA"}'),
       TableData(
           '${DateFormats.leadgerTimeStampToDate(data.consumerCreatedOnDate)}'),
