@@ -51,7 +51,7 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
 
   function getdesignationdata() {
     if (STATE_ADMIN) {
-      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Division Admin")?.map((ele) => {
+      return data?.MdmsRes?.["common-masters"]?.Designation?.filter((obj) => obj.name === "Block Admin")?.map((ele) => {
         ele["i18key"] = t("COMMON_MASTERS_DESIGNATION_" + ele.code);
         return ele;
       });

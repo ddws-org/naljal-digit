@@ -42,14 +42,8 @@ package org.egov.demand.service;
 import static org.egov.demand.util.Constants.ADVANCE_TAXHEAD_JSONPATH_CODE;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -60,16 +54,9 @@ import org.egov.demand.amendment.model.AmendmentCriteria;
 import org.egov.demand.amendment.model.AmendmentUpdate;
 import org.egov.demand.amendment.model.enums.AmendmentStatus;
 import org.egov.demand.config.ApplicationProperties;
-import org.egov.demand.model.ApportionDemandResponse;
-import org.egov.demand.model.AuditDetails;
+import org.egov.demand.model.*;
 import org.egov.demand.model.BillV2.BillStatus;
-import org.egov.demand.model.Demand;
-import org.egov.demand.model.DemandApportionRequest;
-import org.egov.demand.model.DemandCriteria;
-import org.egov.demand.model.DemandDetail;
-import org.egov.demand.model.DemandHistory;
-import org.egov.demand.model.PaymentBackUpdateAudit;
-import org.egov.demand.model.UpdateBillCriteria;
+import org.egov.demand.producer.Producer;
 import org.egov.demand.repository.AmendmentRepository;
 import org.egov.demand.repository.BillRepositoryV2;
 import org.egov.demand.repository.DemandRepository;
@@ -95,6 +82,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 
 import lombok.extern.slf4j.Slf4j;
+import org.egov.mdms.model.MasterDetail;
+import org.egov.mdms.model.MdmsCriteria;
+import org.egov.mdms.model.MdmsCriteriaReq;
+import org.egov.mdms.model.ModuleDetail;
+import static org.egov.demand.util.Constants.*;
 
 @Service
 @Slf4j
@@ -129,6 +121,9 @@ public class DemandService {
 
 	@Autowired
 	private DemandValidatorV1 demandValidatorV1;
+
+	@Autowired
+	private Producer producer;
 	
 	/**
 	 * Method to create new demand 
@@ -296,6 +291,24 @@ public class DemandService {
 		return new DemandResponse(responseInfoFactory.getResponseInfo(requestInfo, HttpStatus.CREATED), demands);
 	}
 
+	public List<Demand> demandPlainSearch(DemandCriteria demandCriteria, RequestInfo requestInfo)
+	{
+		if (demandCriteria.getLimit() != null && demandCriteria.getLimit() > applicationProperties.getDemandMaxLimit())
+			demandCriteria.setLimit(applicationProperties.getDemandMaxLimit());
+
+		Set<String> demandIds = null;
+
+		if(demandCriteria.getDemandId() != null && !CollectionUtils.isEmpty(demandCriteria.getDemandId()))
+			demandIds = demandCriteria.getDemandId();
+		else
+			demandIds = new HashSet<>(demandRepository.getDemandIds(demandCriteria));
+
+		if(demandIds.isEmpty())
+			return Collections.emptyList();
+
+		DemandCriteria demandSearchCriteria = DemandCriteria.builder().demandId(demandIds).build();
+        return demandRepository.getDemandsPlainSearch(demandSearchCriteria);
+	}
 
 	/**
 	 * Search method to fetch demands from DB
@@ -367,10 +380,12 @@ public class DemandService {
 
 	public void save(DemandRequest demandRequest) {
 		demandRepository.save(demandRequest);
+		producer.push(applicationProperties.getCreateDemandIndexTopic(), demandRequest);
 	}
 
 	public void update(DemandRequest demandRequest, PaymentBackUpdateAudit paymentBackUpdateAudit) {
 		demandRepository.update(demandRequest, paymentBackUpdateAudit);
+		producer.push(applicationProperties.getUpdateDemandIndexTopic(), demandRequest);
 	}
 
 
@@ -552,6 +567,278 @@ public class DemandService {
 		demandHistory.setAdvanceAdjustedAmount(advanceAdjustedAmount);
 		return demandHistory;
 	
+	}
+	public AggregatedDemandDetailResponse getAllDemands(DemandCriteria demandCriteria, RequestInfo requestInfo) {
+
+		//demandValidatorV1.validateDemandCriteria(demandCriteria, requestInfo);
+		long latestDemandCreatedTime = 0l;
+
+		long latestDemandPenaltyCreatedtime=0l;
+
+		UserSearchRequest userSearchRequest = null;
+		List<User> payers = null;
+		List<Demand> demands = null;
+
+		String userUri = applicationProperties.getUserServiceHostName()
+				.concat(applicationProperties.getUserServiceSearchPath());
+
+		/*
+		 * user type is CITIZEN by default because only citizen can have demand or payer can be null
+		 */
+		String citizenTenantId = demandCriteria.getTenantId().split("\\.")[0];
+
+		/*
+		 * If payer related data is provided first then user search has to be made first followed by demand search
+		 */
+
+		/*
+		 * If no payer related data given then search demand first then enrich payer(user) data
+		 */
+		log.info("demandCriteria::"+demandCriteria);
+		demands = demandRepository.getDemands(demandCriteria);
+		log.info("demands:"+demands);
+		if (!demands.isEmpty()) {
+
+			Set<String> payerUuids = demands.stream().filter(demand -> null != demand.getPayer())
+					.map(demand -> demand.getPayer().getUuid()).collect(Collectors.toSet());
+
+			if (!CollectionUtils.isEmpty(payerUuids)) {
+
+				userSearchRequest = UserSearchRequest.builder().requestInfo(requestInfo).uuid(payerUuids).build();
+
+				payers = mapper.convertValue(serviceRequestRepository.fetchResult(userUri, userSearchRequest),
+						UserResponse.class).getUser();
+			}
+		}
+		log.info("demannds::"+demands);
+
+		if (!CollectionUtils.isEmpty(demands) && !CollectionUtils.isEmpty(payers))
+			demands = demandEnrichmentUtil.enrichPayer(demands, payers);
+
+		log.info("demannddddds::"+demands);
+		demands = demands.stream().filter(demand -> {
+			return demand.getStatus().equals(Demand.StatusEnum.ACTIVE);
+		}).collect(Collectors.toList());
+		List<Map<Long, List<DemandDetail>>> demandDetailsList = new ArrayList<>();
+
+		List<Demand> demandsTogetDemandGeneratedDate= demands;
+
+		// Filter demands where demandDetails have taxHeadMasterCode as 10101
+		List<Demand> filteredDemands = demandsTogetDemandGeneratedDate.stream()
+				.filter(demand -> demand.getDemandDetails().stream()
+						.anyMatch(detail -> "10101".equals(detail.getTaxHeadMasterCode())))
+				.collect(Collectors.toList());
+
+		Collections.sort(filteredDemands, new Comparator<Demand>() {
+			@Override
+			public int compare(Demand d1, Demand d2) {
+				return Long.compare(d2.getTaxPeriodFrom(), d1.getTaxPeriodFrom());
+			}
+		});
+
+
+
+		if (!filteredDemands.isEmpty()) {
+			Demand latestDemand = filteredDemands.get(0);
+
+			Optional<DemandDetail> detail10101 = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "10101".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			Optional<DemandDetail> detailWSTimePenalty = latestDemand.getDemandDetails().stream()
+					.filter(detail -> "WS_TIME_PENALTY".equals(detail.getTaxHeadMasterCode()))
+					.findFirst();
+
+			if (detail10101.isPresent()) {
+				latestDemandCreatedTime = detail10101.get().getAuditDetails().getCreatedTime();
+			}
+
+			if (detailWSTimePenalty.isPresent()) {
+				latestDemandPenaltyCreatedtime = detailWSTimePenalty.get().getAuditDetails().getCreatedTime();
+			}
+		} else {
+			log.info("No demands found with taxHeadMasterCode 10101 or WS_TIME_PENALTY.");
+		}
+
+
+		for (Demand demand : demands) {
+			log.info("Inside demand");
+			Map<Long, List<DemandDetail>> demandMap = new HashMap<>();
+			Long taxPeriodFrom = (Long) demand.getTaxPeriodFrom();
+			List<DemandDetail> demandDetails =  demand.getDemandDetails();
+			List<DemandDetail> filteredDemandDetaillist = demandDetails.stream()
+					.filter(detail -> {
+						BigDecimal difference = detail.getTaxAmount().subtract(detail.getCollectionAmount());
+						return (difference.compareTo(BigDecimal.ZERO)) != 0;
+					})  // Filter condition
+					.collect(Collectors.toList());
+			log.info("Filtered List:"+filteredDemandDetaillist);
+			if(!filteredDemandDetaillist.isEmpty()) {
+				demandMap.put(taxPeriodFrom, filteredDemandDetaillist);
+				demandDetailsList.add(demandMap);
+			}
+		}
+		log.info("demandDetailsList:"+demandDetailsList);
+		// Sorting the list of maps based on the key in descending order
+		List<Map<Long, List<DemandDetail>>> sortedDemandDetailsList = demandDetailsList.stream()
+				.sorted((mapA, mapB) -> {
+					Long keyA = mapA.keySet().stream().findFirst().orElse(0L);
+					Long keyB = mapB.keySet().stream().findFirst().orElse(0L);
+					return keyB.compareTo(keyA); // Descending order
+				})
+				.collect(Collectors.toList());
+
+		log.info("Sorted map:"+sortedDemandDetailsList);
+
+		List<DemandDetail> currentMonthDemandDetailList = new ArrayList<>();
+		if (!sortedDemandDetailsList.isEmpty()) {
+			Map<Long, List<DemandDetail>> firstMap = sortedDemandDetailsList.get(0);
+			firstMap.forEach((key, value) -> {
+				currentMonthDemandDetailList.addAll(value); // Get all details from the first map
+			});
+		}
+		// Extract RemainingMonthDemandDetailList
+		List<DemandDetail> remainingMonthDemandDetailList = new ArrayList<>();
+		if (sortedDemandDetailsList.size() > 1) {
+			for (int i = 1; i < sortedDemandDetailsList.size(); i++) {
+				Map<Long, List<DemandDetail>> map = sortedDemandDetailsList.get(i);
+				map.forEach((key, value) -> {
+					remainingMonthDemandDetailList.addAll(value); // Collect all details from the other maps
+				});
+			}
+		}
+		log.info("currentMonthDemandDetailList"+currentMonthDemandDetailList);
+		log.info("remainingMonthDemandDetailList"+remainingMonthDemandDetailList);
+		BigDecimal currentmonthBill = BigDecimal.ZERO;
+		BigDecimal currentMonthPenalty = BigDecimal.ZERO;
+		BigDecimal currentmonthTotalDue = BigDecimal.ZERO;
+		BigDecimal advanceAvailable = BigDecimal.ZERO;
+		BigDecimal advanceAdjusted = BigDecimal.ZERO;
+		BigDecimal remainingAdvance = BigDecimal.ZERO;
+		BigDecimal totalAreas = BigDecimal.ZERO;
+		BigDecimal totalAreasWithPenalty = BigDecimal.ZERO;
+		BigDecimal netdue = BigDecimal.ZERO;
+		BigDecimal netDueWithPenalty = BigDecimal.ZERO;
+		BigDecimal totalApplicablePenalty =BigDecimal.ZERO;
+		BigDecimal currentmonthRoundOff=BigDecimal.ZERO;
+		BigDecimal totalAreasRoundOff=BigDecimal.ZERO;
+
+		currentmonthBill = currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("10101")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		currentmonthRoundOff = currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_Round_Off")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentmonthRoundOff::::"+currentmonthRoundOff);
+
+		log.info("currentMonthDemandDetailList::::"+currentMonthDemandDetailList);
+		currentMonthPenalty = currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_TIME_PENALTY")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		log.info("currentMonthDemandDetailListafter::::"+currentMonthDemandDetailList);
+		log.info("currentMonthPenalty" + currentMonthPenalty);
+		currentmonthTotalDue = currentmonthBill.add(currentMonthPenalty).add(currentmonthRoundOff);
+		log.info("currentmonthTotalDue" + currentmonthTotalDue);
+		if(currentMonthPenalty.equals(BigDecimal.ZERO)) {
+			List<MasterDetail> masterDetails = new ArrayList<>();
+			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
+			masterDetails.add(masterDetail);
+			ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
+			List<ModuleDetail> moduleDetails = new ArrayList<>();
+			moduleDetails.add(moduleDetail);
+			MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(demandCriteria.getTenantId())
+					.moduleDetails(moduleDetails)
+					.build();
+			MdmsCriteriaReq mdmsreq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
+			DocumentContext mdmsData = util.getAttributeValues(mdmsreq);
+			if (!mdmsData.equals(null)) {
+				List<Map<String, Object>> paymentMasterDataList = mdmsData.read(PENALTY_PATH_CODE);
+				Map<String, Object> paymentMasterData = paymentMasterDataList.get(0);
+				Integer rate = (Integer) paymentMasterData.get("rate");
+				String penaltyType = String.valueOf(paymentMasterData.get("type"));
+				totalApplicablePenalty = currentmonthBill.multiply(new BigDecimal(rate).divide(new BigDecimal(100)));
+				totalApplicablePenalty = totalApplicablePenalty.setScale(0, RoundingMode.HALF_UP);
+			} else {
+				log.info("MDMS data is Null Penalty not connfigured");
+			}
+		}
+
+
+		//Tax headcode for WScharges,legacypenalty,legacyarea
+		List<String> taxHeadCodesToFilterWithoutPenalty = Arrays.asList("10102", "10201", "10101","WS_Round_Off");
+
+		// Initialize the variable for the sum of taxAmount - collectedAmount specifically for WS_Round_Off
+		totalAreasRoundOff = remainingMonthDemandDetailList.stream()
+				.filter(dd -> "WS_Round_Off".equals(dd.getTaxHeadMasterCode())) // Filter specifically for WS_Round_Off
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // Calculate taxAmount - collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add); // Sum all results
+
+		// Initialize the variable for the sum of taxAmount - collectedAmount for the filtered tax head codes
+		totalAreas = remainingMonthDemandDetailList.stream()
+				.filter(dd -> taxHeadCodesToFilterWithoutPenalty.contains(dd.getTaxHeadMasterCode())) // Filter by tax head codes
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // Calculate taxAmount - collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add); // Sum all results
+
+		BigDecimal penaltyInRemainingMonth= remainingMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_TIME_PENALTY")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount().subtract(dd.getCollectionAmount())) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		totalAreasWithPenalty = totalAreas.add(penaltyInRemainingMonth);
+
+
+
+		BigDecimal currentMonthAdvanceAvailable=currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount()) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal currentMonthAdvanceCollected= currentMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
+				.map(dd -> dd.getCollectionAmount()) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal remainingMonthAdvanceAvailable = remainingMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
+				.map(dd -> dd.getTaxAmount()) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal remainingMonthAdvanceCollected= remainingMonthDemandDetailList.stream()
+				.filter(dd -> dd.getTaxHeadMasterCode().equals("WS_ADVANCE_CARRYFORWARD")) // filter by taxHeadCode
+				.map(dd -> dd.getCollectionAmount()) // map to the balance between taxAmount and collectedAmount
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		advanceAvailable = currentMonthAdvanceAvailable.add(remainingMonthAdvanceAvailable);
+		advanceAdjusted = currentMonthAdvanceCollected.add(remainingMonthAdvanceCollected);
+		remainingAdvance = advanceAvailable.subtract(advanceAdjusted);
+		//TODO:
+		if(remainingAdvance !=BigDecimal.ZERO && currentmonthBill !=BigDecimal.ZERO && advanceAdjusted.equals(BigDecimal.ZERO)) {
+		}
+
+		netdue = currentmonthBill.add(totalAreas).add(remainingAdvance).add(currentmonthRoundOff);
+		netDueWithPenalty = currentmonthTotalDue.add(totalAreasWithPenalty).add(remainingAdvance);
+
+		//BigDecimal currentMonthBill
+		AggregatedDemandDetailResponse aggregatedDemandDetailResponse = AggregatedDemandDetailResponse.builder()
+				.mapOfDemandDetailList(sortedDemandDetailsList)
+				.currentmonthBill(currentmonthBill)
+				.currentMonthPenalty(currentMonthPenalty)
+				.currentmonthTotalDue(currentmonthTotalDue)
+				.currentmonthRoundOff(currentmonthRoundOff)
+				.totalAreas(totalAreas)
+				.totalAreasWithPenalty(totalAreasWithPenalty)
+				.totalAreasRoundOff(totalAreasRoundOff)
+				.netdue(netdue)
+				.netDueWithPenalty(netDueWithPenalty)
+				.advanceAdjusted(advanceAdjusted)
+				.advanceAvailable(advanceAvailable)
+				.remainingAdvance(remainingAdvance)
+				.totalApplicablePenalty(totalApplicablePenalty)
+				.latestDemandCreatedTime(latestDemandCreatedTime)
+				.latestDemandPenaltyCreatedtime(latestDemandPenaltyCreatedtime).build();
+
+
+		return aggregatedDemandDetailResponse;
 	}
 	
 }

@@ -30,12 +30,12 @@ import { CustomService } from "../services/elements/CustomService";
  */
 
 
-const useCustomAPIHook = ({ url, params, body, config = {}, plainAccessRequest,changeQueryName="Random" }) => {
+const useCustomAPIHook = ({ url, params, body, config = {}, plainAccessRequest,changeQueryName="Random",options={} }) => {
   const client = useQueryClient();
 
   const { isLoading, data, isFetching } = useQuery(
     [url,changeQueryName].filter((e) => e),
-    () => CustomService.getResponse({ url, params, body, plainAccessRequest }),
+    () => CustomService.getResponse({ url, params, body, plainAccessRequest,...options }),
     {
       cacheTime:0,
       ...config,

@@ -253,5 +253,11 @@ public class UserService {
 		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
 		return userCall(userSearchRequest, uri);
 	}
-	   
+
+	public UserDetailResponse getUsers(UserSearchRequest userSearchRequest)
+	{
+		StringBuilder uri = new StringBuilder(userHost).append(userSearchEndpoint);
+		UserDetailResponse userDetailResponse = userCall(userSearchRequest, uri);
+		return userDetailResponse;
+	}
 }

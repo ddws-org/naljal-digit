@@ -4,8 +4,8 @@ package org.egov.wscalculation.web.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.service.DemandService;
 import org.egov.wscalculation.service.WSCalculationService;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Slf4j
 @Getter
@@ -107,6 +106,12 @@ public class CalculatorController {
 		demandPenaltyResponse = DemandPenaltyResponse.builder().demands(demandPenaltyResponse.getDemands()).
 				totalApplicablePenalty(demandPenaltyResponse.getTotalApplicablePenalty()).responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).build();
 		return new ResponseEntity<>(demandPenaltyResponse, HttpStatus.OK);
+	}
+
+	@PostMapping("/_addPenalty")
+	public ResponseEntity<org.apache.http.HttpStatus> addPenalty(@RequestBody PenaltyRequest penaltyRequest) {
+		return demandService.addPenalty(penaltyRequest.getRequestInfo(),penaltyRequest.getAddPenaltyCriteria());
+
 	}
 
 	@PostMapping("/_rollOutDashboardSearch")

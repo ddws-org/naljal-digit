@@ -13,6 +13,11 @@
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
   <base href="/mgramseva/">
+  <script type="text/javascript">
+    if (window.top !== window.self) {
+      window.top.location = window.self.location;
+    }
+  </script>
   <script>
     // Get the current URL
     var currentUrl = window.location.href;
@@ -26,7 +31,6 @@
     if (stateName) {
         document.querySelector('base').href = '/' + stateName + '/mgramseva/';
     }
-    console.log(document.querySelector('base').href);
 </script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -41,6 +45,8 @@
   <title>mGramSeva</title>
   <script src="webcomponents-lite.min.js"></script>
   <link rel="manifest" href="manifest.json">
+  <meta http-equiv="X-Frame-Option" content="DENY">
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self'">
   <script>
     // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;
@@ -388,22 +394,6 @@
 <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
-<script>
-     // Your web app's Firebase configuration
-<!--    var firebaseConfig = {-->
-<!--      apiKey: "AIzaSyA9ZfXItmFcJU_lbGHGBp1DJv8kmRoPwWA",-->
-<!--      authDomain: "sample-mgramseva.firebaseapp.com",-->
-<!--      projectId: "sample-mgramseva",-->
-<!--      storageBucket: "sample-mgramseva.appspot.com",-->
-<!--      messagingSenderId: "1026518772539",-->
-<!--      appId: "1:1026518772539:web:fa821c49b5c270b089251e",-->
-<!--       measurementId: "G-H2F8HT25X1"-->
-<!--    };-->
-
-     // Initialize Firebase
-<!--    firebase.initializeApp(firebaseConfig);-->
-<!--    firebase.analytics();-->
-     </script>
 <div class="loading">
   <div class="loader"></div>
 </div>

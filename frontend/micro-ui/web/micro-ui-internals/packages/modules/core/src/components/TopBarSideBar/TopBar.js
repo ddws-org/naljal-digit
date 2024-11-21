@@ -25,7 +25,6 @@ const TopBar = ({
   showLanguageChange = true,
 }) => {
   const [profilePic, setProfilePic] = React.useState(null);
-
   React.useEffect(async () => {
     const tenant = Digit.ULBService.getCurrentTenantId();
     const uuid = userDetails?.info?.uuid;
@@ -75,8 +74,8 @@ const TopBar = ({
   const urlsToDisableNotificationIcon = (pathname) =>
     !!Digit.UserService?.getUser()?.access_token
       ? false
-      : [`/${window?.contextPath}/citizen/select-language`, `/${window?.contextPath}/citizen/select-location`].includes(pathname);
-
+      : [`/${window?.contextPath}/citizen/select-language`, `/${window?.contextPath}/citizen/select-location`,`/mgramseva-web/citizen/payment`].includes(pathname);
+  
   if (CITIZEN) {
     return (
       <div>
@@ -101,16 +100,20 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <img className="city" src={"https://naljalseva.jjm.gov.in/favicon.ico"} />
+      <img className="city" src={window?.globalConfigs?.getConfig?.("LOGO_URL")} />
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
             <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
               {t(cityDetails?.i18nKey).toUpperCase()}{" "}
               {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()}
+              {` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?` (${userDetails?.info?.name} | State User)`:` (${userDetails?.info?.name} | Division User)`}`}  
             </p>
           ) : (
-            <img className="state" style={{maxHeight:"44px", height:"44px"}} src={"https://naljal-uat.digit.org/mgramseva/assets/assets/png/jal_jeevan.png"} />
+            <div style={{display:"flex"}}>
+              <img className="state" src={logoUrl} />
+              <p style={{margin:"0px 5px", fontWeight: "bold"}}>{` ${userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")?`(${userDetails?.info?.name} | State User)`:`(${userDetails?.info?.name} | Division User)`}`}  </p>
+            </div>
           ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
@@ -121,7 +124,7 @@ const TopBar = ({
           <div className={mobileView ? "right" : "flex-right right w-80 column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
             <div className="left">
               {!window.location.href.includes("employee/user/login") && !window.location.href.includes("employee/user/language-selection") && (
-                <ChangeCity dropdown={true} t={t} />
+                <ChangeCity dropdown={true} t={t} userDetails={userDetails}/>
               )}
             </div>
             <div className="left">{showLanguageChange && <ChangeLanguage dropdown={true} />}</div>
@@ -146,7 +149,7 @@ const TopBar = ({
                 />
               </div>
             )}
-            <img className="state"  style={{maxHeight:"44px", height:"44px"}} src={"https://naljal-uat.digit.org/mgramseva/assets/assets/png/national-emblem-india.png"} />
+            <img className="state" src={logoUrl} />
           </div>
         )}
       </span>
