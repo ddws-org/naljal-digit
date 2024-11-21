@@ -211,7 +211,7 @@ public class WsQueryBuilder {
 			"ORDER BY startdate";
 
 	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
-			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodto < ? AND status='ACTIVE') and taxheadcode!= 'WS_ADVANCE_CARRYFORWARD';";
+			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodto < ? AND status='ACTIVE') ";
 
 	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
 			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
@@ -363,11 +363,30 @@ public class WsQueryBuilder {
 			preparedStatement.add(criteria.getImisNumber());
 		}
 
-		if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
-			addClauseIfRequired(preparedStatement, query);
-			
-			if(!StringUtils.isEmpty(criteria.getConnectionNumber())) {
-				query.append(" conn.connectionno ~*  ? ");
+		if(ObjectUtils.isEmpty(criteria.getIsOpenPaymentSearch()) || !criteria.getIsOpenPaymentSearch()) {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber()) || !StringUtils.isEmpty(criteria.getTextSearch())) {
+				addClauseIfRequired(preparedStatement, query);
+
+				if (!StringUtils.isEmpty(criteria.getConnectionNumber())) {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getConnectionNumber());
+				} else {
+					query.append(" conn.connectionno ~*  ? ");
+					preparedStatement.add(criteria.getTextSearch());
+				}
+
+
+				if (!CollectionUtils.isEmpty(criteria.getConnectionNoSet())) {
+					query.append(" or conn.connectionno in (").append(createQuery(criteria.getConnectionNoSet())).append(" )");
+					addToPreparedStatement(preparedStatement, criteria.getConnectionNoSet());
+				}
+			}
+		} else {
+
+			if (!StringUtils.isEmpty(criteria.getConnectionNumber())){
+				addClauseIfRequired(preparedStatement, query);
+				query.append(" conn.connectionno =  ? ");
 				preparedStatement.add(criteria.getConnectionNumber());
 			}
 		}
