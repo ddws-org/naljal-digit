@@ -68,7 +68,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                       {input.type !== "date" ? (
                         <div className="field-container">
                           {input?.componentInFront ? (
-                            <span className="citizen-card-input  citizen-card-input--front" style={{ flex: "none" }}>
+                            <span className="citizen-card-input-only  citizen-card-input--front" style={{ flex: "none" }}>
                               {input?.componentInFront}
                             </span>
                           ) : null}
