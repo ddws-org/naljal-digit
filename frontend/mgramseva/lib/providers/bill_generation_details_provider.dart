@@ -414,12 +414,9 @@ class BillGenerationProvider with ChangeNotifier {
                   title: Text(
                       '${ApplicationLocalizations.of(context).translate(i18.common.CORE_CONFIRM)}'),
                   content: Container(
-                     height: 
-          MediaQuery.of(context).size.height > 760 ?
-
-          MediaQuery.of(context).size.height / 2.5 :
-          MediaQuery.of(context).size.height / 2,
-          
+                    height: MediaQuery.of(context).size.height > 760
+                        ? MediaQuery.of(context).size.height / 2.5
+                        : MediaQuery.of(context).size.height / 2,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -430,13 +427,11 @@ class BillGenerationProvider with ChangeNotifier {
                           height: 10,
                         ),
                         Container(
-                           height: MediaQuery.of(context).size.height / 3,
+                          height: MediaQuery.of(context).size.height / 3,
                           child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,                
-
+                            scrollDirection: Axis.vertical,
                             child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,                
-
+                              scrollDirection: Axis.horizontal,
                               child: DataTable(
                                 border: TableBorder.all(
                                   width: 0.5,
@@ -565,13 +560,15 @@ class BillGenerationProvider with ChangeNotifier {
                                 }
                               },
                               child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.YES)}')),
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.YES)}',
+                                  style: TextStyle(color: Color(0xff033ccf)))),
                           TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               child: Text(
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.NO)}')),
+                                  '${ApplicationLocalizations.of(context).translate(i18.common.NO)}',
+                                  style: TextStyle(color: Color(0xff033ccf)))),
                         ],
                 ));
       } else {

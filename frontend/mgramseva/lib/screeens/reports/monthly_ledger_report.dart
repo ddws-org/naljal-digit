@@ -89,25 +89,29 @@ class _MonthlyLedgerReportState extends State<MonthlyLedgerReport>
                       SizedBox(
                         width: 10,
                       ),
-                      TextButton.icon(
-                          onPressed: () {
-                            if (reportProvider.selectedBillPeriod == null) {
-                              Notifiers.getToastMessage(
-                                  context,
-                                  '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
-                                  'ERROR');
-                            } else {
-                              reportProvider.getMonthlyLedgerReport(
-                                  download: true);
-                            }
-                          },
-                          icon: Icon(Icons.download_sharp,
-                          color: Color(0xff033ccf)
-                          ),
-                          label: Text(ApplicationLocalizations.of(context)
-                              .translate(i18.common.CORE_DOWNLOAD),
-                              style: TextStyle(color: Color(0xff033ccf))
-                              )),
+                      Opacity(
+                        opacity: 0,
+                        child: TextButton.icon(
+                            onPressed: () {
+
+                              // if (reportProvider.selectedBillPeriod == null) {
+                              //   Notifiers.getToastMessage(
+                              //       context,
+                              //       '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}',
+                              //       'ERROR');
+                              // } else {
+                              //   reportProvider.getMonthlyLedgerReport(
+                              //       download: true);
+                              // }
+                            },
+                            icon: Icon(Icons.download_sharp,
+                            color: Color(0xff033ccf)
+                            ),
+                            label: Text(ApplicationLocalizations.of(context)
+                                .translate(i18.common.CORE_DOWNLOAD),
+                                style: TextStyle(color: Color(0xff033ccf))
+                                )),
+                      ),
                     ],
                   ),
                 ],

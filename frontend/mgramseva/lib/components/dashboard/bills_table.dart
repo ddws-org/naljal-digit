@@ -132,7 +132,9 @@ class _BillsTable extends State<BillsTable> {
                     textWidget,
                     Icon(isAscending
                         ? Icons.arrow_upward
-                        : Icons.arrow_downward_sharp),
+                        : Icons.arrow_downward_sharp,
+                        color: Color(0xff033ccf)
+                        ),
                   ],
                 ),
                 if (MediaQuery.of(context).size.width > 720)
