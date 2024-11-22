@@ -21,7 +21,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 @SpringBootApplication(scanBasePackages = "org.egov.waterconnection")
-@EnableAutoConfiguration
 @Import({ TracerConfiguration.class })
 public class WaterConnectionApplication{
 	@Value("${app.timezone}")
