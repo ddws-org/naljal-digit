@@ -503,6 +503,11 @@ config:
     build:
       - work-dir: "utilities/naljal-custom-service"
         image-name: "naljal-custom-service"
+  - name: "builds/naljal-digit/utilities/mdms-read-cronjob"
+    build:
+      - work-dir: "utilities/mdms-read-cronjob"
+        image-name: "api-cronjob"
+        dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
 
 
 # Frontend
