@@ -198,7 +198,7 @@ const Details = () => {
                       {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
-                          text={t(Digit.Utils.locale.convertToLocale(element?.block, "EGOV_LOCATION_BOUNDARYTYPE"))}
+                          text={t(Digit.Utils.locale.convertToLocale(element?.block, "EGOV_LOCATION_BLOCK"))}
                           textStyle={{ whiteSpace: "pre" }}
                         />
                       ) : null}
