@@ -131,14 +131,18 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                               commonProvider,
                                               billList,
                                               houseHoldProvider),
-                                          icon: Icon(Icons.download_sharp),
+                                          icon: Icon(Icons.download_sharp,
+                                          color: Color(0xff033ccf)),
                                           label: Text(
+                                            
                                             ApplicationLocalizations.of(context)
                                                 .translate(
                                                     i18.common.BILL_DOWNLOAD),
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
+
+                                                 color: Color(0xff033ccf)
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
@@ -436,6 +440,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                                   .common
                                                                   .SHARE_BILL),
                                                           style: TextStyle(
+                                                            color: Color(0xff033ccf),
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                             fontSize: 16,
