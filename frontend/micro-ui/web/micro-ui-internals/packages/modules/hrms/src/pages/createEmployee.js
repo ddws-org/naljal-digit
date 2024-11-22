@@ -165,7 +165,7 @@ const CreateEmployee = () => {
       STATE_ADMIN
         ? formData?.Jurisdictions.length &&
           hasUniqueBlocks(formData?.Jurisdictions) &&
-          !formData?.Jurisdictions.some((juris) => juris?.block == undefined || juris?.blockBoundary?.length === 0)
+          !formData?.Jurisdictions.some((juris) => juris?.block === undefined || juris?.blockBoundary?.length === 0)
         : formData?.Jurisdictions?.length &&
           formData?.Jurisdictions.length &&
           !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
