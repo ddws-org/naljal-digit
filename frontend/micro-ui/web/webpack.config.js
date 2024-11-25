@@ -3,7 +3,22 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-console.log("PUBLIC_PATH:", process.env.PUBLIC_PATH);
+console.log("PUBLIC_PATH:1", process.env);
+console.log("PUBLIC_PATH:2", process[env]);
+console.log("PUBLIC_PATH:3", process[env].PUBLIC_PATH);
+
+console.log("PUBLIC_PATH:4",JSON.stringify(process.env));
+console.log("PUBLIC_PATH:5",JSON.stringify(process[env].PUBLIC_PATH));
+console.log("PUBLIC_PATH:6",JSON.stringify(process[env]));
+
+for (const key in process.env) {
+  console.log(`${"PUBLIC_PATH:7-1"}` `${key}: ${process.env[key]}`);
+console.log("PUBLIC_PATH:7",JSON.stringify((`${key}: ${process.env[key]}`)));
+
+  
+
+}
+
 const publicPath = process.env.PUBLIC_PATH || "/mgramseva-web/";
 
 
@@ -34,7 +49,7 @@ module.exports = {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
 
-    publicPath: "/uat/mgramseva-web/",
+    publicPath: "/mgramseva-web/",
     // publicPath: publicPath,
 
   },
