@@ -19,7 +19,7 @@ console.log("PUBLIC_PATH:1", process.env);
 
 // }
 
-const publicPath = process.env.PUBLIC_PATH;
+const publicPath = process.env.PUBLIC_PATH || '/';
 
 
 
@@ -51,8 +51,8 @@ module.exports = {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
 
-    publicPath: "uat/mgramseva-web/",
-    // publicPath: publicPath,
+    // publicPath: "uat/mgramseva-web/",
+    publicPath: publicPath,
 
   },
   optimization: {
