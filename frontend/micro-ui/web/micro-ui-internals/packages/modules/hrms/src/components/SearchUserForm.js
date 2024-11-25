@@ -25,12 +25,12 @@ function getUniqueLeafCodes(tree) {
     if (!node || typeof node !== "object") return;
 
     const keys = Object.keys(node).filter((key) => key !== "options" && key !== "codes");
-
     // Check if it's a leaf node (all remaining keys' values are strings)
     const isLeafNode = keys.every((key) => typeof node[key] === "string");
 
-    if (isLeafNode && node.code) {
-      codes.add(node.code);
+    if (isLeafNode && node?.codes) {
+      // codes.add(node.codes);
+      node?.codes?.forEach((code) => codes.add(code));
     } else {
       // Traverse every other key except options and codes
       keys.forEach((key) => {
@@ -210,7 +210,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
             ...role,
             i18text: "ACCESSCONTROL_ROLES_ROLES_" + role?.code,
           }));
-        // console.log(roles,"3");
 
         setRolesOptions(roles);
         setTree(resultInTree);
@@ -324,7 +323,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
 
   const onSubmit = (data) => {
     //assuming atleast one hierarchy is entered
-    console.log(data, "data");
     if (blockAdmin) setRequiredOptions(data);
     if (Object.keys(data).length === 0 || Object.values(data).every((value) => !value)) {
       //toast message
@@ -379,17 +377,12 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       currentLevel = currentLevel[code];
     }
 
-    console.log(currentLevel,"currentLevel ONSUBMIT");
-    
-
-    
-
     //this is the list of tenants under the current subtree
     const listOfUniqueTenants = getUniqueLeafCodes(currentLevel);
     setUniqueTenants(() => listOfUniqueTenants);
     setUniqueRoles(() => data?.roles?.filter((row) => row.code)?.map((role) => role.code));
   };
-  const [blockTree, setBlockTree] = useState(null);  
+  const [blockTree, setBlockTree] = useState(null);
 
   useEffect(() => {
     if (userData) {
@@ -426,10 +419,6 @@ const SearchUserForm = React.memo(({ uniqueTenants, setUniqueTenants, roles, set
       currentLevel = currentLevel[code];
     }
 
-    console.log(currentLevel,"currentLevel");
-    
-    // console.log(getUniqueLeafCodes(blockTree),"TREE");
-// 
     if (blockAdmin) setRequiredOptions(formData);
     return currentLevel?.options || [];
   };

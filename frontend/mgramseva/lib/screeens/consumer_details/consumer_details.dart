@@ -626,13 +626,15 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                           BuildTableRowTextButton(
                               i18.consumer.CONSUMER_VERIFY_TEXT,
                               ElevatedButton(                                
-                                style: ElevatedButton.styleFrom(                                  
+                                style: ElevatedButton.styleFrom( 
+                                               padding: EdgeInsets.symmetric(
+                                                horizontal: 10.0
+                                               ),                      
                                     backgroundColor:
                                     consumerProvider.isConsumerVerified ?
                                     Color.fromRGBO(58, 221, 8, 0.698) :
                                         Color.fromRGBO(3, 60, 207, 0.7))                                          ,
                                 child: Text(
-
                                   consumerProvider.isConsumerVerified ? 
                                   ApplicationLocalizations.of(context)
                                       .translate(

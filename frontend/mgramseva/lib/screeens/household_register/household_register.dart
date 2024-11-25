@@ -147,7 +147,14 @@ class _HouseholdRegister extends State<HouseholdRegister>
       },
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE)));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE),
+          
+          style: TextStyle(
+            color:  Color(0xff033ccf)
+          ),
+          )
+           ,
+          );
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),
