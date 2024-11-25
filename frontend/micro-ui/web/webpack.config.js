@@ -19,7 +19,7 @@ console.log("PUBLIC_PATH:1", process.env);
 
 // }
 
-const publicPath = process.env.PUBLIC_PATH || '/';
+const publicPath = process.env.PUBLIC_PATH;
 
 
 
