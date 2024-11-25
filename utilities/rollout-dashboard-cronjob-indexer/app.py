@@ -954,6 +954,7 @@ def process():
 
 def getConnection():
     dbHost = os.getenv('DB_HOST')
+    dbHost = dbHost.split(':')[0]
     dbName = os.getenv('DB_NAME')
     dbSchema = os.getenv('DB_SCHEMA')
     dbUser = os.getenv('DB_USER')
