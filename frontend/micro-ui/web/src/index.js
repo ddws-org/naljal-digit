@@ -6,6 +6,11 @@ import App from './App';
 import  '../micro-ui-internals/packages/modules/utilities/setPublicPath';
 import { TLCustomisations } from './Customisations/tl/TLCustomisation';
 
+if (process.env.PUBLIC_PATH) {
+  __webpack_public_path__ = process.env.PUBLIC_PATH;
+}
+
+
 
 initLibraries();
 

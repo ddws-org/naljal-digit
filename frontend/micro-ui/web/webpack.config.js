@@ -50,9 +50,9 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-
+    publicPath: "",
     // publicPath: "uat/mgramseva-web/",
-    publicPath: publicPath,
+    // publicPath: publicPath,
 
   },
   optimization: {
