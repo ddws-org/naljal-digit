@@ -20,7 +20,18 @@ const TopBar = ({
   hideNotificationIconOnSomeUrlsWhenNotLoggedIn,
   changeLanguage,
 }) => {
+
+
+  const getDynamicPart = (url) => {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    return pathParts.length > 0 ? pathParts[0] : ""; // Gets the first part after the domain
+  };
+
   const [isOpen, setIsOpen] = useState(false);
+
+
+
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -34,6 +45,10 @@ const TopBar = ({
   //     return <BackButton className="top-back-btn" />;
   //   }
   // };
+
+  
+
+
 
 
   const url = window.location.pathname; // Get the current URL pathname
@@ -80,11 +95,17 @@ const TopBar = ({
                   <li style={{
                     borderBottom: "solid 1px grey",
                   }}>
-                    <Link className="dropdown-user-link" to="/mgramseva-web/employee/user/login">Admin Login</Link>
+                    <Link
+                    className="dropdown-user-link" 
+                    to={`/${getDynamicPart(window?.location?.href)}/mgramseva-web/employee/user/login`}>
+                      Admin Login
+                    </Link>
                   </li>
                   <li>
                     <a
-                      href="/mgramseva" target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
+
+
+                      href={`/${getDynamicPart(window?.location?.href)}/mgramseva`} target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
                     
                   </li>
                 </ul>
