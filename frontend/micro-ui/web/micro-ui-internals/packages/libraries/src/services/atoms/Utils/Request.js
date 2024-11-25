@@ -75,7 +75,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/${getDynamicPart(window?.location?.href)}${url}`
+  url = `/${getDynamicPart(window?.location?.href)}${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    
