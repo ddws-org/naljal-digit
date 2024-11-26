@@ -5,7 +5,7 @@ const getDynamicPart = (url) => {
   return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
 };
 const createProxy = createProxyMiddleware({
-  target: `${process.env.REACT_APP_PROXY_URL}/${getDynamicPart(window?.location?.href)}`,
+  target: process.env.REACT_APP_PROXY_URL,
   changeOrigin: true,
 });
 module.exports = function (app) {
