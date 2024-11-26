@@ -1,3 +1,4 @@
+__webpack_public_path__ =   "/uat/mgramseva-web/";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { initLibraries } from "@egovernments/digit-ui-libraries";
@@ -14,10 +15,11 @@ const getDynamicPart = (url) => {
 };
 
 
-if (process.env.PUBLIC_PATH) {
-  __webpack_public_path__ =   `/${getDynamicPart(window?.location?.href)}/mgramseva-web` || '/';
+// if (process.env.PUBLIC_PATH) {
+//   __webpack_public_path__ =   `uat/mgramseva-web`;
+  // __webpack_public_path__ =   `/${getDynamicPart(window?.location?.href)}/mgramseva-web` || '/';
 
-}
+// }
 
 initLibraries();
 
