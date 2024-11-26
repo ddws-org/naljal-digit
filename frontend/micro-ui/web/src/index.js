@@ -1,4 +1,3 @@
-__webpack_public_path__ =   "/uat/mgramseva-web/";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { initLibraries } from "@egovernments/digit-ui-libraries";

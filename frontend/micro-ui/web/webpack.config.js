@@ -15,7 +15,7 @@ console.log("PUBLIC_PATH:1", process.env);
 //   console.log(`${"PUBLIC_PATH:7-1"}` `${key}: ${process.env[key]}`);
 // console.log("PUBLIC_PATH:7",JSON.stringify((`${key}: ${process.env[key]}`)));
 
-  
+
 
 // }
 
@@ -51,8 +51,7 @@ module.exports = {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
     publicPath: '/'
-      // publicPath: "",
-    // publicPath: "/mgramseva-web/",
+    // publicPath: "/uat/mgramseva-web/",
     // publicPath: publicPath,
   },
   optimization: {
