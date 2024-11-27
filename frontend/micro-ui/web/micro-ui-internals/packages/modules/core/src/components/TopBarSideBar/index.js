@@ -57,7 +57,7 @@ const TopBarSideBar = ({
         showLanguageChange={showLanguageChange}
       />
       {showDialog && <LogoutDialog onSelect={handleOnSubmit} onCancel={handleOnCancel} onDismiss={handleOnCancel}></LogoutDialog>}
-      {showSidebar && (
+      {/* {showSidebar && (
         <SideBar
           t={t}
           CITIZEN={CITIZEN}
@@ -69,7 +69,7 @@ const TopBarSideBar = ({
           linkData={linkData}
           islinkDataLoading={islinkDataLoading}
         />
-      )}
+      )} */}
     </React.Fragment>
   );
 };
