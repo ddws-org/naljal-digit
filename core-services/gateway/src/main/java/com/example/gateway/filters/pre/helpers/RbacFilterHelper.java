@@ -104,13 +104,19 @@ public class RbacFilterHelper implements RewriteFunction<Map, Map> {
 
         headers.add(CORRELATION_ID_HEADER_NAME, (String) exchange.getAttributes().get(CORRELATION_ID_KEY));
 
+        log.info("AuthorizationRequest is "+authorizationRequest);
         if (centralInstanceUtil.getIsEnvironmentCentralInstance())
+        {
+            log.info("Request tenant id key is "+REQUEST_TENANT_ID_KEY);
+            log.info("exchange.getAttributes().get(TENANTID_MDC) is "+exchange.getAttributes().get(TENANTID_MDC));
             headers.add(REQUEST_TENANT_ID_KEY, (String) exchange.getAttributes().get(TENANTID_MDC));
+        }
 
         final HttpEntity<Object> httpEntity = new HttpEntity<>(authorizationRequestWrapper, headers);
-
+        log.info("AuthorizationRequest is "+authorizationRequest);
+        authorizationRequest.getTenantIds().add(authorizationRequest.getRoles().stream().findFirst().get().getTenantId());
         try {
-
+            log.info("Headers is "+headers);
             ResponseEntity<Void> responseEntity = restTemplate.postForEntity(applicationProperties.getAuthorizationUrl(), httpEntity, Void
                     .class);
 
