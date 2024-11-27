@@ -44,9 +44,9 @@ Future<Map<String, dynamic>> get devConstants async {
       Constants.STATE_CODE = dotenv.env['STATE_LEVEL_TENANT_ID']??'';
     }
     return {
-      //_baseUrl: "https://naljalseva.jjm.gov.in/uat/" + state + (state.isNotEmpty?"/":''),
+      _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
       // _baseUrl: "https://naljal-uat.digit.org/" + state + (state.isNotEmpty?"/":''),
-      _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
+      // _baseUrl: window.location.origin + "/" + state + (state.isNotEmpty?"/":''),
     };
 }
 Future<Map<String, dynamic>> get devConstantsMobile async {
@@ -61,7 +61,7 @@ Future<Map<String, dynamic>> get devConstantsMobile async {
     }
     return {
 
-      _baseUrl: "https://naljalseva.jjm.gov.in/"+state+"/",
+      _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
       // _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
       // _baseUrl: "https://naljal-uat.digit.org/",
 };
