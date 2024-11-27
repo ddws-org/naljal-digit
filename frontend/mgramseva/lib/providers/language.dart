@@ -40,7 +40,11 @@ class LanguageProvider with ChangeNotifier {
             await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
         stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
         if (stateInfo != null) {
-          stateInfo?.languages?.first.isSelected = true;
+                  stateInfo?.languages?.forEach((item){
+            if(item.value == "en_IN"){
+              item.isSelected = true;
+            }
+          });
           setSelectedState(stateInfo!);
           await ApplicationLocalizations(Locale(
                   selectedLanguage?.label ?? '', selectedLanguage?.value))
