@@ -325,10 +325,11 @@ class CommonProvider with ChangeNotifier {
   }
   
     void onLogout() async {
-    await AuthenticationRepository().logoutUser().then((onValue) {
-      navigatorKey.currentState
+    navigatorKey.currentState
           ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
       loginCredentials = null;
+    await AuthenticationRepository().logoutUser().then((onValue) {
+     
     });
   }
 
