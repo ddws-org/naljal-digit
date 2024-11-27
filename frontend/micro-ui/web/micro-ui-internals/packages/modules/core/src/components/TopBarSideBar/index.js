@@ -57,6 +57,7 @@ const TopBarSideBar = ({
         showLanguageChange={showLanguageChange}
       />
       {showDialog && <LogoutDialog onSelect={handleOnSubmit} onCancel={handleOnCancel} onDismiss={handleOnCancel}></LogoutDialog>}
+      {/* Side Bar Commented */}
       {/* {showSidebar && (
         <SideBar
           t={t}
