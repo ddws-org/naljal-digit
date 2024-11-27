@@ -11,6 +11,8 @@ const getRequestFilterValues = (filter) => {
     return new Promise((resolve, reject) => {
         try {
             let request = getRequestPayload(filter.source);
+            console.log(request,"request");
+            
             Request(request).then((res) => {
                 var jp = require('jsonpath');
                 let keys = jp.query(res, filter.source.keyPath);

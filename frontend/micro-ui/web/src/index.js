@@ -14,12 +14,6 @@ const getDynamicPart = (url) => {
 };
 
 
-// if (process.env.PUBLIC_PATH) {
-//   __webpack_public_path__ =   `uat/mgramseva-web`;
-  // __webpack_public_path__ =   `/${getDynamicPart(window?.location?.href)}/mgramseva-web` || '/';
-
-// }
-
 initLibraries();
 
 window.Digit.Customizations = { PGR: {} ,TL:TLCustomisations};

@@ -4,10 +4,19 @@ import { useTranslation } from "react-i18next";
 import EmployeeModuleCard from "./EmployeeModuleCard";
 // import EmployeeModuleCard from "./EmployeeModuleCard";
 
-console.log("PUBLIC_PATH:1", process.env);
+// console.log("PUBLIC_PATH:1", process.env.PUBLIC_PATH);
+// console.log("PUBLIC_PATH:7",JSON.stringify((process.env.PUBLIC_PATH)));
+
+
 
 
 const HRMSCard = () => {
+const myVariable = process.env.REACT_APP_API_URL;
+const myVariable2 = process.env.REACT_APP_FILE_PATH;
+console.log(myVariable,"myVariable");
+console.log(myVariable2,"myVariable");
+
+
   const ADMIN = Digit.Utils.hrmsAccess();
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
   const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);

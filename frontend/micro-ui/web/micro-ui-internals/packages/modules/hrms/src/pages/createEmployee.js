@@ -156,6 +156,9 @@ const CreateEmployee = () => {
     //   SelectUserTypeAndDesignation[0].designation != undefined
     //   , "formData");
     console.log(isValid, "isValid");
+    console.log(formData?.Jurisdictions, "formData?.Jurisdictions");
+    console.log(checkfield, "formData?.Jurisdictions");
+    console.log(phonecheck, "formData?.Jurisdictions");
 
     if (
       formData?.SelectEmployeeGender?.gender.code &&

@@ -177,8 +177,11 @@ const Details = () => {
               <CardSubHeader className="card-section-header">{t("HR_JURIS_DET_HEADER")}</CardSubHeader>
             ) : null}
 
+            
+
             {data?.Employees?.[0]?.jurisdictions?.length > 0
               ? data?.Employees?.[0]?.jurisdictions?.map((element, index) => {
+                
                   return (
                     <StatusTable
                       key={index}
@@ -198,7 +201,7 @@ const Details = () => {
                       {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
-                          text={t(Digit.Utils.locale.convertToLocale(element?.block, "EGOV_LOCATION_BOUNDARYTYPE"))}
+                          text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
                           textStyle={{ whiteSpace: "pre" }}
                         />
                       ) : null}

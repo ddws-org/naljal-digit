@@ -47,8 +47,13 @@ const authHeaders = () => ({
 
 const userServiceData = () => ({ userInfo: Digit.UserService.getUser()?.info });
 
+
+
 window.Digit = window.Digit || {};
 window.Digit = { ...window.Digit, RequestCache: window.Digit.RequestCache || {} };
+console.log(window.Digit.RequestCache,"window.Digit.RequestCache");
+console.log(window.Digit,"window.Digit.RequestCache");
+
 
 const getDynamicPart = (url) => {
   const parsedUrl = new URL(url);
@@ -75,7 +80,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/${getDynamicPart(window?.location?.href)}${url}`;
+  // url = `/${getDynamicPart(window?.location?.href)}${url}`;
   // url =`/uat${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
@@ -130,6 +135,8 @@ export const Request = async ({
     data.RequestInfo = { ...data.RequestInfo, ts: Number(ts) };
   }
 
+  
+
   let _url = url
     .split("/")
     .map((path) => {
@@ -137,6 +144,9 @@ export const Request = async ({
       return urlParams[key] ? urlParams[key] : path;
     })
     .join("/");
+
+
+
 
   if (multipartFormData) {
     const multipartFormDataRes = await Axios({
@@ -160,6 +170,10 @@ export const Request = async ({
   if (!params["tenantId"] && window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")) {
     params["tenantId"] = tenantInfo;
   }
+
+  console.log(url,"_url");
+  console.log(data,"data");
+
 
   const res = userDownload
     ? await Axios({ method, url: _url, data, params, headers, responseType: "arraybuffer" })

@@ -41,7 +41,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   json_annotation: ^4.8.0
   url_strategy: ^0.2.0
-  screenshot: any
+  screenshot: '2.4.0'
   number_to_words: ^1.0.0
   flutter_localizations:
     sdk: flutter
