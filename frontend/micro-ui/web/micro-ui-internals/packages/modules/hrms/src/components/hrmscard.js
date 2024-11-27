@@ -35,18 +35,6 @@ const HRMSCard = () => {
       isStateLevelSearch: false,
     };
   const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId, roles);
-
-  const moduleForSomeDIVAdmin =
-    DIV_ADMIN && MDMS_ADMIN
-      ? [
-        {
-          label: t("WORK_BENCH_URL_MASTER_DATA"),
-          link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
-          category: t("HR_EDIT_MASTER"),
-        },
-      ]
-      : [];
-
   const moduleForSomeSTATEUser =
     STATE_ADMIN && MDMS_ADMIN
       ? [
@@ -62,6 +50,17 @@ const HRMSCard = () => {
         },
       ]
       : [];
+
+      const moduleForSomeDIVAdmin =
+      DIV_ADMIN && MDMS_ADMIN
+        ? [
+          {
+            label: t("WORK_BENCH_URL_MASTER_DATA"),
+            link: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/workbench-ui/employee/workbench/mdms-search-v2?moduleName=ws-services-calculation&masterName=WCBillingSlab`,
+            category: t("HR_EDIT_MASTER"),
+          },
+        ]
+        : [];    
 
   const moduleForDivisionUser =
     DIV_ADMIN && MDMS_ADMIN
