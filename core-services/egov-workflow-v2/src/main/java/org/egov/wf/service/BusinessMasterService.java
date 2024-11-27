@@ -4,9 +4,11 @@ import com.jayway.jsonpath.JsonPath;
 import org.egov.wf.config.WorkflowConfig;
 import org.egov.wf.producer.Producer;
 import org.egov.wf.repository.BusinessServiceRepository;
+import org.egov.wf.validator.BusinessServiceValidator;
 import org.egov.wf.web.models.BusinessService;
 import org.egov.wf.web.models.BusinessServiceRequest;
 import org.egov.wf.web.models.BusinessServiceSearchCriteria;
+import org.egov.wf.web.models.ProcessInstanceSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,6 +17,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,8 @@ public class BusinessMasterService {
     private MDMSService mdmsService;
 
     private CacheManager cacheManager;
+    @Autowired
+    private BusinessServiceValidator validator;
 
     @Autowired
     public BusinessMasterService(Producer producer, WorkflowConfig config, EnrichmentService enrichmentService,
@@ -56,10 +61,11 @@ public class BusinessMasterService {
      * @return The enriched object which is persisted
      */
     public List<BusinessService> create(BusinessServiceRequest request){
+        validator.validateCreateRequest(request);
         evictAllCacheValues("businessService");
         evictAllCacheValues("roleTenantAndStatusesMapping");
         enrichmentService.enrichCreateBusinessService(request);
-        producer.push(config.getSaveBusinessServiceTopic(),request);
+        producer.push(request.getBusinessServices().get(0).getTenantId(), config.getSaveBusinessServiceTopic(),request);
         return request.getBusinessServices();
     }
 
@@ -83,13 +89,25 @@ public class BusinessMasterService {
         evictAllCacheValues("businessService");
         evictAllCacheValues("roleTenantAndStatusesMapping");
         enrichmentService.enrichUpdateBusinessService(request);
-        producer.push(config.getUpdateBusinessServiceTopic(),request);
+        producer.push(request.getBusinessServices().get(0).getTenantId(), config.getUpdateBusinessServiceTopic(),request);
         return request.getBusinessServices();
     }
 
 
     private void evictAllCacheValues(String cacheName) {
         cacheManager.getCache(cacheName).clear();
+    }
+    
+    public Long getMaxBusinessServiceSla(ProcessInstanceSearchCriteria criteria) {
+        BusinessServiceSearchCriteria searchCriteria = new BusinessServiceSearchCriteria();
+        String tenantId = criteria.getTenantId();
+        searchCriteria.setTenantId(tenantId);
+        searchCriteria.setBusinessServices(Collections.singletonList(criteria.getBusinessService()));
+        List<BusinessService> businessServices = repository.getBusinessServices(searchCriteria);
+        enrichmentService.enrichTenantIdForStateLevel(tenantId,businessServices);
+
+        Long maxSla = businessServices.get(0).getBusinessServiceSla();
+        return maxSla;
     }
 
 

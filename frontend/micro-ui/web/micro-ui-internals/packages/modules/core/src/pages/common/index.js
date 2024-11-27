@@ -46,11 +46,13 @@ const CommonApp = ({
     Digit.UserService.setType("employee");
 
 
+    console.log(cityDetails.code);
 
     if (userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")) {
+      
       setShowAlert(false);
     }
-    if (cityDetails.code == "pb") {
+    if (cityDetails.code == "as" || cityDetails.code == "pb" ) {
       if (DIV_ADMIN == 0 && MDMS_ADMIN == 1 && STATE_ADMIN == 1) {
         setShowAlert(false);
       }

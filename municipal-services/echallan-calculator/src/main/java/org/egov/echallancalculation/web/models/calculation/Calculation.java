@@ -6,8 +6,8 @@ import lombok.*;
 import org.egov.echallancalculation.model.Challan;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.egov.echallancalculation.web.models.demand.TaxHeadEstimate;
 
@@ -15,7 +15,7 @@ import org.egov.echallancalculation.web.models.demand.TaxHeadEstimate;
  * Calculation
  */
 @Validated
-@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2018-09-27T14:56:03.454+05:30")
+//@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2018-09-27T14:56:03.454+05:30")
 
 @Getter
 @Setter

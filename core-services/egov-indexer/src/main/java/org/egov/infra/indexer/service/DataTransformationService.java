@@ -37,6 +37,12 @@ public class DataTransformationService {
     @Autowired
     private IndexerUtils indexerUtils;
 
+    @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
+
+    @Value("${egov.statelevel.tenantId}")
+    private  String stateLevelTenantId ;
+
     @Value("${egov.core.reindex.topic.name}")
     private String reindexTopic;
 
@@ -197,16 +203,18 @@ public class DataTransformationService {
             for (UriMapping uriMapping : customJsonMappings.getExternalUriMapping()) {
                 Object response = null;
                 String uri = null;
-                try {
-                    uri = indexerUtils.buildUri(uriMapping, kafkaJson);
-                    response = restTemplate.postForObject(uri, uriMapping.getRequest(), Map.class);
-                    if (null == response)
+                    try {
+                        uri = indexerUtils.buildUri(uriMapping, kafkaJson);
+                        indexerUtils.fillJsonPath(uriMapping.getRequest(),kafkaJson);
+                        String jsonContent = serviceRequestRepository.fetchResult(uri, uriMapping.getRequest(), stateLevelTenantId);
+                        response = mapper.readValue(jsonContent, Map.class);
+                        if (null == response)
+                            continue;
+                    } catch (Exception e) {
+                        log.error("Exception while making external call: ", e);
+                        log.error("URI: " + uri);
                         continue;
-                } catch (Exception e) {
-                    log.error("Exception while making external call: ", e);
-                    log.error("URI: " + uri);
-                    continue;
-                }
+                    }
                 log.debug("Response: " + response + " from the URI: " + uriMapping.getPath());
                 for (FieldMapping fieldMapping : uriMapping.getUriResponseMapping()) {
                     String[] expressionArray = (fieldMapping.getOutJsonPath()).split("[.]");

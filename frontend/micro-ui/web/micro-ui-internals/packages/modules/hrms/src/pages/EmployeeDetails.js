@@ -40,7 +40,7 @@ const Details = () => {
   mdmsData?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
     data?.Employees[0]?.jurisdictions?.map((jurisdiction) => {
       if (items?.code === jurisdiction?.boundary) {
-        jurisdiction["division"] = items?.divisionCode;
+        jurisdiction["block"] = items?.blockcode;
       }
     });
   });
@@ -198,7 +198,7 @@ const Details = () => {
                       {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
-                          text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
+                          text={t(Digit.Utils.locale.convertToLocale(element?.block, "EGOV_LOCATION_BOUNDARYTYPE"))}
                           textStyle={{ whiteSpace: "pre" }}
                         />
                       ) : null}

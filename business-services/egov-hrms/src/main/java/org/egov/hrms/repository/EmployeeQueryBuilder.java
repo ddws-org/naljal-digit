@@ -2,6 +2,7 @@ package org.egov.hrms.repository;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.hrms.config.PropertiesManager;
+import org.egov.hrms.web.contract.EmployeePlainSearchCriteria;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.egov.hrms.repository.EmployeeQueries.HRMS_QUERY_ORDER_BY_CLAUSE;
 
 @Service
 public class EmployeeQueryBuilder {
@@ -102,7 +105,7 @@ public class EmployeeQueryBuilder {
 			pagination = pagination.replace("$offset", "0");
 		
 		if(null != criteria.getLimit()){
-			Integer limit = criteria.getLimit() + criteria.getOffset();
+			Long limit = criteria.getLimit() + criteria.getOffset();
 			pagination = pagination.replace("$limit", limit.toString());
 		}
 		else
@@ -158,5 +161,75 @@ public class EmployeeQueryBuilder {
 		});
 	}
 
+	/**
+	 * Returns query for searching employee ids based on criteria
+	 *
+	 * @param criteria
+	 * @return
+	 */
+	public String getEmployeeIdsQuery(EmployeePlainSearchCriteria criteria, List <Object> preparedStmtList ) {
+		StringBuilder builder = new StringBuilder(EmployeeQueries.HRMS_GET_EMP_IDS_QUERY);
 
+		if(!StringUtils.isEmpty(criteria.getTenantId())) {
+			if (criteria.getTenantId().equalsIgnoreCase(properties.getStateLevelTenantId())) {
+				builder.append(" employee.tenantid LIKE ? ");
+				preparedStmtList.add('%' + criteria.getTenantId() + '%');
+			} else {
+				builder.append(" employee.tenantid = ? ");
+				preparedStmtList.add(criteria.getTenantId());
+			}
+		}
+		else
+			builder.append(" and employee.tenantid NOTNULL");
+
+		if(criteria.getCreatedDateFrom() != null){
+			builder.append(" and employee.createddate >= ?");
+			preparedStmtList.add(criteria.getCreatedDateFrom());
+		}
+
+		if(criteria.getCreatedDateFrom()!= null){
+			builder.append(" and employee.createddate <= ?");
+			preparedStmtList.add(criteria.getCreatedDateFrom());
+		}
+
+		addOrderByClause(builder, HRMS_QUERY_ORDER_BY_CLAUSE);
+
+		if(criteria.getLimit() != null) {
+			builder.append(" limit ?");
+			preparedStmtList.add(criteria.getLimit());
+		}
+		else {
+			builder.append(" limit ?");
+			preparedStmtList.add(defaultLimit);
+		}
+
+		if(criteria.getOffset() != null) {
+			builder.append(" offset ?");
+			preparedStmtList.add(criteria.getOffset());
+		}
+		else {
+			builder.append(" offset ?");
+			preparedStmtList.add(0);
+		}
+
+		return builder.toString();
+	}
+
+	public String getPlainSearchEmployeeQuery(EmployeePlainSearchCriteria criteria, List <Object> preparedStmtList ) {
+		StringBuilder builder = new StringBuilder(EmployeeQueries.HRMS_GET_EMPLOYEES);
+
+		if(!CollectionUtils.isEmpty(criteria.getUuids())){
+			builder.append(" employee.uuid IN (").append(createQuery(criteria.getUuids())+")");
+			addToPreparedStatement(preparedStmtList,criteria.getUuids());
+		}
+		else
+			builder.delete(builder.length() - 6, builder.length());
+
+		return builder.toString();
+
+	}
+
+	private static void addOrderByClause(StringBuilder queryBuilder,String columnName) {
+		queryBuilder.append(" ORDER BY " + columnName);
+	}
 }

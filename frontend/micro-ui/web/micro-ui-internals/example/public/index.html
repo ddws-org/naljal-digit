@@ -14,6 +14,7 @@
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.50/dist/index.css" /> -->
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.29/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.53/dist/index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-naljal-css@1.0.1/dist/index.css" />
   
 
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css/dist/index.css"/> -->
@@ -43,10 +44,25 @@
     .workbench-bredcrumb {
       display: none !important;
     }
+    .link-label{
+      color: #1f4ac4 !important;
+    }
+    .primary-label-btn{
+      color: #1f4ac4 !important;
+    }
+    .label-field-pair .employee-select-wrap .options-card {
+    max-height: 10rem !important;
+    }
+
   </style>
 </head>
 
 <body>
+  <script type="application/javascript">
+    console.log(window?.globalConfigs?.getConfig("CONTEXT_PATH"),"CONTEXTPATHGLOVA");
+    window.resourceBasePath = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
+  </script>
+  <script type="application/javascript" src="/frontend/micro-ui/web/src/App.js"></script>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 </body>

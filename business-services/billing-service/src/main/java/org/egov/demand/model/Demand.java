@@ -28,26 +28,21 @@ import java.util.List;
 @Builder
 public class Demand {
 
-    @SafeHtml
     @JsonProperty("id")
     private String id;
 
-    @SafeHtml
     @NotNull
     @JsonProperty("tenantId")
     private String tenantId;
 
-    @SafeHtml
     @NotNull
     @JsonProperty("consumerCode")
     private String consumerCode;
 
-    @SafeHtml
     @NotNull
     @JsonProperty("consumerType")
     private String consumerType;
 
-    @SafeHtml
     @NotNull
     @JsonProperty("businessService")
     private String businessService;

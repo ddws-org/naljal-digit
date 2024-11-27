@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.egov.waterconnection.web.models.workflow.ProcessInstance;
-import org.hibernate.validator.constraints.SafeHtml;
+
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -28,27 +30,32 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(description = "This is lightweight property object that can be used as reference by definitions needing property linking. Actual Property Object extends this to include more elaborate attributes of the property.")
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-05-20T12:22:10.265+05:30[Asia/Kolkata]")
+@Getter
+@Setter
+//@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-05-20T12:22:10.265+05:30[Asia/Kolkata]")
 public class Connection {
-	@SafeHtml
+	
 	@JsonProperty("id")
 	private String id = null;
 
-	@SafeHtml
+	
 	@JsonProperty("tenantId")
 	private String tenantId = null;
 
-	@SafeHtml
+	
 	@JsonProperty("propertyId")
 	private String propertyId = null;
 
-	@SafeHtml
+	
 	@JsonProperty("applicationNo")
 	private String applicationNo = null;
 
-	@SafeHtml
+	
 	@JsonProperty("applicationStatus")
 	private String applicationStatus = null;
+
+	@JsonProperty("imisNumber")
+	private String imisNumber=null;
 
 	/**
 	 * Gets or Sets status
@@ -84,14 +91,17 @@ public class Connection {
 	@JsonProperty("status")
 	private StatusEnum status = null;
 
-	@SafeHtml
+	
 	@JsonProperty("connectionNo")
 	private String connectionNo = null;
 
 	
-	@SafeHtml
+	
 	@JsonProperty("oldConnectionNo")
 	private String oldConnectionNo = null;
+
+	@JsonProperty("villageId")
+	private String villageId=null;
 
 	@JsonProperty("documents")
 	@Valid
@@ -101,7 +111,7 @@ public class Connection {
 	@Valid
 	private List<PlumberInfo> plumberInfo = null;
 
-	@SafeHtml
+	
 	@JsonProperty("roadType")
 	private String roadType = null;
 
@@ -114,11 +124,11 @@ public class Connection {
 	@JsonProperty("connectionExecutionDate")
 	private Long connectionExecutionDate = null;
 
-	@SafeHtml
+	
 	@JsonProperty("connectionCategory")
 	private String connectionCategory = null;
 
-	@SafeHtml
+	
 	@NotNull
 	@JsonProperty("connectionType")
 	private String connectionType = null;
@@ -132,7 +142,7 @@ public class Connection {
 	@JsonProperty("processInstance")
 	private ProcessInstance processInstance = null;
 
-	@SafeHtml
+	
 	@JsonProperty("applicationType")
 	private String applicationType = null;
 
@@ -145,6 +155,9 @@ public class Connection {
 
 	@JsonProperty("oldApplication")
 	private Boolean oldApplication = false;
+
+	@JsonProperty("dataVerified")
+	private Boolean dataVerified = false;
 	
 	 
 	@JsonProperty("previousReadingDate")
@@ -258,6 +271,12 @@ public class Connection {
 
 	public void setOldApplication(Boolean oldApplication) {
 		this.oldApplication = oldApplication;
+	}
+
+	public Boolean getDataVerified() {return dataVerified;}
+
+	public void setDataVerified(Boolean dataVerified) {
+		this.dataVerified = dataVerified;
 	}
 
 	/**
@@ -695,6 +714,8 @@ public class Connection {
 				&& Objects.equals(this.status, connection.status)
 				&& Objects.equals(this.connectionNo, connection.connectionNo)
 				&& Objects.equals(this.oldConnectionNo, connection.oldConnectionNo)
+				&& Objects.equals(this.imisNumber,connection.imisNumber)
+				&& Objects.equals(this.villageId,connection.villageId)
 				&& Objects.equals(this.documents, connection.documents)
 				&& Objects.equals(this.roadCuttingInfo,connection.roadCuttingInfo)
 				&& Objects.equals(this.plumberInfo, connection.plumberInfo)
@@ -707,15 +728,16 @@ public class Connection {
 				&& Objects.equals(this.connectionHolders, connection.connectionHolders)
 				&& Objects.equals(this.applicationType, connection.applicationType)
 				&& Objects.equals(this.dateEffectiveFrom, connection.dateEffectiveFrom)
-				&& Objects.equals(this.oldApplication,connection.oldApplication);
+				&& Objects.equals(this.oldApplication,connection.oldApplication)
+				&& Objects.equals(this.dataVerified,connection.dataVerified);
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, tenantId, propertyId, applicationNo, applicationStatus, status, connectionNo,
-				oldConnectionNo, documents, roadCuttingInfo, plumberInfo, roadType, roadCuttingArea, connectionExecutionDate,
+				oldConnectionNo, imisNumber,villageId,documents, roadCuttingInfo, plumberInfo, roadType, roadCuttingArea, connectionExecutionDate,
 				connectionCategory, connectionType, additionalDetails, auditDetails, connectionHolders,
-				applicationType, dateEffectiveFrom, oldApplication);
+				applicationType, dateEffectiveFrom, oldApplication,dataVerified);
 	}
 
 	@Override
@@ -731,6 +753,8 @@ public class Connection {
 		sb.append("    status: ").append(toIndentedString(status)).append("\n");
 		sb.append("    connectionNo: ").append(toIndentedString(connectionNo)).append("\n");
 		sb.append("    oldConnectionNo: ").append(toIndentedString(oldConnectionNo)).append("\n");
+		sb.append("    imisNumber: ").append(toIndentedString(imisNumber)).append("\n");
+		sb.append("    villageId: ").append(toIndentedString(villageId)).append("\n");
 		sb.append("    documents: ").append(toIndentedString(documents)).append("\n");
 		sb.append("    roadCuttingInfo: ").append(toIndentedString(roadCuttingInfo)).append("\n");
 		sb.append("    plumberInfo: ").append(toIndentedString(plumberInfo)).append("\n");
@@ -745,6 +769,7 @@ public class Connection {
 		sb.append("    applicationType: ").append(toIndentedString(applicationType)).append("\n");
 		sb.append("	   dateEffectiveFrom: ").append(toIndentedString(dateEffectiveFrom)).append("\n");
 		sb.append("	   oldApplication: ").append(toIndentedString(oldApplication)).append("\n");
+		sb.append("	   dataVerified: ").append(toIndentedString(dataVerified)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}

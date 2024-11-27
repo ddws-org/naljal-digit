@@ -155,6 +155,14 @@ config:
       - work-dir: "core-services/egov-location/src/main/resources/db"
         image-name: "egov-location-db"
 
+  - name: "builds/naljal-digit/core-services/boundary-service"
+    build:
+      - work-dir: "core-services/boundary-service"
+        image-name: "boundary-service"
+        dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core-services/boundary-service/src/main/resources/db"
+        image-name: "boundary-service-db"
+
   - name: "builds/naljal-digit/core-services/egov-mdms-service"
     build:
       - work-dir: "core-services/egov-mdms-service"
@@ -221,7 +229,7 @@ config:
     build:
       - work-dir: "core-services/egov-user"
         image-name: "egov-user"
-        dockerfile: "build/maven/Dockerfile"
+        dockerfile: "build/maven-java8/Dockerfile"
       - work-dir: "core-services/egov-user/src/main/resources/db"
         image-name: "egov-user-db"
 
@@ -257,6 +265,12 @@ config:
     build:
       - work-dir: "core-services/zuul"
         image-name: "zuul"
+        dockerfile: "build/maven-java8/Dockerfile"
+        
+  - name: "builds/naljal-digit/core-services/gateway"
+    build:
+      - work-dir: "core-services/gateway"
+        image-name: "gateway"
         dockerfile: "build/maven/Dockerfile"
 
   - name: "builds/naljal-digit/core-services/internal-gateway"
@@ -480,6 +494,17 @@ config:
       - work-dir: "utilities/certificate-verification"
         image-name: "certificate-verification"
 
+  - name: "builds/naljal-digit/utilities/rollout-dashboard-cronjob-indexer"
+    build:
+      - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
+        image-name: "rollout-dashboard-cronjob-indexer"
+        dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+  - name: "builds/naljal-digit/utilities/naljal-custom-service"
+    build:
+      - work-dir: "utilities/naljal-custom-service"
+        image-name: "naljal-custom-service"
+
+
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
     build:
@@ -537,6 +562,12 @@ config:
       - work-dir: .
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
         image-name: digit-ui
+
+  - name: builds/naljal-digit/frontend/workbench-ui
+    build:
+      - work-dir: frontend/workbench-ui/
+        dockerfile: frontend/workbench-ui/web/workbench/Dockerfile
+        image-name: workbench-ui
   
   #EDCR
   

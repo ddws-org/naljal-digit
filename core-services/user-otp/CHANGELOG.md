@@ -1,15 +1,26 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
-## 1.1.5 - 2022-02-02
+## 2.9.0 - 2024-02-29
+- Upgraded spring boot version from 2.2.13.RELEASE to 3.2.2
+- Upgraded java version from 1.8 to 17
+- Upgraded org.egov.services:tracer version from 2.0.0-SNAPSHOT to 2.9.0-SNAPSHOT
+
+## 1.2.1 - 2023-08-11
+- Central Instance Library Integration
+
+## 1.2.0 - 2023-03-15
+
+- Added support for sending otp via email by emitting email events.
+
+## 1.1.5 - 2022-03-02
+
+- Added genric message for failed login attempt.
+- 
+## 1.1.4 - 2022-01-13
+
 - Updated to log4j2 version 2.17.1
 
-
-## 1.1.4 - 2021-09-23
-
-- Changes for first time login User OTP
-- Added locale param to support multiple language.
- 
 ## 1.1.3 - 2021-05-11
 
 - Changes to error handling

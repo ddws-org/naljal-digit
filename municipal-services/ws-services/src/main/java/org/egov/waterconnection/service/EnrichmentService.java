@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.Role;
@@ -151,6 +151,8 @@ public class EnrichmentService {
 				additionalDetail.put(WCConstants.ESTIMATION_DATE_CONST, System.currentTimeMillis());
 			}
 			additionalDetail.put(WCConstants.LOCALITY,addDetail.get(WCConstants.LOCALITY).toString());
+//			log.info(additionalDetail.get(WCConstants.VILLAGE_NAME).toString());
+			additionalDetail.put(WCConstants.VILLAGE_NAME,addDetail.get(WCConstants.VILLAGE_NAME));
 
 			for (Map.Entry<String, Object> entry: addDetail.entrySet()) {
 				if (additionalDetail.getOrDefault(entry.getKey(), null) == null) {

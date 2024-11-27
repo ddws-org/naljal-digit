@@ -1,4 +1,24 @@
 # Changelog
+All notable changes to this module will be documented in this file.
+
+## 2.9.0 - 2024-02-29
+- Upgraded spring boot version from 2.2.13.RELEASE to 3.2.2
+- Upgraded java version from 1.8 to 17
+- Upgraded postgresql version to 42.7.1
+- Upgraded lombok version from 1.18.8 to 1.18.22
+- Upgraded minio library version from 7.0.2 to 7.1.4
+
+## 1.3.0 - 2023-03-15
+- Fixes flow to store and retrieve files from `Azure blob storage`.
+
+## 1.2.5 - 2023-02-06
+- Transition from 1.2.5-beta version to 1.2.5 version
+
+## 1.2.5-beta - 2022-09-20
+- Upgraded spring-boot-starter-parent to 2.2.13 and spring beans to 5.2.20.RELEASE
+
+## 1.2.4 - 2022-01-13
+- Updated to log4j2 version 2.17.1
 
 ##1.2.2 - 2021-05-11
 

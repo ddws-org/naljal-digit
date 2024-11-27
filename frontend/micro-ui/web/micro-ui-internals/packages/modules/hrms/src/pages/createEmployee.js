@@ -76,7 +76,7 @@ const CreateEmployee = () => {
         boundary: {
           code: tenantId,
         },
-        division: null,
+        block: null,
         roles: [],
       },
     ],
@@ -103,14 +103,14 @@ const CreateEmployee = () => {
     return true;
   }
 
-  function hasUniqueDivisions(items) {
-    const uniqueDivisions = new Set();
+  function hasUniqueBlocks(items) {
+    const uniqueBlocks = new Set();
     for (const item of items) {
-      const divisionCode = item?.division?.code;
-      if (divisionCode && uniqueDivisions.has(divisionCode)) {
+      const blockcode = item?.block?.code;
+      if (blockcode && uniqueBlocks.has(blockcode)) {
         return false;
       }
-      uniqueDivisions.add(divisionCode);
+      uniqueBlocks.add(blockcode);
     }
     return true;
   }
@@ -127,7 +127,7 @@ const CreateEmployee = () => {
     }
     for (let i = 0; i < formData?.Jurisdictions?.length; i++) {
       let key = formData?.Jurisdictions[i];
-      if (!((key?.boundary || key?.divisionBoundary) && (key?.boundaryType || key?.division) && key?.tenantId)) {
+      if (!((key?.boundary || key?.blockBoundary) && (key?.boundaryType || key?.block) && key?.tenantId)) {
         setcheck(false);
         break;
       } else {
@@ -164,8 +164,8 @@ const CreateEmployee = () => {
       formData?.Jurisdictions?.length &&
       STATE_ADMIN
         ? formData?.Jurisdictions.length &&
-          hasUniqueDivisions(formData?.Jurisdictions) &&
-          !formData?.Jurisdictions.some((juris) => juris?.division == undefined || juris?.divisionBoundary?.length === 0)
+          hasUniqueBlocks(formData?.Jurisdictions) &&
+          !formData?.Jurisdictions.some((juris) => juris?.block === undefined || juris?.blockBoundary?.length === 0)
         : formData?.Jurisdictions?.length &&
           formData?.Jurisdictions.length &&
           !formData?.Jurisdictions.some((juris) => juris?.roles?.length === 0) &&
@@ -195,8 +195,8 @@ const CreateEmployee = () => {
       STATE_ADMIN &&
       !Object.values(
         data.Jurisdictions.reduce((acc, sum) => {
-          if (sum && sum?.division?.code) {
-            acc[sum?.division?.code] = acc[sum?.division?.code] ? acc[sum?.division?.code] + 1 : 1;
+          if (sum && sum?.block?.code) {
+            acc[sum?.block?.code] = acc[sum?.block?.code] ? acc[sum?.block?.code] + 1 : 1;
           }
           return acc;
         }, {})
@@ -222,7 +222,7 @@ const CreateEmployee = () => {
     let roles = [];
     let jurisdictions = [];
     if (STATE_ADMIN) {
-      const divisionBoundaryCodes = data?.Jurisdictions.flatMap((j) => j.divisionBoundary.map((item) => item.code));
+      const blockBoundaryCodes = data?.Jurisdictions.flatMap((j) => j.blockBoundary.map((item) => item.code));
       let stateRoles = [
         {
           code: "EMPLOYEE",
@@ -245,9 +245,9 @@ const CreateEmployee = () => {
           description: "Mdms admin",
         },
       ];
-      divisionBoundaryCodes &&
-        divisionBoundaryCodes.length > 0 &&
-        divisionBoundaryCodes.map((item) => {
+      blockBoundaryCodes &&
+        blockBoundaryCodes.length > 0 &&
+        blockBoundaryCodes.map((item) => {
           stateRoles?.map((role) => {
             roles.push({
               code: role.code,
@@ -259,7 +259,7 @@ const CreateEmployee = () => {
         });
 
       data?.Jurisdictions?.map((items) => {
-        items?.divisionBoundary.map((item) => {
+        items?.blockBoundary.map((item) => {
           jurisdictions.push({
             hierarchy: "REVENUE",
             boundaryType: "City",

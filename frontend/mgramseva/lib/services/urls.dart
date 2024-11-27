@@ -3,7 +3,7 @@ class Url {
 
   static const String LOCALIZATION = 'localization/messages/v1/_search';
 
-  static const String MDMS = 'egov-mdms-service/v1/_search';
+  static const String MDMS = 'mdms-v2/v1/_search';
   static const String HRMS = 'mgramseva-web/employee/user/login';
   static const String FILE_UPLOAD = 'filestore/v1/files';
   static const String FILE_FETCH = 'filestore/v1/files/url';

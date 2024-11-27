@@ -1,6 +1,7 @@
 package org.egov.pg.repository;
 
 
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.pg.config.AppProperties;
 import org.egov.pg.models.IdGenerationResponse;
@@ -29,7 +30,7 @@ public class IdGenRepositoryTest {
     @Test
     public void testIdGen() {
 
-        RequestInfo requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "8e88988e-d342-45c2-81d0-487a2a20350e", null);
+        RequestInfo requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "8e88988e-d342-45c2-81d0-487a2a20350e", PlainAccessRequest.builder().build(),null);
         IdGenerationResponse response = idGenRepository.getId(requestInfo, "pb", "pg.txnid",
                 "" +
                         "PB-PG-[cy:yyyy/MM/dd]-[SEQ_EG_PG_TXN]-[d{2}]", 1);

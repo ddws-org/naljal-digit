@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.egov.common.contract.request.User;
 import org.egov.echallancalculation.model.AuditDetails;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

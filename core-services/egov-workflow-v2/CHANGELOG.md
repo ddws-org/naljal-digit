@@ -3,6 +3,29 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.9.0 - 2024-02-29
+- Upgraded spring boot version from 2.7.5 to 3.2.2
+- Upgraded java version from 1.8 to 17
+- Upgraded postgresql version from 42.2.2.jre7 to 42.7.1
+- Upgraded org.egov.services:tracer version from 2.1.2-SNAPSHOT to 2.9.0-SNAPSHOT
+- Upgraded org.egov:mdms-client from 0.0.2-SNAPSHOT to 2.9.0-SNAPSHOT
+- Upgraded org.flywaydb:flyway-core version to 9.22.3
+
+## 1.3.1 - 2023-08-11
+- Central Instance Library Integration
+
+## 1.3.0 - 2023-03-15
+- Separated out v1 and v2 business service APIs to maintain backward compatibility.
+- Added state level fallback on business service v2 search API.
+- Upgraded to spring-boot version 2.7.5
+- Upgraded to kafka version 3.1.1
+- Upgraded to spring-beans version 5.3.23
+- Upgraded to cache2k-spring version 2.6.1.Final
+- Enhanced workflow service to send descriptive errors for bad requests.
+
+## 1.2.1 - 2022-01-13
+- Updated to log4j2 version 2.17.1
+
 ## 1.2.0 2021-06-23
 - Added autoescalation feature
 - Added statelevel fallback feature at businessService level

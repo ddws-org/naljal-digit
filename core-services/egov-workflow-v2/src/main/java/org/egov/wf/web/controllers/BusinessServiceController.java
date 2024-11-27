@@ -2,7 +2,7 @@ package org.egov.wf.web.controllers;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.egov.wf.service.BusinessMasterService;
+import org.egov.wf.service.V1.BusinessMasterServiceV1;
 import org.egov.wf.util.ResponseInfoFactory;
 import org.egov.wf.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,24 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/egov-wf")
 public class BusinessServiceController {
 
-    private BusinessMasterService businessMasterService;
+    private BusinessMasterServiceV1 businessMasterServiceV1;
 
     private final ResponseInfoFactory responseInfoFactory;
 
     private ObjectMapper mapper;
 
     @Autowired
-    public BusinessServiceController(BusinessMasterService businessMasterService, ResponseInfoFactory responseInfoFactory,
+    public BusinessServiceController(BusinessMasterServiceV1 businessMasterServiceV1, ResponseInfoFactory responseInfoFactory,
                                      ObjectMapper mapper) {
-        this.businessMasterService = businessMasterService;
+        this.businessMasterServiceV1 = businessMasterServiceV1;
         this.responseInfoFactory = responseInfoFactory;
         this.mapper = mapper;
     }
@@ -40,7 +39,7 @@ public class BusinessServiceController {
      */
     @RequestMapping(value="/businessservice/_create", method = RequestMethod.POST)
     public ResponseEntity<BusinessServiceResponse> create(@Valid @RequestBody BusinessServiceRequest businessServiceRequest) {
-        List<BusinessService> businessServices = businessMasterService.create(businessServiceRequest);
+        List<BusinessService> businessServices = businessMasterServiceV1.create(businessServiceRequest);
         BusinessServiceResponse response = BusinessServiceResponse.builder().businessServices(businessServices)
                 .responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(businessServiceRequest.getRequestInfo(),true))
                 .build();
@@ -58,7 +57,7 @@ public class BusinessServiceController {
     public ResponseEntity<BusinessServiceResponse> search(@Valid @ModelAttribute BusinessServiceSearchCriteria searchCriteria,
                                                           @Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
 
-        List<BusinessService> businessServices = businessMasterService.search(searchCriteria);
+        List<BusinessService> businessServices = businessMasterServiceV1.search(searchCriteria);
         BusinessServiceResponse response = BusinessServiceResponse.builder().businessServices(businessServices)
                 .responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true))
                 .build();
@@ -67,7 +66,7 @@ public class BusinessServiceController {
 
     @RequestMapping(value="/businessservice/_update", method = RequestMethod.POST)
     public ResponseEntity<BusinessServiceResponse> update(@Valid @RequestBody BusinessServiceRequest businessServiceRequest) {
-        List<BusinessService> businessServices = businessMasterService.update(businessServiceRequest);
+        List<BusinessService> businessServices = businessMasterServiceV1.update(businessServiceRequest);
         BusinessServiceResponse response = BusinessServiceResponse.builder().businessServices(businessServices)
                 .responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(businessServiceRequest.getRequestInfo(),true))
                 .build();

@@ -1,8 +1,9 @@
 package org.egov.waterconnection.web.controller;
 
 import java.util.List;
+import java.util.Map;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.waterconnection.constants.WCConstants;
 import org.egov.waterconnection.service.SchedulerService;
@@ -230,4 +231,38 @@ public class WaterController {
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+	@RequestMapping(value = "/_countWCbyDemandGenerationDate", method = RequestMethod.POST)
+	   public ResponseEntity<WaterConnectionByDemandGenerationDateResponse> countWCbyDemandGenerationDate(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @Valid @ModelAttribute SearchCriteria criteria) {
+		WaterConnectionByDemandGenerationDateResponse response = waterService.countWCbyDemandGennerationDate(criteria, requestInfoWrapper.getRequestInfo());
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/consumers/demand-not-generated")
+	public ResponseEntity<WaterConnectionResponse> getConsumersWithDemandNotGenerated(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,@RequestParam(value="previousMeterReading") String previousMeterReading,@RequestParam (value="tenantId") String tenantId)
+	{
+		WaterConnectionResponse response= waterService.getConsumersWithDemandNotGenerated(previousMeterReading,tenantId,requestInfoWrapper.getRequestInfo());
+		response.setResponseInfo(
+				responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true));
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/ledger-report")
+	public ResponseEntity<LedgerReportResponse> getLedgerReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @RequestParam String consumercode, @RequestParam String tenantId, @RequestParam Integer offset, @RequestParam Integer limit, @RequestParam String year) {
+		List<Map<String, Object>> list = waterService.ledgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
+		LedgerReportResponse response = LedgerReportResponse.builder().ledgerReport(list).
+				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true)).
+				tenantName(tenantId).financialYear(year).build();
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/month-report")
+	public ResponseEntity<?> getMonthReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,@RequestParam String startDate,@RequestParam String endDate,@RequestParam String tenantId, @RequestParam Integer offset, @RequestParam Integer limit,@RequestParam String sortOrder)
+	{
+		List<MonthReport> monthReportList=waterService.monthReport(startDate,endDate,tenantId,offset,limit,sortOrder);
+		MonthReportResponse monthReportResponse=MonthReportResponse.builder().monthReport(monthReportList).
+				tenantName(tenantId).month(startDate.concat("-"+endDate)).
+				responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),true)).build();
+		return new ResponseEntity<>(monthReportResponse,HttpStatus.OK);
+	}
+
 }

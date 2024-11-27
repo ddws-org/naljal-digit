@@ -110,7 +110,9 @@ class CommonSuccess extends StatelessWidget {
                               visible: successHandler.downloadLink != null,
                               child: TextButton.icon(
                                 onPressed: callBackDownload,
-                                icon: Icon(Icons.download_sharp),
+                                icon: Icon(Icons.download_sharp,
+                                color: Color(0xff033ccf)
+                                ),
                                 label: Text(
                                     ApplicationLocalizations.of(context)
                                         .translate(successHandler

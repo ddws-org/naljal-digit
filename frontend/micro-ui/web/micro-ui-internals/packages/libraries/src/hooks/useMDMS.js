@@ -26,10 +26,6 @@ const useMDMS = (tenantId, moduleCode, type, config = {}, payload = []) => {
   };
 
   const _default = () => {
-    if (moduleCode === "commonUiConfig") {
-      return useQuery([tenantId, moduleCode, type], () => MdmsServiceV1.getMultipleTypes(tenantId, moduleCode, type), config);
-    }
-
     return useQuery([tenantId, moduleCode, type], () => MdmsService.getMultipleTypes(tenantId, moduleCode, type), config);
   };
 

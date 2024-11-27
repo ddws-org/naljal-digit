@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
 import org.egov.pg.constants.PgConstants;
@@ -121,7 +122,7 @@ public class PayGovGateway implements Gateway {
                 .type("SYSTEM")
                 .roles(Collections.emptyList()).id(0L).build();
 
-        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", userInfo);
+        requestInfo = new RequestInfo("","",0L,"","","","","","", PlainAccessRequest.builder().build(),userInfo);
         this.pgDetailRepository=pgDetailRepository;
     }
 
@@ -404,7 +405,7 @@ public class PayGovGateway implements Gateway {
             log.debug("requestmsg : "+ requestmsg);
             // make a request
             ResponseEntity<String> response = new RestTemplate().exchange(GATEWAY_TRANSACTION_STATUS_URL, HttpMethod.POST, entity, String.class);
-            HttpStatus statusCode = response.getStatusCode();
+            HttpStatus statusCode = (HttpStatus) response.getStatusCode();
             if(statusCode.equals(HttpStatus.OK)) {
                 Transaction resp = transformRawResponse(response.getBody(), currentStatus, PAYGOV_MERCHENT_SECERET_KEY);
                 log.debug("RESPONSE ON SUCCESS "+resp);

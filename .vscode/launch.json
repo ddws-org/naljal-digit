@@ -18,10 +18,7 @@
             "cwd": "frontend/mgramseva",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile",
-            "args": [
-                        "--web-browser-flag=--disable-web-security"
-                    ]
+            "flutterMode": "profile"
         },
         {
             "name": "mgramseva (release mode)",

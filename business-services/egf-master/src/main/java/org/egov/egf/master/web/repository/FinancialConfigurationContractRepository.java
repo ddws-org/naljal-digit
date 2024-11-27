@@ -5,8 +5,10 @@ import org.egov.egf.master.web.contract.FinancialConfigurationContract;
 import org.egov.egf.master.web.contract.RequestInfoWrapper;
 import org.egov.egf.master.web.requests.FinancialConfigurationResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
+
 
 @Repository
 public class FinancialConfigurationContractRepository {

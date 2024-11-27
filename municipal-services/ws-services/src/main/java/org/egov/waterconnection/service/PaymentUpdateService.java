@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
