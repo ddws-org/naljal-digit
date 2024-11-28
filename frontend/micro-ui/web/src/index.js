@@ -7,8 +7,20 @@ import  '../micro-ui-internals/packages/modules/utilities/setPublicPath';
 import { TLCustomisations } from './Customisations/tl/TLCustomisation';
 
 
-initLibraries();
+const getDynamicPart = (url) => {
+  const parsedUrl = new URL(url);
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+};
 
+
+// if (process.env.PUBLIC_PATH) {
+//   __webpack_public_path__ =   `uat/mgramseva-web`;
+  // __webpack_public_path__ =   `/${getDynamicPart(window?.location?.href)}/mgramseva-web` || '/';
+
+// }
+
+initLibraries();
 
 window.Digit.Customizations = { PGR: {} ,TL:TLCustomisations};
 

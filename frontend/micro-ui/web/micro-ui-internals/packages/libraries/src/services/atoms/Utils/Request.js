@@ -50,6 +50,12 @@ const userServiceData = () => ({ userInfo: Digit.UserService.getUser()?.info });
 window.Digit = window.Digit || {};
 window.Digit = { ...window.Digit, RequestCache: window.Digit.RequestCache || {} };
 
+const getDynamicPart = (url) => {
+  const parsedUrl = new URL(url);
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+};
+
 export const Request = async ({
   method = "POST",
   url,
@@ -69,8 +75,8 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/uat${url}`;
-  //url = `/${window.globalConfigs.getConfig("STATE_PREFIX_CODE")}${url}`;
+  url = `/${getDynamicPart(window?.location?.href)}${url}`;
+  // url =`/uat${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    

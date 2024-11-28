@@ -1,4 +1,9 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const getDynamicPart = (url) => {
+  const parsedUrl = new URL(url);
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+};
 const createProxy = createProxyMiddleware({
   target: process.env.REACT_APP_PROXY_URL,
   changeOrigin: true,

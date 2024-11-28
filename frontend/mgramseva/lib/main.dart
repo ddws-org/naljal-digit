@@ -15,7 +15,7 @@ import 'package:mgramseva/firebase_options.dart';
 import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
-import 'package:mgramseva/providers/bill_generation_details_provider.dart';
+import 'package:mgramseva/providers/bill_generation_details_provider.dart'; 
 import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/change_password_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
