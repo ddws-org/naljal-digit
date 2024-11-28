@@ -81,20 +81,20 @@ public class ChallanController {
 		}
 
 
-	@PostMapping("/_schedulermonthsummary")
-	public void schedulermonthsummary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendMonthSummaryEvent(requestInfoWrapper.getRequestInfo());
-	}
+//	@PostMapping("/_schedulermonthsummary")
+//	public void schedulermonthsummary(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+//		schedulerService.sendMonthSummaryEvent(requestInfoWrapper.getRequestInfo());
+//	}
 
-	@PostMapping("/_schedulernewexpenditure")
-	public void schedulernewexpenditure(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendNewExpenditureEvent(requestInfoWrapper.getRequestInfo());
-	}
+//	@PostMapping("/_schedulernewexpenditure")
+//	public void schedulernewexpenditure(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+//		schedulerService.sendNewExpenditureEvent(requestInfoWrapper.getRequestInfo());
+//	}
 
-	@PostMapping("/_schedulermarkexpensebill")
-	public void schedulermarkexpensebill(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendMarkExpensebillEvent(requestInfoWrapper.getRequestInfo());
-	}
+//	@PostMapping("/_schedulermarkexpensebill")
+//	public void schedulermarkexpensebill(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+//		schedulerService.sendMarkExpensebillEvent(requestInfoWrapper.getRequestInfo());
+//	}
 
 	 
 	@PostMapping("/_lastMonthSummary")
