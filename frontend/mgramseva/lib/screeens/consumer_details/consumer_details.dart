@@ -209,8 +209,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
-                            readOnly: true,
-                            isDisabled: true,
                           ),
 
                           RadioButtonFieldBuilder(
