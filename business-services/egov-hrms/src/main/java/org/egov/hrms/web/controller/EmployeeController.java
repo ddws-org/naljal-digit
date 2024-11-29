@@ -149,10 +149,10 @@ public class EmployeeController {
 
 	@PostMapping("/_plainsearch")
 	@ResponseBody
-	private ResponseEntity<?> plainsearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeePlainSearchCriteria criteria,@RequestBody RequestInfo requestInfo) {
+	private ResponseEntity<?> plainsearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeePlainSearchCriteria criteria) {
 
 		EmployeeResponse employeeResponse = EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
-				.employees(employeeService.plainsearch(criteria,requestInfo)).build();
+				.employees(employeeService.plainsearch(criteria,requestInfoWrapper.getRequestInfo())).build();
 		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
 
