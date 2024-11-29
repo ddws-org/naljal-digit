@@ -53,9 +53,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@babel/core": "^7.26.0",
-    "@egovernments/digit-ui-react-components": "1.8.4",
-    "@svgr/webpack": "^8.1.0",
+    "@egovernments/digit-ui-react-components": "1.5.26",
     "lodash": "4.17.21",
     "microbundle-crl": "0.13.11",
     "react": "17.0.2",
@@ -63,9 +61,6 @@
     "react-hook-form": "6.15.8",
     "react-i18next": "11.16.2",
     "react-query": "3.6.1",
-    "react-router-dom": "5.3.0",
-    "typescript": "^5.7.2",
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4"
+    "react-router-dom": "5.3.0"
   }
 }
