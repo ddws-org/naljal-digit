@@ -37,6 +37,7 @@ const SelectUserTypeAndDesignation = ({ t, config, onSelect, userType, formData 
   const [sessionFormData, setSessionFormData, clearSessionFormData] = employeeCreateSession;
   const isEdit = window.location.href?.includes("hrms/edit");
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+
   const [Boundary, selectboundary] = useState([]);
   const [jurisdictions, setjurisdictions] = useState(
     !isEdit && sessionFormData?.Jurisdictions?.length > 0
@@ -384,6 +385,18 @@ function Jurisdiction({
     });
     return defaultjurisdiction;
   };
+
+  const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+
+
+  function filterDesignationList(designationList) {
+    if (DIV_ADMIN) {
+        return designationList.filter(item => item.code !== "DESIG_65");
+    }
+    return designationList;
+}
+
+
   useEffect(() => {
     if (responseData != null && depamentValue == "" && isEdit) {
       getUserTypes?.forEach((ele) => {
@@ -468,7 +481,7 @@ function Jurisdiction({
                   className="form-field"
                   isMandatory={true}
                   selected={designationValue}
-                  option={designationList}
+                  option={filterDesignationList(designationList)}
                   select={selectDesignation}
                   optionKey="name"
                   t={t}
