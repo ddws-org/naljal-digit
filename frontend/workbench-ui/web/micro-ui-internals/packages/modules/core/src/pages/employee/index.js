@@ -54,7 +54,8 @@ const EmployeeApp = ({
               mobileView={mobileView}
               handleUserDropdownSelection={handleUserDropdownSelection}
               logoUrl={logoUrl}
-              showSidebar={isUserProfile ? true : false}
+              // showSidebar={isUserProfile ? true : false}
+              showSidebar={false}
               showLanguageChange={!showLanguageChange}
             />
           )}
@@ -107,6 +108,8 @@ const EmployeeApp = ({
             handleUserDropdownSelection={handleUserDropdownSelection}
             logoUrl={logoUrl}
             modules={modules}
+            showSidebar={false}
+
           />
           <div className={`main ${DSO ? "m-auto" : ""}`}>
             <div className="employee-app-wrapper">
