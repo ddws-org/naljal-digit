@@ -108,7 +108,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   }
   if (config && config[0].body && config[0].body[1].label === "CORE_LOGIN_PASSWORD") {
     config[0].body[1].populators.validation = {
-      maxlength: 10,
+      maxlength: 15,
     };
   }
 
@@ -119,6 +119,8 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
+
+      
 
 
       <FormComposerV2
