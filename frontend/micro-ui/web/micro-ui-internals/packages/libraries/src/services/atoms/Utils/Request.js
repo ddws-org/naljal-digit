@@ -57,7 +57,7 @@ const getDynamicPart = (url) => {
 };
 
 // Set the base URL
-Axios.defaults.baseURL = "https://naljalseva.jjm.gov.in/uat/";
+Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
 
 export const Request = async ({
   method = "POST",
