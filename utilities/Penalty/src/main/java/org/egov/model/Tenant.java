@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class Tenant {
     private String code;
-    private String divisionCode;
-    private String divisionName;
+    private String blockCode;
+    private String blockName;
 }
