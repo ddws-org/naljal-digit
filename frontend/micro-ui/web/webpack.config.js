@@ -19,7 +19,7 @@ console.log("PUBLIC_PATH:1", process.env);
 
 // }
 
-const publicPath = process.env.REACT_APP_FILE_PATH;
+const publicPath = process.env.REACT_APP_PUBLIC_PATH;
 
 
 
@@ -50,8 +50,8 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    // publicPath: '/'
-    publicPath: "/mgramseva-web/",
+    publicPath: '/' || "/uat/mgramseva-web/",
+    // publicPath: "/uat/mgramseva-web/",
     // publicPath: publicPath,
   },
   optimization: {
