@@ -25,7 +25,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-dependency_overrides:
   cupertino_icons: ^1.0.2
   gbk_codec: ^0.4.0
   hex: ^0.2.0
@@ -72,7 +71,7 @@ dependency_overrides:
   firebase_core: ^2.23.0
   package_info_plus: ^4.0.2
   open_filex: ^4.3.4
-  syncfusion_flutter_xlsio: ^23.2.4
+  syncfusion_flutter_xlsio: ^25.2.4
   print_bluetooth_thermal: ^1.0.9
   nearby_connections: ^4.0.1
   dropdown_search: ^5.0.6
