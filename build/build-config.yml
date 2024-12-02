@@ -587,5 +587,10 @@ config:
       - work-dir: edcr/service/egov
         dockerfile: edcr/service/Dockerfile
         image-name: egov-edcr
+  - name: "builds/naljal-digit/utilities/egov-penalty-schedular"
+    build:
+      - work-dir: "utilities/Penalty"
+        image-name: "egov-penalty-schedular"
+        dockerfile: "build/maven/Dockerfile"
               
 
