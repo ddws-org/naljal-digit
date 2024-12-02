@@ -49,7 +49,7 @@ public class PenaltySchedularJob implements ApplicationRunner {
             List<Tenant> tenantList = mdmsClient.getTenants();
             tenantList=tenantList.stream().filter(
                     tenant -> {
-                        return config.getPenaltyEnabledDivisionlist().contains(tenant.getBlockCode());
+                        return config.getPenaltyEnabledBlocklist().contains(tenant.getBlockCode());
                     }).collect(Collectors.toList());
 
             System.out.println(tenantList.size());
