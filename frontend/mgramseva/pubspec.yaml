@@ -26,8 +26,6 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
-  intl: any
-
   cupertino_icons: ^1.0.2
   gbk_codec: ^0.4.0
   hex: ^0.2.0
