@@ -1,4 +1,3 @@
-__webpack_public_path__ = "/uat/mgramseva-web/";
 import React from "react";
 import { initLibraries } from "@egovernments/digit-ui-libraries";
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
