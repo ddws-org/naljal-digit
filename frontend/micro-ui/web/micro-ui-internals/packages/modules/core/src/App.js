@@ -1,3 +1,6 @@
+__webpack_public_path__ = "/uat/mgramseva-web/";
+// __webpack_public_path__ = window.resourceBasePath;
+
 import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import CitizenApp from "./pages/citizen";
