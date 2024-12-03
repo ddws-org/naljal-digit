@@ -603,7 +603,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                             name="name"
                             onChange={(value) => setUserCurrentPassword(value)}
                             disable={editScreen}
-                            maxlength={10}
+                            maxlength={15}
                           />
                           {errors?.currentPassword && <CardLabelError>{t(errors?.currentPassword?.message)}</CardLabelError>}
                         </div>
@@ -640,7 +640,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                             pattern="^([a-zA-Z0-9@#$%])+$"
                             onChange={(value) => setUserConfirmPassword(value)}
                             disable={editScreen}
-                            maxlength={10}
+                            maxlength={15}
                           />
                           {errors?.confirmPassword && <CardLabelError>{t(errors?.confirmPassword?.message)}</CardLabelError>}
                         </div>
