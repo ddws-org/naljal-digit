@@ -56,6 +56,10 @@ const getDynamicPart = (url) => {
   return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
 };
 
+// Set the base URL
+Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/uat/`;
+// Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
+
 export const Request = async ({
   method = "POST",
   url,
@@ -75,7 +79,7 @@ export const Request = async ({
   multipartData = {},
   reqTimestamp = false,
 }) => {
-  url = `/${getDynamicPart(window?.location?.href)}${url}`;
+  // url = `/${getDynamicPart(window?.location?.href)}${url}`;
   // url =`/uat${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
