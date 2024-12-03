@@ -241,7 +241,7 @@ class DashboardPdfCreator {
                         style: pw.TextStyle(
                             font: font,
                             fontSize: 12,
-                            color: PdfColor.fromHex('#F47738')))
+                            color: PdfColor.fromHex('#1f4ac4')))
                   ])),
           if (feedBack.isNotEmpty)
             _buildRatingView(context, feedBack, icons, font)
@@ -309,7 +309,7 @@ class DashboardPdfCreator {
                                     ),
                                   ),
                                   pw.Icon(pw.IconData(0xe801),
-                                      color: PdfColor.fromHex('#F47738'),
+                                      color: PdfColor.fromHex('#1f4ac4'),
                                       font: icons),
                                 ],
                               ),
