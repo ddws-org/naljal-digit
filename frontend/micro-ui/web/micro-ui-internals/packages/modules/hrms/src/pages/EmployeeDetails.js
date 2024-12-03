@@ -207,7 +207,7 @@ const Details = () => {
                         <Row
                           label={t("HR_ROLE_LABEL")}
                           text={data?.Employees?.[0]?.user.roles
-                            .filter((ele) => ele.tenantId == element?.boundary)
+                            .filter((ele) => ele.tenantId == element?.boundary && ele?.code != 'EMPLOYEE')
                             ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
                         />
                       ) : null}
