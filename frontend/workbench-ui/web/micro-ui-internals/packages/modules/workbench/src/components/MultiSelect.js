@@ -54,7 +54,8 @@ const CustomSelectWidget = (props) => {
     params: {},
     body: {
       MdmsCriteria: {
-        tenantId: Digit.ULBService.getCurrentTenantId(),
+        // tenantId: Digit.ULBService.getCurrentTenantId(),
+        tenantId: tenantId,
         schemaCode: schemaCode,
         limit: 50,
         offset: 0,
@@ -101,8 +102,8 @@ const CustomSelectWidget = (props) => {
   const SelectMenuButton = (props) => {
     return (
       <div>
-        {/* <components.MenuList {...props}>{props.children}</components.MenuList>
-        <div className="link-container">
+        <components.MenuList {...props}>{props.children}</components.MenuList>
+        {/* <div className="link-container">
           <div onClick={handleSeeAll} className="view-all-link">
           {t("VIEW_ALL")}
           </div>
