@@ -634,6 +634,10 @@ function Jurisdiction({
       setjurisdictions((pre) => pre.map((item) => (item.key === jurisdiction.key ? { ...item, blockBoundary: afterRemove } : item)));
     }
   };
+
+  function filterRoles(roles) {
+    return roles?.filter(item => item.code !== "EMPLOYEE");
+}
   return (
     <div key={jurisdiction?.keys} style={{ marginBottom: "16px" }}>
       <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>
@@ -742,7 +746,7 @@ function Jurisdiction({
                   className="form-field"
                   isMandatory={true}
                   defaultUnit="Selected"
-                  selected={jurisdiction?.roles}
+                  selected={filterRoles(jurisdiction?.roles)}
                   options={getroledata(roleoption)}
                   onSelect={selectrole}
                   optionsKey="i18text"
@@ -751,7 +755,7 @@ function Jurisdiction({
                 />
                 <div className="tag-container" style={{ height: jurisdiction?.blockBoundary?.length > 0 && "50px", overflowY: "scroll" }}>
                   {jurisdiction?.roles.length > 0 &&
-                    jurisdiction?.roles.map((value, index) => {
+                    filterRoles(jurisdiction?.roles).map((value, index) => {
                       return <RemoveableTag key={index} text={`${t(value["i18text"]).slice(0, 22)} ...`} onClick={() => onRemove(index, value)} />;
                     })}
                 </div>
