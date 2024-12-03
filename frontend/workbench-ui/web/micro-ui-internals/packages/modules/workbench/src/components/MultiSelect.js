@@ -54,7 +54,7 @@ const CustomSelectWidget = (props) => {
     params: {},
     body: {
       MdmsCriteria: {
-        tenantId: tenantId,
+        tenantId: Digit.ULBService.getCurrentTenantId(),
         schemaCode: schemaCode,
         limit: 50,
         offset: 0,
@@ -101,12 +101,12 @@ const CustomSelectWidget = (props) => {
   const SelectMenuButton = (props) => {
     return (
       <div>
-        <components.MenuList {...props}>{props.children}</components.MenuList>
+        {/* <components.MenuList {...props}>{props.children}</components.MenuList>
         <div className="link-container">
           <div onClick={handleSeeAll} className="view-all-link">
           {t("VIEW_ALL")}
           </div>
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -155,7 +155,7 @@ const CustomSelectWidget = (props) => {
   };
   const handleViewMoreClick = (detail) => {
     const schemaCode = detail?.schemaCode;
-    const [moduleName, masterName] = schemaCode.split(".");
+    const [moduleName, masterName] = schemaCode?.split(".");
     const uniqueIdentifier = detail?.uniqueIdentifier;
     history.push(
       `/${window.contextPath}/employee/workbench/mdms-view?moduleName=${moduleName}&masterName=${masterName}&uniqueIdentifier=${uniqueIdentifier}`
@@ -209,7 +209,7 @@ const CustomSelectWidget = (props) => {
         isMulti={multiple}
         styles={customStyles}
         // components={isSeeAll ? { MenuList: SelectMenuButton, Option: OptionWithInfo } : { Option: OptionWithInfo }}
-        components={{ MenuList: SelectMenuButton, Option: OptionWithInfo }}
+        components={schema?.schemaCode ? { MenuList: SelectMenuButton, Option: OptionWithInfo } :  { Option: OptionWithInfo }}
       />
 
       <div className="info-icon-container">
@@ -295,7 +295,7 @@ const CustomSelectWidget = (props) => {
           <div className="modal-wrapper">
             <div className="modal-content">
               <div className="modal-inner">
-                <MDMSSearchv2Popup masterNameInherited={schema.schemaCode.split(".")[1]} moduleNameInherited={schema.schemaCode.split(".")[0]} onClickSelect={onClickSelect} />
+                <MDMSSearchv2Popup masterNameInherited={schema?.schemaCode?.split(".")[1]} moduleNameInherited={schema?.schemaCode?.split(".")[0]} onClickSelect={onClickSelect} />
               </div>
               <Button label={"Close"} onButtonClick={handleCloseModal}></Button>
             </div>
