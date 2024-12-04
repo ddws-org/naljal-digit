@@ -62,12 +62,14 @@ public class Consumer {
         cityData.put("name", villageData.getOrDefault("cityName", ""));
         cityData.put("captcha", villageData.getOrDefault("captcha", ""));
         cityData.put("ddrName", villageData.getOrDefault("ddrName", ""));
-        cityData.put("latitude", villageData.getOrDefault("latitude", "0"));
+//        cityData.put("latitude", villageData.getOrDefault("latitude", "0"));
         cityData.put("ulbGrade", villageData.getOrDefault("ulbGrade", ""));
         cityData.put("localName", villageData.getOrDefault("localName", ""));
-        cityData.put("longitude", villageData.getOrDefault("longitude", "0"));
+//        cityData.put("longitude", villageData.getOrDefault("longitude", "0"));
         cityData.put("projectId", villageData.getOrDefault("projectId", ""));
         cityData.put("regionName", villageData.getOrDefault("regionName", ""));
+        cityData.put("villageCode",villageData.getOrDefault("villageCode",""));
+        cityData.put("villageName",villageData.getOrDefault("villageName",""));
         cityData.put("districtCode", villageData.getOrDefault("districtCode", ""));
         cityData.put("districtName", villageData.getOrDefault("districtName", ""));
 
@@ -80,17 +82,20 @@ public class Consumer {
         mdmsData.put("code", villageData.get("code"));
         mdmsData.put("name", villageData.get("name"));
         mdmsData.put("address", villageData.get("address"));
+        mdmsData.put("villageCode",villageData.get("villageCode"));
+        mdmsData.put("villageName",villageData.get("villageName"));
         mdmsData.put("description", villageData.get("description"));
-        mdmsData.put("sectionCode", villageData.get("sectionCode"));
-        mdmsData.put("sectionName", villageData.get("sectionName"));
-        mdmsData.put("schemeCode", villageData.get("schemeCode"));
-        mdmsData.put("schemeName", villageData.get("schemeName"));
-        mdmsData.put("divisionCode", villageData.get("divisionCode"));
-        mdmsData.put("divisionName", villageData.get("divisionName"));
-        mdmsData.put("circleName", villageData.get("circleName"));
-        mdmsData.put("circleCode", villageData.get("circleCode"));
-        mdmsData.put("zoneName", villageData.get("zoneName"));
-        mdmsData.put("zoneCode", villageData.get("zoneCode"));
+        mdmsData.put("districtCode", villageData.get("districtCode"));
+        mdmsData.put("districtName",villageData.get("districtName"));
+//        mdmsData.put("sectionName", villageData.get("sectionName"));
+//        mdmsData.put("schemeCode", villageData.get("schemeCode"));
+//        mdmsData.put("schemeName", villageData.get("schemeName"));
+//        mdmsData.put("divisionCode", villageData.get("divisionCode"));
+//        mdmsData.put("divisionName", villageData.get("divisionName"));
+        mdmsData.put("blockcode", villageData.get("blockcode"));
+        mdmsData.put("blockname", villageData.get("blockname"));
+        mdmsData.put("panchayatcode", villageData.get("panchayatcode"));
+        mdmsData.put("panchayatname", villageData.get("panchayatname"));
 
         return Mdms.builder()
                 .tenantId("as")

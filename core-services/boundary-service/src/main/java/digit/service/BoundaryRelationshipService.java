@@ -294,26 +294,26 @@ public class BoundaryRelationshipService {
 
     private void updateParentDetails(String boundaryType, String code, Map<String, String> parentDetails) {
         switch (boundaryType.toLowerCase()) {
-            case "zone":
-                parentDetails.put("zoneCode", code);
-                parentDetails.put("zoneName", extractNameFromCode(code));
+            case "district":
+                parentDetails.put("districtCode", code);
+                parentDetails.put("districtName", extractNameFromCode(code));
                 break;
-            case "circle":
-                parentDetails.put("circleCode", code);
-                parentDetails.put("circleName", extractNameFromCode(code));
+            case "block":
+                parentDetails.put("blockcode", code);
+                parentDetails.put("blockname", extractNameFromCode(code));
                 break;
-            case "division":
-                parentDetails.put("divisionCode", code);
-                parentDetails.put("divisionName", extractNameFromCode(code));
+            case "panchayat":
+                parentDetails.put("panchayatcode", code);
+                parentDetails.put("panchayatname", extractNameFromCode(code));
                 break;
-            case "sub division":
-                parentDetails.put("subDivisionCode", code);
-                parentDetails.put("subDivisionName", extractNameFromCode(code));
-                break;
-            case "section":
-                parentDetails.put("sectionCode", code);
-                parentDetails.put("sectionName", extractNameFromCode(code));
-                break;
+//            case "sub division":
+//                parentDetails.put("subDivisionCode", code);
+//                parentDetails.put("subDivisionName", extractNameFromCode(code));
+//                break;
+//            case "section":
+//                parentDetails.put("sectionCode", code);
+//                parentDetails.put("sectionName", extractNameFromCode(code));
+//                break;
         }
     }
 
@@ -323,8 +323,8 @@ public class BoundaryRelationshipService {
         villageData.put("name", extractNameFromCode(code));
         villageData.put("address", extractNameFromCode(code));
         villageData.put("description", extractNameFromCode(code));
-        villageData.put("schemeCode", code);
-        villageData.put("schemeName", extractNameFromCode(code));
+        villageData.put("villageCode", code);
+        villageData.put("villageName", extractNameFromCode(code));
 
         villageData.putAll(parentDetails);
 

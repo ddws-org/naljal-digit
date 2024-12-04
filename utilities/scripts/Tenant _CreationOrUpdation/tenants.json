@@ -1,23 +1,23 @@
 {
-    "tenantId": "ka",
+    "tenantId": "as",
     "moduleName": "tenant",
     "tenants": [
 {
-            "code": "ka",
-            "name": "Karnataka",
-            "description": "Karnataka",
+            "code": "as",
+            "name": "Assam",
+            "description": "Assam",
             "logoId": "https://s3.ap-south-1.amazonaws.com/pb-egov-assets/pb.jalandhar/logo.png",
             "imageId": "https://s3.ap-south-1.amazonaws.com/pb-egov-assets/pb.jalandhar/logo.png",
-            "domainUrl": "www.mcjalandhar.in",
+            "domainUrl": "",
             "type": "CITY",
-            "twitterUrl": "https://twitter.com/search?q=%23jalandhar",
-            "facebookUrl": "https://www.facebook.com/city/jalandhar-Punjab",
-            "emailId": "complaints.mcj@gmail.com",
+            "twitterUrl": "",
+            "facebookUrl": "",
+            "emailId": "",
             "OfficeTimings": {
-                "Mon - Fri": "9.00 AM - 6.00 PM"
+                "Mon - Fri": "9.00 AM - 5.00 PM"
             },
             "city": {
-                "name": "Karnataka State",
+                "name": "Assam State",
                 "localName": null,
                 "districtCode": null,
                 "districtName": null,
@@ -27,11 +27,11 @@
                 "latitude": 31.3260152,
                 "shapeFileLocation": null,
                 "captcha": null,
-                "code": "15",
-                "ddrName": "Karnataka",
-                "projectId": "15"
+                "code": "",
+                "ddrName": "",
+                "projectId": ""
             },
-            "address": "Karnataka-144001",
+            "address": "Assam-144001",
             "pincode": [],
             "contactNumber": "0181-2227015",
             "pdfHeader": "PB_PDF_HEADER",
