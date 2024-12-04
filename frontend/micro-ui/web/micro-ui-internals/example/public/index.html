@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+  <script type="application/javascript">
+    // Set Webpack public path before any assets are loaded
+    __webpack_public_path__ = "uat/mgramseva-web/";
+
+    console.log("Webpack public path is set to:", __webpack_public_path__);
+  </script>
   <meta charset="utf-8" />
   <link rel="icon" href="https://assam-s3.s3.ap-south-1.amazonaws.com/hrms/favicon.ico" />
   <link
@@ -58,15 +64,16 @@
       max-height: 14rem !important;
     }
 
+
   </style>
 </head>
 
 <body>
-  <script type="application/javascript">
-    console.log(window?.globalConfigs?.getConfig("CONTEXT_PATH"),"CONTEXTPATHGLOVA");
+  <!-- <script type="application/javascript">
+    console.log(window?.globalConfigs?.getConfig("CONTEXT_PATH"),"CONTEXTPATHGLOVA EX");
     window.resourceBasePath = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
   </script>
-  <script type="application/javascript" src="/frontend/micro-ui/web/src/App.js"></script>
+  <script type="application/javascript" src="/frontend/micro-ui/web/src/App.js"></script> -->
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 </body>

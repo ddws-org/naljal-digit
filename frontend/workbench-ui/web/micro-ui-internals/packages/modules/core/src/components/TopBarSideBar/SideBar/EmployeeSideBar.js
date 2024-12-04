@@ -106,7 +106,7 @@ const EmployeeSideBar = () => {
     });
     const sortedObject = Object.fromEntries(objectArray);
     configEmployeeSideBar = sortedObject;
-    return <Sidebar data={configEmployeeSideBar} />;
+    // return <Sidebar data={configEmployeeSideBar} />;
   };
 
   if (isLoading) {

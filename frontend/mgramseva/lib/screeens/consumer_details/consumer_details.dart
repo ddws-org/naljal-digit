@@ -220,8 +220,6 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[0].key,
                             key: Keys.createConsumer.CONSUMER_NAME_KEY,
-                            readOnly: true,
-                            isDisabled: true,
                           ),
 
                           RadioButtonFieldBuilder(
@@ -252,7 +250,7 @@ class _ConsumerDetailsState extends State<ConsumerDetails> {
                             contextKey:
                                 consumerProvider.consmerWalkthrougList[2].key,
                             key: Keys.createConsumer.CONSUMER_SPOUSE_PARENT_KEY,
-                            readOnly:  consumerProvider.isEdit == true,
+                            readOnly:  consumerProvider.isEdit == false,
                           ),
 
                           //Consumer Phone Number Field
