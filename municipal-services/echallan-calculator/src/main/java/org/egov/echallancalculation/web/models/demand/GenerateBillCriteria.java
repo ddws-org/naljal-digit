@@ -1,6 +1,6 @@
 package org.egov.echallancalculation.web.models.demand;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
 

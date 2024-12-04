@@ -1,17 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/common/fetch_bill.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/demand/update_demand_list.dart';
 import 'package:mgramseva/repository/bill_generation_details_repo.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
+import 'package:mgramseva/repository/pdf_repository.dart';
 import 'package:mgramseva/repository/search_connection_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
+import '../model/bill/meter_demand_details.dart';
 import '../utils/constants.dart';
 import 'common_provider.dart';
 import 'fetch_bill_provider.dart';
@@ -20,19 +25,25 @@ class HouseHoldProvider with ChangeNotifier {
   late GlobalKey<FormState> formKey;
   WaterConnection? waterConnection;
   UpdateDemandList? updateDemandList;
+  AggragateDemandDetails? aggDemandItems;
+  List<DemandDetails>? demandListItems = [];
+
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   var isVisible = false;
 
-  Future<void> checkMeterDemand(
-      BillList data, WaterConnection waterConnection) async {
-    if (data.bill!.isNotEmpty) {
+  Future<List<MeterReadings>> checkMeterDemand(
+      BillList? data, WaterConnection? waterConnection) async {
+    if (data != null &&
+        data.bill != null &&
+        data.bill!.isNotEmpty &&
+        data.bill!.isNotEmpty) {
       try {
         var res = await BillGenerateRepository().searchMeteredDemand({
           "tenantId": data.bill!.first.tenantId,
           "connectionNos": data.bill!.first.consumerCode
         });
-        if (res.meterReadings!.isNotEmpty) {
+        if (res.meterReadings != null && res.meterReadings!.isNotEmpty) {
           data.bill!.first.meterReadings = res.meterReadings;
         }
         if (data.bill!.first.billDetails != null) {
@@ -40,29 +51,30 @@ class HouseHoldProvider with ChangeNotifier {
               .sort((a, b) => b.toPeriod!.compareTo(a.toPeriod!));
         }
         data.bill!.first.waterConnection = waterConnection;
-        streamController.add(data);
+        return res.meterReadings!;
       } catch (e, s) {
-        streamController.addError('error');
         ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       }
-    } else {
-      streamController.add(data);
     }
+    return <MeterReadings>[];
   }
 
+  //*** Body FOR CreatePDF ***//
+  Map<String, dynamic> createPDFBody = {};
+  Map<String, dynamic> createPDFPrams = {};
   Future<void> fetchDemand(data, List<UpdateDemands>? demandList,
       [String? id, String? status]) async {
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     try {
       if (data == null) {
         var res = await SearchConnectionRepository().getconnection({
           "tenantId": commonProvider.userDetails!.selectedtenant!.code,
           ...{'connectionNumber': id},
         });
-        if (res.waterConnection != null &&
-            res.waterConnection!.isNotEmpty) {
+        if (res.waterConnection != null && res.waterConnection!.isNotEmpty) {
           data = res.waterConnection!.first;
         }
       }
@@ -72,6 +84,33 @@ class HouseHoldProvider with ChangeNotifier {
               navigatorKey.currentContext!,
               listen: false)
           .fetchBill(waterConnection, navigatorKey.currentContext!);
+
+      //*** Fetch Aggregated Demand Details  ***//
+      aggDemandItems = null;
+      // isLoading = true;
+      notifyListeners();
+      await BillingServiceRepository().fetchAggregateDemand({
+        "tenantId": data.tenantId,
+        "consumerCode": data.connectionNo.toString(),
+        "businessService": "WS",
+      }).then((AggragateDemandDetails? value) {
+        if (value != null) {
+          aggDemandItems = value;
+          notifyListeners();
+        }
+        createPDFBody = {
+          "Bill": waterConnection?.fetchBill?.bill,
+          "AggregatedDemands": aggDemandItems,
+        };
+      });
+      notifyListeners();
+
+      //*** Create PDF Request Body ***//
+      if (waterConnection?.connectionType == 'Metered') {
+        createPDFPrams = {"key": "ws-bill-v2", "tenantId": data.tenantId};
+      } else {
+        createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
+      }
 
       var mdms = await CommonProvider.getMdmsBillingService(
           commonProvider.userDetails!.selectedtenant?.code.toString() ??
@@ -120,13 +159,12 @@ class HouseHoldProvider with ChangeNotifier {
         waterConnection?.demands = demandList;
         updateDemandList?.demands = demandList;
       } else {}
-
       await BillingServiceRepository().fetchdDemand({
         "tenantId": data.tenantId,
         "consumerCode": data.connectionNo.toString(),
         "businessService": "WS",
         // "status": "ACTIVE"
-      }).then((value) {
+      }).then((value) async {
         value.demands = value.demands
             ?.where((element) => element.status != 'CANCELLED')
             .toList();
@@ -146,14 +184,21 @@ class HouseHoldProvider with ChangeNotifier {
                   value.demands?.first.demandDetails?.first.taxHeadMasterCode ==
                       'WS_ADVANCE_CARRYFORWARD' &&
                   ((waterConnection?.fetchBill?.bill ?? []).length == 0) ||
-              ((waterConnection?.fetchBill?.bill??[]).length>0?(waterConnection?.fetchBill?.bill?.first.totalAmount ?? 0):0) < 0) {
+              ((waterConnection?.fetchBill?.bill ?? []).length > 0
+                      ? (waterConnection?.fetchBill?.bill?.first.totalAmount ??
+                          0)
+                      : 0) <
+                  0) {
             isfirstdemand = false;
           } else {
             isfirstdemand = true;
           }
+          if (waterConnection?.connectionType == 'Metered' &&
+              waterConnection?.fetchBill?.bill?.isNotEmpty == true) {
+            value.demands?.first.meterReadings = await checkMeterDemand(
+                waterConnection?.fetchBill, waterConnection);
+          }
           streamController.add(value);
-
-          // fetchBill(data);
         } else {
           DemandList demandList = new DemandList();
           demandList.demands = [];

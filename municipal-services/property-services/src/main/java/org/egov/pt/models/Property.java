@@ -4,17 +4,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 
 import org.egov.pt.models.enums.Channel;
 import org.egov.pt.models.enums.CreationReason;
 import org.egov.pt.models.enums.Source;
 import org.egov.pt.models.enums.Status;
 import org.egov.pt.models.workflow.ProcessInstance;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.javers.core.metamodel.annotation.DiffIgnore;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,16 +38,13 @@ import lombok.ToString;
 public class Property extends PropertyInfo {
 
 	@JsonProperty("acknowldgementNumber")
-	@SafeHtml
 	private String acknowldgementNumber;
 
 	@NotNull
 	@JsonProperty("propertyType")
-	@SafeHtml
 	private String propertyType;
 
 	@JsonProperty("ownershipCategory")
-	@SafeHtml
 	private String ownershipCategory;
 
 	@JsonProperty("owners")
@@ -63,7 +59,6 @@ public class Property extends PropertyInfo {
 	private CreationReason creationReason;
 	
 	@JsonProperty("usageCategory")
-	@SafeHtml
 	private String usageCategory;
 
 	@Max(value = 500)

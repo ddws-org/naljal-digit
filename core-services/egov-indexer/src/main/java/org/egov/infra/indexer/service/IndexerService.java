@@ -61,9 +61,6 @@ public class IndexerService {
 	@Value("${egov.infra.indexer.host}")
 	private String esHostUrl;
 
-	@Value("${egov.infra.indexer.legacy.version}")
-	private Boolean isLegacyVersionES;
-
 	/**
 	 * Method that processes data according to the config and posts them to es.
 	 *

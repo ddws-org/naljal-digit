@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:mgramseva/components/household_register/household_card.dart';
 import 'package:mgramseva/providers/household_register_provider.dart';
-import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/testing_keys/testing_keys.dart';
+import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/widgets/drawer_wrapper.dart';
 import 'package:mgramseva/widgets/home_back.dart';
 import 'package:mgramseva/widgets/side_bar.dart';
@@ -44,15 +46,14 @@ class _HouseholdRegister extends State<HouseholdRegister>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     var householdRegisterProvider =
         Provider.of<HouseholdRegisterProvider>(context, listen: false);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (householdRegisterProvider.removeOverLay(_overlayEntry))
-          return false;
-        return true;
-      },
+    return PopScope(
+      canPop: householdRegisterProvider.removeOverLay(_overlayEntry) ? false: true,
+      onPopInvoked : (didPop){
+  },
       child: GestureDetector(
         onTap: () => householdRegisterProvider.removeOverLay(_overlayEntry),
         child: FocusWatcher(
@@ -75,29 +76,37 @@ class _HouseholdRegister extends State<HouseholdRegister>
                 ),
               ),
               alignment: Alignment.center,
-            /*  margin: constraints.maxWidth < 760
+              margin: constraints.maxWidth < 760
                   ? null
                   : EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 25),*/
+                      horizontal: MediaQuery.of(context).size.width / 25),
               child: Stack(children: [
                 Container(
-                    margin: constraints.maxWidth < 760
-                        ? null
-                        : EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 25),
+                    color: Color.fromRGBO(238, 238, 238, 1),
                     padding: EdgeInsets.only(left: 8, right: 8),
                     height: constraints.maxHeight - 50,
                     child: CustomScrollView(slivers: [
                       SliverList(
                           delegate: SliverChildListDelegate([
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            HomeBack(),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [_buildDownload, _buildShare])
-                          ],
+                        SizedBox(
+                          width: size.width,
+                          child: Row(
+                            children: [
+                              HomeBack(),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: _buildDownload)),
+                                    _buildShare
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Container(key: key, child: HouseholdCard()),
                       ])),
@@ -138,7 +147,14 @@ class _HouseholdRegister extends State<HouseholdRegister>
       },
       icon: Image.asset('assets/png/whats_app.png'),
       label: Text(
-          ApplicationLocalizations.of(context).translate(i18.common.SHARE), style: TextStyle(color: Color.fromRGBO(3, 60, 207, 0.7))));
+          ApplicationLocalizations.of(context).translate(i18.common.SHARE),
+          
+          style: TextStyle(
+            color:  Color(0xff033ccf)
+          ),
+          )
+           ,
+          );
 
   Widget get _buildDownload => TextButton.icon(
       onPressed: () => showDownloadList(Constants.DOWNLOAD_OPTIONS, context),

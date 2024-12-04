@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
-@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2019-02-25T15:07:36.183+05:30")
+//@javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2019-02-25T15:07:36.183+05:30")
 
 @Controller
 @RequestMapping("/v1")

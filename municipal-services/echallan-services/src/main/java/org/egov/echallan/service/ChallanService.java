@@ -2,15 +2,12 @@ package org.egov.echallan.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.YearMonth;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.echallan.config.ChallanConfiguration;
@@ -27,6 +24,7 @@ import org.egov.echallan.repository.ChallanRepository;
 import org.egov.echallan.util.CommonUtils;
 import org.egov.echallan.validator.ChallanValidator;
 import org.egov.echallan.web.models.ChallanCollectionData;
+import org.egov.echallan.web.models.ExpenseBillReportData;
 import org.egov.echallan.web.models.ExpenseDashboard;
 import org.egov.echallan.web.models.user.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,11 +158,11 @@ public class ChallanService {
 			userService.setAccountUser(request);
 			enrichmentService.enrichUpdateRequest(request, searchResult.get(0));
 			calculationService.addCalculation(request);
+		    repository.update(request);
 			if (request.getChallan().getApplicationStatus() == StatusEnum.PAID && searchResult.get(0).getApplicationStatus() == StatusEnum.ACTIVE)
 				paymentService.createPayment(request);
 			if (searchResult.get(0).getApplicationStatus() == StatusEnum.PAID)
 				paymentService.updatePayment(request);
-			repository.update(request);
 			return request.getChallan();
 		}
 
@@ -377,5 +375,19 @@ public class ChallanService {
 	        challans = enrichmentService.enrichChallanSearch(challans,criteria,requestInfo);
 	        return challans;
 	    }
-	
+
+	public List<ExpenseBillReportData> expenseBillReport(RequestInfo requestInfo, String monthstartDate,String monthendDate, String tenantId, Integer offset, Integer limit)
+	{
+        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startDate=LocalDate.parse(monthstartDate,dtf);
+		LocalDate endDate=LocalDate.parse(monthendDate,dtf);
+
+		Long monthStartDateTime=LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),
+				0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		Long monthEndDateTime=LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		List<ExpenseBillReportData> expenseBillReport=repository.getExpenseBillReport(monthStartDateTime,monthEndDateTime,tenantId,offset,limit);
+		return expenseBillReport;
+
+	}
 }

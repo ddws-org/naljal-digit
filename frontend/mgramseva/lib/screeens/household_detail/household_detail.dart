@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/house_connection_and_bill/consumer_bill_payment.dart';
 import 'package:mgramseva/components/house_connection_and_bill/generate_new_bill.dart';
@@ -25,7 +28,6 @@ class HouseholdDetail extends StatefulWidget {
   final String? mode;
   final String? status;
   final WaterConnection? waterConnection;
-
   HouseholdDetail(
       {Key? key, this.id, this.mode, this.status, this.waterConnection});
   @override
@@ -50,6 +52,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   buildDemandView(DemandList data) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+
     return Column(
       children: [
         data.demands!.isEmpty
@@ -90,6 +93,7 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
   Widget build(BuildContext context) {
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
+
     return Scaffold(
        // backgroundColor: Colors.blue,
         appBar: CustomAppBar(),
@@ -109,41 +113,41 @@ class _HouseholdDetailState extends State<HouseholdDetail> {
               ),
             ),
           child: SingleChildScrollView(
-              child: FormWrapper(Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                HomeBack(),
-                StreamBuilder(
-                    stream: houseHoldProvider.streamController.stream,
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        return Column(
-                          children: [
-                            HouseConnectionDetailCard(
-                                waterconnection:
-                                    houseHoldProvider.waterConnection),
-                            buildDemandView(snapshot.data)
-                          ],
-                        );
-                      } else if (snapshot.hasError) {
-                        return Notifiers.networkErrorPage(
-                            context,
-                            () => houseHoldProvider.fetchDemand(
-                                widget.waterConnection,
-                                widget.waterConnection?.demands));
-                      } else {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Loaders.circularLoader();
-                          case ConnectionState.active:
-                            return Loaders.circularLoader();
-                          default:
-                            return Container();
-                        }
+            child: FormWrapper(Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+              HomeBack(),
+              StreamBuilder(
+                  stream: houseHoldProvider.streamController.stream,
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          HouseConnectionDetailCard(
+                              waterconnection:
+                                  houseHoldProvider.waterConnection),
+                          buildDemandView(snapshot.data)
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return Notifiers.networkErrorPage(
+                          context,
+                          () => houseHoldProvider.fetchDemand(
+                              widget.waterConnection,
+                              widget.waterConnection?.demands));
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Loaders.circularLoader();
+                        case ConnectionState.active:
+                          return Loaders.circularLoader();
+                        default:
+                          return Container();
                       }
-                    }),
-                Footer()
+                    }
+                  }),
+              Footer()
               ]))),
         ));
   }

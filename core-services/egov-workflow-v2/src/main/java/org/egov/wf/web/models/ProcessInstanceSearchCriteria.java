@@ -1,23 +1,28 @@
 package org.egov.wf.web.models;
 
 
+import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
-import java.util.List;
+import lombok.Data;
 
 @Data
 public class ProcessInstanceSearchCriteria {
 
     @JsonProperty("tenantId")
+    @NotNull
     private String tenantId;
 
     @JsonProperty("status")
     private List<String> status;
 
     @JsonProperty("businessIds")
-    private List<String> businessIds;
+    private List<@Size(min=4) String> businessIds;
 
     @JsonProperty("assignee")
     private String  assignee;
@@ -46,6 +51,9 @@ public class ProcessInstanceSearchCriteria {
 
     @JsonProperty("moduleName")
     private String moduleName;
+    
+    @JsonIgnore
+    private Boolean isNearingSlaCount;
 
     @JsonIgnore
     private List<String> tenantSpecifiStatus;
@@ -55,6 +63,18 @@ public class ProcessInstanceSearchCriteria {
 
     @JsonIgnore
     private List<String> statesToIgnore;
+
+    @JsonIgnore
+    private Boolean isEscalatedCount;
+
+    @JsonIgnore
+    private Boolean isAssignedToMeCount;
+
+    @JsonIgnore
+    private List<String> statusesIrrespectiveOfTenant;
+    
+    @JsonIgnore
+    private Long slotPercentageSlaLimit;
 
 
 

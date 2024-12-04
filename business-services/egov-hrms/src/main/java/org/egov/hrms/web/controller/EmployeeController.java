@@ -43,6 +43,7 @@ package org.egov.hrms.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.hrms.service.EmployeeService;
+import org.egov.hrms.utils.ResponseInfoFactory;
 import org.egov.hrms.web.contract.*;
 import org.egov.hrms.web.validator.EmployeeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,8 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeValidator validator;
 
+	@Autowired
+	private ResponseInfoFactory factory;
 
 	/**
 	 * Maps Post Requests for _create & returns ResponseEntity of either
@@ -142,6 +145,15 @@ public class EmployeeController {
 		validator.validateEmployeeCountRequest(tenantId);
 		response = employeeService.getEmployeeCountResponseV1(requestInfo,roles,tenantId,isStateLevelSearch);
 		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+
+	@PostMapping("/_plainsearch")
+	@ResponseBody
+	private ResponseEntity<?> plainsearch(@RequestBody @Valid RequestInfoWrapper requestInfoWrapper, @ModelAttribute @Valid EmployeePlainSearchCriteria criteria,@RequestBody RequestInfo requestInfo) {
+
+		EmployeeResponse employeeResponse = EmployeeResponse.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true))
+				.employees(employeeService.plainsearch(criteria,requestInfo)).build();
+		return new ResponseEntity<>(employeeResponse,HttpStatus.OK);
 	}
 
 }

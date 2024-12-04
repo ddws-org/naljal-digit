@@ -1,4 +1,4 @@
-import { Header, Loader } from "@egovernments/digit-ui-react-components";
+import { Header, Loader, Toast } from "@egovernments/digit-ui-react-components";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DesktopInbox from "../components/inbox/DesktopInbox";
@@ -18,6 +18,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const [searchParams, setSearchParams] = useState(() => {
     return initialStates.searchParams || {};
   });
+  const [toast, setToast] = useState(null);
 
   let isMobile = window.Digit.Utils.browser.isMobile();
   let paginationParams = isMobile
@@ -26,8 +27,11 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
   const isupdate = Digit.SessionStorage.get("isupdate");
 
   let roles = STATE_ADMIN
-    ? { roles: "DIV_ADMIN, HRMS_ADMIN", isStateLevelSearch: true }
-    : { roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER", isStateLevelSearch: false };
+    ? { roles: "DIV_ADMIN", isStateLevelSearch: true }
+    : {
+        roles: "SYSTEM, GP_ADMIN, COLLECTION_OPERATOR, PROFILE_UPDATE, DASHBOAD_VIEWER, CHAIRMAN, REVENUE_COLLECTOR, SECRETARY",
+        isStateLevelSearch: false,
+      };
 
   let requestBody = {
     criteria: {
@@ -44,8 +48,13 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     };
   }
 
-  const { data: divisionData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
-    enabled: (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds") ? true : false,
+  const checkRoles = requestBody.criteria.roles[0] !== "DIV_ADMIN";
+  const { data: blockData, ...rests } = Digit.Hooks.hrms.useHRMSEmployeeSearch(requestBody, isupdate, {
+    enabled: !STATE_ADMIN
+      ? false
+      : (STATE_ADMIN && searchParams?.hasOwnProperty("isActive")) || searchParams?.hasOwnProperty("tenantIds")
+      ? true
+      : false,
   });
 
   if (searchParams?.hasOwnProperty("roles")) {
@@ -81,7 +90,19 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     setPageOffset((prevState) => prevState - pageSize);
   };
 
+  const closeToast = () => {
+    setTimeout(() => {
+      setToast(null);
+    }, 5000);
+  };
   const handleFilterChange = (filterParam) => {
+    // if (!searchParams.names || !searchParams.phone || !searchParams.codes || !filterParam.tenantIds || !filterParam.isActive) {
+    //   // Show toast message
+    //   setToast({ key: true, label: "Please enter a minimum one value to search" });
+    //   closeToast();
+    //   return; // Don't proceed with the search
+    // }
+
     let keys_to_delete = filterParam.delete;
     let _new = { ...searchParams, ...filterParam };
     if (keys_to_delete) keys_to_delete.forEach((key) => delete _new[key]);
@@ -106,13 +127,13 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
     return [
       {
         label: t("HR_NAME_LABEL"),
-        name: "names",
+        name: "name",
       },
       {
         label: t("HR_MOB_NO_LABEL"),
         name: "phone",
         maxlength: 10,
-        pattern: "[6-9][0-9]{9}",
+        pattern: "[4-9][0-9]{9}",
         title: t("ES_SEARCH_APPLICATION_MOBILE_INVALID"),
         componentInFront: "+91",
       },
@@ -131,7 +152,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
       return (
         <MobileInbox
           businessService={businessService}
-          data={divisionData ? divisionData : data}
+          data={blockData ? blockData : data}
           isLoading={hookLoading}
           defaultSearchParams={initialStates.searchParams}
           isSearch={!isInbox}
@@ -161,7 +182,7 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
           {isInbox && <Header>{t("HR_HOME_SEARCH_RESULTS_HEADING")}</Header>}
           <DesktopInbox
             businessService={businessService}
-            data={divisionData ? divisionData : data}
+            data={blockData ? blockData : data}
             isLoading={hookLoading}
             defaultSearchParams={initialStates.searchParams}
             isSearch={!isInbox}
@@ -181,6 +202,15 @@ const Inbox = ({ parentRoute, businessService = "HRMS", initialStates = {}, filt
             totalRecords={totalRecords}
             filterComponent={filterComponent}
           />
+          {toast && (
+            <Toast
+              error={toast.key}
+              label={t(toast.label)}
+              onClose={() => {
+                setToast(null);
+              }}
+            />
+          )}
         </div>
       );
     }

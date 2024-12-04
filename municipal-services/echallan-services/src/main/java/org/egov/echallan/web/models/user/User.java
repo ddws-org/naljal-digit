@@ -9,8 +9,8 @@ import java.util.List;
 import lombok.*;
 import org.egov.common.contract.request.Role;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * User
@@ -51,7 +51,7 @@ public class User   {
         private String gender;
 
         @NotNull
-        @Pattern(regexp = "^[1-9][0-9]{9}$", message = "Invalid mobile number")
+        @Pattern(regexp = "^[6-9][0-9]{9}$", message = "Invalid mobile number")
         @JsonProperty("mobileNumber")
         private String mobileNumber;
 

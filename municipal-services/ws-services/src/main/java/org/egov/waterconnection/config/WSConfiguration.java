@@ -277,6 +277,12 @@ public class WSConfiguration {
     @Value("${egov.es.search.endpoint}")
     private String esSearchEndpoint;
 
+	@Value("${egov.indexer.es.username}")
+	private String esUsername;
+
+	@Value("${egov.indexer.es.password}")
+	private String esPassword;
+
     @Value("${egov.ws.search.name.fuziness}")
     private String nameFuziness;
     

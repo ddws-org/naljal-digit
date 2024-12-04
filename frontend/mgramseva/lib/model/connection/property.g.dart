@@ -141,6 +141,7 @@ Owners _$OwnersFromJson(Map<String, dynamic> json) {
     ..mobileNumber = json['mobileNumber'] as String?
     ..fatherOrHusbandName = json['fatherOrHusbandName'] as String?
     ..name = json['name'] as String?
+    ..remarks = json['remarks'] as String?
     ..status = json['status'] as String?
     ..gender = json['gender'] as String?
     ..ownerType = json['ownerType'] as String?
@@ -180,6 +181,7 @@ Map<String, dynamic> _$OwnersToJson(Owners instance) => <String, dynamic>{
       'mobileNumber': instance.mobileNumber,
       'fatherOrHusbandName': instance.fatherOrHusbandName,
       'name': instance.name,
+      'remarks': instance.remarks,
       'status': instance.status,
       'gender': instance.gender,
       'ownerType': instance.ownerType,

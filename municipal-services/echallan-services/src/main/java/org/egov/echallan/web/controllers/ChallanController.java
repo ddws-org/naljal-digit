@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.common.contract.response.ResponseInfo;
 import org.egov.echallan.model.Challan;
@@ -20,19 +20,11 @@ import org.egov.echallan.repository.rowmapper.ChallanRowMapper;
 import org.egov.echallan.service.ChallanService;
 import org.egov.echallan.service.SchedulerService;
 import org.egov.echallan.util.ResponseInfoFactory;
-import org.egov.echallan.web.models.ChallanCollectionData;
-import org.egov.echallan.web.models.ChallanCollectionDataResponse;
-import org.egov.echallan.web.models.ExpenseDashboard;
-import org.egov.echallan.web.models.ExpenseDashboardResponse;
+import org.egov.echallan.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -171,5 +163,21 @@ public class ChallanController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
+	@PostMapping("/_expenseBillReport")
+	public ResponseEntity<ExpenseBillReportResponse> expenseBillReport(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+																	   @RequestParam("monthstartDate") String monthstartDate,
+																	   @RequestParam("monthendDate") String monthendDate,
+																	   @RequestParam("tenantId") String tenantId,
+																	   @RequestParam("offset") Integer offset,
+																	   @RequestParam("limit") Integer limit)
+	{
+		List<ExpenseBillReportData> expenseBillReport=challanService.expenseBillReport(requestInfoWrapper.getRequestInfo(),monthstartDate,monthendDate,tenantId,offset,limit);
+		ExpenseBillReportResponse expenseBillReportResponse=
+				ExpenseBillReportResponse.builder().ExpenseBillReportData(expenseBillReport)
+						.responseInfo(responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(),
+								true))
+						.build();
+		return new ResponseEntity<>(expenseBillReportResponse,HttpStatus.OK);
+	}
 
 }

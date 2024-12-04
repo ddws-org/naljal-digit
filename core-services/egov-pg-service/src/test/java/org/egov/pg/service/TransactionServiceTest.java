@@ -1,5 +1,6 @@
 package org.egov.pg.service;
 
+import org.egov.common.contract.request.PlainAccessRequest;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.pg.config.AppProperties;
 import org.egov.pg.models.Bill;
@@ -20,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.TransientDataAccessResourceException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +70,7 @@ public class TransactionServiceTest {
     @Before
     public void setUp() {
         user = User.builder().userName("USER001").mobileNumber("9XXXXXXXXX").name("XYZ").tenantId("pb").emailId("").build();
-        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", null);
+        requestInfo = new RequestInfo("", "", 0L, "", "", "", "", "", "", PlainAccessRequest.builder().build() ,null);
         lenient().when(gatewayService.getTxnId(any(Map.class))).thenReturn(Optional.of("ORDERID"));
         lenient().doNothing().when(producer).push(any(String.class), any(Object.class));
         lenient().doNothing().when(enrichmentService).enrichCreateTransaction(any(TransactionRequest.class));

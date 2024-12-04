@@ -14,9 +14,10 @@ import java.util.Map;
 import java.util.Set;
 
 
-import javax.annotation.PostConstruct;
 
 import com.fasterxml.jackson.core.type.*;
+import jakarta.annotation.PostConstruct;
+import net.minidev.json.JSONArray;
 import org.apache.commons.io.*;
 import org.egov.infra.mdms.utils.MDMSConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
 
 
 @Component
@@ -56,20 +57,21 @@ public class MDMSApplicationRunnerImpl {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @PostConstruct
-    public void run() {
-        try {
-            log.info("Reading files from: " + mdmsFileDirectory);
-            LinkedList<String> errorFilesList = new LinkedList<>();
-            readMdmsConfigFiles(masterConfigUrl);
-            readFiles(mdmsFileDirectory, errorFilesList);
-            log.info("List Of Files which has Error while parsing " + errorFilesList);
-            if (!errorFilesList.isEmpty() && stopOnAnyConfigError) {
-                log.info("Stopping as all files could not be loaded");
-                System.exit(1);
-            }
-        } catch (Exception e) {
-            log.error("Exception while loading yaml files: ", e);
-        }
+	public void run() {
+		try {
+			log.info("Reading files from: " + mdmsFileDirectory);
+			LinkedList<String> errorFilesList = new LinkedList<>();
+			if (!StringUtils.isEmpty(masterConfigUrl))
+				readMdmsConfigFiles(masterConfigUrl);
+			readFiles(mdmsFileDirectory, errorFilesList);
+			log.info("List Of Files which has Error while parsing " + errorFilesList);
+			if (!errorFilesList.isEmpty() && stopOnAnyConfigError) {
+				log.info("Stopping as all files could not be loaded");
+				System.exit(1);
+			}
+		} catch (Exception e) {
+			log.error("Exception while loading yaml files: ", e);
+		}
 
     }
 

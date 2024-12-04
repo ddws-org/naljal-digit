@@ -229,7 +229,7 @@ config:
     build:
       - work-dir: "core-services/egov-user"
         image-name: "egov-user"
-        dockerfile: "build/maven/Dockerfile"
+        dockerfile: "build/maven-java8/Dockerfile"
       - work-dir: "core-services/egov-user/src/main/resources/db"
         image-name: "egov-user-db"
 
@@ -265,6 +265,12 @@ config:
     build:
       - work-dir: "core-services/zuul"
         image-name: "zuul"
+        dockerfile: "build/maven-java8/Dockerfile"
+        
+  - name: "builds/naljal-digit/core-services/gateway"
+    build:
+      - work-dir: "core-services/gateway"
+        image-name: "gateway"
         dockerfile: "build/maven/Dockerfile"
 
   - name: "builds/naljal-digit/core-services/internal-gateway"
@@ -493,6 +499,16 @@ config:
       - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
         image-name: "rollout-dashboard-cronjob-indexer"
         dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+  - name: "builds/naljal-digit/utilities/naljal-custom-service"
+    build:
+      - work-dir: "utilities/naljal-custom-service"
+        image-name: "naljal-custom-service"
+  - name: "builds/naljal-digit/utilities/mdms-read-cronjob"
+    build:
+      - work-dir: "utilities/mdms-read-cronjob"
+        image-name: "api-cronjob"
+        dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
+
 
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
@@ -571,5 +587,10 @@ config:
       - work-dir: edcr/service/egov
         dockerfile: edcr/service/Dockerfile
         image-name: egov-edcr
+  - name: "builds/naljal-digit/utilities/egov-penalty-schedular"
+    build:
+      - work-dir: "utilities/Penalty"
+        image-name: "egov-penalty-schedular"
+        dockerfile: "build/maven/Dockerfile"
               
 

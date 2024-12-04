@@ -3,6 +3,7 @@ package org.egov.wscalculation.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -25,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
 import org.egov.wscalculation.constants.WSCalculationConstant;
 import org.egov.wscalculation.producer.WSCalculationProducer;
+import org.egov.wscalculation.repository.DemandAuditSeqBuilder;
 import org.egov.wscalculation.repository.DemandRepository;
 import org.egov.wscalculation.repository.ServiceRequestRepository;
 import org.egov.wscalculation.repository.WSCalculationDao;
@@ -47,26 +49,8 @@ import org.egov.wscalculation.util.NotificationUtil;
 import org.egov.wscalculation.util.WSCalculationUtil;
 import org.egov.wscalculation.validator.WSCalculationValidator;
 import org.egov.wscalculation.validator.WSCalculationWorkflowValidator;
-import org.egov.wscalculation.web.models.BulkDemand;
-import org.egov.wscalculation.web.models.Calculation;
-import org.egov.wscalculation.web.models.Category;
-import org.egov.wscalculation.web.models.Demand;
+import org.egov.wscalculation.web.models.*;
 import org.egov.wscalculation.web.models.Demand.StatusEnum;
-import org.egov.wscalculation.web.models.DemandDetail;
-import org.egov.wscalculation.web.models.DemandDetailAndCollection;
-import org.egov.wscalculation.web.models.DemandPenaltyResponse;
-import org.egov.wscalculation.web.models.DemandRequest;
-import org.egov.wscalculation.web.models.DemandResponse;
-import org.egov.wscalculation.web.models.GetBillCriteria;
-import org.egov.wscalculation.web.models.OwnerInfo;
-import org.egov.wscalculation.web.models.Property;
-import org.egov.wscalculation.web.models.Recipient;
-import org.egov.wscalculation.web.models.RequestInfoWrapper;
-import org.egov.wscalculation.web.models.SMSRequest;
-import org.egov.wscalculation.web.models.TaxHeadEstimate;
-import org.egov.wscalculation.web.models.TaxPeriod;
-import org.egov.wscalculation.web.models.WaterConnection;
-import org.egov.wscalculation.web.models.WaterConnectionRequest;
 import org.egov.wscalculation.web.models.users.UserDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +62,8 @@ import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import org.springframework.http.ResponseEntity;
+import org.apache.http.HttpStatus;
 
 @Service
 @Slf4j
@@ -142,6 +128,9 @@ public class DemandService {
 	
 	@Autowired
 	private EstimationService estimationService;
+
+	@Autowired
+	private DemandAuditSeqBuilder demandAuditSeqBuilder;
 
 	/**
 	 * Creates or updates Demand
@@ -281,6 +270,22 @@ public class DemandService {
 						.businessService(businessService).status(StatusEnum.valueOf("ACTIVE")).billExpiryTime(expiryDate)
 						.build());
 			}
+
+			if(config.isSaveDemandAuditEnabled()){
+				demands.stream().forEach(demand -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(demand.getConsumerCode()).
+							tenant_id(demand.getTenantId()).
+							status(demand.getStatus().toString()).
+							action("CREATE DEMAND BULK").
+							data(demand).
+							createdby(requestInfo.getUserInfo().getUuid()).
+							createdtime(System.currentTimeMillis()).build();
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
+				});
+			}
 			demandRes = demandRepository.saveDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 
@@ -347,9 +352,9 @@ public class DemandService {
 			}
 		}
 	}
-	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate,BigDecimal totalAmount) {
+	private void sendDownloadBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate,BigDecimal totalamount) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
-				configs.getBillLocalizationCode(), tenantId);
+				WSCalculationConstant.mGram_Consumer_NewBill, tenantId);
 		String actionLink = config.getNotificationUrl()
 				+ config.getBillDownloadSMSLink().replace("$mobile", owner.getMobileNumber())
 				.replace("$consumerCode", waterConnectionRequest.getWaterConnection().getConnectionNo())
@@ -363,39 +368,28 @@ public class DemandService {
 		}
 		String messageString = localizationMessage.get(WSCalculationConstant.MSG_KEY);
 
-		System.out.println("Localization message get bill::" + messageString);
-		System.out.println("isForConnectionNO:" + isForConnectionNO);
-
-		String[] parts=billCycle.split("/");
-		int monthNumber=Integer.parseInt(parts[1]);
-		Month month=Month.of(monthNumber);
-
-		BigDecimal demandAmount= demandDetails.stream()
-				.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-		BigDecimal arrears = totalAmount.subtract(demandAmount);
-
-		Instant currentTime = Instant.now();
-		Instant futureTime = currentTime.plusSeconds(configs.getExpiriyTime());
-		ZonedDateTime zonedDateTime = futureTime.atZone(ZoneId.systemDefault());
-		String formattedDate = zonedDateTime.format(DateTimeFormatter.ofPattern("d MMMM"));
-
+		//System.out.println("Localization message get bill::" + messageString);
+		//System.out.println("isForConnectionNO:" + isForConnectionNO);
 		if (!StringUtils.isEmpty(messageString) && isForConnectionNO) {
-			log.info("Demand Object get bill" + demands.toString());
-			log.info("requestInfo get Bill" + requestInfo);
-			log.info("bill number get bill size :" + billNumbers.size());
-			if (billNumbers.size() > 0) {
+			if (totalamount!=null && billNumbers.size() > 0 && totalamount.signum()>0) {
 				actionLink = actionLink.replace("$billNumber", billNumbers.get(0));
-				messageString = messageString.replace("{consumerno}", consumerCode);
 				messageString = messageString.replace("{ownername}", owner.getName());
-				messageString = messageString.replace("{Period}", month.toString());
-				messageString = messageString.replace("{demandamount}", demandAmount.toString());
-				messageString = messageString.replace("{arrears}", arrears.toString());
-				messageString = messageString.replace("{billamount}", totalAmount.toString());
-				messageString = messageString.replace("{validity}", formattedDate);
+				messageString = messageString.replace("{Period}", billCycle);
+				messageString = messageString.replace("{consumerno}", consumerCode);
+				BigDecimal demandAmount= demandDetails.stream()
+						.map(DemandDetail::getTaxAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+				BigDecimal arrears=totalamount.subtract(demandAmount);
+				if(arrears.compareTo(BigDecimal.ZERO)>0)
+				{
+					messageString = messageString.replace("{billamount}", totalamount.toString());
+				}
+				else
+				{
+					messageString = messageString.replace("{billamount}", totalamount.toString());
+				}
 				messageString = messageString.replace("{BILL_LINK}", getShortenedUrl(actionLink));
 
-				System.out.println("Demand genaration Message get bill::" + messageString);
+//				System.out.println("Demand genaration Message get bill::" + messageString);
 
 				SMSRequest sms = SMSRequest.builder().mobileNumber(owner.getMobileNumber()).message(messageString).tenantid(tenantId)
 						.category(Category.TRANSACTION).build();
@@ -406,6 +400,7 @@ public class DemandService {
 
 		}
 	}
+
 	private void sendPaymentAndBillSMSNotification(RequestInfo requestInfo, String tenantId, User owner, WaterConnectionRequest waterConnectionRequest, Property property, List<DemandDetail> demandDetails, String consumerCode, List<Demand> demands, Boolean isForConnectionNO, String businessService, String billCycle,List<String> billNumbers, String paymentDueDate) {
 		HashMap<String, String> localizationMessage = util.getLocalizationMessage(requestInfo,
 				WSCalculationConstant.mGram_Consumer_Bill_Payment_combine, tenantId);
@@ -890,6 +885,21 @@ public class DemandService {
 			// Call demand update in bulk to update the interest or penalty
 			if(!isGetPenaltyEstimate) {
 				if(demandsToBeUpdated.size() > 0) {
+					if(config.isSaveDemandAuditEnabled()){
+						demandsToBeUpdated.stream().forEach(demand -> {
+							Long id = demandAuditSeqBuilder.getNextSequence();
+							WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
+									consumercode(demand.getConsumerCode()).
+									tenant_id(demand.getTenantId()).
+									status(demand.getStatus().toString()).
+									action("UPDATE DEMAND GET PENALTY/UPDATE API").
+									data(demand).
+									createdby(demand.getAuditDetails().getCreatedBy()).
+									createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+							WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+							producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
+						});
+					}
 					DemandRequest request = DemandRequest.builder().demands(demandsToBeUpdated).requestInfo(requestInfo).build();
 					repository.fetchResult(utils.getUpdateDemandUrl(), request);
 					return res.getDemands();
@@ -935,12 +945,12 @@ public class DemandService {
 			String businessService = configs.getBusinessService();
 			WaterConnectionRequest waterConnectionRequest = WaterConnectionRequest.builder()
 					.waterConnection(calculation.getWaterConnection()).requestInfo(requestInfo).build();
-			Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
+			/*Property property = wsCalculationUtil.getProperty(waterConnectionRequest);
 			String tenantId = calculation.getTenantId();
 			User owner = property.getOwners().get(0).toCommonUser();
 			if (!CollectionUtils.isEmpty(waterConnectionRequest.getWaterConnection().getConnectionHolders())) {
 				owner = waterConnectionRequest.getWaterConnection().getConnectionHolders().get(0).toCommonUser();
-			}
+			}*/
 
 			List<DemandDetail> demandDetails = new LinkedList<>();
 			calculation.getTaxHeadEstimates().forEach(taxHeadEstimate -> {
@@ -949,13 +959,29 @@ public class DemandService {
 						.tenantId(calculation.getTenantId()).build());
 			});
 			demands.add(demand);
+			//TODO: write logic to enter in new table
+			if(config.isSaveDemandAuditEnabled()){
+				demands.stream().forEach(dem -> {
+					Long id = demandAuditSeqBuilder.getNextSequence();
+					WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
+							consumercode(dem.getConsumerCode()).
+							tenant_id(dem.getTenantId()).
+							status(dem.getStatus().toString()).
+							action("UPDATE DEMAND BULK").
+							data(dem).
+							createdby(dem.getAuditDetails().getCreatedBy()).
+							createdtime(dem.getAuditDetails().getLastModifiedTime()).build();
+					WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+					producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
+				});
+			}
 			demandRes = demandRepository.updateDemand(requestInfo, demands);
 			finalDemandRes.addAll(demandRes);
 			List<String> billNumbers = fetchBill(demands, waterConnectionRequest.getRequestInfo());
-			Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
-			billDate =billDate + 1296000000l;
-			LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
-			String paymentDueDate = billDateLocal.format(dateTimeFormatter);
+//			Long billDate = fetchBillDate(demands,waterConnectionRequest.getRequestInfo());
+//			billDate =billDate + 1296000000l;
+//			LocalDate billDateLocal = Instant.ofEpochMilli(billDate).atZone(ZoneId.systemDefault()).toLocalDate();
+//			String paymentDueDate = billDateLocal.format(dateTimeFormatter);
 			/*if(isOnlinePaymentAllowed(requestInfo,tenantId)) {
 				if(fetchTotalBillAmount(demands,requestInfo).signum()> 0) {
 					sendPaymentSMSNotification(requestInfo,tenantId,owner,waterConnectionRequest,property,demandDetails,calculation.getConnectionNo(),demands,true,businessService,billCycle,billNumbers,paymentDueDate);
@@ -1010,7 +1036,7 @@ public class DemandService {
 			}*/
 			 
 
-			if (isForConnectionNo) {
+			/*if (isForConnectionNo) {
 				WaterConnection connection = calculation.getWaterConnection();
 				if (connection == null) {
 					List<WaterConnection> waterConnectionList = calculatorUtils.getWaterConnection(requestInfo,
@@ -1032,7 +1058,7 @@ public class DemandService {
 //						demand.setPayer(owner);
 //				}
 
-			}
+			}*/
 
 		}
 
@@ -1216,6 +1242,16 @@ public class DemandService {
 //		generateBulkDemandForULB(billingMasterData, bulkDemand);
 	}
 
+	public boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime) {
+		return waterCalculatorDao.isDuplicateBulkDemandCall(tenantId, billingPeriod, fromTime);
+	}
+
+	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status,AuditDetails auditDetails) {
+		waterCalculatorDao.insertBulkDemandCall(tenantId, billingPeriod, status,auditDetails);
+	}
+
+
+
 	private String formatDemandMessage(RequestInfo requestInfo, String tenantId, String string) {
 		// TODO Auto-generated method stub
 		return null;
@@ -1223,7 +1259,7 @@ public class DemandService {
 
 	private Recipient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recipient recepient = null;
-		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN"),
+		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, Arrays.asList("GP_ADMIN","SARPANCH"),
 				tenantId);
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
@@ -1297,7 +1333,10 @@ public class DemandService {
 				log.error("Fetch Bill Error", ex);
 			}
 		}
-		return billDate.get(0);
+		if(!CollectionUtils.isEmpty(billDate))
+			return billDate.get(0);
+		else
+			return null;
 	}
 
 	/**
@@ -1377,7 +1416,21 @@ public class DemandService {
 			demands.add(demand);
 		}
 
-		log.info("Updated Demand Details " + demands.toString());
+		if(config.isSaveDemandAuditEnabled()){
+			demands.stream().forEach(demand -> {
+				Long id = demandAuditSeqBuilder.getNextSequence();
+				WsDemandChangeAuditRequest wsDemandChangeAuditRequest = WsDemandChangeAuditRequest.builder().id(id).
+						consumercode(demand.getConsumerCode()).
+						tenant_id(demand.getTenantId()).
+						status(demand.getStatus().toString()).
+						action("UPDATE DEMAND APPLYADHOCTAX").
+						data(demand).
+						createdby(demand.getAuditDetails().getCreatedBy()).
+						createdtime(demand.getAuditDetails().getLastModifiedTime()).build();
+				WsDemandChangeAuditRequestWrapper wsDemandChangeAuditRequestWrapper = WsDemandChangeAuditRequestWrapper.builder().wsDemandChangeAuditRequest(wsDemandChangeAuditRequest).build();
+				producer.push(config.getSaveDemandAudit(), wsDemandChangeAuditRequestWrapper);
+			});
+		}
 		demandRepository.updateDemand(requestInfo, demands);
 		return calculations;
 	}
@@ -1420,6 +1473,127 @@ public class DemandService {
 			return false;
 		else
 			return true;
+	}
+	public List<Demand> searchDemandBydemandId(String tenantId, Set<String> demandids,
+											   RequestInfo requestInfo) {
+		Object result = serviceRequestRepository.fetchResult(
+				getDemandSearchURLByDemandId(tenantId, demandids),
+				RequestInfoWrapper.builder().requestInfo(requestInfo).build());
+		try {
+			return mapper.convertValue(result, DemandResponse.class).getDemands();
+		} catch (IllegalArgumentException e) {
+			throw new CustomException("PARSING_ERROR", "Failed to parse response from Demand Search");
+		}
+
+	}
+
+	public StringBuilder getDemandSearchURLByDemandId(String tenantId, Set<String> demandIds) {
+		StringBuilder url = new StringBuilder(configs.getBillingServiceHost());
+		url.append(configs.getDemandSearchEndPoint());
+		url.append("?");
+		url.append("tenantId=");
+		url.append(tenantId);
+		url.append("&");
+		url.append("demandId=");
+		url.append(StringUtils.join(demandIds, ','));
+		log.info("Search demand url:"+url);
+		return url;
+	}
+
+	public  List<String> getDemandToAddPenalty(String tenantid,BigInteger penaltyThresholdDate,Integer penaltyApplicableAfterDays){
+		return  demandRepository.getDemandsToAddPenalty(tenantid,penaltyThresholdDate,penaltyApplicableAfterDays);
+	}
+
+	public ResponseEntity<HttpStatus> addPenalty(@Valid RequestInfo requestInfo, AddPenaltyCriteria addPenaltyCriteria) {
+		if(config.isPenaltyEnabled()) {
+			if (requestInfo.getUserInfo().equals(null)) {
+
+			}
+			List<MasterDetail> masterDetails = new ArrayList<>();
+			MasterDetail masterDetail = new MasterDetail("Penalty", "[?(@)]");
+			masterDetails.add(masterDetail);
+			ModuleDetail moduleDetail = ModuleDetail.builder().moduleName("ws-services-calculation").masterDetails(masterDetails).build();
+			List<ModuleDetail> moduleDetails = new ArrayList<>();
+			moduleDetails.add(moduleDetail);
+			MdmsCriteria mdmsCriteria = MdmsCriteria.builder().tenantId(addPenaltyCriteria.getTenantId())
+					.moduleDetails(moduleDetails)
+					.build();
+			Map<String, Object> paymentMasterData = calculatorUtils.getPenaltyMasterForTenantId(addPenaltyCriteria.getTenantId(), mdmsCriteria, requestInfo);
+
+			Integer rate= (Integer) paymentMasterData.get("rate");
+			String penaltyType = String.valueOf(paymentMasterData.get("type"));
+			String penaltySubType = (String) paymentMasterData.get("subType");
+			String startingDay = (String) paymentMasterData.get("startingDay");
+			Integer applicableAfterDays = (Integer) paymentMasterData.get("applicableAfterDays");
+			List<String> demandIds = getDemandToAddPenalty(addPenaltyCriteria.getTenantId(), new BigInteger(config.getPenaltyStartThresholdTime()),applicableAfterDays);
+			if (rate > 0) {
+				demandIds.stream().forEach(demandId -> {
+					Set<String> demandids = new HashSet<>();
+					demandids.add(demandId);
+					List<Demand> demands = searchDemandBydemandId(addPenaltyCriteria.getTenantId(), demandids, requestInfo);
+					if (!CollectionUtils.isEmpty(demands)) {
+						Demand demand = demands.get(0);
+						Boolean isPenaltyExistForDemand = demand.getDemandDetails().stream().anyMatch(demandDetail -> {
+							return demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_TIME_PENALTY);
+						});
+						if (!isPenaltyExistForDemand) {
+							if (!CollectionUtils.isEmpty(demand.getDemandDetails()) && demand.getDemandDetails().size() == 1) {
+								demand.setDemandDetails(addTimePenalty(rate, penaltyType, penaltySubType, demand));
+								demands.clear();
+								demands.add(demand);
+								DemandRequest demandRequest = DemandRequest.builder().requestInfo(requestInfo).demands(demands).build();
+								producer.push(config.getUpdateAddPenaltytopic(), demandRequest);
+							}
+						}
+					}
+				});
+			} else {
+				return new ResponseEntity<>(org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED);
+			}
+		}
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.ACCEPTED);
+	}
+
+	public List<DemandDetail> addTimePenalty(Integer rate, String type, String SubType,Demand demand) {
+		// TODO:  if type is fixed annd subtype is curretmonnth than only add penalty
+		//TODO : check for metered connection also what is taxheadcode
+
+		BigDecimal taxPercentage = BigDecimal.valueOf(Double.valueOf(rate));
+		List<DemandDetail> demandDetailList=  demand.getDemandDetails();
+		DemandDetail waterChargeDemandDetails = null;
+		if(!CollectionUtils.isEmpty(demandDetailList)) {
+			if(demandDetailList.get(0).getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)){
+				//mapper.convertValue(demandDetailList.stream().filter(demandDetail -> demandDetail.getTaxHeadMasterCode().equalsIgnoreCase(WSCalculationConstant.WS_CHARGE)), DemandDetail.class) ;
+				waterChargeDemandDetails=demandDetailList.get(0);
+				BigDecimal netPayableAmountWithouttax= waterChargeDemandDetails.getTaxAmount().subtract(waterChargeDemandDetails.getCollectionAmount());
+				if(netPayableAmountWithouttax.signum()> 0) {
+					BigDecimal tax = netPayableAmountWithouttax.multiply(taxPercentage.divide(WSCalculationConstant.HUNDRED));
+					//round off to next higest number
+					tax = roundOffTax(tax);
+					if(tax.compareTo(BigDecimal.ZERO) > 0) {
+						DemandDetail timeDemandDetail = DemandDetail.builder().demandId(demand.getId())
+								.taxHeadMasterCode(WSCalculationConstant.WS_TIME_PENALTY)
+								.taxAmount(tax)
+								.collectionAmount(BigDecimal.ZERO)
+								.tenantId(demand.getTenantId()).build();
+
+						demandDetailList.add(timeDemandDetail);
+					}
+				}
+			}
+		}
+		return demandDetailList;
+
+	}
+
+	public BigDecimal roundOffTax (BigDecimal tax) {
+
+		// Round the value up to the next highest integer
+		return tax.setScale(0, RoundingMode.HALF_UP);
+	}
+
+	public void updateDemandAddPenalty(RequestInfo requestInfo , List<Demand> demands) {
+		demandRepository.updateDemand(requestInfo,demands);
 	}
 
 }

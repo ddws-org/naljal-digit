@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.egov.echallancalculation.model.AuditDetails;
 

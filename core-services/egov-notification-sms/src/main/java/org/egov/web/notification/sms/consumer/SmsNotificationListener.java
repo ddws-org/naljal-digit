@@ -17,7 +17,6 @@ import org.springframework.kafka.annotation.*;
 import org.springframework.kafka.config.*;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.*;
-import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.*;
 import org.springframework.web.client.RestClientException;
@@ -47,6 +46,9 @@ public class SmsNotificationListener {
 
     @Autowired
     protected SMSProperties smsProperties;
+
+    @Value("${sms.enabled}")
+    Boolean smsEnable;
 
 
     @Autowired
@@ -82,6 +84,7 @@ public class SmsNotificationListener {
                     smsService.sendSMS(request.toDomain());
                 }
             }
+
         } catch (RestClientException rx) {
             log.info("Going to backup SMS Service", rx);
             if (!StringUtils.isEmpty(backupSmsTopic))
