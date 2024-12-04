@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -186,23 +187,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   builder: (_, commonProvider, child) =>
                       commonProvider.userDetails?.selectedtenant == null
                           ? Text("")
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                              Text(
-                                ApplicationLocalizations.of(context).translate(
-                                    commonProvider
-                                        .userDetails!.selectedtenant!.code!),
-                                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
-                              ),
-                              Text(
-                                ApplicationLocalizations.of(context).translate(
-                                    commonProvider.userDetails!.selectedtenant!
-                                        .city!.code!),
-                                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),
-                              )
-                                ])),
+                          : SizedBox(
+                            width:  MediaQuery.of(context).size.width < 720 ?  MediaQuery.of(context).size.width/5 : MediaQuery.of(context).size.width/2,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                Text(
+                                  ApplicationLocalizations.of(context).translate(
+                                      commonProvider
+                                          .userDetails!.selectedtenant!.code!),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
+                                ),
+                                Text(
+                                  ApplicationLocalizations.of(context).translate(
+                                      commonProvider.userDetails!.selectedtenant!
+                                          .city!.code!),
+                                  style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.black),
+                                )
+                                  ]),
+                          )),
               Icon(Icons.arrow_drop_down)
             ],
           ),
