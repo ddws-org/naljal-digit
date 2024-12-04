@@ -93,7 +93,7 @@ public class Consumer {
         mdmsData.put("zoneCode", villageData.get("zoneCode"));
 
         return Mdms.builder()
-                .tenantId("pb")
+                .tenantId("as")
                 .schemaCode("tenant.tenants")
                 .data(mapper.convertValue(mdmsData, JsonNode.class))
                 .isActive(true)
