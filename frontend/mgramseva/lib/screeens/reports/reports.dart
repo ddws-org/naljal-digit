@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/screeens/reports/expense_bill_report.dart';
 import 'package:mgramseva/screeens/reports/inactive_consumer_report.dart';
+import 'package:mgramseva/screeens/reports/monthly_ledger_report.dart';
+import 'package:mgramseva/screeens/reports/vendor_report.dart';
 import 'package:mgramseva/screeens/reports/view_table.dart';
 import 'package:provider/provider.dart';
 
@@ -97,6 +100,10 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
             ),
           ),
           alignment: Alignment.center,
+          margin: constraints.maxWidth < 760
+              ? null
+              : EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -219,7 +226,18 @@ class _Reports extends State<Reports> with SingleTickerProviderStateMixin {
                                   children: [
                                     BillReport(onViewClick: showTable),
                                     CollectionReport(onViewClick: showTable),
-                                    InactiveConsumerReport(onViewClick: showTable,)
+                                    InactiveConsumerReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    ExpenseBillReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    VendorReport(
+                                      onViewClick: showTable,
+                                    ),
+                                    MonthlyLedgerReport(
+                                      onViewClick: showTable,
+                                    )
                                   ],
                                 ),
                               ),

@@ -49,7 +49,7 @@ export const PaymentService = {
       data: { ...details },
     }),
 
-  getReciept: (tenantId, businessservice, filters = {}) =>
+  getReciept: (tenantId, businessservice, filters = {},auth=true,userService=true) =>
     Request({
       url:
         businessservice && businessservice !== "BPAREG"
@@ -57,8 +57,8 @@ export const PaymentService = {
           : `${Urls.payment.print_reciept}/_search`,
       useCache: false,
       method: "POST",
-      auth: true,
-      userService: true,
+      auth,
+      userService,
       params: { tenantId, ...filters },
     }),
 
@@ -95,13 +95,13 @@ export const PaymentService = {
       data: { ...details },
     }),
 
-  updateCitizenReciept: (transactionId) =>
+  updateCitizenReciept: (transactionId,auth=true,userService=true) =>
     Request({
       url: Urls.payment.update_citizen_reciept,
       useCache: false,
       method: "POST",
-      auth: true,
-      userService: true,
+      auth,
+      userService,
       params: { transactionId },
     }),
 

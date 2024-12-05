@@ -55,7 +55,17 @@ class Validators {
       return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumer.CONSUMER_OLD_CONNECTION_ID_REQUIRED)}';
     } else if (v.toString().trim().isNotEmpty &&
         v.toString().trim().length > input) {
-      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.DOOR_NO ? i18.validators.HOUSE_NUMBER_VALIDATION : key == i18.consumer.OLD_CONNECTION_ID ? i18.validators.OLD_CONNECTION_VALIDATION : key == i18.consumer.STREET_NUM_NAME?i18.validators.STREET_VALIDATION: key == i18.consumer.CONSUMER_NAME?i18.validators.CONSUMER_NAME_VALIDATION: key == i18.consumer.FATHER_SPOUSE_NAME?i18.validators.FATHER_SPOUSE_NAME_VALIDATION:i18.validators.INVALID_FORMAT)}';
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.DOOR_NO ? i18.validators.HOUSE_NUMBER_VALIDATION : key == i18.consumer.OLD_CONNECTION_ID ? i18.validators.OLD_CONNECTION_VALIDATION : key == i18.consumer.STREET_NUM_NAME ? i18.validators.STREET_VALIDATION : key == i18.consumer.CONSUMER_NAME ? i18.validators.CONSUMER_NAME_VALIDATION : key == i18.consumer.FATHER_SPOUSE_NAME ? i18.validators.FATHER_SPOUSE_NAME_VALIDATION : i18.validators.INVALID_FORMAT)}';
+    }
+    return null;
+  }
+
+  static String? consumerRemarksValidator(String? v, int input, String? key) {
+    if (key == i18.consumer.CONSUMER_REMARKS && v.toString().isEmpty) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(i18.consumer.CONSUMER_REMARKS_REQUIRED)}';
+    } else if (v.toString().trim().isNotEmpty &&
+        v.toString().trim().length > input) {
+      return '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(key == i18.consumer.CONSUMER_REMARKS ? i18.validators.REMARKS_VALIDATION : i18.validators.INVALID_FORMAT)}';
     }
     return null;
   }

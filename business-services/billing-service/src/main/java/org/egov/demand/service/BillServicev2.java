@@ -62,6 +62,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
@@ -99,6 +100,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.egov.demand.producer.Producer;
+import org.egov.demand.web.contract.UserResponse;
+import org.egov.demand.web.contract.UserSearchRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,9 +143,20 @@ public class BillServicev2 {
 	
 	@Autowired
 	private BillValidator billValidator;
+
+	@Autowired
+	private Producer producer;
+
+	@Autowired
+	private ObjectMapper mapper;
+
+	@Value("${kafka.topics.cancel.bill.topic.name}")
+	private String billCancelTopic;
 	
 	@Value("${kafka.topics.billgen.topic.name}")
 	private String notifTopicName;
+
+	private static List<String> ownerPlainRequestFieldsList;
 	
 	/**
 	 * Cancell bill operation can be carried by this method, based on consumerCodes
@@ -154,6 +170,7 @@ public class BillServicev2 {
 	public Integer cancelBill(UpdateBillRequest updateBillRequest) {
 		
 		UpdateBillCriteria cancelBillCriteria = updateBillRequest.getUpdateBillCriteria();
+		billValidator.validateBillSearchRequest(cancelBillCriteria);
 		Set<String> consumerCodes = cancelBillCriteria.getConsumerCodes();
 		cancelBillCriteria.setStatusToBeUpdated(BillStatus.CANCELLED);
 
@@ -162,8 +179,29 @@ public class BillServicev2 {
 			throw new CustomException("EG_BS_CANCEL_BILL_ERROR", "Only one consumer code can be provided in the Cancel request");
 		} else {
 
-			return billRepository.updateBillStatus(cancelBillCriteria);
+			int result = billRepository.updateBillStatus(cancelBillCriteria);
+			sendNotificationForBillCancellation(updateBillRequest.getRequestInfo(), cancelBillCriteria);
+			return result;
 		}
+	}
+
+	private void sendNotificationForBillCancellation(RequestInfo requestInfo, UpdateBillCriteria cancelBillCriteria) {
+		Set<String> consumerCodes = cancelBillCriteria.getConsumerCodes();
+		if(CollectionUtils.isEmpty(consumerCodes))
+			return;
+
+		List<BillV2> bills =  billRepository.findBill(BillSearchCriteria.builder()
+				.service(cancelBillCriteria.getBusinessService())
+				.tenantId(cancelBillCriteria.getTenantId())
+				.consumerCode(consumerCodes)
+				.build());
+
+		if (CollectionUtils.isEmpty(bills))
+			return;
+
+		BillRequestV2 req = BillRequestV2.builder().bills(bills).requestInfo(requestInfo).build();
+		producer.push(billCancelTopic, req);
+
 	}
 
 	/**
@@ -428,6 +466,7 @@ public class BillServicev2 {
 						.status(BillStatus.ACTIVE)
 						.billDetails(billDetails)
 						.totalAmount(billAmount)
+						.userId(payer.getUuid())
 						.billNumber(billNumber)
 						.tenantId(tenantId)
 						.id(billId)

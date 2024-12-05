@@ -14,14 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.example.gateway.constants.GatewayConstants.*;
 import static com.example.gateway.utils.CommonUtils.isRequestBodyCompatible;
@@ -62,11 +60,7 @@ public class RequestEnrichmentFilterHelper implements RewriteFunction<Map,Map> {
 
         // Add User_Info and Correlation Id in the header
         addRequestHeaders(exchange , body);
-        if(Objects.isNull(body)){
-            return Mono.empty();
-        }
-        else
-            return Mono.just(body);
+        return Mono.just(body);
     }
 
     private void addRequestHeaders(ServerWebExchange exchange , Map body) {
@@ -114,11 +108,6 @@ public class RequestEnrichmentFilterHelper implements RewriteFunction<Map,Map> {
     }
 
     private boolean isUserInfoPresent(Map body) {
-
-        if(Objects.isNull(body) || Objects.isNull(body.get(REQUEST_INFO_FIELD_NAME_PASCAL_CASE))){
-            return Boolean.FALSE;
-        }
-
         RequestInfo requestInfo = objectMapper.convertValue(body.get(REQUEST_INFO_FIELD_NAME_PASCAL_CASE), RequestInfo.class);
         return requestInfo.getUserInfo() != null;
     }
@@ -139,10 +128,6 @@ public class RequestEnrichmentFilterHelper implements RewriteFunction<Map,Map> {
     private void enrichRequestBody(ServerWebExchange exchange , Map body) throws IOException {
 
         // TODO: Check for Camel case of requestInfo as well
-        if(Objects.isNull(body) || Objects.isNull(body.get(REQUEST_INFO_FIELD_NAME_PASCAL_CASE))){
-            logger.info(SKIPPED_BODY_ENRICHMENT_DUE_TO_NO_KNOWN_FIELD_MESSAGE);
-            return;
-        }
         RequestInfo requestInfo = objectMapper.convertValue(body.get(REQUEST_INFO_FIELD_NAME_PASCAL_CASE), RequestInfo.class);
         requestInfo.setCorrelationId((String) exchange.getAttributes().get(CORRELATION_ID_KEY));
         body.put(REQUEST_INFO_FIELD_NAME_PASCAL_CASE, requestInfo);

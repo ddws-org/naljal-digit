@@ -41,6 +41,8 @@
     }
   }
 
+
+
   .links-wrapper {
     @apply pl-md py-sm text-text-btn;
     .link {
@@ -50,6 +52,16 @@
         @apply ml-sm;
       }
     }
+  }
+
+  .category-header{
+    font-weight: 500 !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .category-item{
+    margin-left: 1rem !important;
+    margin-top: 0.25rem !important;
   }
 }
 
@@ -447,6 +459,16 @@
     height: 263px !important;
   }
 }
+
+@screen dt {
+  .customEmployeeWarnings {
+    margin-left: 2.6rem !important;
+    margin-top: -4rem !important;
+    width: 65% !important;
+  }
+}
+
+
 .employeeTotalLink {
   color: theme(colors.text.secondary);
   font-size: 16px;
@@ -541,8 +563,8 @@
 
   .search-tab-head-selected {
     padding: 10px 35px;
-    color: rgb(244, 119, 56);
-    border-bottom: 4px solid rgb(244, 119, 56);
+    color: rgb(31, 74, 196);
+    border-bottom: 4px solid rgb(31, 74, 196);
     font-weight: bold;
   }
 

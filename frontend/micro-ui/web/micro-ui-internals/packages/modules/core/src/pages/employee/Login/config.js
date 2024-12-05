@@ -19,6 +19,9 @@ export const loginConfig = [
         type: "password",
         populators: {
           name: "password",
+          validation: {
+            maxlength: 15,
+          }
         },
         isMandatory: true,
       },

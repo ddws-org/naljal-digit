@@ -99,7 +99,7 @@ public class EnrichmentService {
 			
 			addDrivers(requestInfo, vendor, tenantId);
 			addVehicles(requestInfo, vendor, tenantId);
-			boundaryService.getAreaType(VendorRequest.builder().vendor(vendor).build(), config.getHierarchyTypeCode());
+//			boundaryService.getAreaType(VendorRequest.builder().vendor(vendor).build(), config.getHierarchyTypeCode());
 		});
 	}
 	

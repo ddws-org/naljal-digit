@@ -350,6 +350,47 @@
   }
 }
 
+.dropdown-user .dropbtn{
+    color: white;
+    font-size: 1rem;
+    margin: 10px;
+    background-color: #efefef00;
+}
+.dropdown-user {
+  position: relative; /* Make the dropdown relative to its container */
+  display: inline-block;
+}
+
+.dropdown-user-overlay {
+  position: absolute; /* Position the overlay absolutely relative to the dropdown */
+  top: 100%; /* Position the overlay below the button */
+  left: 0; /* Align the overlay to the left of the button */
+  background-color: #f1f1f1; /* Set background color */
+  min-width: 160px; /* Set minimum width */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Add shadow */
+  z-index: 1; /* Set z-index to display on top of other elements */
+  display: none; /* Hide by default */
+}
+
+.dropdown-user-content {
+  padding: 0; /* Remove default padding from ul */
+  list-style: none; /* Remove default list style */
+}
+
+.dropdown-user-content li {
+  border-bottom: solid 1px !important;
+  border-color: black !important;
+  padding: 12px 12px; /* Add padding to list items */
+}
+.dropdown-user-link {
+  text-decoration: none !important; /* Remove underline from links inside list items */
+}
+
+.dropdown-user:hover .dropdown-user-overlay {
+  display: block; /* Show overlay on hover */
+}
+
+
 .RightMostTopBarOptions {
   @apply flex;
   .EventNotificationWrapper {
@@ -369,6 +410,9 @@
       fill: theme(colors.white);
     }
   }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (min-width: 640px) {
@@ -477,8 +521,24 @@
       .hamburger-span {
         display: none;
       }
+      .city{
+        height: 48px !important;
+        width: 48px !important;
+        padding: 0px !important;
+      }
+
     }
+
   }
+
+  .hambuger-back-wrapper .city{
+    object-fit: scale-down !important;
+    border-radius: 5px !important;
+    padding: 1px 15px !important;
+  }
+
+
+
 }
 
 @screen dt {
@@ -497,27 +557,27 @@
 }
 
 .link {
-  a {
+  a{
     color: inherit;
-    text-decoration: inherit;
-  }
+    text-decoration: inherit
+    }
 }
 
 .breadcrumb {
-  a {
+  a{
     color: inherit;
-    text-decoration: inherit;
-  }
+    text-decoration: inherit
+    }
 }
 
-.sidebar-link.active {
-  .custom-link {
+.sidebar-link.active{
+.custom-link{
+  text-decoration: none;
+  div{
+    span{
+    color: #1f4ac4;
     text-decoration: none;
-    div {
-      span {
-        color: #1f4ac4;
-        text-decoration: none;
-      }
     }
   }
+}
 }

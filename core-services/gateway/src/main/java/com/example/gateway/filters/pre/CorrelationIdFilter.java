@@ -28,28 +28,21 @@ public class CorrelationIdFilter implements GlobalFilter, Ordered {
 
     private CorrIdFormDataFilterHelper correlationIdFormDataFilterHelper;
 
-    private ApplicationProperties applicationProperties;
-
     public CorrelationIdFilter(ModifyRequestBodyGatewayFilterFactory modifyRequestBodyGatewayFilter, CorrelationIdFilterHelper correlationIdFilterHelper,
-                               CorrIdFormDataFilterHelper correlationIdFormDataFilterHelper, ApplicationProperties applicationProperties) {
+                               CorrIdFormDataFilterHelper correlationIdFormDataFilterHelper) {
 
         this.modifyRequestBodyFilter = modifyRequestBodyGatewayFilter;
         this.correlationIdFilterHelper = correlationIdFilterHelper;
         this.correlationIdFormDataFilterHelper = correlationIdFormDataFilterHelper;
 
-        this.applicationProperties = applicationProperties;
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         String contentType = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
-        String endPointPath = exchange.getRequest().getPath().value();
 
-        if(endPointPath.contains("/filestore")){
-            return chain.filter(exchange);
-        }
-        else if (contentType != null && (contentType.contains("multipart/form-data") || contentType.contains("application/x-www-form-urlencoded"))) {
+        if (contentType != null && (contentType.contains("multipart/form-data") || contentType.contains("application/x-www-form-urlencoded"))) {
             return modifyRequestBodyFilter.apply(new ModifyRequestBodyGatewayFilterFactory.Config()
                     .setRewriteFunction(MultiValueMap.class, MultiValueMap.class, correlationIdFormDataFilterHelper))
                     .filter(exchange, chain);

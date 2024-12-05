@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mgramseva/model/bill/meter_demand_details.dart';
+import 'package:mgramseva/model/connection/water_connection.dart';
 part 'demand_list.g.dart';
 
 @JsonSerializable()
@@ -114,6 +115,8 @@ class DemandDetails {
   double? taxAmount;
   @JsonKey(name: "collectionAmount")
   double? collectionAmount;
+  @JsonKey(name: "additionalDetails")
+  AdditionalDetails? additionalDetails;
   @JsonKey(name: "auditDetails")
   AuditDetails? auditDetails;
   @JsonKey(name: "tenantId")
@@ -124,6 +127,59 @@ class DemandDetails {
       _$DemandDetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$DemandDetailsToJson(this);
+}
+
+@JsonSerializable()
+class AggragateDemandDetails {
+  @JsonKey(name: "advanceAvailable")
+  double? advanceAvailable;
+  @JsonKey(name: "advanceAdjusted")
+  double? advanceAdjusted;
+  @JsonKey(name: "remainingAdvance")
+  double? remainingAdvance;
+  @JsonKey(name: "currentmonthBill")
+  double? currentmonthBill;
+  @JsonKey(name: "currentMonthPenalty")
+  double? currentMonthPenalty;
+  @JsonKey(name: "currentmonthTotalDue")
+  double? currentmonthTotalDue;
+  @JsonKey(name: "currentmonthRoundOff")
+  double? currentmonthRoundOff;
+  @JsonKey(name: "totalAreas")
+  double? totalAreas;
+  @JsonKey(name: "totalAreasWithPenalty")
+  double? totalAreasWithPenalty;
+  @JsonKey(name: "netdue")
+  double? netdue;
+  @JsonKey(name: "netDueWithPenalty")
+  double? netDueWithPenalty;
+  @JsonKey(name: "totalApplicablePenalty")
+  double? totalApplicablePenalty;
+  @JsonKey(name: "latestDemandCreatedTime")
+  double? latestDemandCreatedTime;
+  @JsonKey(name: "latestDemandPenaltyCreatedtime")
+  double? latestDemandPenaltyCreatedtime;
+  @JsonKey(name: "mapOfDemandDetailList")
+  List<Map<String, List<DemandDetails>>>? mapOfDemandDetailList;
+  AggragateDemandDetails();
+
+  factory AggragateDemandDetails.fromJson(Map<String, dynamic> json) =>
+      _$AggragateDemandDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AggragateDemandDetailsToJson(this);
+}
+
+@JsonSerializable()
+class AggregateDemandDetailsList {
+  // Renamed class to match JSON element
+  final List<Map<String, List<DemandDetails>>> mapOfDemandDetailList;
+
+  AggregateDemandDetailsList({required this.mapOfDemandDetailList});
+
+  factory AggregateDemandDetailsList.fromJson(Map<String, dynamic> json) =>
+      _$AggregateDemandDetailsListFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AggregateDemandDetailsListToJson(this);
 }
 
 @JsonSerializable()

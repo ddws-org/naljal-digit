@@ -27,9 +27,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-enum FileUploadStatus {
-  NOT_ACTIVE,STARTED,COMPLETED
-}
+
+enum FileUploadStatus { NOT_ACTIVE, STARTED, COMPLETED }
+
 class CoreRepository extends BaseService {
   Future<List<LocalizationLabel>> getLocilisation(
       Map<String, dynamic> query) async {
@@ -109,6 +109,7 @@ class CoreRepository extends BaseService {
     }
     return languageList.mdmsRes?.wcBillingSlabList;
   }
+
   Future<PSPCLIntegration?> getPSPCLGpwscFromMdms(String tenantId) async {
     var body = {
       "MdmsCriteria": {
@@ -117,9 +118,7 @@ class CoreRepository extends BaseService {
           {
             "moduleName": "pspcl-integration",
             "masterDetails": [
-              {
-                "name": "accountNumberGpMapping"
-              }
+              {"name": "accountNumberGpMapping"}
             ]
           }
         ]
@@ -241,6 +240,10 @@ class CoreRepository extends BaseService {
   Future<String?> urlShotner(String inputUrl) async {
     Map<String, String> header = {
       HttpHeaders.contentTypeHeader: 'application/json',
+      'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self';",
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'X-Content-Type-Options': 'nosniff',
     };
     try {
       var response = await http.post(
@@ -249,7 +252,7 @@ class CoreRepository extends BaseService {
           body: jsonEncode({"url": inputUrl}));
 
       return response.body;
-        } catch (e, s) {
+    } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
     }
     return null;
@@ -265,21 +268,20 @@ class CoreRepository extends BaseService {
           navigatorKey.currentContext!,
           listen: false);
       var res = await makeRequest(
-        url: '${Url.FETCH_FILESTORE_ID_PDF_SERVICE}',
-        body: body,
-        queryParameters: params,
-        method: RequestType.POST,
-        requestInfo: RequestInfo(
-            APIConstants.API_MODULE_NAME,
-            APIConstants.API_VERSION,
-            APIConstants.API_TS,
-            "_create",
-            APIConstants.API_DID,
-            APIConstants.API_KEY,
-            "string|" + languageProvider.selectedLanguage!.value!,
-            commonProvider.userDetails!.accessToken,
-            commonProvider.userDetails?.userRequest?.toJson()
-        ));
+          url: '${Url.FETCH_FILESTORE_ID_PDF_SERVICE}',
+          body: body,
+          queryParameters: params,
+          method: RequestType.POST,
+          requestInfo: RequestInfo(
+              APIConstants.API_MODULE_NAME,
+              APIConstants.API_VERSION,
+              APIConstants.API_TS,
+              "_create",
+              APIConstants.API_DID,
+              APIConstants.API_KEY,
+              "string|" + languageProvider.selectedLanguage!.value!,
+              commonProvider.userDetails!.accessToken,
+              commonProvider.userDetails?.userRequest?.toJson()));
 
       if (res != null) {
         pdfServiceResponse = PDFServiceResponse.fromJson(res);
@@ -312,8 +314,7 @@ class CoreRepository extends BaseService {
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
               commonProvider.userDetails!.accessToken,
-              commonProvider.userDetails?.userRequest?.toJson()
-          ));
+              commonProvider.userDetails?.userRequest?.toJson()));
 
       if (res != null) {
         eventsResponse = EventsList.fromJson((res));
@@ -345,8 +346,7 @@ class CoreRepository extends BaseService {
               APIConstants.API_KEY,
               APIConstants.API_MESSAGE_ID,
               commonProvider.userDetails!.accessToken,
-              commonProvider.userDetails?.userRequest?.toJson()
-      ));
+              commonProvider.userDetails?.userRequest?.toJson()));
 
       if (res != null) {
         return true;
@@ -384,7 +384,8 @@ class CoreRepository extends BaseService {
       var status1 = await Permission.notification.status;
       if (!status.isGranted) {
         await Permission.storage.request();
-      }if (!status1.isGranted) {
+      }
+      if (!status1.isGranted) {
         await Permission.notification.request();
       }
       if (!status2.isGranted) {

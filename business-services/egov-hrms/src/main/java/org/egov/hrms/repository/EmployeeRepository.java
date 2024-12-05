@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.hrms.utils.HRMSUtils;
+import org.egov.hrms.web.contract.EmployeePlainSearchCriteria;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Repository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +70,7 @@ public class EmployeeRepository {
 		return employees;
 	}
 
-	private List<String> fetchEmployeesforAssignment(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
+	public List<String> fetchEmployeesforAssignment(EmployeeSearchCriteria criteria, RequestInfo requestInfo) {
 		List<String> employeesIds = new ArrayList<>();
 		List <Object> preparedStmtList = new ArrayList<>();
 		String query = queryBuilder.getAssignmentSearchQuery(criteria, preparedStmtList);
@@ -119,6 +121,33 @@ public class EmployeeRepository {
 			log.error("query; "+query);
 		}
 		return response;
+	}
+
+	public List<Employee> fetchPlainSearchEmployees(EmployeePlainSearchCriteria criteria){
+		List<Employee> employees = new ArrayList<>();
+		List<Object> preparedStmtList = new ArrayList<>();
+
+		String query = queryBuilder.getPlainSearchEmployeeQuery(criteria, preparedStmtList);
+		try {
+			employees = jdbcTemplate.query(query, preparedStmtList.toArray(),rowMapper);
+		}catch(Exception e) {
+			log.error("Exception while making the db call -> ",e);
+			log.error("query -> "+query);
+		}
+		return employees;
+	}
+
+	public List<String> fetchEmployeeIds(EmployeePlainSearchCriteria criteria){
+		List<String> employeeIds = new ArrayList<>();
+		List<Object> preparedStmtList = new ArrayList<>();
+		String employeeIdsQuery = queryBuilder.getEmployeeIdsQuery(criteria, preparedStmtList);
+		try {
+			employeeIds = jdbcTemplate.query(employeeIdsQuery, new SingleColumnRowMapper<>(String.class), preparedStmtList.toArray());
+		}catch(Exception e) {
+			log.error("Exception while making the db call -> ", e);
+			log.error("query -> " + employeeIdsQuery);
+		}
+		return employeeIds;
 	}
 
 }

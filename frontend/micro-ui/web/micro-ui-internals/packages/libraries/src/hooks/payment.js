@@ -95,12 +95,12 @@ export const useFetchPayment = ({ tenantId, consumerCode, businessService }, con
   };
 };
 
-export const usePaymentUpdate = ({ egId }, businessService, config) => {
+export const usePaymentUpdate = ({ egId }, businessService, config,auth=true,userService=true) => {
   const getPaymentData = async (egId) => {
-    const transaction = await Digit.PaymentService.updateCitizenReciept(egId);
+    const transaction = await Digit.PaymentService.updateCitizenReciept(egId,auth,userService);
     const payments = await Digit.PaymentService.getReciept(transaction.Transaction[0].tenantId, businessService, {
       consumerCodes: transaction.Transaction[0].consumerCode,
-    });
+    },auth,userService);
     return { payments, applicationNo: transaction.Transaction[0].consumerCode, txnStatus: transaction.Transaction[0].txnStatus };
   };
 

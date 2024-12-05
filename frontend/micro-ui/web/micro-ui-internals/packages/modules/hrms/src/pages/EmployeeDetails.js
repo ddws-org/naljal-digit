@@ -33,15 +33,18 @@ const Details = () => {
   const [successData, setsuccessData, clearSuccessData] = Digit.Hooks.useSessionStorage("EMPLOYEE_HRMS_MUTATION_SUCCESS_DATA", false);
   const isMobile = window.Digit.Utils.browser.isMobile();
   const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+  const DIVISION_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+
   const { data: mdmsData = {} } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSRolesandDesignation") || {};
 
   mdmsData?.MdmsRes?.["tenant"]["tenants"]?.map((items) => {
     data?.Employees[0]?.jurisdictions?.map((jurisdiction) => {
       if (items?.code === jurisdiction?.boundary) {
-        jurisdiction["division"] = items?.city?.blockcode;
+        jurisdiction["block"] = items?.blockcode;
       }
     });
   });
+
   useEffect(() => {
     setMutationHappened(false);
     clearSuccessData();
@@ -106,7 +109,7 @@ const Details = () => {
                     <div className="sla-cell-error">{t("INACTIVE")}</div>
                   )
                 }
-                textStyle={{ fontWeight: "bold", maxWidth: "7.5rem" }}
+                textStyle={{ fontWeight: "bold", maxWidth: "7rem" }}
               />
             </StatusTable>
             <CardSubHeader className="card-section-header">{t("HR_PERSONAL_DETAILS_FORM_HEADER")} </CardSubHeader>
@@ -115,6 +118,9 @@ const Details = () => {
               <Row label={t("HR_MOB_NO_LABEL")} text={data?.Employees?.[0]?.user?.mobileNumber || "NA"} textStyle={{ whiteSpace: "pre" }} />
               <Row label={t("HR_GENDER_LABEL")} text={t(data?.Employees?.[0]?.user?.gender) || "NA"} />
               <Row label={t("HR_EMAIL_LABEL")} text={data?.Employees?.[0]?.user?.emailId || "NA"} />
+              <Row label={t("HR_COMMON_DEPARTMENT")} text={t(data?.Employees?.[0]?.assignments[0]?.department) || "NA"} />
+              <Row label={t("HR_COMMON_USER_DESIGNATION")} text={t(data?.Employees?.[0]?.assignments[0]?.designation) || "NA"} />
+              {DIVISION_ADMIN === 1 && <Row label={t("HR_COMMON_USER_PRIMARY_VILLAGE")} text={t(data?.Employees?.[0]?.tenantId) || "NA"} />}
             </StatusTable>
             {data?.Employees?.[0]?.isActive == false ? (
               <StatusTable>
@@ -154,7 +160,7 @@ const Details = () => {
 
             {data?.Employees?.[0]?.documents ? (
               <StatusTable style={{ marginBottom: "40px" }}>
-                {/* <Row label={t("TL_APPROVAL_UPLOAD_HEAD")} text={""} /> */}
+                <Row label={t("TL_APPROVAL_UPLOAD_HEAD")} text={""} />
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {data?.Employees?.[0]?.documents?.map((document, index) => {
                     return (
@@ -192,7 +198,7 @@ const Details = () => {
                       {STATE_ADMIN ? (
                         <Row
                           label={t("HR_DIVISIONS_LABEL")}
-                          text={t(Digit.Utils.locale.convertToLocale(element?.division, "EGOV_LOCATION_BOUNDARYTYPE"))}
+                          text={t(Digit.Utils.locale.convertToLocale(element?.block, "EGOV_LOCATION_BLOCK"))}
                           textStyle={{ whiteSpace: "pre" }}
                         />
                       ) : null}
@@ -201,7 +207,7 @@ const Details = () => {
                         <Row
                           label={t("HR_ROLE_LABEL")}
                           text={data?.Employees?.[0]?.user.roles
-                            .filter((ele) => ele.tenantId == element?.boundary)
+                            .filter((ele) => ele.tenantId == element?.boundary && ele?.code != 'EMPLOYEE')
                             ?.map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
                         />
                       ) : null}

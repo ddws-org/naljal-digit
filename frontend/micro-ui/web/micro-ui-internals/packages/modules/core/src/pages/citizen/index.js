@@ -23,6 +23,7 @@ const sidebarHiddenFor = [
   `/${window?.contextPath}/citizen/select-location`,
   `/${window?.contextPath}/citizen/login`,
   `/${window?.contextPath}/citizen/register/otp`,
+  `/citizen/payment/`,
 ];
 
 const getTenants = (codes, tenants) => {

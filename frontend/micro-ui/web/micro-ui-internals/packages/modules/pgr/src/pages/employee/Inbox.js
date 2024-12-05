@@ -41,6 +41,7 @@ const Inbox = () => {
   };
 
   const onSearch = (params = "") => {
+
     setSearchParams({ ...searchParams, search: params });
   };
 

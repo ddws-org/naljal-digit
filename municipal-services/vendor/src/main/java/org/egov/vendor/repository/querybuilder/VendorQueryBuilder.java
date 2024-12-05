@@ -16,7 +16,7 @@ public class VendorQueryBuilder {
 			+ " vendor.name,eg_user.uuid as owner_uuid from eg_echallan echallan INNER JOIN eg_vendor vendor on " +
 			" echallan.vendor=vendor.id INNER JOIN eg_user on eg_user.uuid=vendor.owner_id where " +
 			" echallan.applicationstatus!='CANCELLED' and echallan.tenantid =? " +
-			" and echallan.taxperiodfrom >= ? order by echallan.challanno desc ";
+			" and echallan.createdtime >= ? order by echallan.challanno desc ";
 	@Autowired
 	private VendorConfiguration config;
 

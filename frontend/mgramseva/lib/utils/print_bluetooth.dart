@@ -20,7 +20,7 @@ class PrintBluetooth {
       Navigator.of(context).pop();
     } else {
       final result =
-      await PrintBluetoothThermal.connect(macPrinterAddress: mac);
+          await PrintBluetoothThermal.connect(macPrinterAddress: mac);
 
       if (result) {
         connected = true;
@@ -58,7 +58,7 @@ class PrintBluetooth {
     }
 
     final List<BluetoothInfo> availableBluetoothDevices =
-    await PrintBluetoothThermal.pairedBluetooths;
+        await PrintBluetoothThermal.pairedBluetooths;
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -67,7 +67,7 @@ class PrintBluetooth {
           title: Text(ApplicationLocalizations.of(context)
               .translate(i18.consumerReciepts.CONNECT_TO_DEVICE)),
           content:
-          setupAlertDialogContainer(availableBluetoothDevices, context),
+              setupAlertDialogContainer(availableBluetoothDevices, context),
           actions: <Widget>[
             TextButton(
               child: Text(ApplicationLocalizations.of(context)
@@ -84,7 +84,7 @@ class PrintBluetooth {
 
   static Future<void> printTicket(value, context) async {
     bool? isPermissionGranted =
-    await PrintBluetoothThermal.isPermissionBluetoothGranted;
+        await PrintBluetoothThermal.isPermissionBluetoothGranted;
     print(isPermissionGranted);
     if (!isPermissionGranted) {
       await Permission.bluetooth.request();

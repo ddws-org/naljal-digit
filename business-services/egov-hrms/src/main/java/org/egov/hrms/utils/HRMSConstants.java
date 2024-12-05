@@ -54,4 +54,11 @@ public class HRMSConstants {
 	public static final String HRMS_USER_SERACH_CRITERIA_USERTYPE = "EMPLOYEE";
 	public static final String HRMS_USER_SERACH_CRITERIA_USERTYPE_CODE = "userType";
 
+	// Fuzzy Search
+	public static final String ES_DATA_PATH = "$..Data";
+
+	public static final String ES_DATA_TENANTID_PATH = "$.tenantData.code";
+
+	public static final String ES_DATA_PROPERTYID_PATH = "$.propertyId";
+
 }

@@ -49,7 +49,7 @@ ThemeData get theme => ThemeData(
         style: OutlinedButton.styleFrom(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       textStyle: TextStyle(
-          color: Color(0XFFf47738), fontSize: 19, fontWeight: FontWeight.w500),
+          color: Color(0XFF1f4ac4), fontSize: 19, fontWeight: FontWeight.w500),
       padding: EdgeInsets.symmetric(vertical: 15),
     )),
     inputDecorationTheme: InputDecorationTheme(
@@ -75,7 +75,7 @@ ThemeData get theme => ThemeData(
     iconTheme: IconThemeData(
       color: ColorCodes.HOME_ICON,
       // size: 25
-    ), colorScheme: ColorScheme.fromSwatch(primarySwatch: createMaterialColor(Color(0XFFf47738))).copyWith(background: createMaterialColor(Color.fromRGBO(238, 238, 238, 1))));
+    ), colorScheme: ColorScheme.fromSwatch(primarySwatch: createMaterialColor(Color(0XFF1f4ac4))).copyWith(background: createMaterialColor(Color.fromRGBO(238, 238, 238, 1))));
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];

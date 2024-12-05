@@ -1,5 +1,7 @@
 import { MdmsService } from "../services/elements/MDMS";
+
 import { useQuery } from "react-query";
+import { MdmsServiceV1 } from "../services/elements/MDMSV1";
 
 const useMDMS = (tenantId, moduleCode, type, config = {}, payload = []) => {
   const usePaymentGateway = () => {

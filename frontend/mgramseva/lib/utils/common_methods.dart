@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -8,6 +9,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mime/mime.dart';
@@ -20,7 +22,12 @@ import 'models.dart';
 
 class CommonMethods {
   static home() {
-    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    // navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    Navigator.pushNamedAndRemoveUntil(
+  navigatorKey.currentContext!,
+  Routes.HOME, // Replace with your initial route
+  (Route<dynamic> route) => false,
+);
   }
 
   static String getExtension(String url) {
@@ -57,7 +64,64 @@ class CommonMethods {
   * rahul.dev@egovernments.org
   *
   * */
-
+  static var daysInMonthLeap = [
+    31,
+    29,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ];
+  static var daysInMonth = [
+    31,
+    28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ];
+  static bool isLeapYear(int year) {
+    if (year % 4 == 0) {
+      if (year % 100 == 0) {
+        if (year % 400 == 0) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+  static int daysToSubtract(int monthCount, int year,int currentMonth) {
+    int days = 0;
+    for (int i = 0; i < monthCount; i++) {
+      if (currentMonth - i < 0) {
+        days += isLeapYear(year - 1)
+            ? daysInMonthLeap[12 - (currentMonth - i).abs()]
+            : daysInMonth[12 - (currentMonth - i).abs()];
+      } else {
+        days += isLeapYear(year)
+            ? daysInMonthLeap[currentMonth - i]
+            : daysInMonth[currentMonth - i];
+      }
+    }
+    return days;
+  }
   static List<DatePeriod> getPastMonthUntilFinancialYTD(DatePeriod ytd,
       {bool showCurrentMonth = false}) {
     var monthList = <DateTime>[];
@@ -109,7 +173,7 @@ class CommonMethods {
         .toList();
     return list;
   }
-
+  
   static List<DatePeriod> getPastMonthIncludingCurrentMonthUntilFinancialYTD(
       DatePeriod ytd) {
     var monthList = <DateTime>[];
@@ -282,7 +346,9 @@ class CommonMethods {
     }
     for (int i = 0; i < 26; i++) {
       excelColumns.add(KeyValue(alphabets[i], i));
+
     }
+    excelColumns.add(KeyValue("AA", 26));
     return excelColumns;
   }
 
@@ -315,7 +381,8 @@ class CommonMethods {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return WillPopScope(
+                return PopScope(
+              
                     child: AlertDialog(
                       title: Text('UPDATE AVAILABLE'),
                       content: Text(
@@ -326,15 +393,16 @@ class CommonMethods {
                                 launchPlayStore(uri.toString(), context),
                             child: Text('Update'))
                       ],
-                    ),
-                    onWillPop: () async {
+                    ),                    
+                    canPop: true,
+                    onPopInvoked: (didPop)async {
                       if (Platform.isAndroid) {
                         SystemNavigator.pop();
                       } else if (Platform.isIOS) {
                         exit(0);
-                      }
-                      return true;
-                    });
+                      }                      
+                    },
+                    );
               });
         }
       }

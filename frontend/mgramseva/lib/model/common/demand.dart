@@ -4,7 +4,6 @@ part 'demand.g.dart';
 
 @JsonSerializable()
 class Demand {
-
   @JsonKey(name: "id")
   String? id;
 
@@ -46,16 +45,13 @@ class Demand {
 
   Demand();
 
-  factory Demand.fromJson(Map<String, dynamic> json) =>
-      _$DemandFromJson(json);
+  factory Demand.fromJson(Map<String, dynamic> json) => _$DemandFromJson(json);
 
   Map<String, dynamic> toJson() => _$DemandToJson(this);
 }
 
-
 @JsonSerializable()
 class Payer {
-
   @JsonKey(name: "uuid")
   String? uuid;
 
@@ -85,15 +81,13 @@ class Payer {
 
   Payer();
 
-  factory Payer.fromJson(Map<String, dynamic> json) =>
-      _$PayerFromJson(json);
+  factory Payer.fromJson(Map<String, dynamic> json) => _$PayerFromJson(json);
 
   Map<String, dynamic> toJson() => _$PayerToJson(this);
 }
 
 @JsonSerializable()
 class DemandDetails {
-
   @JsonKey(name: "id")
   String? id;
 

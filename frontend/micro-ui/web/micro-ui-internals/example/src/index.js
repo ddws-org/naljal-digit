@@ -7,7 +7,7 @@ import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
 import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
 import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
 import { initPGRComponents, PGRReducers } from "@egovernments/digit-ui-module-pgr";
-import "@egovernments/digit-ui-css/example/index.css";
+import { initPaymentComponents } from "@egovernments/digit-ui-module-payment";
 
 import { pgrCustomizations } from "./pgr";
 import { UICustomizations } from "./UICustomizations";
@@ -18,6 +18,7 @@ const enabledModules = [
   "DSS",
   "HRMS",
   "PGR",
+  "Payment",
   //  "Engagement", "NDSS","QuickPayLinks", "Payment",
   // "Utilities",
   //added to check fsm
@@ -63,6 +64,7 @@ const initDigitUI = () => {
   initHRMSComponents();
   initEngagementComponents();
   initPGRComponents();
+  initPaymentComponents();
 
   const moduleReducers = (initData) => ({
     pgr: PGRReducers(initData),
@@ -73,7 +75,7 @@ const initDigitUI = () => {
     commonUiConfig: UICustomizations,
   };
 
-  const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || "ka";
+  const stateCode = window?.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") || "pb";
   initTokens(stateCode);
 
   ReactDOM.render(<DigitUI stateCode={stateCode} enabledModules={enabledModules} moduleReducers={moduleReducers} />, document.getElementById("root"));

@@ -32,20 +32,23 @@ class ButtonGroup extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                          child: OutlinedButton.icon(
-                        onPressed: callBackIcon,
-                        style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 8),alignment: Alignment.center,side:BorderSide(
-                            width: 1,
-                            color: Theme.of(context).disabledColor),
-                          ),
-                        icon: (Image.asset('assets/png/whats_app.png', fit: BoxFit.fitHeight,)),
-                        label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                              ApplicationLocalizations.of(context)
-                                  .translate(i18.common.SHARE_BILL_PDF),
-                              style: Theme.of(context).textTheme.titleSmall)),
-                      )),
+                        child: Container(
+                          height: 48,
+                            child: OutlinedButton.icon(
+                          onPressed: callBackIcon,
+                          style: ElevatedButton.styleFrom(padding:EdgeInsets.symmetric(vertical: 5),alignment: Alignment.center,side:BorderSide(
+                              width: 1,
+                              color: Theme.of(context).disabledColor),
+                            ),
+                          icon: (Image.asset('assets/png/whats_app.png', fit: BoxFit.fitHeight,)),
+                          label: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 0),
+                            child: Text(
+                                ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SHARE_BILL_PDF),
+                                style: Theme.of(context).textTheme.titleSmall)),
+                        )),
+                      ),
                       Expanded(child: ShortButton(label, callBack))
                     ],
                   ),

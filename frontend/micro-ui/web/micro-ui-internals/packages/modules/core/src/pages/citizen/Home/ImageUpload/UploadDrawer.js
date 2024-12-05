@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { GalleryIcon, RemoveIcon, UploadFile } from "@egovernments/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 
-function UploadDrawer({ setProfilePic, closeDrawer, userType, removeProfilePic ,showToast,closeFileUploadDrawer}) {
+function UploadDrawer({ setProfilePic, closeDrawer, userType, removeProfilePic ,showToast, closeFileUploadDrawer}) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [file, setFile] = useState("");
   const [error, setError] = useState(null);

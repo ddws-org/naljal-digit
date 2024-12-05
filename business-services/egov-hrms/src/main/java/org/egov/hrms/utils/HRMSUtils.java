@@ -1,14 +1,20 @@
 package org.egov.hrms.utils;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import lombok.extern.slf4j.Slf4j;
+import org.egov.hrms.model.Employee;
 import org.egov.hrms.web.contract.EmployeeSearchCriteria;
+import org.egov.hrms.web.contract.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+@Slf4j
 @Service
 public class HRMSUtils {
 	
@@ -60,5 +66,20 @@ public class HRMSUtils {
 	public boolean isAssignmentSearchReqd(EmployeeSearchCriteria criteria) {
 		return (! CollectionUtils.isEmpty(criteria.getPositions()) || null != criteria.getAsOnDate()
 				|| !CollectionUtils.isEmpty(criteria.getDepartments()) || !CollectionUtils.isEmpty(criteria.getDesignations()));
+	}
+
+	public void enrichOwner(List<User> users, List<Employee> employees) {
+
+		Map<String, User> uuidToUserMap = new HashMap<>();
+		users.forEach(user -> uuidToUserMap.put(user.getUuid(), user));
+
+		employees.forEach(employee -> {
+			User user = uuidToUserMap.get(employee.getUuid());
+			if (user == null) {
+				log.info("USER SEARCH ERROR: The user with UUID : \"" + employee.getUuid() + "\" for the employee with Id \"" + employee.getId() + "\" is not present in user search response");
+			} else {
+				employee.setUser(user);
+			}
+		});
 	}
 }
