@@ -26,6 +26,8 @@ const IFrameInterface = (props) => {
     enabled: true,
   });
 
+
+
   const injectCustomHttpInterceptors = (iframeWindow) => {
     const injectCustomHttpInterceptor = () => {
       try {
@@ -160,19 +162,27 @@ const IFrameInterface = (props) => {
       setSendAuth(false);
     }
 
+    const getDynamicPart = (url) => {
+      const parsedUrl = new URL(url);
+      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+      return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+    };
+
+
+
     const isOrign = pageObject?.["isOrigin"] || false;
     const domain = isOrign
       ? process.env.NODE_ENV === "development"
-        ? "https://mgramseva-dwss.punjab.gov.in"
-        : document.location.origin
+        ? "https://naljalseva.jjm.gov.in/uat/"
+        : `${document.location.origin}/${getDynamicPart(window?.location?.href)}`
       : pageObject?.["domain"];
     //checking if overwrite time is true then update the url as per filter time else return the url
 
     const contextPath = pageObject?.["routePath"]
       ? pageObject?.["overwriteTimeFilter"] && filters?.range?.startDate && filters?.range?.endDate
         ? pageObject["routePath"]
-            .replace("from:now-15m", `from:'${new Date(filters?.range?.startDate).toISOString()}'`)
-            .replace("to:now", `to:'${new Date(filters?.range?.endDate).toISOString()}'`)
+          .replace("from:now-15m", `from:'${new Date(filters?.range?.startDate).toISOString()}'`)
+          .replace("to:now", `to:'${new Date(filters?.range?.endDate).toISOString()}'`)
         : pageObject["routePath"]
       : "";
     const title = pageObject?.["title"] || "";
