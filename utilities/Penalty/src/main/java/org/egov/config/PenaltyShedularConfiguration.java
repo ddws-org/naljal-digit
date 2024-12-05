@@ -43,7 +43,7 @@ public class PenaltyShedularConfiguration {
     @Value("${egov.penalty.enabled}")
     private boolean isPenaltyEnabled;
 
-    @Value("#{'${egov.penalty.enabled.division.block.list}'.split(',')}")
+    @Value("#{'${egov.penalty.enabled.block.code.list}'.split(',')}")
     private List<String> penaltyEnabledBlocklist;
 
     @Value ("${user.system.uuid}")
