@@ -195,80 +195,80 @@ public class SchedulerService {
 
 	}
 
-	/**
-	 * Send the new expenditure notification every fortnight
-	 * 
-	 * @param requestInfo
-	 */
-
-	public void sendNewExpenditureEvent(RequestInfo requestInfo) {
-
-		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
-				dayofmonth.getDayOfMonth(), 10, 0, 0);
-		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 15, 10, 0, 0);
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
-				dateTimeFormatter);
-		List<String> tenantIds = repository.getTenantId();
-
-		tenantIds.forEach(tenantId -> {
-			if (tenantId.split("\\.").length >= 2) {
-
-				if (null != config.getIsUserEventEnabled()) {
-					if (config.getIsUserEventEnabled()) {
-						EventRequest eventRequest = sendNewExpenditureNotification(requestInfo, tenantId);
-						if (null != eventRequest)
-							notificationService.sendEventNotification(eventRequest);
-					}
-				}
-
-				if (null != config.getIsSMSEnabled()) {
-					if (config.getIsSMSEnabled()) {
-
-						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
-						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-
-						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
-								NEW_EXPENDITURE_SMS, tenantId);
-
-						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo,
-								tenantId, tenantId);
-
-						String addExpense = config.getUiAppHost() + config.getExpenditureLink();
-						System.out.println("ADD Expense Link :: " + addExpense);
-						for (UserInfo userInfo : userDetailResponse.getUser())
-							if (userInfo.getName() != null) {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-							} else {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-							}
-						mobileNumberIdMap.entrySet().stream().forEach(map -> {
-							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
-								String message = messageMap.get(NotificationUtil.MSG_KEY);
-
-								message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(addExpense));
-								message = message.replace("{GPWSC}",  (gpwscMap != null
-										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
-										? gpwscMap.get(NotificationUtil.MSG_KEY)
-										: tenantId);
-								System.out.println("New Expenditure SMS :: " + message);
-
-								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
-										.tenantid(tenantId)
-										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-										.users(new String[] { map.getValue() }).build();
-								if(config.isSmsForExpenditureEnabled()) {
-									producer.push(config.getSmsNotifTopic(), smsRequest);
-								}
-							}
-						});
-					}
-				}
-			}
-		});
-	}
+//	/**
+//	 * Send the new expenditure notification every fortnight
+//	 *
+//	 * @param requestInfo
+//	 */
+//
+//	public void sendNewExpenditureEvent(RequestInfo requestInfo) {
+//
+//		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+//		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
+//				dayofmonth.getDayOfMonth(), 10, 0, 0);
+//		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 15, 10, 0, 0);
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
+//				dateTimeFormatter);
+//		List<String> tenantIds = repository.getTenantId();
+//
+//		tenantIds.forEach(tenantId -> {
+//			if (tenantId.split("\\.").length >= 2) {
+//
+//				if (null != config.getIsUserEventEnabled()) {
+//					if (config.getIsUserEventEnabled()) {
+//						EventRequest eventRequest = sendNewExpenditureNotification(requestInfo, tenantId);
+//						if (null != eventRequest)
+//							notificationService.sendEventNotification(eventRequest);
+//					}
+//				}
+//
+//				if (null != config.getIsSMSEnabled()) {
+//					if (config.getIsSMSEnabled()) {
+//
+//						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+//								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+//						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+//
+//						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+//								NEW_EXPENDITURE_SMS, tenantId);
+//
+//						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo,
+//								tenantId, tenantId);
+//
+//						String addExpense = config.getUiAppHost() + config.getExpenditureLink();
+//						System.out.println("ADD Expense Link :: " + addExpense);
+//						for (UserInfo userInfo : userDetailResponse.getUser())
+//							if (userInfo.getName() != null) {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+//							} else {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+//							}
+//						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+//							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+//								String message = messageMap.get(NotificationUtil.MSG_KEY);
+//
+//								message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(addExpense));
+//								message = message.replace("{GPWSC}",  (gpwscMap != null
+//										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+//										? gpwscMap.get(NotificationUtil.MSG_KEY)
+//										: tenantId);
+//								System.out.println("New Expenditure SMS :: " + message);
+//
+//								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+//										.tenantid(tenantId)
+//										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+//										.users(new String[] { map.getValue() }).build();
+//								if(config.isSmsForExpenditureEnabled()) {
+//									producer.push(config.getSmsNotifTopic(), smsRequest);
+//								}
+//							}
+//						});
+//					}
+//				}
+//			}
+//		});
+//	}
 
 	private CharSequence getShortenedUrl(String url) {
 		String res = null;
@@ -391,81 +391,81 @@ public class SchedulerService {
 		return message;
 	}
 
-	/**
-	 * Send mark expense bill notification on 7th and 21st of each month
-	 * 
-	 * @param requestInfo
-	 */
-
-	public void sendMarkExpensebillEvent(RequestInfo requestInfo) {
-		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 7, 10, 0, 0);
-		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 21, 10, 0, 0);
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
-				dateTimeFormatter);
-
-		List<String> tenantIds = repository.getTenantId();
-
-		tenantIds.forEach(tenantId -> {
-			if (tenantId.split("\\.").length >= 2) {
-				if (null != config.getIsUserEventEnabled()) {
-					if (config.getIsUserEventEnabled()) {
-						EventRequest eventRequest = sendMarkExpensebillNotification(requestInfo, tenantId);
-						if (null != eventRequest)
-							notificationService.sendEventNotification(eventRequest);
-					}
-				}
-
-				if (null != config.getIsSMSEnabled()) {
-					if (config.getIsSMSEnabled()) {
-
-						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
-						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-
-						for (UserInfo userInfo : userDetailResponse.getUser())
-							if (userInfo.getName() != null) {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-							} else {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-							}
-
-						String addExpense = config.getUiAppHost() + config.getExpenseBillMarkPaidLink();
-						System.out.println("ADD Expense Link :: " + addExpense);
-
-						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
-								MARK_PAID_BILL_SMS, tenantId);
-
-						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo,
-								tenantId, tenantId);
-
-						mobileNumberIdMap.entrySet().stream().forEach(map -> {
-							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
-								String message = messageMap.get(NotificationUtil.MSG_KEY);
-								message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(addExpense));
-
-								message = message.replace("{GPWSC}", (gpwscMap != null
-										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
-										? gpwscMap.get(NotificationUtil.MSG_KEY)
-										: tenantId); // TODO Replace
-								// <GPWSC> with
-								// value.
-								System.out.println("Mark expense bills SMS::" + message);
-								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
-										.tenantid(tenantId)
-										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-										.users(new String[] { map.getValue() }).build();
-								if(config.isSmsForMarkBillEnabled()) {
-									producer.push(config.getSmsNotifTopic(), smsRequest);
-								}
-							}
-						});
-					}
-				}
-			}
-		});
-	}
+//	/**
+//	 * Send mark expense bill notification on 7th and 21st of each month
+//	 *
+//	 * @param requestInfo
+//	 */
+//
+//	public void sendMarkExpensebillEvent(RequestInfo requestInfo) {
+//		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+//		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 7, 10, 0, 0);
+//		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 21, 10, 0, 0);
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
+//				dateTimeFormatter);
+//
+//		List<String> tenantIds = repository.getTenantId();
+//
+//		tenantIds.forEach(tenantId -> {
+//			if (tenantId.split("\\.").length >= 2) {
+//				if (null != config.getIsUserEventEnabled()) {
+//					if (config.getIsUserEventEnabled()) {
+//						EventRequest eventRequest = sendMarkExpensebillNotification(requestInfo, tenantId);
+//						if (null != eventRequest)
+//							notificationService.sendEventNotification(eventRequest);
+//					}
+//				}
+//
+//				if (null != config.getIsSMSEnabled()) {
+//					if (config.getIsSMSEnabled()) {
+//
+//						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+//								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+//						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+//
+//						for (UserInfo userInfo : userDetailResponse.getUser())
+//							if (userInfo.getName() != null) {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+//							} else {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+//							}
+//
+//						String addExpense = config.getUiAppHost() + config.getExpenseBillMarkPaidLink();
+//						System.out.println("ADD Expense Link :: " + addExpense);
+//
+//						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+//								MARK_PAID_BILL_SMS, tenantId);
+//
+//						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo,
+//								tenantId, tenantId);
+//
+//						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+//							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+//								String message = messageMap.get(NotificationUtil.MSG_KEY);
+//								message = message.replace("{EXP_MRK_LINK}", getShortenedUrl(addExpense));
+//
+//								message = message.replace("{GPWSC}", (gpwscMap != null
+//										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+//										? gpwscMap.get(NotificationUtil.MSG_KEY)
+//										: tenantId); // TODO Replace
+//								// <GPWSC> with
+//								// value.
+//								System.out.println("Mark expense bills SMS::" + message);
+//								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+//										.tenantid(tenantId)
+//										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+//										.users(new String[] { map.getValue() }).build();
+//								if(config.isSmsForMarkBillEnabled()) {
+//									producer.push(config.getSmsNotifTopic(), smsRequest);
+//								}
+//							}
+//						});
+//					}
+//				}
+//			}
+//		});
+//	}
 
 	public EventRequest sendMonthSummaryNotification(RequestInfo requestInfo, String tenantId) {
 
@@ -526,78 +526,78 @@ public class SchedulerService {
 		return message;
 	}
 
-	/**
-	 * Send the month summary notification new calendar month
-	 * 
-	 * @param requestInfo
-	 */
-
-	public void sendMonthSummaryEvent(RequestInfo requestInfo) {
-		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-		LocalDateTime scheduleTime = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
-				dayofmonth.getDayOfMonth(), 10, 0, 0);
-
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
-				dateTimeFormatter);
-
-		List<String> tenantIds = repository.getTenantId();
-		tenantIds.forEach(tenantId -> {
-			if (tenantId.split("\\.").length >= 2) {
-				if (null != config.getIsUserEventEnabled()) {
-					if (config.getIsUserEventEnabled()) {
-						EventRequest eventRequest = sendMonthSummaryNotification(requestInfo, tenantId);
-						if (null != eventRequest)
-							notificationService.sendEventNotification(eventRequest);
-					}
-				}
-
-				if (null != config.getIsSMSEnabled()) {
-					if (config.getIsSMSEnabled()) {
-						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
-								MONTHLY_SUMMARY_SMS, tenantId);
-						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
-
-						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
-
-						String revenueLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
-
-						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-						for (UserInfo userInfo : userDetailResponse.getUser())
-							if (userInfo.getName() != null) {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-							} else {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-							}
-						mobileNumberIdMap.entrySet().stream().forEach(map -> {
-							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
-								String uuidUsername = (String) map.getValue();
-								String message = formatMonthSummaryMessage(requestInfo, tenantId,
-										messageMap.get(NotificationUtil.MSG_KEY), new HashMap<>());
-								message = message.replace("{LINK}", getShortenedUrl(revenueLink));
-								message = message.replace("{GPWSC}", (gpwscMap != null
-										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
-										? gpwscMap.get(NotificationUtil.MSG_KEY)
-										: tenantId); // TODO Replace
-								// <GPWSC> with
-								// value
-								message = message.replace("{user}", uuidUsername);
-								System.out.println("SMS Notification::" + message);
-								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
-										.tenantid(tenantId)
-										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-										.users(new String[] { uuidUsername }).build();
-								if(config.isSmsForMonthlySummaryEnabled()) {
-									producer.push(config.getSmsNotifTopic(), smsRequest);
-								}
-							}
-						});
-					}
-				}
-			}
-		});
-	}
+//	/**
+//	 * Send the month summary notification new calendar month
+//	 *
+//	 * @param requestInfo
+//	 */
+//
+//	public void sendMonthSummaryEvent(RequestInfo requestInfo) {
+//		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+//		LocalDateTime scheduleTime = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
+//				dayofmonth.getDayOfMonth(), 10, 0, 0);
+//
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
+//				dateTimeFormatter);
+//
+//		List<String> tenantIds = repository.getTenantId();
+//		tenantIds.forEach(tenantId -> {
+//			if (tenantId.split("\\.").length >= 2) {
+//				if (null != config.getIsUserEventEnabled()) {
+//					if (config.getIsUserEventEnabled()) {
+//						EventRequest eventRequest = sendMonthSummaryNotification(requestInfo, tenantId);
+//						if (null != eventRequest)
+//							notificationService.sendEventNotification(eventRequest);
+//					}
+//				}
+//
+//				if (null != config.getIsSMSEnabled()) {
+//					if (config.getIsSMSEnabled()) {
+//						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+//								MONTHLY_SUMMARY_SMS, tenantId);
+//						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
+//
+//						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+//								Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+//
+//						String revenueLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
+//
+//						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+//						for (UserInfo userInfo : userDetailResponse.getUser())
+//							if (userInfo.getName() != null) {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+//							} else {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+//							}
+//						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+//							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+//								String uuidUsername = (String) map.getValue();
+//								String message = formatMonthSummaryMessage(requestInfo, tenantId,
+//										messageMap.get(NotificationUtil.MSG_KEY), new HashMap<>());
+//								message = message.replace("{LINK}", getShortenedUrl(revenueLink));
+//								message = message.replace("{GPWSC}", (gpwscMap != null
+//										&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+//										? gpwscMap.get(NotificationUtil.MSG_KEY)
+//										: tenantId); // TODO Replace
+//								// <GPWSC> with
+//								// value
+//								message = message.replace("{user}", uuidUsername);
+//								System.out.println("SMS Notification::" + message);
+//								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+//										.tenantid(tenantId)
+//										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
+//										.users(new String[] { uuidUsername }).build();
+//								if(config.isSmsForMonthlySummaryEnabled()) {
+//									producer.push(config.getSmsNotifTopic(), smsRequest);
+//								}
+//							}
+//						});
+//					}
+//				}
+//			}
+//		});
+//	}
 
 
 	private Recepient getRecepient(RequestInfo requestInfo, String tenantId) {

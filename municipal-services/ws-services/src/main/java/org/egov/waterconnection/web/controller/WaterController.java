@@ -132,20 +132,20 @@ public class WaterController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	@PostMapping("/_schedulerpendingcollection")
-	public void schedulerpendingcollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendPendingCollectionEvent(requestInfoWrapper.getRequestInfo());
-	}
+//	@PostMapping("/_schedulerpendingcollection")
+//	public void schedulerpendingcollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+//		schedulerService.sendPendingCollectionEvent(requestInfoWrapper.getRequestInfo());
+//	}
 
 	@PostMapping("/_schedulergeneratedemand")
 	public void schedulergeneratedemand(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
 		schedulerService.sendGenerateDemandEvent(requestInfoWrapper.getRequestInfo());
 	}
 	
-	@PostMapping("/_schedulerTodaysCollection")
-	public void schedulerTodaysCollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
-		schedulerService.sendTodaysCollection(requestInfoWrapper.getRequestInfo());
-	}
+//	@PostMapping("/_schedulerTodaysCollection")
+//	public void schedulerTodaysCollection(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper) {
+//		schedulerService.sendTodaysCollection(requestInfoWrapper.getRequestInfo());
+//	}
 	
 	
 	@PostMapping("/_lastMonthSummary")

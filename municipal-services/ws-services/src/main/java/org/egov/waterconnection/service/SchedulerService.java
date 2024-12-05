@@ -102,83 +102,83 @@ public class SchedulerService {
 	private static final String TODAY_CASH_COLLECTION_SMS = "TODAY_COLLECTION_FROM_CASH";
 	private static final String TODAY_ONLINE_COLLECTION_SMS = "TODAY_COLLECTION_FROM_ONLINE";
 
-	/**
-	 * Send the pending collection notification every fortnight
-	 * 
-	 * @param requestInfo
-	 */
-	public void sendPendingCollectionEvent(RequestInfo requestInfo) {
-		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
-				dayofmonth.getDayOfMonth(), 10, 0, 0);
-		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 15, 10, 0, 0);
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
-				dateTimeFormatter);
-
-		List<String> tenantIds = repository.getTenantId();
-		tenantIds.forEach(tenantId -> {
-			if (tenantId.split("\\.").length >= 2) {
-				if (null != config.getIsUserEventsNotificationEnabled()) {
-					if (config.getIsUserEventsNotificationEnabled()) {
-						EventRequest eventRequest = sendPendingCollectionNotification(requestInfo, tenantId);
-						if (null != eventRequest)
-							notificationService.sendEventNotification(eventRequest);
-					}
-				}
-
-				if (null != config.getIsSMSEnabled()) {
-					if (config.getIsSMSEnabled()) {
-						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
-								PENDING_COLLECTION_SMS, tenantId);
-						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
-
-						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-								Arrays.asList("GP_ADMIN","SARPANNCH"));
-
-						String penColLink = config.getUiPath() + config.getMonthRevenueDashboardLink();
-						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-
-						for (OwnerInfo userInfo : userDetailResponse.getUser())
-							if (userInfo.getName() != null) {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-							} else {
-								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-							}
-						mobileNumberIdMap.entrySet().stream().forEach(map -> {
-							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
-
-								String uuidUsername = map.getValue();
-								String message = formatPendingCollectionMessage(requestInfo, tenantId,
-										messageMap.get(NotificationUtil.MSG_KEY), new HashMap<>());
-								message = message.replace("{PENDING_COL_LINK}", getShortenedUrl(penColLink));
-								message = message.replace("{GPWSC}",
-										(gpwscMap != null
-												&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
-														? gpwscMap.get(NotificationUtil.MSG_KEY)
-														: tenantId);
-								message = message.replace("{ownername}", uuidUsername);
-								DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-								Date today = new Date();
-								String formattedDate = format.format(today);
-								message = message.replace("{Date}", formattedDate);
-
-								message = message.replace("{Date}", LocalDate.now().toString());
-								System.out.println("PENDING Coll SMS::" + message);
-								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
-										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
-										.users(new String[] { uuidUsername }).build();
-								if(config.isSMSForPendingCollectionEnabled()) {
-									producer.push(config.getSmsNotifTopic(), smsRequest);
-								}
-
-							}
-						});
-					}
-				}
-			}
-		});
-	}
+//	/**
+//	 * Send the pending collection notification every fortnight
+//	 *
+//	 * @param requestInfo
+//	 */
+//	public void sendPendingCollectionEvent(RequestInfo requestInfo) {
+//		LocalDate dayofmonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+//		LocalDateTime scheduleTimeFirst = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(),
+//				dayofmonth.getDayOfMonth(), 10, 0, 0);
+//		LocalDateTime scheduleTimeSecond = LocalDateTime.of(dayofmonth.getYear(), dayofmonth.getMonth(), 15, 10, 0, 0);
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
+//				dateTimeFormatter);
+//
+//		List<String> tenantIds = repository.getTenantId();
+//		tenantIds.forEach(tenantId -> {
+//			if (tenantId.split("\\.").length >= 2) {
+//				if (null != config.getIsUserEventsNotificationEnabled()) {
+//					if (config.getIsUserEventsNotificationEnabled()) {
+//						EventRequest eventRequest = sendPendingCollectionNotification(requestInfo, tenantId);
+//						if (null != eventRequest)
+//							notificationService.sendEventNotification(eventRequest);
+//					}
+//				}
+//
+//				if (null != config.getIsSMSEnabled()) {
+//					if (config.getIsSMSEnabled()) {
+//						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+//								PENDING_COLLECTION_SMS, tenantId);
+//						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
+//
+//						UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
+//								Arrays.asList("GP_ADMIN","SARPANNCH"));
+//
+//						String penColLink = config.getUiPath() + config.getMonthRevenueDashboardLink();
+//						Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+//
+//						for (OwnerInfo userInfo : userDetailResponse.getUser())
+//							if (userInfo.getName() != null) {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+//							} else {
+//								mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+//							}
+//						mobileNumberIdMap.entrySet().stream().forEach(map -> {
+//							if (messageMap != null && !StringUtils.isEmpty(messageMap.get(NotificationUtil.MSG_KEY))) {
+//
+//								String uuidUsername = map.getValue();
+//								String message = formatPendingCollectionMessage(requestInfo, tenantId,
+//										messageMap.get(NotificationUtil.MSG_KEY), new HashMap<>());
+//								message = message.replace("{PENDING_COL_LINK}", getShortenedUrl(penColLink));
+//								message = message.replace("{GPWSC}",
+//										(gpwscMap != null
+//												&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+//														? gpwscMap.get(NotificationUtil.MSG_KEY)
+//														: tenantId);
+//								message = message.replace("{ownername}", uuidUsername);
+//								DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+//								Date today = new Date();
+//								String formattedDate = format.format(today);
+//								message = message.replace("{Date}", formattedDate);
+//
+//								message = message.replace("{Date}", LocalDate.now().toString());
+//								System.out.println("PENDING Coll SMS::" + message);
+//								SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
+//										.templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
+//										.users(new String[] { uuidUsername }).build();
+//								if(config.isSMSForPendingCollectionEnabled()) {
+//									producer.push(config.getSmsNotifTopic(), smsRequest);
+//								}
+//
+//							}
+//						});
+//					}
+//				}
+//			}
+//		});
+//	}
 
 	private CharSequence getShortenedUrl(String url) {
 		String res = null;
@@ -398,91 +398,91 @@ public class SchedulerService {
 
 	}
 
-	public void sendTodaysCollection(RequestInfo requestInfo) {
-
-		LocalDate date = LocalDate.now();
-		LocalDateTime scheduleTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 11, 59,
-				59);
-
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
-				dateTimeFormatter);
-		List<String> tenantIds = repository.getTenantId();
-
-		tenantIds.forEach(tenantId -> {
-			if (tenantId.split("\\.").length >= 2) {
-				if (null != config.getIsUserEventsNotificationEnabled()) {
-					if (config.getIsUserEventsNotificationEnabled()) {
-						EventRequest eventRequest = sendDayCollectionNotification(requestInfo, tenantId);
-						if (null != eventRequest)
-							notificationService.sendEventNotification(eventRequest);
-					}
-				}
-
-				if (null != config.getIsSMSEnabled()) {
-					if (config.getIsSMSEnabled()) {
-						List<String> messages = new ArrayList<String>();
-						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
-								TODAY_CASH_COLLECTION_SMS, tenantId);
-						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
-
-						String mode = "cash";
-						String message = formatTodayCollectionMessage(requestInfo, tenantId,
-								messageMap.get(NotificationUtil.MSG_KEY), mode, new HashMap<>());
-						HashMap<String, String> onlineMessageMap = util.getLocalizationMessage(requestInfo,
-								TODAY_ONLINE_COLLECTION_SMS, tenantId);
-						if (message != null) {
-
-							messages.add(message);
-							mode = "online";
-//							String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
-//									onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
-//							messages.add(onlineMessage);
-							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-									tenantId, Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"));
-							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-
-							for (OwnerInfo userInfo : userDetailResponse.getUser()) {
-								System.out.println("TODAY Coll User Info::" + userInfo);
-								if (userInfo.getName() != null) {
-									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-								} else {
-									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-								}
-							}
-							mobileNumberIdMap.entrySet().stream().forEach(map -> {
-								if (!messages.isEmpty()) {
-									String uuidUsername = map.getValue();
-
-									messages.forEach(msg -> {
-										msg = msg.replace("{ownername}", uuidUsername);
-										msg = msg.replace("{GPWSC}",
-												(gpwscMap != null
-														&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
-																? gpwscMap.get(NotificationUtil.MSG_KEY)
-																: tenantId);
-										DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-										Date today = new Date();
-										String formattedDate = format.format(today);
-										msg = msg.replace("{date}", formattedDate);
-										System.out.println("TODAY Coll SMS::" + msg);
-										SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
-												.message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
-												.users(new String[] { uuidUsername }).build();
-										if(config.isSMSForTodaysCollectionEnabled()) {
-											producer.push(config.getSmsNotifTopic(), smsRequest);
-										}
-									});
-								}
-							});
-						}
-
-					}
-				}
-			}
-			return;
-		});
-	}
+//	public void sendTodaysCollection(RequestInfo requestInfo) {
+//
+//		LocalDate date = LocalDate.now();
+//		LocalDateTime scheduleTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 11, 59,
+//				59);
+//
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		LocalDateTime currentTime = LocalDateTime.parse(LocalDateTime.now().format(dateTimeFormatter),
+//				dateTimeFormatter);
+//		List<String> tenantIds = repository.getTenantId();
+//
+//		tenantIds.forEach(tenantId -> {
+//			if (tenantId.split("\\.").length >= 2) {
+//				if (null != config.getIsUserEventsNotificationEnabled()) {
+//					if (config.getIsUserEventsNotificationEnabled()) {
+//						EventRequest eventRequest = sendDayCollectionNotification(requestInfo, tenantId);
+//						if (null != eventRequest)
+//							notificationService.sendEventNotification(eventRequest);
+//					}
+//				}
+//
+//				if (null != config.getIsSMSEnabled()) {
+//					if (config.getIsSMSEnabled()) {
+//						List<String> messages = new ArrayList<String>();
+//						HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
+//								TODAY_CASH_COLLECTION_SMS, tenantId);
+//						HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
+//
+//						String mode = "cash";
+//						String message = formatTodayCollectionMessage(requestInfo, tenantId,
+//								messageMap.get(NotificationUtil.MSG_KEY), mode, new HashMap<>());
+//						HashMap<String, String> onlineMessageMap = util.getLocalizationMessage(requestInfo,
+//								TODAY_ONLINE_COLLECTION_SMS, tenantId);
+//						if (message != null) {
+//
+//							messages.add(message);
+//							mode = "online";
+////							String onlineMessage = formatTodayCollectionMessage(requestInfo, tenantId,
+////									onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
+////							messages.add(onlineMessage);
+//							UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
+//									tenantId, Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"));
+//							Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
+//
+//							for (OwnerInfo userInfo : userDetailResponse.getUser()) {
+//								System.out.println("TODAY Coll User Info::" + userInfo);
+//								if (userInfo.getName() != null) {
+//									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
+//								} else {
+//									mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
+//								}
+//							}
+//							mobileNumberIdMap.entrySet().stream().forEach(map -> {
+//								if (!messages.isEmpty()) {
+//									String uuidUsername = map.getValue();
+//
+//									messages.forEach(msg -> {
+//										msg = msg.replace("{ownername}", uuidUsername);
+//										msg = msg.replace("{GPWSC}",
+//												(gpwscMap != null
+//														&& !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
+//																? gpwscMap.get(NotificationUtil.MSG_KEY)
+//																: tenantId);
+//										DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+//										Date today = new Date();
+//										String formattedDate = format.format(today);
+//										msg = msg.replace("{date}", formattedDate);
+//										System.out.println("TODAY Coll SMS::" + msg);
+//										SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
+//												.message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
+//												.users(new String[] { uuidUsername }).build();
+//										if(config.isSMSForTodaysCollectionEnabled()) {
+//											producer.push(config.getSmsNotifTopic(), smsRequest);
+//										}
+//									});
+//								}
+//							});
+//						}
+//
+//					}
+//				}
+//			}
+//			return;
+//		});
+//	}
 
 	@SuppressWarnings("null")
 	private EventRequest sendDayCollectionNotification(RequestInfo requestInfo, String tenantId) {

@@ -85,10 +85,10 @@ public class CalculatorController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	@PostMapping("/_jobscheduler/{isSendMessage}")
-	public void jobscheduler(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @PathVariable boolean isSendMessage) {
-		wSCalculationService.generateDemandBasedOnTimePeriod(requestInfoWrapper.getRequestInfo(), isSendMessage);
-	}
+//	@PostMapping("/_jobscheduler/{isSendMessage}")
+//	public void jobscheduler(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @PathVariable boolean isSendMessage) {
+//		wSCalculationService.generateDemandBasedOnTimePeriod(requestInfoWrapper.getRequestInfo(), isSendMessage);
+//	}
 	
 	@PostMapping("/_applyAdhocTax")
 	public ResponseEntity<CalculationRes> applyAdhocTax(@Valid @RequestBody AdhocTaxReq adhocTaxReq) {
