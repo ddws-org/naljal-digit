@@ -306,51 +306,21 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                   ? ButtonGroup(
                                                       i18.billDetails.COLLECT_PAYMENT,
                                                       () async {
-                                                      //*** Fetch Aggregated Demand Details  ***//
-                                                      AggragateDemandDetails?
-                                                          aggDemandItems;
-                                                      Map<String, dynamic>
-                                                          createPDFBody = {};
-
-                                                      await BillingServiceRepository()
-                                                          .fetchAggregateDemand({
-                                                        "tenantId":
-                                                            commonProvider
-                                                                .userDetails!
-                                                                .selectedtenant!
-                                                                .code,
-                                                        "consumerCode": billList
-                                                            .bill!
-                                                            .first
-                                                            .consumerCode,
-                                                        "businessService": "WS",
-                                                      }).then((AggragateDemandDetails?
-                                                              value) {
-                                                        if (value != null) {
-                                                          aggDemandItems =
-                                                              value;
-                                                        }
-                                                        createPDFBody = {
-                                                          "Bill": billList
-                                                              .bill!.first,
-                                                          "AggregatedDemands":
-                                                              aggDemandItems,
-                                                        };
-                                                      });
+                                                     
 
                                                       commonProvider
                                                           .getFileFromPDFBillService(
                                                               {
-                                                            "BillAndDemand":
-                                                                createPDFBody
+                                                            "Bill": [billList
+                                                              .bill!.first],
                                                           },
                                                               {
                                                             "key": widget
                                                                         .waterConnection
                                                                         ?.connectionType ==
                                                                     'Metered'
-                                                                ? 'ws-bill-v2'
-                                                                : 'ws-bill-nm-v2',
+                                                                ? 'ws-bill'
+                                                                : 'ws-bill-nm',
                                                             "tenantId":
                                                                 commonProvider
                                                                     .userDetails!
@@ -550,8 +520,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
           },
           {
             "key": widget.waterConnection?.connectionType == 'Metered'
-                ? "ws-bill-v2"
-                : "ws-bill-nm-v2",
+                ? "ws-bill"
+                : "ws-bill-nm",
             "tenantId": commonProvider.userDetails?.selectedtenant?.code,
           },
           billList.bill!.first.mobileNumber,
