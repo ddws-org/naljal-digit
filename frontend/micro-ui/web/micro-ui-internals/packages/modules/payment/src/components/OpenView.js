@@ -246,9 +246,15 @@ const OpenView = () => {
   function convertEpochToDateString(epochTime) {
     const date = new Date(epochTime);
 
+    // Array of month labels
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+
     // Extract components
     const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are zero-indexed
+    const month = monthNames[date.getMonth()]; // Get month name
     const year = date.getFullYear();
     let hours = date.getHours();
     const minutes = date.getMinutes();
@@ -266,10 +272,11 @@ const OpenView = () => {
     const secondsPadded = seconds < 10 ? '0' + seconds : seconds;
 
     // Format date and time
-    const formattedDate = `${day} July ${year} at ${hours}:${minutesPadded}:${secondsPadded} ${ampm}`;
+    const formattedDate = `${day} ${month} ${year} at ${hours}:${minutesPadded}:${secondsPadded} ${ampm}`;
 
     return formattedDate;
-  }
+}
+
 
 
 
