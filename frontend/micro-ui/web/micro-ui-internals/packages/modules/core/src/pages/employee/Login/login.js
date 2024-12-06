@@ -77,8 +77,8 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     } catch (err) {
       setShowToast(
         err?.response?.data?.error_description ||
-          (err?.message == "ES_ERROR_USER_NOT_PERMITTED" && t("ES_ERROR_USER_NOT_PERMITTED")) ||
-          t("INVALID_LOGIN_CREDENTIALS")
+        (err?.message == "ES_ERROR_USER_NOT_PERMITTED" && t("ES_ERROR_USER_NOT_PERMITTED")) ||
+        t("INVALID_LOGIN_CREDENTIALS")
       );
       setTimeout(closeToast, 5000);
     }
@@ -119,11 +119,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
-
-      
-
-
-      <FormComposerV2
+      <FormComposer
         onSubmit={onLogin}
         isDisabled={isDisabled || disable}
         noBoxShadow
@@ -140,7 +136,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
         buttonClassName="buttonClassName"
       >
         <Header />
-      </FormComposerV2>
+      </FormComposer>
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div className="employee-login-home-footer" style={{ backgroundColor: "unset" }}>
         <img
