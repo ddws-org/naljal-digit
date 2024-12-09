@@ -5,9 +5,7 @@ import "./index.css";
 import App from './App';
 import { TLCustomisations } from './Customisations/tl/TLCustomisation';
 
-
 initLibraries();
-
 
 window.Digit.Customizations = { PGR: {} ,TL:TLCustomisations};
 

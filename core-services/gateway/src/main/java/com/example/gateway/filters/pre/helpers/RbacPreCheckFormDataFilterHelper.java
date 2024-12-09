@@ -38,6 +38,5 @@ public class RbacPreCheckFormDataFilterHelper implements RewriteFunction<MultiVa
         else {
             exchange.getAttributes().put(RBAC_BOOLEAN_FLAG_NAME, true);
         }
-        return Mono.just(body);
-    }
+        return Mono.just(body);    }
 }

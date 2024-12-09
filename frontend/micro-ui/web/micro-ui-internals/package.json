@@ -5,7 +5,6 @@
   "workspaces": [
     "packages/libraries",
     "example",
-    "packages/css",
     "packages/react-components",
     "packages/modules/*"
   ],
@@ -17,31 +16,31 @@
   },
   "scripts": {
     "start": "run-s build start:dev",
-    "sprint": "SKIP_PREFLIGHT_CHECK=true run-s start:script",
+    "sprint": "run-s start:script",
     "start:dev": "run-p dev:**",
     "start:script": "./scripts/create.sh",
-    "dev:css": "cd packages/css && yarn start",
-    "publish:css": "cd packages/css && yarn publish --access public",
     "dev:libraries": "cd packages/libraries && yarn start",
     "dev:components": "cd packages/react-components && yarn start",
     "dev:pgr": "cd packages/modules/pgr && yarn start",
     "dev:hrms": "cd packages/modules/hrms && yarn start",
+    "dev:payment": "cd packages/modules/payment && yarn start",
     "dev:core": "cd packages/modules/core && yarn start",
     "dev:example": "cd example && yarn start",
     "build": "run-p build:**",
-    "build:css": "cd packages/css && yarn build:prod",
     "build:libraries": "cd packages/libraries && yarn build",
     "build:components": "cd packages/react-components && yarn build",
     "build:pgr": "cd packages/modules/pgr && yarn build",
     "build:hrms": "cd packages/modules/hrms && yarn build",
     "build:core": "cd packages/modules/core && yarn build",
+    "build:payment": "cd packages/modules/payment && yarn build",
     "build:sample": "cd packages/modules/sample && yarn build",
     "deploy:jenkins": "./scripts/jenkins.sh",
     "clean": "rm -rf node_modules"
   },
   "resolutions": {
     "**/@babel/runtime": "7.20.1",
-    "**/babel-preset-react-app": "10.0.0"
+    "**/babel-preset-react-app": "10.0.0",
+    "**/polished": "4.2.2"
   },
   "devDependencies": {
     "husky": "7.0.4",
@@ -54,9 +53,9 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
+    "@egovernments/digit-ui-react-components": "1.5.26",
     "lodash": "4.17.21",
     "microbundle-crl": "0.13.11",
-    "@egovernments/digit-ui-react-components": "^1.3.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "6.15.8",

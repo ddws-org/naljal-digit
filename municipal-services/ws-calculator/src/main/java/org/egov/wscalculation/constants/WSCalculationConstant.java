@@ -322,7 +322,9 @@ public class WSCalculationConstant {
 
 	public static final String mGram_Consumer_Bill_Payment_combine = "mGram.consumer.billAndPayment.N";
 
+	public static final String JSONPATH_ROOT_FOR_ws_service_calculator = "$.MdmsRes.ws-services-calculation";
 
+	public static final String JSONPATH_ROOT_FOR_Penalty = "$.MdmsRes.ws-services-calculation.Penalty";
 
 
 

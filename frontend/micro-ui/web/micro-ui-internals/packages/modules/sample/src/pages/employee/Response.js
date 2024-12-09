@@ -30,7 +30,7 @@ const Response = () => {
       />
       <div style={{ display: "flex" }}>
         <LinkLabel style={{ display: "flex", marginRight: "3rem" }} onClick={() => navigate("home")}>
-          <ArrowLeftWhite fill="#1f4ac4" style={{ marginRight: "8px", marginTop: "3px" }} />
+          <ArrowLeftWhite fill="#F47738" style={{ marginRight: "8px", marginTop: "3px" }} />
           {t("CORE_COMMON_GO_TO_HOME")}
         </LinkLabel>
       </div>

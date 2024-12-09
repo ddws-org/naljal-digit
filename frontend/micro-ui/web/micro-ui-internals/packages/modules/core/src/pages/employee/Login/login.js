@@ -38,7 +38,6 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     const filteredRoles = user?.info?.roles?.filter((role) => role.tenantId === Digit.SessionStorage.get("Employee.tenantId"));
     if (user?.info?.roles?.length > 0) user.info.roles = filteredRoles;
     Digit.UserService.setUser(user);
-    debugger;
     setEmployeeDetail(user?.info, user?.access_token);
     let redirectPath = `/${window?.contextPath}/employee`;
 
@@ -55,8 +54,6 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     // if (user?.info?.roles && user?.info?.roles?.every((e) => e.code === "STADMIN")) {
     //   redirectPath = `/${window?.contextPath}/employee/dss/landing/home`;
     // }
-    console.log(user?.info?.roles);
-    console.log(redirectPath, "redirectPath");
     history.replace(redirectPath);
   }, [user]);
 
@@ -102,6 +99,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
 
   let config = [{ body: propsConfig?.inputs }];
 
+
   const { mode } = Digit.Hooks.useQueryParams();
   if (mode === "admin" && config?.[0]?.body?.[2]?.disable == false && config?.[0]?.body?.[2]?.populators?.defaultValue == undefined) {
     config[0].body[2].disable = true;
@@ -110,9 +108,10 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   }
   if (config && config[0].body && config[0].body[1].label === "CORE_LOGIN_PASSWORD") {
     config[0].body[1].populators.validation = {
-      maxlength: 30,
+      maxlength: 15,
     };
   }
+
   return isLoading || isStoreLoading ? (
     <Loader />
   ) : (
@@ -120,6 +119,9 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employeeBackbuttonAlign">
         <BackButton variant="white" style={{ borderBottom: "none" }} />
       </div>
+
+      
+
 
       <FormComposerV2
         onSubmit={onLogin}
@@ -143,7 +145,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       <div className="employee-login-home-footer" style={{ backgroundColor: "unset" }}>
         <img
           alt="Powered by DIGIT"
-          src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/logo/nic-footer.png"}
+          src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();

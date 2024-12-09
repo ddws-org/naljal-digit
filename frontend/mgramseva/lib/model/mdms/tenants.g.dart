@@ -85,8 +85,8 @@ City _$CityFromJson(Map<String, dynamic> json) {
     ..districtName = json['districtName'] as String?
     ..regionName = json['regionName'] as String?
     ..ulbGrade = json['ulbGrade'] as String?
-    ..longitude = (json['longitude'] as num?)?.toDouble()
-    ..latitude = (json['latitude'] as num?)?.toDouble()
+    ..longitude = json['longitude']
+    ..latitude = json['latitude']
     ..code = json['code'] as String?
     ..ddrName = json['ddrName'] as String?
     ..regionCode = json['cateregionCodegory'] as String?

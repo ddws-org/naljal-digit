@@ -1,16 +1,32 @@
 import { Link } from "react-router-dom";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 //create functions here based on module name set in mdms(eg->SearchProjectConfig)
 //how to call these -> Digit?.Customizations?.[masterName]?.[moduleName]
 // these functions will act as middlewares
 var Digit = window.Digit || {};
 
+function anonymizeHalfString(input) {
+  // Initialize an empty string to store the anonymized output
+  let anonymized = "";
+  // Loop through each character in the input string
+  for (let i = 0; i < input.length; i++) {
+    // Check if the index (i) is even (0, 2, 4, ...)
+    if (i % 2 === 0) {
+      // Append the original character (keep it)
+      anonymized += input[i];
+    } else {
+      // Append an asterisk to mask the alternate character
+      anonymized += "*";
+    }
+  }
 
+  return anonymized;
+}
 
 const businessServiceMap = {
- 
-  "muster roll": "MR"
+  "muster roll": "MR",
 };
 
 const inboxModuleNameMap = {
@@ -20,7 +36,6 @@ const inboxModuleNameMap = {
 export const UICustomizations = {
   businessServiceMap,
   updatePayload: (applicationDetails, data, action, businessService) => {
-    
     if (businessService === businessServiceMap.estimate) {
       const workflow = {
         comment: data.comments,
@@ -71,6 +86,7 @@ export const UICustomizations = {
         workflow,
       };
     }
+
     if (businessService === businessServiceMap?.["muster roll"]) {
       const workflow = {
         comment: data?.comments,
@@ -96,7 +112,7 @@ export const UICustomizations = {
         workflow,
       };
     }
-    if(businessService === businessServiceMap?.["works.purchase"]){
+    if (businessService === businessServiceMap?.["works.purchase"]) {
       const workflow = {
         comment: data.comments,
         documents: data?.documents?.map((document) => {
@@ -117,21 +133,21 @@ export const UICustomizations = {
       });
 
       const additionalFieldsToSet = {
-        projectId:applicationDetails.additionalDetails.projectId,
-        invoiceDate:applicationDetails.billDate,
-        invoiceNumber:applicationDetails.referenceId.split('_')?.[1],
-        contractNumber:applicationDetails.referenceId.split('_')?.[0],
-        documents:applicationDetails.additionalDetails.documents
-      }
+        projectId: applicationDetails.additionalDetails.projectId,
+        invoiceDate: applicationDetails.billDate,
+        invoiceNumber: applicationDetails.referenceId.split("_")?.[1],
+        contractNumber: applicationDetails.referenceId.split("_")?.[0],
+        documents: applicationDetails.additionalDetails.documents,
+      };
       return {
-        bill: {...applicationDetails,...additionalFieldsToSet},
+        bill: { ...applicationDetails, ...additionalFieldsToSet },
         workflow,
       };
     }
   },
-  enableModalSubmit:(businessService,action,setModalSubmit,data)=>{
-    if(businessService === businessServiceMap?.["muster roll"] && action.action==="APPROVE"){
-      setModalSubmit(data?.acceptTerms)
+  enableModalSubmit: (businessService, action, setModalSubmit, data) => {
+    if (businessService === businessServiceMap?.["muster roll"] && action.action === "APPROVE") {
+      setModalSubmit(data?.acceptTerms);
     }
   },
   enableHrmsSearch: (businessService, action) => {
@@ -141,11 +157,11 @@ export const UICustomizations = {
     if (businessService === businessServiceMap.contract) {
       return action.action.includes("VERIFY_AND_FORWARD");
     }
-     if (businessService === businessServiceMap?.["muster roll"]) {
+    if (businessService === businessServiceMap?.["muster roll"]) {
       return action.action.includes("VERIFY");
     }
-    if(businessService === businessServiceMap?.["works.purchase"]){
-      return action.action.includes("VERIFY_AND_FORWARD")
+    if (businessService === businessServiceMap?.["works.purchase"]) {
+      return action.action.includes("VERIFY_AND_FORWARD");
     }
     return false;
   },
@@ -156,17 +172,13 @@ export const UICustomizations = {
       return businessServiceMap?.contract;
     } else if (moduleCode?.includes("muster roll")) {
       return businessServiceMap?.["muster roll"];
-    }
-    else if (moduleCode?.includes("works.purchase")) {
+    } else if (moduleCode?.includes("works.purchase")) {
       return businessServiceMap?.["works.purchase"];
-    }
-    else if (moduleCode?.includes("works.wages")) {
+    } else if (moduleCode?.includes("works.wages")) {
       return businessServiceMap?.["works.wages"];
-    }
-    else if (moduleCode?.includes("works.supervision")) {
+    } else if (moduleCode?.includes("works.supervision")) {
       return businessServiceMap?.["works.supervision"];
-    }
-    else {
+    } else {
       return businessServiceMap;
     }
   },
@@ -184,16 +196,15 @@ export const UICustomizations = {
 
   AttendanceInboxConfig: {
     preProcess: (data) => {
-      
       //set tenantId
       data.body.inbox.tenantId = Digit.ULBService.getCurrentTenantId();
       data.body.inbox.processSearchCriteria.tenantId = Digit.ULBService.getCurrentTenantId();
 
       const musterRollNumber = data?.body?.inbox?.moduleSearchCriteria?.musterRollNumber?.trim();
-      if(musterRollNumber) data.body.inbox.moduleSearchCriteria.musterRollNumber = musterRollNumber
+      if (musterRollNumber) data.body.inbox.moduleSearchCriteria.musterRollNumber = musterRollNumber;
 
       const attendanceRegisterName = data?.body?.inbox?.moduleSearchCriteria?.attendanceRegisterName?.trim();
-      if(attendanceRegisterName) data.body.inbox.moduleSearchCriteria.attendanceRegisterName = attendanceRegisterName
+      if (attendanceRegisterName) data.body.inbox.moduleSearchCriteria.attendanceRegisterName = attendanceRegisterName;
 
       // deleting them for now(assignee-> need clarity from pintu,ward-> static for now,not implemented BE side)
       const assignee = _.clone(data.body.inbox.moduleSearchCriteria.assignee);
@@ -204,11 +215,11 @@ export const UICustomizations = {
 
       //cloning locality and workflow states to format them
       // let locality = _.clone(data.body.inbox.moduleSearchCriteria.locality ? data.body.inbox.moduleSearchCriteria.locality : []);
-      
-      let selectedOrg =  _.clone(data.body.inbox.moduleSearchCriteria.orgId ? data.body.inbox.moduleSearchCriteria.orgId : null);
+
+      let selectedOrg = _.clone(data.body.inbox.moduleSearchCriteria.orgId ? data.body.inbox.moduleSearchCriteria.orgId : null);
       delete data.body.inbox.moduleSearchCriteria.orgId;
-      if(selectedOrg) {
-         data.body.inbox.moduleSearchCriteria.orgId = selectedOrg?.[0]?.applicationNumber;
+      if (selectedOrg) {
+        data.body.inbox.moduleSearchCriteria.orgId = selectedOrg?.[0]?.applicationNumber;
       }
 
       // let selectedWard =  _.clone(data.body.inbox.moduleSearchCriteria.ward ? data.body.inbox.moduleSearchCriteria.ward : null);
@@ -226,11 +237,10 @@ export const UICustomizations = {
       // locality = locality?.map((row) => row?.code);
       states = Object.keys(states)?.filter((key) => states[key]);
       ward = ward?.map((row) => row?.code);
-      
-      
+
       // //adding formatted data to these keys
       // if (locality.length > 0) data.body.inbox.moduleSearchCriteria.locality = locality;
-      if (states.length > 0) data.body.inbox.moduleSearchCriteria.status = states;  
+      if (states.length > 0) data.body.inbox.moduleSearchCriteria.status = states;
       if (ward.length > 0) data.body.inbox.moduleSearchCriteria.ward = ward;
       const projectType = _.clone(data.body.inbox.moduleSearchCriteria.projectType ? data.body.inbox.moduleSearchCriteria.projectType : {});
       if (projectType?.code) data.body.inbox.moduleSearchCriteria.projectType = projectType.code;
@@ -238,10 +248,10 @@ export const UICustomizations = {
       //adding tenantId to moduleSearchCriteria
       data.body.inbox.moduleSearchCriteria.tenantId = Digit.ULBService.getCurrentTenantId();
 
-      //setting limit and offset becoz somehow they are not getting set in muster inbox 
-      data.body.inbox .limit = data.state.tableForm.limit
-      data.body.inbox.offset = data.state.tableForm.offset
-      delete data.state
+      //setting limit and offset becoz somehow they are not getting set in muster inbox
+      data.body.inbox.limit = data.state.tableForm.limit;
+      data.body.inbox.offset = data.state.tableForm.offset;
+      delete data.state;
       return data;
     },
     postProcess: (responseArray, uiConfig) => {
@@ -260,7 +270,9 @@ export const UICustomizations = {
         return (
           <span className="link">
             <Link
-              to={`/${window.contextPath}/employee/attendencemgmt/view-attendance?tenantId=${Digit.ULBService.getCurrentTenantId()}&musterRollNumber=${value}`}
+              to={`/${
+                window.contextPath
+              }/employee/attendencemgmt/view-attendance?tenantId=${Digit.ULBService.getCurrentTenantId()}&musterRollNumber=${value}`}
             >
               {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
             </Link>
@@ -277,7 +289,7 @@ export const UICustomizations = {
       if (key === "ATM_NO_OF_INDIVIDUALS") {
         return <div>{value?.length}</div>;
       }
-      if(key === "ATM_AMOUNT_IN_RS"){
+      if (key === "ATM_AMOUNT_IN_RS") {
         return <span>{value ? Digit.Utils.dss.formatterWithoutRound(value, "number") : t("ES_COMMON_NA")}</span>;
       }
       if (key === "ATM_SLA") {
@@ -288,10 +300,10 @@ export const UICustomizations = {
         );
       }
       if (key === "COMMON_WORKFLOW_STATES") {
-        return <span>{t(`WF_MUSTOR_${value}`)}</span>
+        return <span>{t(`WF_MUSTOR_${value}`)}</span>;
       }
       //added this in case we change the key and not updated here , it'll throw that nothing was returned from cell error if that case is not handled here. To prevent that error putting this default
-      return <span>{t(`CASE_NOT_HANDLED`)}</span>
+      return <span>{t(`CASE_NOT_HANDLED`)}</span>;
     },
     MobileDetailsOnClick: (row, tenantId) => {
       let link;
@@ -309,9 +321,9 @@ export const UICustomizations = {
         body: {
           SearchCriteria: {
             tenantId: tenantId,
-            functions : {
-              type : "CBO"
-            }
+            functions: {
+              type: "CBO",
+            },
           },
         },
         config: {
@@ -323,7 +335,7 @@ export const UICustomizations = {
       };
     },
   },
-  SearchWageSeekerConfig:  {
+  SearchWageSeekerConfig: {
     customValidationCheck: (data) => {
       //checking both to and from date are present
       const { createdFrom, createdTo } = data;
@@ -347,7 +359,7 @@ export const UICustomizations = {
         wardCode: "wardCode[0].code",
         socialCategory: "socialCategory.code",
       };
-      const textConfig = ["name", "individualId"]
+      const textConfig = ["name", "individualId"];
       let Individual = Object.keys(requestBody)
         .map((key) => {
           if (selectConfig[key]) {
@@ -355,7 +367,7 @@ export const UICustomizations = {
           } else if (typeof requestBody[key] == "object") {
             requestBody[key] = requestBody[key]?.code;
           } else if (textConfig?.includes(key)) {
-            requestBody[key] = requestBody[key]?.trim()
+            requestBody[key] = requestBody[key]?.trim();
           }
           return key;
         })
@@ -383,7 +395,7 @@ export const UICustomizations = {
           return (
             <span className="link">
               <Link to={`/${window.contextPath}/employee/masters/view-wageseeker?tenantId=${row?.tenantId}&individualId=${value}`}>
-                 {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
+                {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
               </Link>
             </span>
           );
@@ -423,6 +435,159 @@ export const UICustomizations = {
       if (type === "date") {
         return data[keys.start] && data[keys.end] ? () => new Date(data[keys.start]).getTime() <= new Date(data[keys.end]).getTime() : true;
       }
-    }
+    },
+  },
+  OpenPaymentSearch: {
+    preProcess: (data, additionalDetails) => {
+      //we need to get three things -> consumerCode,businessService,tenantId
+      // businessService and tenantId can be either in queryParams or in form
+      let { consumerCode, businessService, tenantId } = data?.state?.searchForm || {};
+      businessService = businessService?.code;
+      tenantId = tenantId?.[0]?.code;
+      if (!businessService) {
+        businessService = additionalDetails?.queryParams?.businessService;
+      }
+      if (!tenantId) {
+        tenantId = additionalDetails?.queryParams?.tenantId;
+      }
+      const finalParams = {
+        // consumerCode,
+        tenantId,
+        businessService,
+        connectionNumber: consumerCode,
+        isOpenPaymentSearch: true,
+      };
+      data.params = finalParams;
+      // data.params.textSearch = finalParams.consumerCode
+      // const tenantId = Digit.ULBService.getCurrentTenantId();
+      // data.body = { RequestInfo: data.body.RequestInfo };
+      // const { limit, offset } = data?.state?.tableForm || {};
+      // const { campaignName, campaignType } = data?.state?.searchForm || {};
+      // data.body.CampaignDetails = {
+      //   tenantId: tenantId,
+      //   status: ["failed"],
+      //   createdBy: Digit.UserService.getUser().info.uuid,
+      //   pagination: {
+      //     sortBy: "createdTime",
+      //     sortOrder: "desc",
+      //     limit: limit,
+      //     offset: offset,
+      //   },
+      // };
+      // if (campaignName) {
+      //   data.body.CampaignDetails.campaignName = campaignName;
+      // }
+      // if (campaignType) {
+      //   data.body.CampaignDetails.projectType = campaignType?.[0]?.code;
+      // }
+      delete data.body.custom;
+      delete data.body.pagination;
+      data.options = {
+        userService: false,
+        auth: false,
+      };
+      // delete data.body.inbox;
+      // delete data.params;
+      return data;
+    },
+    additionalCustomizations: (row, key, column, value, t, searchResult) => {
+      switch (key) {
+        case "OP_CONS_CODE":
+          return (
+            <span className="link">
+              <Link
+                to={`/${window.contextPath}/citizen/payment/open-view?tenantId=${row.tenantId}&businessService=WS&consumerCode=${row.connectionNo}`}
+              >
+                {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
+              </Link>
+            </span>
+          );
+
+        case "OP_APPLICATION_TYPE":
+          return <div>{value ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_TYPE_${value}`)) : t("ES_COMMON_NA")}</div>;
+
+        case "OP_APPLICATION_STATUS":
+          return <div>{value ? t(Digit.Utils.locale.getTransformedLocale(`OP_APPLICATION_STATUS_${value}`)) : t("ES_COMMON_NA")}</div>;
+        case "OP_CONNECTION_TYPE":
+          return <div>{value ? t(Digit.Utils.locale.getTransformedLocale(`OP_CONNECTION_TYPE_${value}`)) : t("ES_COMMON_NA")}</div>;
+        case "OP_METER_INSTALLATION_DATE":
+          return <div>{value ? Digit.DateUtils.ConvertEpochToDate(value) : t("ES_COMMON_NA")}</div>;
+        case "OP_METER_READING_DATE":
+          return <div>{value ? Digit.DateUtils.ConvertEpochToDate(value) : t("ES_COMMON_NA")}</div>;
+        case "OP_PROPERTY_TYPE":
+          return <div>{value ? t(Digit.Utils.locale.getTransformedLocale(`OP_PROPERTY_TYPE_${value}`)) : t("ES_COMMON_NA")}</div>;
+        case "OP_PAYER_NAME":
+          return <div>{value ? anonymizeHalfString(value) : t("ES_COMMON_NA")}</div>;
+
+        default:
+          return <span>{t("ES_COMMON_DEFAULT_NA")}</span>;
+      }
+      if (key === "OP_BILL_DATE") {
+        return Digit.DateUtils.ConvertEpochToDate(value);
+      }
+
+      if (key === "OP_BILL_TOTAL_AMT") {
+        return <span>{`₹ ${value}`}</span>;
+      }
+
+      if (key === "OP_CONS_CODE") {
+        return (
+          <span className="link">
+            <Link
+              to={`/${window.contextPath}/citizen/payment/open-view?tenantId=${row.tenantId}&businessService=${row.businessService}&consumerCode=${row.consumerCode}`}
+            >
+              {String(value ? (column.translate ? t(column.prefix ? `${column.prefix}${value}` : value) : value) : t("ES_COMMON_NA"))}
+            </Link>
+          </span>
+        );
+      }
+    },
+    populateReqCriteria: () => {
+      const { t } = useTranslation();
+      const tenantId = Digit.ULBService.getCurrentTenantId();
+      return {
+        url: "/mdms-v2/v1/_search",
+        params: { tenantId },
+        body: {
+          MdmsCriteria: {
+            tenantId,
+            moduleDetails: [
+              {
+                moduleName: "tenant",
+                masterDetails: [
+                  {
+                    name: "tenants",
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        config: {
+          enabled: true,
+          select: (data) => {
+            const result = data?.MdmsRes?.tenant?.tenants
+              ?.filter((row) => row?.blockcode && row?.blockname)
+              ?.map((row) => ({
+                ...row,
+                updatedCode: `${row?.blockname} - ${t(row?.code)}`,
+              }));
+            return result;
+          },
+        },
+      };
+    },
+    customValidationCheck: (data) => {
+      //checking both to and from date are present
+      const { consumerCode } = data;
+      if (!consumerCode) return false;
+      if (consumerCode.length < 10 || consumerCode.length > 25) {
+        return { warning: true, label: "ES_COMMON_ENTER_VALID_CONSUMER_CODE" };
+      }
+      // if ((createdFrom === "" && createdTo !== "") || (createdFrom !== "" && createdTo === ""))
+      //   return { warning: true, label: "ES_COMMON_ENTER_DATE_RANGE" };
+
+      return false;
+    },
   },
 };

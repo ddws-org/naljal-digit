@@ -45,7 +45,7 @@ public class ChallanQueryBuilder {
 
       public static final String FILESTOREID_UPDATE_SQL = "UPDATE eg_echallan SET filestoreid=? WHERE id=?";
       
-      public static final String CANCEL_RECEIPT_UPDATE_SQL = "UPDATE eg_echallan SET applicationStatus='ACTIVE' WHERE referenceId=? and businessService=?";
+      public static final String CANCEL_RECEIPT_UPDATE_SQL = "UPDATE eg_echallan SET applicationStatus='CANCELLED' WHERE referenceId=? and businessService=?";
       
       private static final String TENANTIDS = "SELECT distinct(tenantid) FROM eg_echallan challan";
       
@@ -85,6 +85,18 @@ public class ChallanQueryBuilder {
 
 	  public static final String PENDINGEXPCOLLTILLDATE = "SELECT coalesce(SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT),0) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID INNER JOIN EG_ECHALLAN CH ON CH.referenceId=DMD.CONSUMERCODE AND DMD.TENANTID=CH.TENANTID WHERE DMD.BUSINESSSERVICE LIKE '%EXPENSE%' and DMD.status='ACTIVE' ";
 
+      public static final String EXPENSEBILLQUERY="SELECT challan.typeofexpense,vendor.name,challan.billdate, " +
+			  " challan.taxperiodfrom,challan.taxperiodto,challan.applicationstatus, " +
+			  " challan.paiddate,challan.filestoreid,challan.lastmodifiedtime, " +
+			  " challan.lastmodifiedby as lastmodifiedbyUuid,SUM(dd.taxamount) as total_taxamount " +
+			  " FROM eg_echallan challan LEFT JOIN eg_vendor vendor ON challan.vendor = vendor.id " +
+			  " LEFT JOIN egbs_demand_v1 d ON challan.challanno = d.consumercode " +
+			  " LEFT JOIN egbs_demanddetail_v1 dd ON d.id = dd.demandid WHERE " +
+			  " challan.tenantid = ? AND dd.tenantid = ? " +
+			  " AND challan.createdtime >= ? AND challan.createdtime <= ?" +
+			  " GROUP BY challan.typeofexpense,vendor.name,challan.billdate,challan.taxperiodfrom, " +
+			  " challan.taxperiodto,challan.applicationstatus,challan.paiddate,challan.filestoreid, " +
+			  " challan.lastmodifiedtime,challan.lastmodifiedby,challan.createdtime ORDER BY challan.createdtime DESC ";
 
 		public String getChallanSearchQuery(SearchCriteria criteria, List<Object> preparedStmtList) {
 
