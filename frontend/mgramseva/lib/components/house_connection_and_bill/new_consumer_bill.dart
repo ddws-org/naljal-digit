@@ -422,8 +422,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                               value;
                                                         }
                                                         createPDFBody = {
-                                                          "Bill": billList
-                                                              .bill!.first,
+                                                          "Bill": [billList
+                                                              .bill!.first],
                                                           "AggregatedDemands":
                                                               aggDemandItems,
                                                         };
