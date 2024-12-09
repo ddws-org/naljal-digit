@@ -1,6 +1,7 @@
 package org.egov.model;
 
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
