@@ -115,6 +115,9 @@ var fontDescriptors = {
   BalooPaaji:{
     normal: "src/fonts/BalooPaaji2-Regular.ttf",
     bold: "src/fonts/BalooPaaji2-Bold.ttf"
+  },
+  LohitAssamese : {
+    notmal: "src/fonts/Lohit-Assamese.ttf"
   }
 };
 
@@ -124,6 +127,7 @@ var defaultFontMapping = {
   pn_IN: 'BalooPaaji',
   od_IN: 'BalooBhaina',
   or_IN: 'BalooBhaina'
+  as_IN: 'LohitAssamese'
 }
 
 const printer = new pdfMakePrinter(fontDescriptors);
