@@ -1,5 +1,12 @@
 import Axios from "axios";
 import Urls from "./urls";
+
+const getDynamicPart = (url) => {
+  const parsedUrl = new URL(url);
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+};
+
 export const UploadServices = {
   Filestorage: async (module, filedata, tenantId) => {
     const formData = new FormData();
@@ -10,7 +17,7 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      url:`${Urls.FileStore}${tenantInfo}`,   
+      url:`${getDynamicPart(window?.location?.href)}/${Urls.FileStore}${tenantInfo}`,   
       data: formData,
       headers: { "auth-token": Digit.UserService.getUser() ? Digit.UserService.getUser()?.access_token : null},
     };
@@ -27,7 +34,7 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      url:`${Urls.FileStore}${tenantInfo}`, 
+      url:`${getDynamicPart(window?.location?.href)}/${Urls.FileStore}${tenantInfo}`, 
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
     };

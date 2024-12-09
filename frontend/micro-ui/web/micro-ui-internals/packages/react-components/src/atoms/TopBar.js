@@ -65,7 +65,7 @@ const TopBar = ({
           justifyContent: "center",
           alignItems: "center"
         }}>
-          {isMobile && !isPaymentPath && <Hamburger handleClick={toggleSidebar} />}
+          {/* {isMobile && !isPaymentPath && <Hamburger handleClick={toggleSidebar} />} */}
           <img
             className="city"
             id="topbar-logo"
