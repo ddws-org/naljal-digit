@@ -17,7 +17,7 @@ import 'package:mgramseva/widgets/button_group.dart';
 import 'package:mgramseva/widgets/list_label_text.dart';
 import 'package:mgramseva/widgets/short_button.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart' as df;
 import '../../utils/models.dart';
 import '../../widgets/custom_details.dart';
 
@@ -80,6 +80,7 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   }
 
   static getDueDatePenalty(dueDate, BuildContext context) {
+    log(dueDate,name:"123");
     late String localizationText;
     localizationText =
         '${ApplicationLocalizations.of(context).translate(i18.billDetails.CORE_PAID_AFTER)}';
@@ -87,12 +88,32 @@ class NewConsumerBillState extends State<NewConsumerBill> {
     return localizationText;
   }
 
+
+  String addDaysToCustomDate(String dateString, int daysToAdd) {
+  // Define the input format
+  final df.DateFormat inputFormat = df.DateFormat('dd-MM-yyyy');
+
+  // Parse the input string into a DateTime object
+  DateTime parsedDate = inputFormat.parse(dateString);
+
+  // Add the specified number of days
+  DateTime updatedDate = parsedDate.add(Duration(days: daysToAdd));
+
+  // Convert the updated DateTime back to a string in the same format
+  final df.DateFormat outputFormat = df.DateFormat('dd-MM-yyyy');
+  return outputFormat.format(updatedDate);
+}
+
   @override
   Widget build(BuildContext context) {
     return buildBillView(widget.waterConnection?.fetchBill ?? BillList());
   }
 
+
+
+
   buildBillView(BillList billList) {
+    
     var houseHoldProvider =
         Provider.of<HouseHoldProvider>(context, listen: false);
     var commonProvider = Provider.of<CommonProvider>(context, listen: false);
@@ -285,16 +306,20 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 ('₹' +
                                                     "${houseHoldProvider.aggDemandItems?.totalApplicablePenalty ?? 0.0}"),
                                                 context,
+                                                // Penalty  
                                                 subLabel: getDueDatePenalty(
-                                                    penalty.date, context)),
+                                                  addDaysToCustomDate(penalty.date,houseHoldProvider.applicableAfterDays),context)),
                                             getLabelText(
                                                 i18.billDetails
                                                     .CORE_NET_DUE_AMOUNT_WITH_PENALTY,
                                                 ('₹' +
                                                     "${(houseHoldProvider.aggDemandItems?.netDueWithPenalty ?? 0.0) + (houseHoldProvider.aggDemandItems?.totalApplicablePenalty ?? 0.0)}"),
                                                 context,
-                                                subLabel: getDueDatePenalty(
-                                                    penalty.date, context))
+                                                //Net Amount due with Penalty  
+                                                subLabel: getDueDatePenalty(                                                    
+                                                     addDaysToCustomDate(penalty.date,houseHoldProvider.applicableAfterDays),context))
+                                                    
+                                                    
                                           ],
                                         )),
 
@@ -422,8 +447,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                               value;
                                                         }
                                                         createPDFBody = {
-                                                          "Bill": [billList
-                                                              .bill!.first],
+                                                          "Bill": billList
+                                                              .bill!.first,
                                                           "AggregatedDemands":
                                                               aggDemandItems,
                                                         };
