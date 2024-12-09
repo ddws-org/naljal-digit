@@ -499,6 +499,16 @@ config:
       - work-dir: "utilities/rollout-dashboard-cronjob-indexer"
         image-name: "rollout-dashboard-cronjob-indexer"
         dockerfile: "utilities/rollout-dashboard-cronjob-indexer/Dockerfile"
+  - name: "builds/naljal-digit/utilities/naljal-custom-service"
+    build:
+      - work-dir: "utilities/naljal-custom-service"
+        image-name: "naljal-custom-service"
+  - name: "builds/naljal-digit/utilities/mdms-read-cronjob"
+    build:
+      - work-dir: "utilities/mdms-read-cronjob"
+        image-name: "api-cronjob"
+        dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
+
 
 # Frontend
   - name: "builds/naljal-digit/frontend/frontend-mgramseva"
@@ -577,5 +587,10 @@ config:
       - work-dir: edcr/service/egov
         dockerfile: edcr/service/Dockerfile
         image-name: egov-edcr
+  - name: "builds/naljal-digit/utilities/egov-penalty-schedular"
+    build:
+      - work-dir: "utilities/Penalty"
+        image-name: "egov-penalty-schedular"
+        dockerfile: "build/maven/Dockerfile"
               
 

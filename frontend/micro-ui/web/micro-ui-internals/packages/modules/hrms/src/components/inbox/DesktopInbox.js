@@ -92,6 +92,22 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
         },
       },
       {
+        Header: t("HR_USER_TYPE"),
+        disableSortBy: false,
+        accessor: "typeofuser",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.department}`);
+        },
+      },
+      {
+        Header: t("HR_USER_DESIGNATION"),
+        disableSortBy: false,
+        accessor: "designation",
+        Cell: ({ row }) => {
+          return GetCell(`${row.original?.assignments[0]?.designation}`);
+        },
+      },
+      {
         Header: t("HR_STATUS_LABEL"),
         disableSortBy: false,
         accessor: "isActive",
@@ -155,7 +171,7 @@ const DesktopInbox = ({ tableConfig, filterComponent, ...props }) => {
             parentRoute={props.parentRoute}
             allLinks={[
               {
-                text: STATE_ADMIN ? t("HR_COMMON_CREATE_BLOCK_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
+                text: STATE_ADMIN ? t("HR_COMMON_CREATE_DIVISION_EMPLOYEE_HEADER") : t("HR_COMMON_CREATE_EMPLOYEE_HEADER"),
                 link: `/${window?.contextPath}/employee/hrms/create`,
                 businessService: "hrms",
                 roles: ["HRMS_ADMIN"],

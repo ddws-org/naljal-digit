@@ -86,7 +86,7 @@ class _CollectionReport extends State<InactiveConsumerReport>
                     TextButton.icon(
                       onPressed: () {
                         if (reportProvider.selectedBillPeriod == null) {
-                          Notifiers.getToastMessage(context, 'Select Billing Cycle', 'ERROR');
+                          Notifiers.getToastMessage(context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                         } else {
                           reportProvider.getInactiveConsumerReport(download: true);
                         }

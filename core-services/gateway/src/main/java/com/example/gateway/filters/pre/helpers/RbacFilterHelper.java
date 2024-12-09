@@ -97,6 +97,7 @@ public class RbacFilterHelper implements RewriteFunction<Map, Map> {
     }
 
     private boolean isUriAuthorized(AuthorizationRequest authorizationRequest , ServerWebExchange exchange) {
+
         AuthorizationRequestWrapper authorizationRequestWrapper = new AuthorizationRequestWrapper(new RequestInfo(), authorizationRequest);
 
         final HttpHeaders headers = new HttpHeaders();

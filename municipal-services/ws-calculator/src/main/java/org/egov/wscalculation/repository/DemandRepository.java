@@ -1,20 +1,26 @@
 package org.egov.wscalculation.repository;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.wscalculation.config.WSCalculationConfiguration;
+import org.egov.wscalculation.repository.builder.DemandQueryBuilder;
 import org.egov.wscalculation.web.models.Demand;
 import org.egov.wscalculation.web.models.DemandRequest;
 import org.egov.wscalculation.web.models.DemandResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Repository
+@Slf4j
 public class DemandRepository {
 
 
@@ -27,6 +33,12 @@ public class DemandRepository {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private DemandQueryBuilder queryBuilder;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
 
     /**
      * Creates demand
@@ -38,6 +50,7 @@ public class DemandRepository {
         StringBuilder url = new StringBuilder(config.getBillingServiceHost());
         url.append(config.getDemandCreateEndPoint());
         DemandRequest request = new DemandRequest(requestInfo,demands);
+        log.info("Creating demand for consumer code: "+request.getDemands().get(0).getConsumerCode());
         Object result = serviceRequestRepository.fetchResult(url, request);
         try{
            return  mapper.convertValue(result,DemandResponse.class).getDemands();
@@ -57,6 +70,7 @@ public class DemandRepository {
         StringBuilder url = new StringBuilder(config.getBillingServiceHost());
         url.append(config.getDemandUpdateEndPoint());
         DemandRequest request = new DemandRequest(requestInfo,demands);
+        log.info("Updating demand for consumer code: "+request.getDemands().get(0).getConsumerCode());
         Object result = serviceRequestRepository.fetchResult(url, request);
         try{
             return mapper.convertValue(result,DemandResponse.class).getDemands();
@@ -64,6 +78,12 @@ public class DemandRepository {
         catch(IllegalArgumentException e){
             throw new CustomException("PARSING_ERROR","Failed to parse response of update demand");
         }
+    }
+    public List<String> getDemandsToAddPenalty(String tenantId, BigInteger penaltyThresholdTime, Integer penaltyApplicableAfterDays) {
+        List<Object> preparedStmtList = new ArrayList<>();
+        String query = queryBuilder.getPenaltyQuery(tenantId, penaltyThresholdTime, penaltyApplicableAfterDays);
+        log.info("query:"+ query);
+        return jdbcTemplate.queryForList(query, String.class);
     }
 
 

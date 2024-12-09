@@ -18,6 +18,12 @@ public class RollOutDashboard {
     private String blockname;
     private String panchayatname;
     private String regionName;
+    private String projectcode;
+    private String zone;
+    private String circle;
+    private String division;
+    private String subdivision;
+    private String section;
     private int activeUsersCount;
     private double totalAdvance;
     private double totalPenalty;

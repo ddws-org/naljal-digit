@@ -57,6 +57,8 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
               </div>
             )}
             <div className="complaint-input-container" style={{ width: "100%" }}>
+
+
               {searchFields
                 ?.filter((e) => true)
                 ?.map((input, index) => (
@@ -66,11 +68,11 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                       {input.type !== "date" ? (
                         <div className="field-container">
                           {input?.componentInFront ? (
-                            <span className="citizen-card-input citizen-card-input--front" style={{ flex: "none" }}>
+                            <span className="citizen-card-input-only  citizen-card-input--front" style={{ flex: "none" }}>
                               {input?.componentInFront}
                             </span>
                           ) : null}
-                          <TextInput {...input} inputRef={register} watch={watch} shouldUpdate={true} />
+                          <TextInput className="employee-card-input-only" {...input} inputRef={register} watch={watch} shouldUpdate={true} />
                         </div>
                       ) : (
                         <Controller

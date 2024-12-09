@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,15 +11,17 @@ import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
+import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/user_profile/user_profile.dart';
 import 'package:mgramseva/providers/language.dart';
+import 'package:mgramseva/providers/tenants_provider.dart';
 import 'package:mgramseva/repository/authentication_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
-import 'package:mgramseva/utils/constants.dart';
+import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
@@ -28,12 +29,10 @@ import 'package:mgramseva/utils/date_formats.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
 import 'package:mgramseva/utils/loaders.dart';
-import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/models.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/demand/update_demand_list.dart';
@@ -60,23 +59,15 @@ class CommonProvider with ChangeNotifier {
     dynamic localLabelResponse;
     if (kIsWeb) {
       localLabelResponse =
-          window.localStorage[languageProvider.selectedLanguage?.value ?? ''];
+          html.window.localStorage[languageProvider.selectedLanguage?.value ?? ''];
     } else {
       localLabelResponse = await storage.read(
           key: languageProvider.selectedLanguage?.value ?? '');
     }
     if (localLabelResponse != null && localLabelResponse.trim().isNotEmpty) {
-      var localizedString = jsonDecode(localLabelResponse)
+      return localizedStrings = jsonDecode(localLabelResponse)
           .map<LocalizationLabel>((e) => LocalizationLabel.fromJson(e))
           .toList();
-      var states = await storage.read(key:Constants.STATES_KEY);
-      if(states != null && states.trim().isNotEmpty){
-        var stateInfo = StateInfo.fromJson(jsonDecode(states));
-        if(stateInfo.code == Constants.STATE_CODE){
-          localizedStrings = localizedString;
-          return localizedString;
-        }
-      }
     }
 
     try {
@@ -90,15 +81,13 @@ class CommonProvider with ChangeNotifier {
       var response = await CoreRepository().getLocilisation(query);
       labels = localizedStrings = response;
       setLocalizationLabels(response);
-        } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return labels;
   }
 
   setSelectedTenant(UserDetails? loginDetails) {
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -116,7 +105,7 @@ class CommonProvider with ChangeNotifier {
 
   void setSelectedState(UserDetails? loginDetails) async {
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -132,7 +121,7 @@ class CommonProvider with ChangeNotifier {
         listen: false);
     try {
       if (kIsWeb) {
-        window.localStorage[languageProvider.selectedLanguage?.value ?? ''] =
+        html.window.localStorage[languageProvider.selectedLanguage?.value ?? ''] =
             jsonEncode(labels.map((e) => e.toJson()).toList());
       } else {
         await storage.write(
@@ -148,7 +137,7 @@ class CommonProvider with ChangeNotifier {
   set loginCredentials(UserDetails? loginDetails) {
     userDetails = loginDetails;
     if (kIsWeb) {
-      window.localStorage[Constants.LOGIN_KEY] =
+      html.window.localStorage[Constants.LOGIN_KEY] =
           loginDetails == null ? '' : jsonEncode(loginDetails.toJson());
     } else {
       storage.write(
@@ -161,7 +150,7 @@ class CommonProvider with ChangeNotifier {
 
   set userProfile(UserProfile? profile) {
     if (kIsWeb) {
-      window.localStorage[Constants.USER_PROFILE_KEY] =
+      html.window.localStorage[Constants.USER_PROFILE_KEY] =
           profile == null ? '' : jsonEncode(profile.toJson());
     } else {
       storage.write(
@@ -173,7 +162,7 @@ class CommonProvider with ChangeNotifier {
 
   walkThroughCondition(bool? firstTime, String key) {
     if (kIsWeb) {
-      window.localStorage[key] = firstTime.toString();
+      html.window.localStorage[key] = firstTime.toString();
     } else {
       storage.write(key: key, value: firstTime.toString());
     }
@@ -184,7 +173,7 @@ class CommonProvider with ChangeNotifier {
     var userResponse;
     try {
       if (kIsWeb) {
-        userResponse = window.localStorage[key];
+        userResponse = html.window.localStorage[key];
       } else {
         userResponse = (await storage.read(key: key));
       }
@@ -201,7 +190,7 @@ class CommonProvider with ChangeNotifier {
     var userResponse;
     try {
       if (kIsWeb) {
-        userResponse = window.localStorage[Constants.USER_PROFILE_KEY];
+        userResponse = html.window.localStorage[Constants.USER_PROFILE_KEY];
       } else {
         userResponse = await storage.read(key: Constants.USER_PROFILE_KEY);
       }
@@ -219,9 +208,9 @@ class CommonProvider with ChangeNotifier {
     dynamic stateResponse;
     try {
       if (kIsWeb) {
-        loginResponse = window.localStorage[Constants.LOGIN_KEY];
+        loginResponse = html.window.localStorage[Constants.LOGIN_KEY];
 
-        stateResponse = window.localStorage[Constants.STATES_KEY];
+        stateResponse = html.window.localStorage[Constants.STATES_KEY];
       } else {
         var isUpdated = false;
         try {
@@ -273,8 +262,8 @@ class CommonProvider with ChangeNotifier {
 
   Future<void> getAppVersionDetails() async {
     try {
-      var localizationList =
-          await CoreRepository().getMdms(initRequestBody({"tenantId": Constants.STATE_CODE}));
+      var localizationList = await CoreRepository().getMdms(
+          initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());
@@ -290,28 +279,28 @@ class CommonProvider with ChangeNotifier {
     dynamic stateResponse;
 
     var isUpdated = false;
-    if (!window.localStorage.containsKey(Constants.APP_VERSION) ||
-        !window.localStorage.containsKey(Constants.BUILD_NUMBER)) {
-      window.localStorage.clear();
+    if (!html.window.localStorage.containsKey(Constants.APP_VERSION) ||
+        !html.window.localStorage.containsKey(Constants.BUILD_NUMBER)) {
+      html.window.localStorage.clear();
       isUpdated = true;
-      window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
-      window.localStorage[Constants.BUILD_NUMBER] =
+      html.window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+      html.window.localStorage[Constants.BUILD_NUMBER] =
           packageInfo?.buildNumber ?? '';
     } else {
-      if (window.localStorage[Constants.APP_VERSION] != packageInfo?.version ||
-          window.localStorage[Constants.BUILD_NUMBER] !=
+      if (html.window.localStorage[Constants.APP_VERSION] != packageInfo?.version ||
+          html.window.localStorage[Constants.BUILD_NUMBER] !=
               packageInfo?.buildNumber) {
-        window.localStorage.clear();
+        html.window.localStorage.clear();
         isUpdated = true;
-        window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
-        window.localStorage[Constants.BUILD_NUMBER] =
+        html.window.localStorage[Constants.APP_VERSION] = packageInfo?.version ?? '';
+        html.window.localStorage[Constants.BUILD_NUMBER] =
             packageInfo?.buildNumber ?? '';
       }
     }
 
     if (!isUpdated) {
-      loginResponse = window.localStorage[Constants.LOGIN_KEY];
-      stateResponse = window.localStorage[Constants.STATES_KEY];
+      loginResponse = html.window.localStorage[Constants.LOGIN_KEY];
+      stateResponse = html.window.localStorage[Constants.STATES_KEY];
     } else {
       userDetails = null;
     }
@@ -336,10 +325,11 @@ class CommonProvider with ChangeNotifier {
   }
   
     void onLogout() async {
-    await AuthenticationRepository().logoutUser().then((onValue) {
-      navigatorKey.currentState
+    navigatorKey.currentState
           ?.pushNamedAndRemoveUntil(Routes.SELECT_LANGUAGE, (route) => false);
       loginCredentials = null;
+    await AuthenticationRepository().logoutUser().then((onValue) {
+     
     });
   }
 
@@ -436,15 +426,13 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-  void getFileFromPDFBillService(
-    body,
-    params,
-    mobileNumber,
-    bill,
-    mode,
-  ) async {
+  void getFileFromPDFBillService(body, params, mobileNumber, bill, mode,
+      {String? fireStoreId = ""}) async {
     try {
-      var res = await CoreRepository().getFileStorefromPdfService(body, params);
+      var res;
+      if (fireStoreId == "") {
+        res = await CoreRepository().getFileStorefromPdfService(body, params);
+      }
 
       String link = (ApplicationLocalizations.of(navigatorKey.currentContext!)
           .translate(i18.common.SHARE_BILL_LINK)
@@ -455,7 +443,7 @@ class CommonProvider with ChangeNotifier {
           .replaceFirst('{new consumer id}', bill.consumerCode!.toString())
           .replaceFirst('{Amount}', bill.totalAmount.toString()));
       getStoreFileDetails(
-        res!.filestoreIds!.first,
+        fireStoreId != "" ? fireStoreId : res!.filestoreIds!.first,
         mode,
         mobileNumber,
         navigatorKey.currentContext,
@@ -549,9 +537,11 @@ class CommonProvider with ChangeNotifier {
     for (int i = 65; i <= 90; i++) {
       alphabets.add(String.fromCharCode(i));
     }
+  
     for (int i = 0; i < 26; i++) {
       excelColumns.add(KeyValue(alphabets[i], i));
     }
+    excelColumns.add(KeyValue("AA", 26));
     return excelColumns;
   }
 
@@ -600,46 +590,59 @@ class CommonProvider with ChangeNotifier {
   // }
 
   static String getAdvanceAdjustedAmount(List<Demands> demandList) {
+    // Set Amt as 0
     var amount = '0';
     var index = -1;
 
+    // if demandList.isEmpty return Amt as 0
     if (demandList.isEmpty) return amount;
 
+    // Sort Demands where Payments were not completed
     var filteredDemands =
         demandList.where((e) => !(e.isPaymentCompleted ?? false)).toList();
+
+    // Early return if first demand has time penalty and there's applicable penalty
     if (filteredDemands.first.demandDetails?.first.taxHeadMasterCode ==
             'WS_TIME_PENALTY' &&
         CommonProvider.getPenaltyApplicable(demandList).penaltyApplicable !=
             0) {
+      // here also return 0;
       return amount;
     } else {
       for (int i = 0; i < filteredDemands.length; i++) {
         index = demandList[i].demandDetails?.lastIndexWhere(
                 (e) => e.taxHeadMasterCode == 'WS_ADVANCE_CARRYFORWARD') ??
             -1;
-
+        // Find the last index of "WS_ADVANCE_CARRYFORWARD" element in the current demand's details list (if it exists)
+        // true => index value else => -1
         if (index != -1) {
           var demandDetail = demandList[i].demandDetails?[index];
+          // Collection Amt < tax amt
           if (demandDetail!.collectionAmount!.abs() <
               demandDetail.taxAmount!.abs()) {
+            //  save amount
             amount = filteredDemands.first.demandDetails?.last.collectionAmount
                     ?.toString() ??
                 '0.0';
           } else if (demandDetail.collectionAmount! ==
               demandDetail.taxAmount!) {
+            // Iterate through  filteredDemands
             if (filteredDemands.first.demandDetails?.last.collectionAmount !=
                 0) {
               var list = <double>[];
               for (int j = 0; j <= i; j++) {
+                // Iterate through  elements in the current demand's details list
                 for (int k = 0;
                     k < (filteredDemands[j].demandDetails?.length ?? 0);
                     k++) {
                   if (k == index && j == i) break;
+                  // Add amount to collection
                   list.add(
                       filteredDemands[j].demandDetails![k].collectionAmount ??
                           0);
                 }
               }
+              // find sum of colleted amount
               var collectedAmount = list.reduce((a, b) => a + b);
               amount = double.parse("$collectedAmount") >=
                       double.parse("${demandDetail.collectionAmount?.abs()}")
@@ -647,6 +650,7 @@ class CommonProvider with ChangeNotifier {
                           ?.toString() ??
                       '0'
                   : '0';
+              // set amount
             }
           }
         }
@@ -990,4 +994,188 @@ class CommonProvider with ChangeNotifier {
     }
     return false;
   }
+
+// App Bar Calls Refreactor
+  void appBarUpdate() {
+     var tenantProvider = Provider.of<TenantsProvider>(navigatorKey.currentContext!, listen: false);
+    
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    
+    if (tenantProvider.tenants != null) {
+      final r = commonProvider.userDetails!.userRequest!.roles!
+          .map((e) => e.tenantId)
+          .toSet()
+          .toList();
+      final result = tenantProvider.tenants!.tenantsList
+          ?.where((element) => r.contains(element.code?.trim()))
+          .toList();
+      if (result?.length == 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        if (result?.isNotEmpty ?? false)
+          commonProvider.setTenant(result?.first);
+    
+        // });
+      } else if (result != null &&
+          result.length > 1 &&
+          commonProvider.userDetails!.selectedtenant == null) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showDialogBox(result));
+      }
+    } else {
+      tenantProvider.getTenants().then((value) {
+        final r = commonProvider.userDetails!.userRequest!.roles!
+            .map((e) => e.tenantId)
+            .toSet()
+            .toList();
+        final result = tenantProvider.tenants!.tenantsList
+            ?.where((element) => r.contains(element.code?.trim()))
+            .toList();
+        if (result?.length == 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          if (result?.isNotEmpty ?? false)
+            commonProvider.setTenant(result?.first);
+    
+          // });
+        } else if (result != null &&
+            result.length > 1 &&
+            commonProvider.userDetails!.selectedtenant == null) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => showDialogBox(result));
+        }
+      });
+    }
+  }
+
+    showDialogBox(List<Tenants> tenants) {
+    var commonProvider = Provider.of<CommonProvider>(
+        navigatorKey.currentContext!,
+        listen: false);
+    var tenantProvider = Provider.of<TenantsProvider>(navigatorKey.currentContext!, listen: false);
+    final r = commonProvider.userDetails!.userRequest!.roles!
+        .map((e) => e.tenantId)
+        .toSet()
+        .toList();
+    final res = tenantProvider.tenants!.tenantsList!
+        .where((element) => r.contains(element.code?.trim()))
+        .toList();
+    showDialog(
+        barrierDismissible: commonProvider.userDetails!.selectedtenant != null,
+        context: navigatorKey.currentContext!,
+        builder: (BuildContext context) {
+          var searchController = TextEditingController();
+          var visibleTenants = tenants.asMap().values.where((element) =>element.city?.districtCode != null).toList();
+          return StatefulBuilder(
+            builder: (context, StateSetter stateSetter) {
+              return Stack(children: <Widget>[
+                Container(
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width > 720
+                            ? MediaQuery.of(context).size.width -
+                                MediaQuery.of(context).size.width / 3
+                            : 0,
+                        top: 60),
+                    width: MediaQuery.of(context).size.width > 720
+                        ? MediaQuery.of(context).size.width / 3
+                        : MediaQuery.of(context).size.width,
+                    height: (visibleTenants.length * 50 < 300 ?
+                    visibleTenants.length * 50 : 300)+ 60,
+                    color: Colors.white,
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        Material(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                hintText: "${ApplicationLocalizations.of(context)
+                                    .translate(i18.common.SEARCH)}"
+                              ),
+                              onChanged: (text) {
+                                  if(text.isEmpty){
+                                    stateSetter(()=>visibleTenants = tenants.asMap().values.toList()
+                                    );
+                                  }else{
+                                    var tresult = tenants.where((e) => "${ApplicationLocalizations.of(context)
+                                        .translate(e.code!)}-${e.city!.code!}".toLowerCase().trim().contains(text.toLowerCase().trim())).toList();
+                                    stateSetter(()=>visibleTenants = tresult
+                                    );
+                                  }
+                              },
+                            ),
+                          ),
+                        ),
+                        ...List.generate(visibleTenants.length, (index) {
+                        return GestureDetector(
+                            onTap: () {
+                              commonProvider.setTenant(visibleTenants[index]);
+                              Navigator.of(context,rootNavigator: true).pop();
+                              CommonMethods.home();
+                            },
+                            child: Material(
+                                child: Container(
+                              color: index.isEven
+                                  ? Colors.white
+                                  : Color.fromRGBO(238, 238, 238, 1),
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              padding: EdgeInsets.all(5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ApplicationLocalizations.of(context)
+                                            .translate(visibleTenants[index].code!),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: commonProvider.userDetails!
+                                                            .selectedtenant !=
+                                                        null &&
+                                                    commonProvider
+                                                            .userDetails!
+                                                            .selectedtenant!
+                                                            .city!
+                                                            .code ==
+                                                        visibleTenants[index].city!.code!
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.black),
+                                      ),
+                                      Text(visibleTenants[index].city!.code!,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: commonProvider.userDetails!
+                                                              .selectedtenant !=
+                                                          null &&
+                                                      commonProvider
+                                                              .userDetails!
+                                                              .selectedtenant!
+                                                              .city!
+                                                              .code ==
+                                                          visibleTenants[index].city!.code!
+                                                  ? Theme.of(context).primaryColor
+                                                  : Colors.black))
+                                    ]),
+                              ),
+                            )));
+                      },growable: true)],
+                    ))
+              ]);
+            }
+          );
+        });
+  }
+
+
+// App Bar Calls Refreactor
+
+
 }

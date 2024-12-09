@@ -99,7 +99,12 @@ public class PropertiesManager {
 
 	@Value("${kafka.topics.hrms.updateData}")
 	public String updateTopic;
-	
+
+	@Value("${kafka.topics.save.service.index}")
+	public String saveEmployeeIndexTopic;
+
+	@Value("${kafka.topics.update.service.index}")
+	public String UpdateEmployeeIndexTopic;
 	
 	//Variables
 	@Value("${egov.idgen.ack.name}")
@@ -116,4 +121,42 @@ public class PropertiesManager {
 
 	@Value("${sms.user.creation.enabled}")
 	public boolean isSMSForUserCreationEnable;
+
+	@Value("${egov.hrms.max.pagination.limit}")
+	public Integer hrmsMaxLimit;
+
+	//	FuzzyConfigs
+	@Value("${hrms.search.pagination.default.limit}")
+	public Long defaultLimit;
+
+	@Value("${hrms.search.pagination.default.offset}")
+	public Long defaultOffset;
+
+	@Value("${hrms.search.pagination.max.search.limit}")
+	public Long searchLimit;
+
+	@Value("${hrms.search.pagination.max.search.limit}")
+	private Long maxSearchLimit;
+
+	@Value("${hrms.fuzzy.search.is.wildcard}")
+	private Boolean isSearchWildcardBased;
+
+	@Value("${hrms.search.name.fuziness}")
+	private String nameFuziness;
+
+	//	es configs
+	@Value("${elasticsearch.host}")
+	private String esHost;
+
+	@Value("${hrms.es.index}")
+	private String esPTIndex;
+
+	@Value("${elasticsearch.search.endpoint}")
+	private String esSearchEndpoint;
+
+	@Value("${egov.es.username}")
+	private String userName;
+
+	@Value("${egov.es.password}")
+	private String password;
 }
