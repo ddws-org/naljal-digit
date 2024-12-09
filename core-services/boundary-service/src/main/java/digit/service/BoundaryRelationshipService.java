@@ -332,10 +332,30 @@ public class BoundaryRelationshipService {
     }
 
     private String extractNameFromCode(String code) {
-        if (code == null || code.isEmpty()) {
-            throw new IllegalArgumentException("Code is null or empty");
-        }
         String[] parts = code.split("_");
-        return parts[parts.length - 1];  // Extract the last part of the code as the name
+        StringBuilder result = new StringBuilder();
+        boolean startCollecting = false;
+
+        for (int i = 0; i < parts.length; i++) {
+            // Check if the previous part is numeric and the current part is alphabetic
+            if (!startCollecting && i > 0 && parts[i - 1].matches("\\d+") && parts[i].matches("[A-Za-z].*")) {
+                startCollecting = true; // Start collecting from this part
+            }
+
+            // Append all parts after finding the start
+            if (startCollecting) {
+                if (result.length() > 0) {
+                    result.append("_");
+                }
+                result.append(parts[i]);
+            }
+        }
+
+        // Handle cases where no valid transition was found
+        if (result.length() == 0) {
+            return code;
+        } else {
+            return result.toString();
+        }
     }
 }
