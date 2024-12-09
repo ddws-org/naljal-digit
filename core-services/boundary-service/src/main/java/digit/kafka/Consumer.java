@@ -73,7 +73,7 @@ public class Consumer {
         cityData.put("districtCode", villageData.getOrDefault("districtCode", ""));
         cityData.put("districtName", villageData.getOrDefault("districtName", ""));
         cityData.put("blockcode",villageData.getOrDefault("blockcode",""));
-        cityData.put("blockname",villageData.getOrDefault("blockcode",""));
+        cityData.put("blockname",villageData.getOrDefault("blockname",""));
         cityData.put("panchayatcode", villageData.getOrDefault("panchayatcode",""));
         cityData.put("panchayatname", villageData.getOrDefault("panchayatname",""));
 
