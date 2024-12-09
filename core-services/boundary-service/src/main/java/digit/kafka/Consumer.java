@@ -72,6 +72,10 @@ public class Consumer {
         cityData.put("villageName",villageData.getOrDefault("villageName",""));
         cityData.put("districtCode", villageData.getOrDefault("districtCode", ""));
         cityData.put("districtName", villageData.getOrDefault("districtName", ""));
+        cityData.put("blockcode",villageData.getOrDefault("blockcode",""));
+        cityData.put("blockname",villageData.getOrDefault("blockcode",""));
+        cityData.put("panchayatcode", villageData.getOrDefault("panchayatcode",""));
+        cityData.put("panchayatname", villageData.getOrDefault("panchayatname",""));
 
         Map<String, Object> officeTimings = new HashMap<>();
         officeTimings.put("Mon - Fri", villageData.getOrDefault("officeTimings", "9.00 AM - 6.00 PM"));
