@@ -117,8 +117,8 @@ var fontDescriptors = {
     bold: "src/fonts/BalooPaaji2-Bold.ttf"
   },
   LohitAssamese : {
-    normal: "src/fonts/Lohit-Assamese.ttf",
-    bold: "src/fonts/Lohit-Assamese-Bold.ttf"
+    normal: "src/fonts/Lohit-Assamese2.ttf",
+    bold: "src/fonts/Lohit-Assamese2-Bold.ttf"
   }
 };
 
