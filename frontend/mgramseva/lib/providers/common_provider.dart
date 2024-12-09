@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
+import 'package:mgramseva/model/mdms/penalty_module.dart';
 import 'package:mgramseva/model/mdms/tenants.dart';
 import 'package:mgramseva/model/user/user_details.dart';
 import 'package:mgramseva/model/user_profile/user_profile.dart';
@@ -940,13 +942,34 @@ class CommonProvider with ChangeNotifier {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
           listen: false);
-
+          
       return await CoreRepository()
           .getPaymentTypeMDMS(getMDMSPaymentModes(tenantId));
     } catch (e) {
       return PaymentType();
     }
   }
+
+
+
+  static Future<PenaltyModule> getMdmsPenaltyService(String tenantId) async {
+    try {
+      var commonProvider = Provider.of<CommonProvider>(
+          navigatorKey.currentContext!,
+          listen: false);
+          
+      return await CoreRepository()
+          .getPenaltyModuleMDMS(getMDMSPenaltyModule(tenantId));
+    } catch (e) {
+      return PenaltyModule();
+    }
+  }
+
+
+
+
+
+
 
   static Future<PaymentType> getMdmsPaymentList(String tenantId) async {
     try {
