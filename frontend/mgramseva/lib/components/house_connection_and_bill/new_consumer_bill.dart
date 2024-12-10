@@ -89,20 +89,18 @@ class NewConsumerBillState extends State<NewConsumerBill> {
   }
 
 
-  String addDaysToCustomDate(String dateString, int daysToAdd) {
-  // Define the input format
-  final df.DateFormat inputFormat = df.DateFormat('dd-MM-yyyy');
-
-  // Parse the input string into a DateTime object
-  DateTime parsedDate = inputFormat.parse(dateString);
+String addDaysToCustomDate(int epochTime, int daysToAdd) {
+  // Convert the epoch time to a DateTime object
+  DateTime parsedDate = DateTime.fromMillisecondsSinceEpoch(epochTime);
 
   // Add the specified number of days
   DateTime updatedDate = parsedDate.add(Duration(days: daysToAdd));
 
-  // Convert the updated DateTime back to a string in the same format
+  // Convert the updated DateTime back to a string in the desired format
   final df.DateFormat outputFormat = df.DateFormat('dd-MM-yyyy');
   return outputFormat.format(updatedDate);
 }
+
 
   @override
   Widget build(BuildContext context) {
@@ -301,6 +299,13 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                           houseHoldProvider.isfirstdemand)
                                         CustomDetailsCard(Column(
                                           children: [
+                                          //   houseHoldProvider.isfirstdemand == true
+                                          // ? getLabelText(
+                                          //     i18.generateBillDetails
+                                          //         .LAST_BILL_GENERATION_DATE,
+                                          //     DateFormats.timeStampToDate(
+                                          //             billList
+                                          //                 .bill!.first.billDate,
                                             getLabelText(
                                                 i18.billDetails.CORE_PENALTY,
                                                 ('₹' +
@@ -308,7 +313,12 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 context,
                                                 // Penalty  
                                                 subLabel: getDueDatePenalty(
-                                                  addDaysToCustomDate(penalty.date,houseHoldProvider.applicableAfterDays),context)),
+                                                  addDaysToCustomDate(
+                                                    
+                                                    billList
+                                                          .bill!.first.billDate ?? 0
+                                                    
+                                                    ,houseHoldProvider.applicableAfterDays),context)),
                                             getLabelText(
                                                 i18.billDetails
                                                     .CORE_NET_DUE_AMOUNT_WITH_PENALTY,
@@ -317,7 +327,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                 context,
                                                 //Net Amount due with Penalty  
                                                 subLabel: getDueDatePenalty(                                                    
-                                                     addDaysToCustomDate(penalty.date,houseHoldProvider.applicableAfterDays),context))
+                                                     addDaysToCustomDate(billList
+                                                          .bill!.first.billDate ?? 0,houseHoldProvider.applicableAfterDays),context))
                                                     
                                                     
                                           ],
@@ -447,8 +458,8 @@ class NewConsumerBillState extends State<NewConsumerBill> {
                                                               value;
                                                         }
                                                         createPDFBody = {
-                                                          "Bill": billList
-                                                              .bill!.first,
+                                                          "Bill": [billList
+                                                              .bill!.first],
                                                           "AggregatedDemands":
                                                               aggDemandItems,
                                                         };
