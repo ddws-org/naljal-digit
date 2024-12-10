@@ -9,6 +9,14 @@
 .employee-card-input {
   @apply mb-lg pl-sm outline-none block border w-full h-10 border-input-border border-solid bg-white leading-10 text-form-field text-text-primary;
 }
+
+.employee-card-input-only {
+}
+.employee-card-input-only .employee-card-input  {
+  @apply mb-lg pl-sm outline-none block border w-full h-12 border-input-border border-solid bg-white leading-10 text-form-field text-text-primary;
+}
+
+
 .employee-card-input:disabled {
   @apply border-grey-dark text-grey-dark !important;
   pointer-events: none !important;
@@ -80,6 +88,10 @@
   .card-input-emp {
     width: 240px;
   }
+}
+
+.citizen-card-input-only {
+  @apply mb-lg pl-sm outline-none block border w-full h-12 border-input-border border-solid bg-white leading-10 text-form-field text-text-primary;
 }
 
 .citizen-card-input {

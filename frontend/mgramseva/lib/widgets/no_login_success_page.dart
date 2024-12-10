@@ -89,7 +89,7 @@ class NoLoginSuccess extends StatelessWidget {
                                   successHandler.downloadLinkLabel != null
                                       ? successHandler.downloadLinkLabel!
                                       : ''),
-                              style: TextStyle(
+                                                            style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).primaryColor)),
                         ),

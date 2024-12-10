@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository.builder;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.egov.wscalculation.config.WSCalculationConfiguration;
+import org.egov.wscalculation.web.models.AuditDetails;
 import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,6 +46,8 @@ public class WSCalculatorQueryBuilder {
 	private static final String PREVIOUS_BILLING_CYCLE_CONNECTION = " select count(*) from eg_ws_connection ";
 
 	private static final String nonmeteredConnectionList = " select distinct(conn.connectionno) from eg_ws_connection conn join eg_ws_service ws on conn.id=ws.connection_id where ws.connectiontype='Non_Metered' and conn.status not IN ('Inactive') and conn.connectionno not in ( select distinct(consumercode) from egbs_demand_v1 d where d.businessservice='WS' and d.status not IN ('CANCELLED') ";
+
+	private static final String duplicateBulkDemandCallQuery = "SELECT COUNT(*) FROM eg_ws_bulk_demand_batch where status='IN_PROGRESS' ";
 
 	public String getDistinctTenantIds() {
 		return distinctTenantIdsCriteria;
@@ -199,6 +203,36 @@ public class WSCalculatorQueryBuilder {
 		preparedStatement.add(tenantId);
 		return query.toString();
 
+	}
+
+	public String getDuplicateBulkDemandCallQuery(String tenantId, String billingPeriod, Timestamp fromTime, List<Object> preparedStatement) {
+		StringBuilder query = new StringBuilder(duplicateBulkDemandCallQuery);
+
+		query.append(" and tenantId = ?");
+		preparedStatement.add(tenantId);
+		addClauseIfRequired(preparedStatement,query);
+		query.append(" billingPeriod = ?");
+		preparedStatement.add(billingPeriod);
+		addClauseIfRequired(preparedStatement,query);
+		query.append(" createdTime > ?");
+		preparedStatement.add(fromTime.getTime());
+
+		return query.toString();
+	}
+
+	public String getInsertBulkDemandCallQuery(String tenantId, String billingPeriod, String status, AuditDetails auditDetails, List<Object> preparedStatement) {
+		StringBuilder query = new StringBuilder("INSERT INTO eg_ws_bulk_demand_batch (tenantId, billingPeriod, status, createdBy, lastModifiedBy, createdTime, lastModifiedTime) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+		preparedStatement.add(tenantId);
+		preparedStatement.add(billingPeriod);
+		preparedStatement.add(status);
+
+		preparedStatement.add(auditDetails.getCreatedBy());
+		preparedStatement.add(auditDetails.getLastModifiedBy());
+		preparedStatement.add(auditDetails.getCreatedTime());
+		preparedStatement.add(auditDetails.getLastModifiedTime());
+
+		return query.toString();
 	}
 
 	public String isBillingPeriodExists(String connectionNo, String billingPeriod, List<Object> preparedStatement) {

@@ -6,46 +6,42 @@ part of 'bill_payments.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BillPayments _$BillPaymentsFromJson(Map<String, dynamic> json) {
-  return BillPayments()
-    ..payments = (json['Payments'] as List<dynamic>?)
-        ?.map((e) => Payments.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
+BillPayments _$BillPaymentsFromJson(Map<String, dynamic> json) => BillPayments()
+  ..payments = (json['Payments'] as List<dynamic>?)
+      ?.map((e) => Payments.fromJson(e as Map<String, dynamic>))
+      .toList();
 
 Map<String, dynamic> _$BillPaymentsToJson(BillPayments instance) =>
     <String, dynamic>{
       'Payments': instance.payments,
     };
 
-Payments _$PaymentsFromJson(Map<String, dynamic> json) {
-  return Payments()
-    ..id = json['id'] as String?
-    ..tenantId = json['tenantId'] as String?
-    ..totalDue = (json['totalDue'] as num?)?.toDouble()
-    ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
-    ..transactionNumber = json['transactionNumber'] as String?
-    ..transactionDate = json['transactionDate'] as int?
-    ..paymentMode = json['paymentMode'] as String?
-    ..instrumentDate = json['instrumentDate'] as int?
-    ..instrumentNumber = json['instrumentNumber'] as String?
-    ..instrumentStatus = json['instrumentStatus'] as String?
-    ..ifscCode = json['ifscCode'] as String?
-    ..auditDetails = json['auditDetails'] == null
-        ? null
-        : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
-    ..paymentDetails = (json['paymentDetails'] as List<dynamic>?)
-        ?.map((e) => PaymentDetails.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..paidBy = json['paidBy'] as String?
-    ..mobileNumber = json['mobileNumber'] as String?
-    ..payerName = json['payerName'] as String?
-    ..payerAddress = json['payerAddress'] as String?
-    ..payerEmail = json['payerEmail'] as String?
-    ..payerId = json['payerId'] as String?
-    ..paymentStatus = json['paymentStatus'] as String?
-    ..fileStoreId = json['fileStoreId'] as String?;
-}
+Payments _$PaymentsFromJson(Map<String, dynamic> json) => Payments()
+  ..id = json['id'] as String?
+  ..tenantId = json['tenantId'] as String?
+  ..totalDue = (json['totalDue'] as num?)?.toDouble()
+  ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
+  ..transactionNumber = json['transactionNumber'] as String?
+  ..transactionDate = json['transactionDate'] as int?
+  ..paymentMode = json['paymentMode'] as String?
+  ..instrumentDate = json['instrumentDate'] as int?
+  ..instrumentNumber = json['instrumentNumber'] as String?
+  ..instrumentStatus = json['instrumentStatus'] as String?
+  ..ifscCode = json['ifscCode'] as String?
+  ..auditDetails = json['auditDetails'] == null
+      ? null
+      : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>)
+  ..paymentDetails = (json['paymentDetails'] as List<dynamic>?)
+      ?.map((e) => PaymentDetails.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..paidBy = json['paidBy'] as String?
+  ..mobileNumber = json['mobileNumber'] as String?
+  ..payerName = json['payerName'] as String?
+  ..payerAddress = json['payerAddress'] as String?
+  ..payerEmail = json['payerEmail'] as String?
+  ..payerId = json['payerId'] as String?
+  ..paymentStatus = json['paymentStatus'] as String?
+  ..fileStoreId = json['fileStoreId'] as String?;
 
 Map<String, dynamic> _$PaymentsToJson(Payments instance) => <String, dynamic>{
       'id': instance.id,
@@ -71,13 +67,11 @@ Map<String, dynamic> _$PaymentsToJson(Payments instance) => <String, dynamic>{
       'fileStoreId': instance.fileStoreId,
     };
 
-AuditDetails _$AuditDetailsFromJson(Map<String, dynamic> json) {
-  return AuditDetails()
-    ..createdBy = json['id'] as String?
-    ..createdTime = json['createdTime'] as int?
-    ..lastModifiedBy = json['lastModifiedBy'] as String?
-    ..lastModifiedTime = json['lastModifiedTime'] as int?;
-}
+AuditDetails _$AuditDetailsFromJson(Map<String, dynamic> json) => AuditDetails()
+  ..createdBy = json['id'] as String?
+  ..createdTime = json['createdTime'] as int?
+  ..lastModifiedBy = json['lastModifiedBy'] as String?
+  ..lastModifiedTime = json['lastModifiedTime'] as int?;
 
 Map<String, dynamic> _$AuditDetailsToJson(AuditDetails instance) =>
     <String, dynamic>{
@@ -87,27 +81,26 @@ Map<String, dynamic> _$AuditDetailsToJson(AuditDetails instance) =>
       'lastModifiedTime': instance.lastModifiedTime,
     };
 
-PaymentDetails _$PaymentDetailsFromJson(Map<String, dynamic> json) {
-  return PaymentDetails()
-    ..paymentId = json['paymentId'] as String?
-    ..id = json['id'] as String?
-    ..tenantId = json['tenantId'] as String?
-    ..totalDue = (json['totalDue'] as num?)?.toDouble()
-    ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
-    ..receiptNumber = json['receiptNumber'] as String?
-    ..manualReceiptNumber = json['manualReceiptNumber'] as String?
-    ..manualReceiptDate = json['manualReceiptDate'] as int?
-    ..receiptDate = json['receiptDate'] as int?
-    ..receiptType = json['receiptType'] as String?
-    ..businessService = json['businessService'] as String?
-    ..billId = json['billId'] as String?
-    ..bill = json['bill'] == null
-        ? null
-        : Bill.fromJson(json['bill'] as Map<String, dynamic>)
-    ..auditDetails = json['auditDetails'] == null
-        ? null
-        : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>);
-}
+PaymentDetails _$PaymentDetailsFromJson(Map<String, dynamic> json) =>
+    PaymentDetails()
+      ..paymentId = json['paymentId'] as String?
+      ..id = json['id'] as String?
+      ..tenantId = json['tenantId'] as String?
+      ..totalDue = (json['totalDue'] as num?)?.toDouble()
+      ..totalAmountPaid = (json['totalAmountPaid'] as num?)?.toDouble()
+      ..receiptNumber = json['receiptNumber'] as String?
+      ..manualReceiptNumber = json['manualReceiptNumber'] as String?
+      ..manualReceiptDate = json['manualReceiptDate'] as int?
+      ..receiptDate = json['receiptDate'] as int?
+      ..receiptType = json['receiptType'] as String?
+      ..businessService = json['businessService'] as String?
+      ..billId = json['billId'] as String?
+      ..bill = json['bill'] == null
+          ? null
+          : Bill.fromJson(json['bill'] as Map<String, dynamic>)
+      ..auditDetails = json['auditDetails'] == null
+          ? null
+          : AuditDetails.fromJson(json['auditDetails'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PaymentDetailsToJson(PaymentDetails instance) =>
     <String, dynamic>{

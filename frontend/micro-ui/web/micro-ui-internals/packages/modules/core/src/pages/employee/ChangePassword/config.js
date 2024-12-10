@@ -6,12 +6,6 @@ export const config = [
     },
     inputs: [
       {
-        label: "CORE_LOGIN_USERNAME",
-        type: "text",
-        name: "userName",
-        error: "ERR_HRMS_INVALID_USERNAME",
-      },
-      {
         label: "CORE_LOGIN_NEW_PASSWORD",
         type: "password",
         name: "newPassword",

@@ -20,90 +20,90 @@ class LanguageSelectionDesktopView extends StatelessWidget {
     return BackgroundContainer(Container(
       height: MediaQuery.of(context).size.height - 20,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: new Container(
-                  height: 256,
-                  width: 500,
-                  padding: EdgeInsets.all(16),
-                  child: Card(
-                      child: (Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                        Container(
-                            width:MediaQuery.of(context).size.width*0.9,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+            child: new Container(
+                height: 256,
+                width: 500,
+                padding: EdgeInsets.all(16),
+                child: Card(
+                    child: (Column(
+                        mainAxisAlignment:MainAxisAlignment.center,
+                        children: [
+                      Container(
+                          width:MediaQuery.of(context).size.width*0.9,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image(
+                                          width: 150,
+                                          fit: BoxFit.fill,
+                                          image: NetworkImage(
+                                            stateInfo.logoUrl ?? '',
+                                          )),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          " | ",
+                                          style: TextStyle(
+                                              fontSize: 19,
+                                              color: Color.fromRGBO(0, 0, 0, 1)),
+                                        )),
+                                  ],
+                                ),
+                                Container(
+                                    alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    textDirection: TextDirection.rtl,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image(
-                                            width: 150,
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                              stateInfo.logoUrl ?? '',
-                                            )),
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
+                                          padding: const EdgeInsets.only(left: 0.0),
                                           child: Text(
-                                            " | ",
+                                            ApplicationLocalizations.of(context)
+                                                .translate(stateInfo.code!),
                                             style: TextStyle(
                                                 fontSize: 19,
-                                                color: Color.fromRGBO(0, 0, 0, 1)),
+                                                color: Color.fromRGBO(0, 0, 0, 1),
+                                                fontWeight: FontWeight.w400),
                                           )),
                                     ],
                                   ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      textDirection: TextDirection.rtl,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                            padding: const EdgeInsets.only(left: 0.0),
-                                            child: Text(
-                                              ApplicationLocalizations.of(context)
-                                                  .translate(stateInfo.code!),
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                                  fontWeight: FontWeight.w400),
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ])),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    for (var language in stateInfo.languages ?? [])
-                                      LanguageCard(
-                                          language, stateInfo.languages ?? [], 120, 10, 10)
-                                  ]),
-                            )),
-                        Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Button(
-                                i18.common.CONTINUE,
-                                    () => Navigator.pushNamed(context, Routes.LOGIN),
-                                key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
+                                ),
+                              ])),
+                      Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  for (var language in stateInfo.languages ?? [])
+                                    LanguageCard(
+                                        language, stateInfo.languages ?? [], 120, 10, 10)
+                                ]),
+                          )),
+                      Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Button(
+                              i18.common.CONTINUE,
+                                  () => Navigator.pushNamed(context, Routes.LOGIN),
+                              key: Keys.language.LANGUAGE_PAGE_CONTINUE_BTN,
                             ),
-                            )
-                      ]))))),
-          SizedBox(height: 140),
-          FooterBanner()
-        ],
+                          )
+                    ]))))),
+        SizedBox(height: 140),
+        FooterBanner()
+      ],
       ),
     ));
   }

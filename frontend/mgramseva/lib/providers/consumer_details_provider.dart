@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/common/demand.dart';
@@ -15,6 +17,7 @@ import 'package:mgramseva/model/mdms/property_type.dart';
 import 'package:mgramseva/model/mdms/sub_category_type.dart';
 import 'package:mgramseva/model/mdms/tax_period.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/search_connection_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/repository/consumer_details_repo.dart';
 import 'package:mgramseva/repository/core_repo.dart';
@@ -55,12 +58,29 @@ class ConsumerProvider with ChangeNotifier {
   PaymentType? paymentType;
   bool phoneNumberAutoValidation = false;
   GlobalKey<SearchSelectFieldState>? searchPickerKey;
+  bool isConsumerAlreadyVerified = false;
+  bool isConsumerVerified = false;
+  updateConsumerVerified(val){
+      isConsumerVerified = val;
+      notifyListeners();
+  } 
+  updateAlreadyVerifiedConsumer(val){
+      isConsumerAlreadyVerified = val;
+      notifyListeners();
+  } 
+  toggleConsumerVerified(){
+    if(!isConsumerAlreadyVerified){
+      isConsumerVerified = !isConsumerVerified;
+      notifyListeners();
+    }
+  } 
 
   setModel() async {
     waterconnection.BillingCycleCtrl.text = "";
     var commonProvider = Provider.of<CommonProvider>(
         navigatorKey.currentContext!,
         listen: false);
+
     isEdit = false;
     waterconnection = WaterConnection.fromJson({
       "action": "SUBMIT",
@@ -78,10 +98,13 @@ class ConsumerProvider with ChangeNotifier {
       "channel": "CITIZEN",
       "ownershipCategory": "INDIVIDUAL",
       "owners": [
-        Owners.fromJson({"ownerType": "NONE"}).toJson()
+        Owners.fromJson({
+          "ownerType": "NONE",
+        }).toJson()
       ],
       "address": Address().toJson()
     });
+
     if (boundaryList.length == 1) {
       property.address.localityCtrl = boundaryList.first;
       onChangeOfLocality(property.address.localityCtrl);
@@ -133,6 +156,7 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code,
         "connectionNumber": id.split('_').join('/')
       });
+
       if (waterconnections.waterConnection != null &&
           waterconnections.waterConnection!.isNotEmpty) {
         setWaterConnection(waterconnections.waterConnection?.first);
@@ -151,16 +175,14 @@ class ConsumerProvider with ChangeNotifier {
       await getPaymentType();
       isEdit = true;
       waterconnection = data;
+      
       waterconnection.getText();
-      selectedcycle = {'code':DateTime.fromMillisecondsSinceEpoch(waterconnection.previousReadingDate!),
-        'name':"${ApplicationLocalizations.of(navigatorKey.currentContext!)
-    .translate(DateFormats.timeStampToDate(
-    waterconnection.previousReadingDate,
-    format: 'MMMM')) +
-    " - " +
-    DateFormats.timeStampToDate(
-    waterconnection.previousReadingDate,
-    format: 'yyyy')}"};
+      selectedcycle = {
+        'code': DateTime.fromMillisecondsSinceEpoch(
+            waterconnection.previousReadingDate!),
+        'name':
+            "${ApplicationLocalizations.of(navigatorKey.currentContext!).translate(DateFormats.timeStampToDate(waterconnection.previousReadingDate, format: 'MMMM')) + " - " + DateFormats.timeStampToDate(waterconnection.previousReadingDate, format: 'yyyy')}"
+      };
       if (waterconnection.previousReadingDate != null &&
           (languageList?.mdmsRes?.billingService?.taxPeriodList?.isNotEmpty ??
               false)) {
@@ -232,6 +254,9 @@ class ConsumerProvider with ChangeNotifier {
           paymentDetails.payments!.isNotEmpty) {
         isFirstDemand = true;
       }
+
+      waterconnection.dataVerified = isConsumerVerified;
+      
       notifyListeners();
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
@@ -252,6 +277,7 @@ class ConsumerProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         listen: false);
     if (formKey.currentState!.validate()) {
+      waterconnection.dataVerified = isConsumerVerified;
       waterconnection.setText();
       property.owners!.first.setText();
       property.address.setText();
@@ -307,7 +333,8 @@ class ConsumerProvider with ChangeNotifier {
               : waterconnection.additionalDetails?.subCategory,
           "aadharNumber": waterconnection.addharCtrl.text.trim().isEmpty
               ? null
-              : waterconnection.addharCtrl.text.trim()
+              : waterconnection.addharCtrl.text.trim(),
+          "remarks": waterconnection.status == "Inactive" ?  property.owners?.first.remarks : ""
         });
       } else {
         waterconnection.additionalDetails!.locality =
@@ -331,7 +358,12 @@ class ConsumerProvider with ChangeNotifier {
         waterconnection.additionalDetails!.meterReading =
             waterconnection.previousReading;
         waterconnection.additionalDetails!.propertyType = property.propertyType;
+
+        waterconnection.additionalDetails!.remarks =  waterconnection.status == "Inactive" ?
+            property.owners?.first.remarks : "";
       }
+    
+
 
       try {
         Loaders.showLoadingDialog(context);
@@ -347,6 +379,7 @@ class ConsumerProvider with ChangeNotifier {
           if (result2 != null) {
             setModel();
             phoneNumberAutoValidation = false;
+
             streamController.add(property);
             Notifiers.getToastMessage(
                 context, i18.consumer.REGISTER_SUCCESS, 'SUCCESS');
@@ -366,6 +399,7 @@ class ConsumerProvider with ChangeNotifier {
             waterconnection.arrears = null;
             waterconnection.advance = null;
           }
+
           var result1 =
               await ConsumerRepository().updateProperty(property.toJson());
           var result2 = await ConsumerRepository()
@@ -374,11 +408,11 @@ class ConsumerProvider with ChangeNotifier {
           if (result2 != null && result1 != null)
             Notifiers.getToastMessage(
                 context, i18.consumer.UPDATED_SUCCESS, 'SUCCESS');
-          Navigator.pop(context);
+          Navigator.of(context,rootNavigator: true).pop();
           CommonMethods.home();
         }
       } catch (e, s) {
-        Navigator.pop(context);
+        Navigator.of(context,rootNavigator: true).pop();
         ErrorHandler().allExceptionsHandler(context, e, s);
       }
     } else {
@@ -440,7 +474,9 @@ class ConsumerProvider with ChangeNotifier {
     }
   }
 
-  Future<Property?> getProperty(Map<String, dynamic> query) async {
+  Future<Property?> getProperty(
+    Map<String, dynamic> query,
+  ) async {
     try {
       var commonProvider = Provider.of<CommonProvider>(
           navigatorKey.currentContext!,
@@ -448,6 +484,7 @@ class ConsumerProvider with ChangeNotifier {
       var res = await ConsumerRepository().getProperty(query);
       if (res != null)
         property = new Property.fromJson(res['Properties'].first);
+
       property.owners!.first.getText();
       property.address.getText();
 
@@ -459,6 +496,7 @@ class ConsumerProvider with ChangeNotifier {
           commonProvider.userDetails!.selectedtenant!.code!;
       property.address.gpNameCityCodeCtrl.text =
           commonProvider.userDetails!.selectedtenant!.city!.code!;
+
       streamController.add(property);
       notifyListeners();
     } catch (e) {
@@ -479,10 +517,36 @@ class ConsumerProvider with ChangeNotifier {
         "tenantId": commonProvider.userDetails!.selectedtenant!.code
       });
       boundaryList = [];
-      boundaryList.addAll(
-          TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!);
+      result['TenantBoundary'] != null && result['TenantBoundary'].length > 0
+          ? boundaryList.addAll(
+              TenantBoundary.fromJson(result['TenantBoundary'][0]).boundary!)
+          : {};
       if (boundaryList.length == 1) {
         property.address.localityCtrl = boundaryList.first;
+        onChangeOfLocality(property.address.localityCtrl);
+      } else {
+        boundaryList.add(Boundary.fromJson({
+          "code": "WARD1",
+          "name": commonProvider.userDetails!.selectedtenant!.name,
+          "label": "Locality",
+          "latitude": null,
+          "longitude": null,
+          "area": null,
+          "pincode": null,
+          "boundaryNum": 1,
+          "children": []
+        }));
+        property.address.localityCtrl = Locality.fromJson({
+          "code": "WARD1",
+          "name": commonProvider.userDetails!.selectedtenant!.name,
+          "label": "Locality",
+          "latitude": null,
+          "longitude": null,
+          "area": null,
+          "pincode": null,
+          "boundaryNum": 1,
+          "children": []
+        });
         onChangeOfLocality(property.address.localityCtrl);
       }
       // notifyListeners();
@@ -533,8 +597,8 @@ class ConsumerProvider with ChangeNotifier {
       return (languageList?.mdmsRes?.category?.categoryList ?? <CategoryType>[])
           .map((value) {
         return value.code!;
-    }).toList();
-   }
+      }).toList();
+    }
     return <String>[];
   }
 
@@ -578,7 +642,8 @@ class ConsumerProvider with ChangeNotifier {
     DateTime result = DateTime.parse(val['code'].toString());
     waterconnection.previousReadingDateCtrl.clear();
     waterconnection.BillingCycleCtrl.text = result.toLocal().toString();
-    waterconnection.meterInstallationDateCtrl.text = result.toLocal().toString();
+    waterconnection.meterInstallationDateCtrl.text =
+        result.toLocal().toString();
     notifyListeners();
   }
 
@@ -595,8 +660,8 @@ class ConsumerProvider with ChangeNotifier {
   }
 
   //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
-  List<Map<String,dynamic>> getBillingCycle() {
-    var dates = <Map<String,dynamic>>[];
+  List<Map<String, dynamic>> getBillingCycle() {
+    var dates = <Map<String, dynamic>>[];
     if (billYear != null) {
       DatePeriod ytd;
       var fromDate = DateFormats.getFormattedDateToDateTime(
@@ -605,27 +670,64 @@ class ConsumerProvider with ChangeNotifier {
       var toDate = DateFormats.getFormattedDateToDateTime(
           DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
 
-      ytd = DatePeriod(fromDate,toDate,DateType.YTD);
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
 
       /// Get months based on selected billing year
       var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
 
       /// if selected year is future year means all the months will be removed
-      if(fromDate.year > ytd.endDate.year) months.clear();
+      if (fromDate.year > ytd.endDate.year) months.clear();
 
       for (var i = 0; i < months.length; i++) {
         var prevMonth = months[i].startDate;
-        var r = {"code": prevMonth, "name": '${ApplicationLocalizations.of(navigatorKey.currentContext!)
-            .translate((Constants.MONTHS[prevMonth.month - 1])) +
-            " - " +
-            prevMonth.year.toString()}'};
+        var r = {
+          "code": prevMonth,
+          "name":
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[prevMonth.month - 1])) + " - " + prevMonth.year.toString()}'
+        };
         dates.add(r);
       }
     }
     if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
       return dates;
     }
-    return <Map<String,dynamic>>[];
+    return <Map<String, dynamic>>[];
+  }
+
+  //Displaying Billing Cycle Vaule (EX- JAN-2021,,)
+  List<Map<String, dynamic>> getBillingCycleMonthCountCurrent(
+      TaxPeriod? billYear) {
+    var dates = <Map<String, dynamic>>[];
+    if (billYear != null) {
+      DatePeriod ytd;
+      var fromDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.fromDate)) as DateTime;
+
+      var toDate = DateFormats.getFormattedDateToDateTime(
+          DateFormats.timeStampToDate(billYear?.toDate)) as DateTime;
+
+      ytd = DatePeriod(fromDate, toDate, DateType.YTD);
+
+      /// Get months based on selected billing year
+      var months = CommonMethods.getPastMonthUntilFinancialYTD(ytd);
+
+      /// if selected year is future year means all the months will be removed
+      if (fromDate.year > ytd.endDate.year) months.clear();
+
+      for (var i = 0; i < months.length; i++) {
+        var prevMonth = months[i].startDate;
+        var r = {
+          "code": prevMonth,
+          "name":
+              '${ApplicationLocalizations.of(navigatorKey.currentContext!).translate((Constants.MONTHS[prevMonth.month - 1])) + " - " + prevMonth.year.toString()}'
+        };
+        dates.add(r);
+      }
+    }
+    if (dates.length > 0 && waterconnection.connectionType == 'Non_Metered') {
+      return dates;
+    }
+    return <Map<String, dynamic>>[];
   }
 
   incrementIndex(index, consumerGenderKey) async {
@@ -659,15 +761,39 @@ class ConsumerProvider with ChangeNotifier {
 
   List<TaxPeriod> getFinancialYearList() {
     if (languageList?.mdmsRes?.billingService?.taxPeriodList != null) {
-      CommonMethods.getFilteredFinancialYearList(languageList?.mdmsRes?.billingService?.taxPeriodList ?? <TaxPeriod>[]);
-      languageList?.mdmsRes?.billingService?.taxPeriodList!.sort((a,b)=>a.fromDate!.compareTo(b.fromDate!));
+      CommonMethods.getFilteredFinancialYearList(
+          languageList?.mdmsRes?.billingService?.taxPeriodList ??
+              <TaxPeriod>[]);
+      languageList?.mdmsRes?.billingService?.taxPeriodList!
+          .sort((a, b) => a.fromDate!.compareTo(b.fromDate!));
       return (languageList?.mdmsRes?.billingService?.taxPeriodList ??
-          <TaxPeriod>[])
+              <TaxPeriod>[])
           .map((value) {
-        return value;
-      }).toList().reversed.toList();
+            return value;
+          })
+          .toList()
+          .reversed
+          .toList();
     }
     return <TaxPeriod>[];
+  }
+
+  List<TaxPeriod> getLastFinancialYearList(int count) {
+    return getFinancialYearList().length > count
+        ? getFinancialYearList().sublist(0, count)
+        : getFinancialYearList();
+  }
+
+  List<Map<String, dynamic>> newBillingCycleFunction({int pastMonthCount = 2}) {
+    List<TaxPeriod> financialYears = getFinancialYearList();
+    var dates = <Map<String, dynamic>>[];
+    financialYears.forEach((year) {
+      dates.addAll(getBillingCycleMonthCountCurrent(year));
+    });
+    dates.sort((a, b) => b['code'].compareTo(a['code']));
+    return dates.toList().length > 2
+        ? dates.toList().sublist(0, 2)
+        : dates.toList();
   }
 
   void onChangeOfAmountType(value) {

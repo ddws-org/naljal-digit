@@ -58,7 +58,10 @@ class BillGenerateRepository extends BaseService {
         method: RequestType.POST);
     if (res != null) {
       meterDemand = MeterDemand.fromJson(res);
-      meterDemand.meterReadings!.sort((a, b) => b.currentReading!.compareTo(a.currentReading!));
+      if(meterDemand.meterReadings !=null &&meterDemand.meterReadings!.isNotEmpty){
+        meterDemand.meterReadings!
+            .sort((a, b) => b.currentReading!.compareTo(a.currentReading!));
+      }
     }
     return meterDemand;
   }

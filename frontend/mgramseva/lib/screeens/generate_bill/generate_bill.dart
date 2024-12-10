@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mgramseva/providers/reports_provider.dart';
+import 'package:mgramseva/screeens/generate_bill/widgets/water_connection_count_widget.dart';
 import 'package:mgramseva/widgets/keyboard_focus_watcher.dart';
 import 'package:mgramseva/model/bill/bill_generation_details/bill_generation_details.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -53,6 +55,7 @@ class _GenerateBillState extends State<GenerateBill> {
       ..readingExist
       ..getServiceTypePropertyTypeandConnectionType()
       ..autoValidation = false
+      ..clearBillYear()
       ..formKey = GlobalKey<FormState>();
 
     Provider.of<IfixHierarchyProvider>(context,listen: false)
@@ -75,8 +78,10 @@ class _GenerateBillState extends State<GenerateBill> {
             children: [
           HomeBack(callback: (){
             Provider.of<BillGenerationProvider>(context, listen: false).clearBillYear();
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            Navigator.of(context,rootNavigator: true).pop();
           },),
+              widget.id == null ?WaterConnectionCountWidget():Container(),
           Container(
               width: MediaQuery.of(context).size.width,
               child: Card(
@@ -337,28 +342,28 @@ class _GenerateBillState extends State<GenerateBill> {
           ),
         ),
           child: SingleChildScrollView(
-              child: Container(
-                  child: Column(children: [
-            StreamBuilder(
-                stream: billGenerateProvider.streamController.stream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return buildview(snapshot.data);
-                  } else if (snapshot.hasError) {
-                    return Notifiers.networkErrorPage(context, () {});
-                  } else {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Loaders.circularLoader();
-                      case ConnectionState.active:
-                        return Loaders.circularLoader();
-                      default:
-                        return Container();
-                    }
+            child: Container(
+                child: Column(children: [
+          StreamBuilder(
+              stream: billGenerateProvider.streamController.stream,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return buildview(snapshot.data);
+                } else if (snapshot.hasError) {
+                  return Notifiers.networkErrorPage(context, () {});
+                } else {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Loaders.circularLoader();
+                    case ConnectionState.active:
+                      return Loaders.circularLoader();
+                    default:
+                      return Container();
                   }
-                }),
-            Footer()
-          ]))),
+                }
+              }),
+          Footer()
+        ]))),
         ),
         bottomNavigationBar: BottomButtonBar(
             '${widget.id == null ? i18.demandGenerate.GENERATE_DEMAND_BUTTON : i18.demandGenerate.GENERATE_BILL_BUTTON}',

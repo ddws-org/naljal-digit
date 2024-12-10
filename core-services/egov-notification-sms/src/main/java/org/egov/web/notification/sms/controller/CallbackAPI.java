@@ -2,7 +2,7 @@ package org.egov.web.notification.sms.controller;
 
 
 import org.egov.hash.HashService;
-import org.egov.web.notification.sms.config.Producer;
+import org.egov.web.notification.sms.Producer.*;
 import org.egov.web.notification.sms.models.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

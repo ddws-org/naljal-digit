@@ -72,7 +72,7 @@ class _CollectionReport extends State<CollectionReport>
                           () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.clearTableData();
                               reportProvider.getCollectionReport();
@@ -90,7 +90,7 @@ class _CollectionReport extends State<CollectionReport>
                           onPressed: () {
                             if (reportProvider.selectedBillPeriod == null) {
                               Notifiers.getToastMessage(
-                                  context, 'Select Billing Cycle', 'ERROR');
+                                  context, '${ApplicationLocalizations.of(context).translate(i18.common.SELECT_BILLING_CYCLE)}', 'ERROR');
                             } else {
                               reportProvider.getCollectionReport(
                                   download: true);

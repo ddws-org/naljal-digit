@@ -188,6 +188,8 @@ class Owners {
   String? fatherOrHusbandName;
   @JsonKey(name: "name")
   String? name;
+  @JsonKey(name: "remarks")
+  String? remarks;
   @JsonKey(name: "status")
   String? status;
   @JsonKey(name: "gender")
@@ -205,6 +207,9 @@ class Owners {
   var consumerNameCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
+  var consumerRemarksCtrl = TextEditingController();
+
+  @JsonKey(ignore: true)
   var fatherOrSpouseCtrl = TextEditingController();
 
   @JsonKey(ignore: true)
@@ -214,6 +219,7 @@ class Owners {
 
   setText() {
     name = consumerNameCtrl.text.trim();
+    remarks = consumerRemarksCtrl.text.trim();
     mobileNumber = phoneNumberCtrl.text;
     fatherOrHusbandName = fatherOrSpouseCtrl.text.trim();
   }
@@ -222,6 +228,7 @@ class Owners {
     consumerNameCtrl.text = name ?? '';
     phoneNumberCtrl.text = mobileNumber ?? '';
     fatherOrSpouseCtrl.text = fatherOrHusbandName ?? '';
+    consumerRemarksCtrl.text = remarks ?? '';
   }
 
   factory Owners.fromJson(Map<String, dynamic> json) => _$OwnersFromJson(json);

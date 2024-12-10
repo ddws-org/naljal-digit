@@ -71,6 +71,9 @@ class WaterConnection {
   @JsonKey(name: "advance")
   double? advance;
 
+  @JsonKey(name: "dataVerified")
+  bool? dataVerified;
+
   @JsonKey(ignore: true)
   BillList? fetchBill;
 
@@ -177,6 +180,7 @@ class WaterConnection {
             )
           : null;
     }
+    
   }
 
   getText() {
@@ -219,6 +223,66 @@ class WaterConnection {
   factory WaterConnection.fromJson(Map<String, dynamic> json) =>
       _$WaterConnectionFromJson(json);
   Map<String, dynamic> toJson() => _$WaterConnectionToJson(this);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is WaterConnection &&
+        other.id == id &&
+        other.connectionNo == connectionNo &&
+        other.propertyId == propertyId &&
+        other.applicationNo == applicationNo &&
+        other.tenantId == tenantId &&
+        other.action == action &&
+        other.status == status &&
+        other.meterInstallationDate == meterInstallationDate &&
+        other.documents == documents &&
+        other.proposedTaps == proposedTaps &&
+        other.noOfTaps == noOfTaps &&
+        other.arrears == arrears &&
+        other.connectionType == connectionType &&
+        other.oldConnectionNo == oldConnectionNo &&
+        other.meterId == meterId &&
+        other.propertyType == propertyType &&
+        other.previousReadingDate == previousReadingDate &&
+        other.previousReading == previousReading &&
+        other.proposedPipeSize == proposedPipeSize &&
+        other.connectionHolders == connectionHolders &&
+        other.additionalDetails == additionalDetails &&
+        other.processInstance == processInstance &&
+        other.paymentType == paymentType &&
+        other.penalty == penalty &&
+        other.advance == advance;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        connectionNo.hashCode ^
+        propertyId.hashCode ^
+        applicationNo.hashCode ^
+        tenantId.hashCode ^
+        action.hashCode ^
+        status.hashCode ^
+        meterInstallationDate.hashCode ^
+        documents.hashCode ^
+        proposedTaps.hashCode ^
+        noOfTaps.hashCode ^
+        arrears.hashCode ^
+        connectionType.hashCode ^
+        oldConnectionNo.hashCode ^
+        meterId.hashCode ^
+        propertyType.hashCode ^
+        previousReadingDate.hashCode ^
+        previousReading.hashCode ^
+        proposedPipeSize.hashCode ^
+        connectionHolders.hashCode ^
+        additionalDetails.hashCode ^
+        processInstance.hashCode ^
+        paymentType.hashCode ^
+        penalty.hashCode ^
+        advance.hashCode;
+  }
 }
 
 @JsonSerializable()
@@ -269,6 +333,9 @@ class AdditionalDetails {
 
   @JsonKey(name: "totalamount")
   String? totalAmount;
+
+  @JsonKey(name: "remarks")
+  String? remarks;
 
   @JsonKey(name: "appCreatedDate")
   num? appCreatedDate;

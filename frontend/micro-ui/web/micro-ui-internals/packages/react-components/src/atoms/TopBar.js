@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Hamburger from "./Hamburger";
 import { NotificationBell } from "./svgindex";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import BackButton from "./BackButton";
 
 const TopBar = ({
@@ -20,6 +20,22 @@ const TopBar = ({
   hideNotificationIconOnSomeUrlsWhenNotLoggedIn,
   changeLanguage,
 }) => {
+
+
+  const getDynamicPart = (url) => {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    return pathParts.length > 0 ? pathParts[0] : ""; // Gets the first part after the domain
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+
+
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
   const { pathname } = useLocation();
 
   // const showHaburgerorBackButton = () => {
@@ -29,23 +45,79 @@ const TopBar = ({
   //     return <BackButton className="top-back-btn" />;
   //   }
   // };
+
+  
+
+
+
+
+  const url = window.location.pathname; // Get the current URL pathname
+  const isPaymentPath = url.includes('/payment/'); // Check for payment path
+
+  const paymentlogoUrl = isPaymentPath
+    ? window?.globalConfigs?.getConfig?.("LOGO_URL") // Show payment logo if path matches
+    : logoUrl;
+  // console.log(isPaymentPath, "isPaymentPath");
   return (
     <div className="navbar">
       <div className="center-container back-wrapper">
-        <div className="hambuger-back-wrapper">
-          {isMobile && <Hamburger handleClick={toggleSidebar} />}
+        <div className="hambuger-back-wrapper" style={{
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          {/* {isMobile && !isPaymentPath && <Hamburger handleClick={toggleSidebar} />} */}
           <img
             className="city"
             id="topbar-logo"
-            src={img || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
-            alt="mSeva"
+            src={paymentlogoUrl || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
+            alt="mGramSeva"
           />
-          <h3>{cityOfCitizenShownBesideLogo}</h3>
+          {isPaymentPath && <img className="state" src={logoUrl} />}
+          {!isPaymentPath && <h3>{cityOfCitizenShownBesideLogo}</h3>}
         </div>
 
         <div className="RightMostTopBarOptions">
-          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? changeLanguage : null}
-          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
+
+          <div className="dropdown-user">
+            <button className="dropbtn" onClick={handleClick}
+              style={{
+                color: "white",
+                fontSize: "1rem",
+                margin: "10px",
+                backgroundColor: "#efefef00"
+              }}
+            >
+              Login
+            </button>
+            {isOpen && (
+              <div className="dropdown-user-overlay">
+                <ul className="dropdown-user-content">
+                  <li style={{
+                    borderBottom: "solid 1px grey",
+                  }}>
+                    <Link
+                    className="dropdown-user-link" 
+                    to={`/${getDynamicPart(window?.location?.href)}/mgramseva-web/employee/user/login`}>
+                      Admin Login
+                    </Link>
+                  </li>
+                  <li>
+                    <a
+
+
+                      href={`/${getDynamicPart(window?.location?.href)}/mgramseva`} target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
+                    
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className="rmv-padding">
+          {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn || isPaymentPath ? changeLanguage : null}
+          </div>
+
+          {/* {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
             <div className="EventNotificationWrapper" onClick={onNotificationIconClick}>
               {notificationCountLoaded && notificationCount ? (
                 <span>
@@ -54,7 +126,11 @@ const TopBar = ({
               ) : null}
               <NotificationBell />
             </div>
-          ) : null}
+          ) : null} */}
+          <div>
+
+          </div>
+
         </div>
       </div>
     </div>

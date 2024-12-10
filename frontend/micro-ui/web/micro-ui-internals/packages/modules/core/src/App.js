@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import CitizenApp from "./pages/citizen";
 import EmployeeApp from "./pages/employee";
+import CommonApp from "./pages/common";
 
-export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,defaultLanding="citizen"}) => {
+export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData, defaultLanding = "employee" }) => {
   const history = useHistory();
   const { pathname } = useLocation();
   const innerWidth = window.innerWidth;
@@ -11,7 +12,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,de
   const userDetails = Digit.UserService.getUser();
   const { data: storeData } = Digit.Hooks.useStore.getInitData();
   const { stateInfo } = storeData || {};
-  
+
   const DSO = Digit.UserService.hasAccess(["FSM_DSO"]);
   let CITIZEN = userDetails?.info?.type === "CITIZEN" || !window.location.pathname.split("/").includes("employee") ? true : false;
 
@@ -64,13 +65,25 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData ,de
     pathname,
     initData,
   };
+
+  // Do not redirect if it's a payment route under citizen
+  const shouldRedirectToEmployee = () => {
+    if (pathname.startsWith(`/${window?.contextPath}/citizen/payment`)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Switch>
       <Route path={`/${window?.contextPath}/employee`}>
         <EmployeeApp {...commonProps} />
       </Route>
       <Route path={`/${window?.contextPath}/citizen`}>
-        <CitizenApp {...commonProps} />
+        {shouldRedirectToEmployee() ? <Redirect to={`/${window?.contextPath}/employee`} /> : <CitizenApp {...commonProps} />}
+      </Route>
+      <Route path={`/${window?.contextPath}/common`}>
+        <CommonApp {...commonProps} />
       </Route>
       <Route>
         <Redirect to={`/${window?.contextPath}/${defaultLanding}`} />

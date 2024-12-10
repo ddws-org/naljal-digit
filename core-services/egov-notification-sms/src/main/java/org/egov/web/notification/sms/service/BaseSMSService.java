@@ -15,7 +15,7 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.egov.web.notification.sms.repository.builder.SmsNotificationRepository;
 import org.egov.web.notification.sms.config.*;
 import org.egov.web.notification.sms.models.*;
-import org.egov.web.notification.sms.config.Producer;
+import org.egov.web.notification.sms.Producer.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.core.*;
 import org.springframework.core.env.*;

@@ -18,7 +18,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
         validation: {
           maxLength: 10,
           required: true,
-          // pattern: /^[6789][0-9]{9}$/,
+          // pattern: /^[6-9]\d{9}$/,
         },
         // componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
         // error: t("CORE_COMMON_MOBILE_ERROR"),
@@ -30,7 +30,7 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
     onSelect(config.key, { ...formData[config.key], [input]: value });
   }
   function validate(value, input) {
-    setError(!input.populators?.validation?.pattern?.test(value));
+    setError(!input?.populators?.validation?.pattern?.test(value));
   }
 
   return (
@@ -51,7 +51,8 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
                     key={input.name}
                     value={formData && formData[config.key] ? formData[config.key][input.name] : undefined}
                     onChange={(e) => {
-                      setValue(e.target.value, input.name, validate(e.target.value, input));
+                      const value = e.target.value.replace(/\D/, ""); // Remove non-numeric characters
+                      setValue(value, input.name, validate(value, input));
                     }}
                     disable={isEdit ? true : false}
                     defaultValue={undefined}

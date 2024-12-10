@@ -256,7 +256,32 @@ public class WSCalculationConfiguration {
 
 	@Value("${bill.expriy.time}")
 	private Long expiriyTime;
+	
+	@Value("${is.save.demand.audit.enabled}")
+	private boolean isSaveDemandAuditEnabled;
+
+	@Value("${egov.save.demand.audit.from.wscal}")
+	private String saveDemandAudit;
+
+	@Value("${penalty.applicable.in.days}")
+	private Integer penaltyApplicableDays;
+
+	@Value("${penalty.start.threshold.time}")
+	private String penaltyStartThresholdTime;
+
+	@Value("${is.penalty.feature.enable}")
+	private boolean isPenaltyEnabled;
+
+	@Value("${egov.update.demand.add.penalty}")
+	private String updateAddPenaltytopic;
+
+	@Value("${ws.generate.demand.bulk}")
+	private String wsGenerateDemandBulktopic;
 
 	@Value("${kafka.topic.roll.out.dashboard}")
 	private String rollOutDashBoardTopic;
+
+	@Value("${bulk.demand.duplicateCheck.duration.hours}")
+	private Integer duplicateBulkDemandDurationHours;
+	
 }

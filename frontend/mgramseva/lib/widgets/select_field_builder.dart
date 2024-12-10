@@ -91,6 +91,7 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 760) {
+
         return Container(
           key: widget.contextKey,
           margin:
@@ -155,6 +156,8 @@ class SelectFieldBuilderState extends State<SelectFieldBuilder> {
           ]),
         );
       } else {
+        
+
         return Container(
           key: widget.contextKey,
           margin: const EdgeInsets.only(top: 5.0, bottom: 5, right: 8, left: 8),

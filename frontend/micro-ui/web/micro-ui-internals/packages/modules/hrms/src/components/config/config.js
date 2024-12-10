@@ -26,6 +26,13 @@ export const newConfig = [
         key: "SelectEmployeeEmailId",
         withoutLabel: true,
       },
+      {
+        type: "component",
+        isMandatory: true,
+        component: "SelectUserTypeAndDesignation",
+        key: "SelectUserTypeAndDesignation",
+        withoutLabel: true,
+      },
     ],
   },
   {

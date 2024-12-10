@@ -35,6 +35,10 @@ Future getLocalisation(String locale) async {
             "&tenantId=pb"),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
+          'Content-Security-Policy': "default-src 'self'; frame-ancestors 'self';",
+          'X-Frame-Options': 'DENY',
+          'X-XSS-Protection': '1; mode=block',
+          'X-Content-Type-Options': 'nosniff',
         },
         body: json.encode(requestInfo.toJson()));
     //  var response = await http.post(url,body:json.encode(user.toMap()));

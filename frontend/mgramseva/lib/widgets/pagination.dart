@@ -68,8 +68,7 @@ class _PaginationState extends State<Pagination> {
         children: [
           Visibility(
               visible:  widget.offSet > widget.limit,
-              child: IconButton(onPressed: widget.isDisabled ? null : () => onChangeOfPage(false), icon: Icon(Icons.arrow_left,color: Color(
-                  0xFF033CCF),))),
+              child: IconButton(onPressed: widget.isDisabled ? null : () => onChangeOfPage(false), icon: Icon(Icons.arrow_left))),
         ...isTotalCountVisible?[Text('${widget.offSet} - ${(widget.offSet + widget.limit - 1) <= widget.totalCount ? (widget.offSet + widget.limit -1) : widget.totalCount}'),
           Padding(
             padding: EdgeInsets.only(left: 14),
@@ -83,8 +82,7 @@ class _PaginationState extends State<Pagination> {
           )]:[],
           Visibility(
               visible: isTotalCountVisible?((widget.offSet + widget.limit - 1) < widget.totalCount):true,
-              child: IconButton(onPressed:  widget.isDisabled ? null : onChangeOfPage, icon:Icon(Icons.arrow_right,color: Color(
-                  0xFF033CCF)))),
+              child: IconButton(onPressed:  widget.isDisabled ? null : onChangeOfPage, icon:Icon(Icons.arrow_right))),
         ],
       ),
     );

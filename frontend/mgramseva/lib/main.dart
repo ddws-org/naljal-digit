@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
 // import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mgramseva/env/app_config.dart';
+import 'package:mgramseva/firebase_options.dart';
 import 'package:mgramseva/providers/reports_provider.dart';
 import 'package:mgramseva/routing.dart';
 import 'package:mgramseva/providers/authentication_provider.dart';
-import 'package:mgramseva/providers/bill_generation_details_provider.dart';
+import 'package:mgramseva/providers/bill_generation_details_provider.dart'; 
 import 'package:mgramseva/providers/bill_payments_provider.dart';
 import 'package:mgramseva/providers/change_password_details_provider.dart';
 import 'package:mgramseva/providers/common_provider.dart';
@@ -38,8 +39,6 @@ import 'package:mgramseva/providers/user_edit_profile_provider.dart';
 import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/home/home.dart';
-import 'package:mgramseva/screeens/landing_page/landing_page_new.dart';
-import 'package:mgramseva/screeens/landing_page/stateSelect.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -51,13 +50,12 @@ import 'package:mgramseva/utils/notifiers.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-
 import 'providers/collect_payment_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/revenue_dashboard_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async{
+void main() {
   HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   //configureApp();
@@ -66,7 +64,7 @@ void main() async{
   // if (Platform.isIOS) {
   //   DartPingIOS.register();
   // }
-
+  // Uncomment when compiling on iOS
   runZonedGuarded(() async {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.dumpErrorToConsole(details);
@@ -76,12 +74,27 @@ void main() async{
 
     WidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: 'assets/.env');
+ 
+ 
+  // Get API_KEY from --dart-define or fallback to .env if not defined
+  const String apiKeyFromDefine = String.fromEnvironment('API_KEY', defaultValue: '');
+  String apiKey = apiKeyFromDefine.isNotEmpty ? apiKeyFromDefine : dotenv.env['API_KEY'] ?? '';
+
+  // Log the loaded API key and other environment variables
+  print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
+  print("API_KEY From ENV : ${dotenv.env['API_KEY']}");
+  log("API_KEY From ENV : ${dotenv.env['API_KEY']}");
+  print("API_KEY: $apiKey");
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
     await setEnvironment(Environment.dev);
-    if(kIsWeb){
-      await Firebase.initializeApp(options: FirebaseConfigurations.firebaseOptions);
-    }else{
-      await Firebase.initializeApp();
-    }
+    // if(kIsWeb){
+    //   await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
+    // }else{
+    //   await Firebase.initializeApp();
+    // }
     if (Firebase.apps.length == 0) {
 
     }
@@ -139,9 +152,9 @@ class _MyAppState extends State<MyApp> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
     super.dispose();
   }
+
   @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, int status, int progress) {
+  static void downloadCallback(String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
 
@@ -155,10 +168,12 @@ class _MyAppState extends State<MyApp> {
     _port.listen((dynamic data) {
       String id = data[0];
       DownloadTaskStatus status = data[1];
-      int progress = data[2];
+      // int progress = data[2];
+      // print("Download progress: "+progress.toString());
       if (status == DownloadTaskStatus.complete) {
         if (CommonProvider.downloadUrl.containsKey(id)) {
-          if (CommonProvider.downloadUrl[id] != null) OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
+          if (CommonProvider.downloadUrl[id] != null)
+            OpenFilex.open(CommonProvider.downloadUrl[id] ?? '');
           CommonProvider.downloadUrl.remove(id);
         } else if (status == DownloadTaskStatus.failed ||
             status == DownloadTaskStatus.canceled ||
@@ -167,8 +182,6 @@ class _MyAppState extends State<MyApp> {
             CommonProvider.downloadUrl.remove(id);
         }
       }
-      setState(() {
-      });
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
@@ -261,55 +274,63 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  ReceivePort _port = ReceivePort();
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterViewBuild());
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => afterViewBuild());
   }
 
-  @override
-  void dispose() {
-    // Perform cleanup here if necessary
-    super.dispose();
-  }
-
-  void afterViewBuild() async {
-    final commonProvider = Provider.of<CommonProvider>(context, listen: false);
+  // @override
+  // void dispose() {
+  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
+  //   super.dispose();
+  // }
+  //
+  // static void downloadCallback(
+  //     String id, DownloadTaskStatus status, int progress) {
+  //   final SendPort send =
+  //       IsolateNameServer.lookupPortByName('downloader_send_port')!;
+  //
+  //   send.send([id, status, progress]);
+  // }
+  //
+  afterViewBuild() async {
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     commonProvider.getLoginCredentials();
     await commonProvider.getAppVersionDetails();
-    if (!kIsWeb) {
+    if (!kIsWeb)
       CommonMethods().checkVersion(context, commonProvider.appVersion!);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final commonProvider = Provider.of<CommonProvider>(context);
-    final languageProvider = Provider.of<LanguageProvider>(context);
-
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     return Scaffold(
       body: StreamBuilder(
-        stream: commonProvider.userLoggedStreamCtrl.stream,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Loaders.circularLoader();
-          } else {
-            if (snapshot.hasError) {
-              return Notifiers.networkErrorPage(context, () {});
-            } else {
-              if (snapshot.data != null &&
-                  commonProvider.userDetails!.isFirstTimeLogin == true) {
-                return Home();
-              }
-              return SelectLanguage();
+          stream: commonProvider.userLoggedStreamCtrl.stream,
+          builder: (context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+
+                /// While waiting for the data to load, show a loading spinner.
+                return Loaders.circularLoader();
+              default:
+                if (snapshot.hasError) {
+                  return Notifiers.networkErrorPage(context, () {});
+                } else {
+                  if (snapshot.data != null &&
+                      commonProvider.userDetails!.isFirstTimeLogin == true) {
+                    return Home();
+                  }
+                  return SelectLanguage();
+                }
             }
-          }
-        },
-      ),
+          }),
     );
   }
 }
-
 
 class MyHttpOverrides extends HttpOverrides {
   @override

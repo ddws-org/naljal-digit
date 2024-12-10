@@ -60,154 +60,154 @@ class _SearchConsumerConnectionState extends State<SearchConsumerConnection> {
                     ],
                   ),
                 ),
-              child: Column(children: [
-                FormWrapper(Consumer<SearchConnectionProvider>(
-                  builder: (_, searchConnectionProvider, child) => Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HomeBack(),
-                    Card(
-                      child: Form(
-                          key: searchConnectionProvider.formKey,
-                          autovalidateMode:
-                              searchConnectionProvider.autoValidation
-                                  ? AutovalidateMode.always
-                                  : AutovalidateMode.disabled,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                LabelText(i18.searchWaterConnection
-                                    .SEARCH_CONNECTION_LABEL),
-                                SubLabelText(i18.searchWaterConnection
-                                    .SEARCH_CONNECTION_SUBLABEL),
-                                BuildTextField(
-                                  i18.searchWaterConnection.OWNER_MOB_NUM,
-                                  searchConnectionProvider
-                                      .searchconnection.mobileCtrl,
-                                  prefixText: '+91 - ',
-                                  textInputType: TextInputType.number,
-                                  maxLength: 10,
-                                  pattern: (searchConnectionProvider
-                                                  .searchconnection
-                                                  .controllers[0] ==
-                                              null ||
-                                          searchConnectionProvider
-                                                  .searchconnection
-                                                  .controllers[0] ==
-                                              false)
-                                      ? (r'^(?:[+0]9)?[0-9]{10}$')
-                                      : '',
-                                  message: i18.validators
-                                      .MOBILE_NUMBER_SHOULD_BE_10_DIGIT,
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[0-9]"))
-                                  ],
-                                  isDisabled: searchConnectionProvider
-                                      .searchconnection.controllers[0],
-                                  onChange: (value) => searchConnectionProvider
-                                      .getdetails(value, 0),
-                                  key: Keys.searchConnection.SEARCH_PHONE_NUMBER_KEY,
-                                    onSubmit: (value){
-                                      searchConnectionProvider.validatesearchConnectionDetails(
-                                          context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
-                                          ? true : false);
-                                    }
-                                ),
-                                Text(
-                                  '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                  textAlign: TextAlign.center,
-                                ),
-                                BuildTextField(
-                                  i18.searchWaterConnection.CONSUMER_NAME,
-                                  searchConnectionProvider
-                                      .searchconnection.nameCtrl,
-                                  isDisabled: searchConnectionProvider
-                                      .searchconnection.controllers[1],
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[A-Za-z ]"))
-                                  ],
-                                  onChange: (value) => searchConnectionProvider
-                                      .getdetails(value, 1),
+            child: Column(children: [
+              FormWrapper(Consumer<SearchConnectionProvider>(
+                builder: (_, searchConnectionProvider, child) => Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HomeBack(),
+                  Card(
+                    child: Form(
+                        key: searchConnectionProvider.formKey,
+                        autovalidateMode:
+                            searchConnectionProvider.autoValidation
+                                ? AutovalidateMode.always
+                                : AutovalidateMode.disabled,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              LabelText(i18.searchWaterConnection
+                                  .SEARCH_CONNECTION_LABEL),
+                              SubLabelText(i18.searchWaterConnection
+                                  .SEARCH_CONNECTION_SUBLABEL),
+                              BuildTextField(
+                                i18.searchWaterConnection.OWNER_MOB_NUM,
+                                searchConnectionProvider
+                                    .searchconnection.mobileCtrl,
+                                prefixText: '+91 - ',
+                                textInputType: TextInputType.number,
+                                maxLength: 10,
+                                pattern: (searchConnectionProvider
+                                                .searchconnection
+                                                .controllers[0] ==
+                                            null ||
+                                        searchConnectionProvider
+                                                .searchconnection
+                                                .controllers[0] ==
+                                            false)
+                                    ? (r'^(?:[+0]9)?[0-9]{10}$')
+                                    : '',
+                                message: i18.validators
+                                    .MOBILE_NUMBER_SHOULD_BE_10_DIGIT,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[0-9]"))
+                                ],
+                                isDisabled: searchConnectionProvider
+                                    .searchconnection.controllers[0],
+                                onChange: (value) => searchConnectionProvider
+                                    .getdetails(value, 0),
+                                key: Keys.searchConnection.SEARCH_PHONE_NUMBER_KEY,
                                   onSubmit: (value){
-                                        searchConnectionProvider.validatesearchConnectionDetails(
+                                    searchConnectionProvider.validatesearchConnectionDetails(
                                         context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
                                         ? true : false);
-                                  },
-                                  hint: ApplicationLocalizations.of(context)
-                                      .translate(
-                                          i18.searchWaterConnection.NAME_HINT),
-                                  key: Keys.searchConnection.SEARCH_NAME_KEY,
-                                ),
-                                Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                          textAlign: TextAlign.center),
+                                  }
+                              ),
+                              Text(
+                                '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                textAlign: TextAlign.center,
+                              ),
+                              BuildTextField(
+                                i18.searchWaterConnection.CONSUMER_NAME,
+                                searchConnectionProvider
+                                    .searchconnection.nameCtrl,
+                                isDisabled: searchConnectionProvider
+                                    .searchconnection.controllers[1],
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[A-Za-z ]"))
+                                ],
+                                onChange: (value) => searchConnectionProvider
+                                    .getdetails(value, 1),
+                                onSubmit: (value){
+                                      searchConnectionProvider.validatesearchConnectionDetails(
+                                      context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                      ? true : false);
+                                },
+                                hint: ApplicationLocalizations.of(context)
+                                    .translate(
+                                        i18.searchWaterConnection.NAME_HINT),
+                                key: Keys.searchConnection.SEARCH_NAME_KEY,
+                              ),
+                              Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        textAlign: TextAlign.center),
                                       Visibility(
                                         visible: false,
                                         child: BuildTextField(
-                                          i18.searchWaterConnection
-                                              .OLD_CONNECTION_ID,
+                                      i18.searchWaterConnection
+                                          .OLD_CONNECTION_ID,
+                                      searchConnectionProvider
+                                          .searchconnection
+                                          .oldConnectionCtrl,
+                                      isDisabled: searchConnectionProvider
+                                          .searchconnection.controllers[2],
+                                      onChange: (value) =>
                                           searchConnectionProvider
-                                              .searchconnection
-                                              .oldConnectionCtrl,
-                                          isDisabled: searchConnectionProvider
-                                              .searchconnection.controllers[2],
-                                          onChange: (value) =>
-                                              searchConnectionProvider
-                                                  .getdetails(value, 2),
-                                          hint: ApplicationLocalizations.of(
-                                                  context)
-                                              .translate(i18
-                                                  .searchWaterConnection
-                                                  .OLD_CONNECTION_HINT),
-                                          key: Keys.searchConnection.SEARCH_OLD_ID_KEY,
-                                            onSubmit: (value){
-                                              searchConnectionProvider.validatesearchConnectionDetails(
-                                                  context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
-                                                  ? true : false);
-                                            }
-                                        ),
+                                              .getdetails(value, 2),
+                                      hint: ApplicationLocalizations.of(
+                                              context)
+                                          .translate(i18
+                                              .searchWaterConnection
+                                              .OLD_CONNECTION_HINT),
+                                      key: Keys.searchConnection.SEARCH_OLD_ID_KEY,
+                                        onSubmit: (value){
+                                          searchConnectionProvider.validatesearchConnectionDetails(
+                                              context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                              ? true : false);
+                                        }
+                                    ),
                                       ),
                                       Visibility(
                                         visible: false,
                                         child: Text(
-                                            '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
-                                            textAlign: TextAlign.center),
+                                        '\n${ApplicationLocalizations.of(context).translate(i18.common.OR)}',
+                                        textAlign: TextAlign.center),
                                       ),
-                                      BuildTextField(
-                                        i18.searchWaterConnection
-                                            .NEW_CONNECTION_ID,
-                                        searchConnectionProvider
-                                            .searchconnection
-                                            .newConnectionCtrl,
-                                        isDisabled: searchConnectionProvider
-                                            .searchconnection.controllers[3],
-                                        onChange: (value) =>
-                                            searchConnectionProvider
-                                                .getdetails(value, 3),
-                                        hint: ApplicationLocalizations.of(
-                                                context)
-                                            .translate(i18
-                                                .searchWaterConnection
-                                                .NEW_CONNECTION_HINT),
-                                        key: Keys.searchConnection.SEARCH_NEW_ID_KEY,
-                                          onSubmit: (value){
-                                            searchConnectionProvider.validatesearchConnectionDetails(
-                                                context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
-                                                ? true : false);
-                                          }
-                                      ),
-                                    ]),
-                              ]))),
-                ]),
-                      )),
-                      Footer()
+                                    BuildTextField(
+                                      i18.searchWaterConnection
+                                          .NEW_CONNECTION_ID,
+                                      searchConnectionProvider
+                                          .searchconnection
+                                          .newConnectionCtrl,
+                                      isDisabled: searchConnectionProvider
+                                          .searchconnection.controllers[3],
+                                      onChange: (value) =>
+                                          searchConnectionProvider
+                                              .getdetails(value, 3),
+                                      hint: ApplicationLocalizations.of(
+                                              context)
+                                          .translate(i18
+                                              .searchWaterConnection
+                                              .NEW_CONNECTION_HINT),
+                                      key: Keys.searchConnection.SEARCH_NEW_ID_KEY,
+                                        onSubmit: (value){
+                                          searchConnectionProvider.validatesearchConnectionDetails(
+                                              context, widget.arguments, (searchConnectionProvider.searchconnection.controllers[1] == false)
+                                              ? true : false);
+                                        }
+                                    ),
+                                  ]),
+                            ]))),
+              ]),
+        )),
+        Footer()
                     ]),
             )),
       bottomNavigationBar: BottomButtonBar(

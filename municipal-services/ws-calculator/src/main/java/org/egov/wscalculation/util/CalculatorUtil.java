@@ -395,4 +395,26 @@ public class CalculatorUtil {
 
 
 	}
+	public Map<String, Object> getPenaltyMasterForTenantId(String tenantId, MdmsCriteria mdmsCriteria, RequestInfo requestInfo) {
+		MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().mdmsCriteria(mdmsCriteria).requestInfo(requestInfo).build();
+		Object res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		if (res == null) {
+			throw new CustomException("MDMS_ERROR_FOR_BILLING_FREQUENCY", "ERROR IN FETCHING THE ALLOWED PAYMENT FOR TENANTID " + tenantId);
+		}
+		log.info("Response", res);
+		Map<String, Object> mdmsres = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_mdmsRes);
+		Map<String, Object> mdmsPenaltyMaster = JsonPath.read(res,WSCalculationConstant.JSONPATH_ROOT_FOR_ws_service_calculator);
+		if(mdmsres.isEmpty() || mdmsPenaltyMaster.isEmpty()) {
+			log.info("Inside No MDMS response found for tenantId::::" +tenantId);
+			String stateLevelTenantId = tenantId.split("\\.")[0];
+			mdmsCriteriaReq.getMdmsCriteria().setTenantId(stateLevelTenantId);
+			res = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
+		}
+
+		List<Map<String, Object>> jsonOutput = JsonPath.read(res, WSCalculationConstant.JSONPATH_ROOT_FOR_Penalty);
+		return jsonOutput.get(0);
+
+
+
+	}
 }

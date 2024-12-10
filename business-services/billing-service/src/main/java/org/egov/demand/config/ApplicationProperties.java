@@ -120,8 +120,14 @@ public class ApplicationProperties {
 	@Value("${kafka.topics.receipt.cancel.name}")
 	private String receiptCancellationTopic;
 	
-	@Value("${kafka.topics.demand.index.name}")
-	private String demandIndexTopic;
+	// @Value("${kafka.topics.demand.index.name}")
+	// private String demandIndexTopic;
+	
+	@Value("${kafka.topics.create.demand.index.name}")
+	private String createDemandIndexTopic;
+
+	@Value("${kafka.topics.update.demand.index.name}")
+	private String updateDemandIndexTopic;
 	
 	
 	/*
@@ -207,4 +213,14 @@ public class ApplicationProperties {
     
     @Value("${kafka.mgramseva.update.bill}")
     private String updateBill;
+
+	@Value("${egov.demand.default.offset}")
+	private Integer demandDefaultOffset;
+
+	@Value("${egov.demand.default.limit}")
+	private Integer demandDefaultLimit;
+
+	@Value("${egov.demand.max.limit}")
+	private Integer demandMaxLimit;
+
 }

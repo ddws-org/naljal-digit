@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/search_connection_provider.dart';
@@ -33,7 +36,11 @@ class _SearchConsumerResultState extends State<SearchConsumerResult> {
   }
 
   buildconsumerView(WaterConnections waterConnections) {
-    return SearchConnectionDetailCard(waterConnections, widget.arguments, isNameSearch: widget.arguments['isNameSearch'],);
+    return SearchConnectionDetailCard(
+      waterConnections,
+      widget.arguments,
+      isNameSearch: widget.arguments['isNameSearch'],
+    );
   }
 
   @override

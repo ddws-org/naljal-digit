@@ -6,7 +6,7 @@
 	<artifactId>ws-services</artifactId>
 	<packaging>jar</packaging>
 	<name>water-services</name>
-	<version>1.6.0-SNAPSHOT</version>
+	<version>1.6.1</version>
 	<properties>
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>

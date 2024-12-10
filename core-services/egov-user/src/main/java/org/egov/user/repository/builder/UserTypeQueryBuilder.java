@@ -136,6 +136,11 @@ public class UserTypeQueryBuilder {
             selectQuery.append(" userdata.tenantid like ?");
             preparedStatementValues.add("%"+userSearchCriteria.getTenantId().trim()+"%");
         }
+        if (userSearchCriteria.getTenantIds() != null) {
+            isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);
+            selectQuery.append(" ur.role_tenantid IN (").append(getQueryForCollection(userSearchCriteria.getTenantIds(),
+                    preparedStatementValues)).append(" )");
+        }
 
         if (userSearchCriteria.getUserName() != null) {
             isAppendAndClause = addAndClauseIfRequired(isAppendAndClause, selectQuery);

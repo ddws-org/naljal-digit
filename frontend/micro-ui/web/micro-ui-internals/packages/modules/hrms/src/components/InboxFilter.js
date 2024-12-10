@@ -7,9 +7,9 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   const [filters, onSelectFilterRoles] = useState(searchParams?.filters?.role || { role: [] });
   const [_searchParams, setSearchParams] = useState(() => searchParams);
   const [selectedRoles, onSelectFilterRolessetSelectedRole] = useState(null);
-  const [divisionTenants, setDivisionTenants] = useState([]);
-  const [selectedDivision, setSelectedDivision] = useState();
-  const [Divisions, setDivisions] = useState([]);
+  const [blockTenants, setBlockTenants] = useState([]);
+  const [selectedBlock, setSelectedBlock] = useState();
+  const [Blocks, setBlocks] = useState([]);
   const [rolesData, setRolesData] = useState([]);
   const [isRefreshed, setIsRefreshed] = useState(false);
   const { t } = useTranslation();
@@ -106,23 +106,23 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
   }, [isActive]);
 
   useEffect(() => {
-    if (divisionTenants) {
-      setSearchParams({ ..._searchParams, tenantIds: divisionTenants });
+    if (blockTenants) {
+      setSearchParams({ ..._searchParams, tenantIds: blockTenants });
     }
-  }, [divisionTenants]);
+  }, [blockTenants]);
 
   useEffect(() => {
-    let divisions = [];
-    divisions = data?.MdmsRes?.["tenant"]["tenants"]
-      ?.filter((items) => items?.city?.blockcode)
+    let blocks = [];
+    blocks = data?.MdmsRes?.["tenant"]["tenants"]
+      ?.filter((items) => items?.blockcode)
       ?.map((item) => {
         return {
-          code: item?.city?.blockcode,
-          name: item?.city.blockname,
-          i18text: Digit.Utils.locale.convertToLocale(item?.city?.blockcode, "EGOV_LOCATION_BLOCK"),
+          code: item.blockcode,
+          name: item.blockname,
+          i18text: Digit.Utils.locale.convertToLocale(item?.blockcode, "EGOV_LOCATION_BLOCK"),
         };
       });
-    const uniqueDivisions = divisions?.reduce((unique, obj) => {
+    const uniqueBlocks = blocks?.reduce((unique, obj) => {
       const isDuplicate = unique.some((item) => item.id === obj.id && item.name === obj.name);
       if (!isDuplicate) {
         unique.push(obj);
@@ -130,18 +130,20 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
       return unique;
     }, []);
 
-    setDivisions(uniqueDivisions);
+    setBlocks(uniqueBlocks);
 
     // Specify the role codes you want to filter
     const roleCodesToFilter = ["HRMS_ADMIN", "DIV_ADMIN", "MDMS_ADMIN", "LOC_ADMIN", "SYSTEM"];
     // Use the filter method to extract roles with the specified codes
     const roles = data?.MdmsRes?.["ws-services-masters"]?.WSServiceRoles?.filter((role) => {
-      return !roleCodesToFilter.includes(role.code);
+      return (
+        !roleCodesToFilter.includes(role.code) && (role?.name === "SECRETARY" || role?.name === "CHAIRMEN" || role?.name === "Revenue Collector")
+      );
     })?.map((role) => {
       return { code: role.code, name: role?.name ? role?.name : " ", i18text: "ACCESSCONTROL_ROLES_ROLES_" + role.code };
     });
     setRolesData(roles);
-  }, [data?.MdmsRes, isRefreshed, divisionTenants, selectedDivision]);
+  }, [data?.MdmsRes, isRefreshed, blockTenants, selectedBlock]);
 
   const clearAll = () => {
     onFilterChange({ delete: Object.keys(searchParams) });
@@ -151,8 +153,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     setIsactive(null);
     props?.onClose?.();
     onSelectFilterRoles({ role: [] });
-    setDivisionTenants(null);
-    setSelectedDivision(null);
+    setBlockTenants(null);
+    setSelectedBlock(null);
     setIsRefreshed(!isRefreshed);
   };
 
@@ -172,12 +174,12 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
     );
   };
 
-  const selectDivision = (value) => {
+  const selectBlock = (value) => {
     // Extract projects using array methods
-    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.divisionCode === value.code);
+    const project = data?.MdmsRes?.["tenant"]["tenants"].filter((obj) => obj.blockcode === value.code);
     const finalProjects = project?.map((project) => project?.code);
-    setDivisionTenants(finalProjects);
-    setSelectedDivision(value);
+    setBlockTenants(finalProjects);
+    setSelectedBlock(value);
   };
 
   return (
@@ -218,14 +220,8 @@ const Filter = ({ searchParams, onFilterChange, onSearch, removeParam, ...props 
           <div>
             {STATE_ADMIN ? (
               <div>
-                <div className="filter-label">{t("HR_BLOCK_LABEL")}</div>
-                <Dropdown
-                  option={Divisions?.filter((items) => items?.code === "2595")}
-                  selected={selectedDivision}
-                  select={selectDivision}
-                  optionKey={"i18text"}
-                  t={t}
-                />
+                <div className="filter-label">{t("HR_DIVISIONS_LABEL")}</div>
+                <Dropdown option={Blocks} selected={selectedBlock} select={selectBlock} optionKey={"i18text"} t={t} />
               </div>
             ) : (
               <div>

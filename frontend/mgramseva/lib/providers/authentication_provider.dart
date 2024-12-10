@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
+
 import 'package:mgramseva/utils/custom_exception.dart';
 import 'package:mgramseva/utils/error_logging.dart';
 import 'package:mgramseva/utils/global_variables.dart';
@@ -12,7 +13,9 @@ import 'package:provider/provider.dart';
 import '../repository/authentication_repo.dart';
 import 'language.dart';
 
-class AuthenticationProvider with ChangeNotifier {
+import 'package:mgramseva/services/base_service.dart';
+
+class AuthenticationProvider with ChangeNotifier, BaseService {
   validateLogin(BuildContext context, String userName, String password) async {
     /// Unfocus the text field
     FocusScope.of(context).unfocus();
@@ -48,8 +51,7 @@ class AuthenticationProvider with ChangeNotifier {
         "id": [loginResponse.userRequest!.id],
         "mobileNumber": loginResponse.userRequest!.mobileNumber
       }, loginResponse.accessToken!);
-      var commonProvider =
-          Provider.of<CommonProvider>(context, listen: false);
+      var commonProvider = Provider.of<CommonProvider>(context, listen: false);
       loginResponse.isFirstTimeLogin = userInfo.user!.first.defaultPwdChgd;
       commonProvider.loginCredentials = loginResponse;
       if (userInfo.user!.first.defaultPwdChgd == false) {
@@ -61,7 +63,7 @@ class AuthenticationProvider with ChangeNotifier {
         Navigator.of(context).pushNamedAndRemoveUntil(
             Routes.HOME, (Route<dynamic> route) => false);
       }
-        } on CustomException catch (e, s) {
+    } on CustomException catch (e, s) {
       Navigator.pop(context);
       if (ErrorHandler.handleApiException(context, e, s)) {
         Notifiers.getToastMessage(context, e.message, 'ERROR');
