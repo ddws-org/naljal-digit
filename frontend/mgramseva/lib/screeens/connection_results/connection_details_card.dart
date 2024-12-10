@@ -288,8 +288,12 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                             .HOUSE_DETAILS_EDIT,
                                 (){
                                     
-                                  var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false);                                 
-                                  if(waterconnections.waterConnection![index].dataVerified == true){
+                                  var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false);   
+                                  var waterConnctions = isNameSearch == true ? waterconnections
+                                              .waterConnectionData![index] : waterconnections
+                                              .waterConnection![index];
+
+                                  if( waterConnctions.dataVerified == true){
                                     consumerProvider.updateAlreadyVerifiedConsumer(true);
                                     consumerProvider.updateConsumerVerified(true);
                                   }
