@@ -27,10 +27,24 @@ class HouseHoldProvider with ChangeNotifier {
   UpdateDemandList? updateDemandList;
   AggragateDemandDetails? aggDemandItems;
   List<DemandDetails>? demandListItems = [];
+  int _applicableAfterDays = 0;
 
   bool isfirstdemand = false;
   var streamController = StreamController.broadcast();
   var isVisible = false;
+
+
+// Getter for applicableAfterDays
+int get applicableAfterDays => _applicableAfterDays;
+
+// Setter for applicableAfterDays
+set applicableAfterDays(int value) {
+  if (value >= 0) {
+    _applicableAfterDays = value;
+  } else {
+    throw ArgumentError("applicableAfterDays cannot be negative.");
+  }
+}
 
   Future<List<MeterReadings>> checkMeterDemand(
       BillList? data, WaterConnection? waterConnection) async {
@@ -112,9 +126,17 @@ class HouseHoldProvider with ChangeNotifier {
         createPDFPrams = {"key": "ws-bill-nm-v2", "tenantId": data.tenantId};
       }
 
+      var mdmsData = await CommonProvider.getMdmsPenaltyService( commonProvider.userDetails!.selectedtenant?.code.toString() ??
+              commonProvider.userDetails!.userRequest!.tenantId.toString());
+
+      applicableAfterDays =   mdmsData.mdmsRes?.wsServicesCalculation?.penalty.first?.applicableAfterDays ?? 0;      
+    
+
       var mdms = await CommonProvider.getMdmsBillingService(
           commonProvider.userDetails!.selectedtenant?.code.toString() ??
               commonProvider.userDetails!.userRequest!.tenantId.toString());
+
+
       if (mdms.mdmsRes?.billingService?.taxHeadMasterList != null &&
           mdms.mdmsRes!.billingService!.taxHeadMasterList!.isNotEmpty) {
         waterConnection?.mdmsData = mdms;
@@ -139,6 +161,10 @@ class HouseHoldProvider with ChangeNotifier {
               "consumerCodes": [data.connectionNo.toString()]
             }
           });
+
+          // log(jsonEncode("${demand.totalApplicablePenalty}"),name:"test");
+          // totalApplicablePenalty = int.parse("${demand.totalApplicablePenalty ?? 0}");
+          // log(jsonEncode("${totalApplicablePenalty}"),name:"totalApplicablePenalty");
 
           demandList = demand.demands;
           updateDemandList?.totalApplicablePenalty =

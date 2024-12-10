@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:mgramseva/model/file/file_store.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/model/localization/localization_label.dart';
 import 'package:mgramseva/model/mdms/payment_type.dart';
+import 'package:mgramseva/model/mdms/penalty_module.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/providers/language.dart';
 import 'package:mgramseva/repository/water_services_calculation.dart';
@@ -110,6 +112,9 @@ class CoreRepository extends BaseService {
     return languageList.mdmsRes?.wcBillingSlabList;
   }
 
+
+
+
   Future<PSPCLIntegration?> getPSPCLGpwscFromMdms(String tenantId) async {
     var body = {
       "MdmsCriteria": {
@@ -164,6 +169,33 @@ class CoreRepository extends BaseService {
     }
     return paymentType;
   }
+
+
+  Future<PenaltyModule> getPenaltyModuleMDMS(Map body) async {
+    late PenaltyModule penaltyModule;
+    var res = await makeRequest(
+        url: Url.MDMS,
+        body: body,
+        method: RequestType.POST,
+        requestInfo: RequestInfo(
+            APIConstants.API_MODULE_NAME,
+            APIConstants.API_VERSION,
+            APIConstants.API_TS,
+            "_search",
+            APIConstants.API_DID,
+            APIConstants.API_KEY,
+            APIConstants.API_MESSAGE_ID,
+            ""));
+           
+    if (res != null) {
+      penaltyModule = PenaltyModule.fromJson(res);
+    }
+    return penaltyModule;
+  }
+
+
+
+
 
   Future<List<FileStore>> uploadFiles(
       List<dynamic>? _paths, String moduleName) async {
