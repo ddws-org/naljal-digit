@@ -17,14 +17,16 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      url:`${getDynamicPart(window?.location?.href)}${Urls.FileStore}${tenantInfo}`,   
+      url:`${Urls.FileStore}${tenantInfo}`,   
       data: formData,
       headers: { "auth-token": Digit.UserService.getUser() ? Digit.UserService.getUser()?.access_token : null},
     };
 
-
+    Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
     return Axios(config);
   },
+
+  // ${getDynamicPart(window?.location?.href)}
 
   MultipleFilesStorage: async (module, filesData, tenantId) => {
     const formData = new FormData();
@@ -35,11 +37,11 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      url:`${getDynamicPart(window?.location?.href)}${Urls.FileStore}${tenantInfo}`, 
+      url:`${Urls.FileStore}${tenantInfo}`, 
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
     };
-
+    Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
     return Axios(config);
   },
 
