@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/components/dashboard/bills_table.dart';
 import 'package:mgramseva/model/connection/water_connection.dart';
@@ -58,6 +61,7 @@ class _HouseholdListState extends State<HouseholdList> {
           constraints.maxWidth < 760 ? 115.0 : (constraints.maxWidth / 6);
       var tableData = householdProvider
           .getCollectionsData(expenseList as List<WaterConnection>);
+
       return tableData.isEmpty
           ? CommonWidgets.buildEmptyMessage(
               ApplicationLocalizations.of(context)

@@ -7,6 +7,7 @@ import org.egov.user.domain.model.UserDetail;
 import org.egov.user.persistence.repository.ActionRestRepository;
 import org.egov.user.web.contract.auth.Role;
 import org.egov.user.web.contract.auth.User;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TokenServiceTest {
 

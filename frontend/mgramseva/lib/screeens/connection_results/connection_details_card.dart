@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/connection/water_connections.dart';
 import 'package:mgramseva/providers/common_provider.dart';
+import 'package:mgramseva/providers/consumer_details_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -64,27 +68,31 @@ class SearchConnectionDetailCard extends StatelessWidget {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
             padding: EdgeInsets.only(left: 15),
-            child: isNameSearch == true ? Text(
-              waterconnections.waterConnectionData!.length.toString() != null
-                  ? waterconnections.waterConnectionData!.length.toString() +
-                      " " +
-                      '${waterconnections.waterConnectionData!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
-                  : "0" +
-                      ApplicationLocalizations.of(context).translate(
-                          i18.searchWaterConnection.CONNECTION_FOUND),
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.left,
-            ) : Text(
-              waterconnections.waterConnection!.length.toString() != null
-                  ? waterconnections.waterConnection!.length.toString() +
-                  " " +
-                  '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
-                  : "0" +
-                  ApplicationLocalizations.of(context).translate(
-                      i18.searchWaterConnection.CONNECTION_FOUND),
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.left,
-            )),
+            child: isNameSearch == true
+                ? Text(
+                    waterconnections.waterConnectionData!.length.toString() !=
+                            null
+                        ? waterconnections.waterConnectionData!.length
+                                .toString() +
+                            " " +
+                            '${waterconnections.waterConnectionData!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
+                        : "0" +
+                            ApplicationLocalizations.of(context).translate(
+                                i18.searchWaterConnection.CONNECTION_FOUND),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.left,
+                  )
+                : Text(
+                    waterconnections.waterConnection!.length.toString() != null
+                        ? waterconnections.waterConnection!.length.toString() +
+                            " " +
+                            '${waterconnections.waterConnection!.length.toString() == '1' ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND_ONE) : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.CONNECTION_FOUND)}'
+                        : "0" +
+                            ApplicationLocalizations.of(context).translate(
+                                i18.searchWaterConnection.CONNECTION_FOUND),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.left,
+                  )),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: RichText(
@@ -114,7 +122,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.all(0),
-              itemCount: isNameSearch == true ? waterconnections.waterConnectionData!.length : waterconnections.waterConnection!.length,
+              itemCount: isNameSearch == true
+                  ? waterconnections.waterConnectionData!.length
+                  : waterconnections.waterConnection!.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
                     child: Padding(
@@ -126,153 +136,142 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .NEW_CONNECTION_ID),
-                                isNameSearch == true ? waterconnections
-                                    .waterConnectionData![index].connectionNo : waterconnections.waterConnection![index].connectionNo,
+                                isNameSearch == true
+                                    ? waterconnections
+                                        .waterConnectionData![index]
+                                        .connectionNo
+                                    : waterconnections
+                                        .waterConnection![index].connectionNo,
                                 context,
                                 constraints),
                             _getDetailtext(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .OLD_CONNECTION_ID),
-                                isNameSearch == true ? (waterconnections.waterConnectionData![index]
-                                            .oldConnectionNo !=
-                                        ""
-                                    ? waterconnections
-                                        .waterConnectionData![index].oldConnectionNo
-                                    : ApplicationLocalizations.of(context)
-                                        .translate(i18.common.NA)) : (waterconnections.waterConnection![index]
-                                    .oldConnectionNo !=
-                                    ""
-                                    ? waterconnections
-                                    .waterConnection![index].oldConnectionNo
-                                    : ApplicationLocalizations.of(context)
-                                    .translate(i18.common.NA)),
+                                isNameSearch == true
+                                    ? (waterconnections
+                                                .waterConnectionData![index]
+                                                .oldConnectionNo !=
+                                            ""
+                                        ? waterconnections
+                                            .waterConnectionData![index]
+                                            .oldConnectionNo
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA))
+                                    : (waterconnections.waterConnection![index]
+                                                .oldConnectionNo !=
+                                            ""
+                                        ? waterconnections
+                                            .waterConnection![index]
+                                            .oldConnectionNo
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA)),
                                 context,
                                 constraints),
                             _getDetailtext(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .RESULTS_CONSUMER_NAME),
-                                isNameSearch == true ? (waterconnections.waterConnectionData![index]
-                                            .connectionHolders !=
-                                        null
-                                    ? waterconnections.waterConnectionData![index]
-                                        .connectionHolders!.first.name
-                                    : ApplicationLocalizations.of(context)
-                                        .translate(i18.common.NA) ) : (waterconnections.waterConnection![index]
-                                    .connectionHolders !=
-                                    null
-                                    ? waterconnections.waterConnection![index]
-                                    .connectionHolders!.first.name
-                                    : ApplicationLocalizations.of(context)
-                                    .translate(i18.common.NA)),
+                                isNameSearch == true
+                                    ? (waterconnections
+                                                .waterConnectionData![index]
+                                                .connectionHolders !=
+                                            null
+                                        ? waterconnections
+                                            .waterConnectionData![index]
+                                            .connectionHolders!
+                                            .first
+                                            .name
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA))
+                                    : (waterconnections.waterConnection![index]
+                                                .connectionHolders !=
+                                            null
+                                        ? waterconnections
+                                            .waterConnection![index]
+                                            .connectionHolders!
+                                            .first
+                                            .name
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA)),
                                 context,
                                 constraints),
                             _getDetailtext(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection
                                         .RESULTS_PHONE_NUM),
-                                isNameSearch == true ? (waterconnections.waterConnectionData![index]
-                                            .connectionHolders !=
-                                        null
-                                    ? '+91 - ' +
-                                        '${waterconnections.waterConnectionData![index].connectionHolders!.first.mobileNumber}'
-                                    : ApplicationLocalizations.of(context)
-                                        .translate(i18.common.NA)) : (waterconnections.waterConnection![index]
-                                    .connectionHolders !=
-                                    null
-                                    ? '+91 - ' +
-                                    '${waterconnections.waterConnection![index].connectionHolders!.first.mobileNumber}'
-                                    : ApplicationLocalizations.of(context)
-                                    .translate(i18.common.NA)),
+                                isNameSearch == true
+                                    ? (waterconnections
+                                                .waterConnectionData![index]
+                                                .connectionHolders !=
+                                            null
+                                        ? '+91 - ' +
+                                            '${waterconnections.waterConnectionData![index].connectionHolders!.first.mobileNumber}'
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA))
+                                    : (waterconnections.waterConnection![index]
+                                                .connectionHolders !=
+                                            null
+                                        ? '+91 - ' +
+                                            '${waterconnections.waterConnection![index].connectionHolders!.first.mobileNumber}'
+                                        : ApplicationLocalizations.of(context)
+                                            .translate(i18.common.NA)),
                                 context,
                                 constraints),
                             _getDetailtext(
                                 ApplicationLocalizations.of(context).translate(
                                     i18.searchWaterConnection.RESULTS_ADDRESS),
-                                isNameSearch == true ? ((waterconnections.waterConnectionData![index]
-                                                .additionalDetails!.doorNo !=
-                                            null
-                                        ? waterconnections
+                                isNameSearch == true
+                                    ? ((waterconnections
                                                     .waterConnectionData![index]
                                                     .additionalDetails!
-                                                    .doorNo! !=
-                                                ""
-                                            ? waterconnections
+                                                    .doorNo !=
+                                                null
+                                            ? waterconnections.waterConnectionData![index].additionalDetails!.doorNo! !=
+                                                    ""
+                                                ? waterconnections.waterConnectionData![index].additionalDetails!.doorNo! +
+                                                    ', '
+                                                : ""
+                                            : "") +
+                                        (waterconnections
                                                     .waterConnectionData![index]
                                                     .additionalDetails!
-                                                    .doorNo! +
-                                                ', '
-                                            : ""
-                                        : "") +
-                                    (waterconnections.waterConnectionData![index]
-                                                .additionalDetails!.street !=
-                                            null
-                                        ? waterconnections
+                                                    .street !=
+                                                null
+                                            ? waterconnections.waterConnectionData![index].additionalDetails!.street! !=
+                                                    ""
+                                                ? waterconnections.waterConnectionData![index].additionalDetails!.street! +
+                                                    ', '
+                                                : ""
+                                            : "") +
+                                        (waterconnections
                                                     .waterConnectionData![index]
                                                     .additionalDetails!
-                                                    .street! !=
-                                                ""
-                                            ? waterconnections
-                                                    .waterConnectionData![index]
-                                                    .additionalDetails!
-                                                    .street! +
-                                                ', '
-                                            : ""
-                                        : "") +
-                                    (waterconnections.waterConnectionData![index]
-                                        .additionalDetails!.locality!.isNotEmpty
-                                        || waterconnections.waterConnectionData![index]
-                                            .additionalDetails!.locality != null
-                                        ? ApplicationLocalizations.of(context)
-                                        .translate(waterconnections.waterConnectionData![index]
-                                        .additionalDetails!.locality.toString()) : "" ) +
-                                    ', ' +
-                                    ApplicationLocalizations.of(context)
-                                        .translate(commonProvider.userDetails!.selectedtenant!.code!)) :
-                                ((waterconnections.waterConnection![index]
-                                    .additionalDetails!.doorNo !=
-                            null
-                            ? waterconnections
-                                .waterConnection![index]
-                                .additionalDetails!
-                                .doorNo! !=
-                                ""
-                                ? waterconnections
-                                    .waterConnection![index]
-                                    .additionalDetails!
-                                    .doorNo! +
-                                ', '
-                                : ""
-                                : "") +
-                                (waterconnections.waterConnection![index]
-                                    .additionalDetails!.street !=
-                                    null
-                                    ? waterconnections
-                                    .waterConnection![index]
-                                    .additionalDetails!
-                                    .street! !=
-                                    ""
-                                    ? waterconnections
-                                    .waterConnection![index]
-                                    .additionalDetails!
-                                    .street! +
-                                    ', '
-                                    : ""
-                                    : "") +
-                                    (waterconnections
-                                        .waterConnection![index]
-                                        .additionalDetails!.locality!.isNotEmpty
-                                        || waterconnections
-                                            .waterConnection![index]
-                                            .additionalDetails!.locality != null
-                                        ? ApplicationLocalizations.of(context)
-                                        .translate(waterconnections
-                                        .waterConnection![index]
-                                        .additionalDetails!.locality.toString()) : "" ) +
-                                ', ' +
-                                ApplicationLocalizations.of(context)
-                                    .translate(commonProvider.userDetails!.selectedtenant!.code!)),
+                                                    .locality!
+                                                    .isNotEmpty ||
+                                                waterconnections.waterConnectionData![index].additionalDetails!.locality !=
+                                                    null
+                                            ? ApplicationLocalizations.of(context).translate(waterconnections
+                                                .waterConnectionData![index]
+                                                .additionalDetails!
+                                                .locality
+                                                .toString())
+                                            : "") +
+                                        ', ' +
+                                        ApplicationLocalizations.of(context).translate(commonProvider.userDetails!.selectedtenant!.code!))
+                                    : ((waterconnections.waterConnection![index].additionalDetails!.doorNo != null
+                                            ? waterconnections.waterConnection![index].additionalDetails!.doorNo! != ""
+                                                ? waterconnections.waterConnection![index].additionalDetails!.doorNo! + ', '
+                                                : ""
+                                            : "") +
+                                        (waterconnections.waterConnection![index].additionalDetails!.street != null
+                                            ? waterconnections.waterConnection![index].additionalDetails!.street! != ""
+                                                ? waterconnections.waterConnection![index].additionalDetails!.street! + ', '
+                                                : ""
+                                            : "") +
+                                        (waterconnections.waterConnection![index].additionalDetails!.locality!.isNotEmpty || waterconnections.waterConnection![index].additionalDetails!.locality != null ? ApplicationLocalizations.of(context).translate(waterconnections.waterConnection![index].additionalDetails!.locality.toString()) : "") +
+                                        ', ' +
+                                        ApplicationLocalizations.of(context).translate(commonProvider.userDetails!.selectedtenant!.code!)),
                                 context,
                                 constraints),
                             SizedBox(
@@ -287,7 +286,22 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                             .HOUSE_DETAILS_VIEW
                                         : i18.searchWaterConnection
                                             .HOUSE_DETAILS_EDIT,
-                                () => Navigator.pushNamed(
+                                (){
+                                    
+                                  var consumerProvider = Provider.of<ConsumerProvider>(context, listen: false);   
+                                  var waterConnctions = isNameSearch == true ? waterconnections
+                                              .waterConnectionData![index] : waterconnections
+                                              .waterConnection![index];
+
+                                  if( waterConnctions.dataVerified == true){
+                                    consumerProvider.updateAlreadyVerifiedConsumer(true);
+                                    consumerProvider.updateConsumerVerified(true);
+                                  }
+                                  else{
+                                    consumerProvider.updateAlreadyVerifiedConsumer(false);
+                                    consumerProvider.updateConsumerVerified(false);
+                                  }                                  
+                                  Navigator.pushNamed(
                                         context,
                                         (arguments['Mode'] == 'collect'
                                             ? Routes.HOUSEHOLD_DETAILS
@@ -302,7 +316,9 @@ class SearchConnectionDetailCard extends StatelessWidget {
                                           "status": isNameSearch == true ? waterconnections
                                               .waterConnectionData![index].status : waterconnections
                                               .waterConnection![index].status
-                                        })),
+                                        });
+                                }
+                                        ),
                             SizedBox(
                               height: 8,
                             ),

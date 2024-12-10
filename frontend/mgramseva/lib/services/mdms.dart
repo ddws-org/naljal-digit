@@ -163,6 +163,24 @@ Map getMDMSPaymentModes(String tenantId) {
   };
 }
 
+Map getMDMSPenaltyModule(String tenantId) {
+  return {
+    "MdmsCriteria": {
+      "tenantId": tenantId,
+         "moduleDetails": [
+        {
+            "moduleName": "ws-services-calculation",
+            "masterDetails": [
+                {
+                    "name": "Penalty"
+                }
+            ]
+        }
+    ]
+    }
+  };
+}
+
 Map getPaymentModeList(String tenantId) {
   return {
     "MdmsCriteria": {

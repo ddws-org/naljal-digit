@@ -1,5 +1,6 @@
 package org.egov.wscalculation.repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,9 +12,7 @@ import org.egov.wscalculation.repository.builder.WSCalculatorQueryBuilder;
 import org.egov.wscalculation.repository.rowmapper.DemandSchedulerRowMapper;
 import org.egov.wscalculation.repository.rowmapper.MeterReadingCurrentReadingRowMapper;
 import org.egov.wscalculation.repository.rowmapper.MeterReadingRowMapper;
-import org.egov.wscalculation.web.models.MeterConnectionRequest;
-import org.egov.wscalculation.web.models.MeterReading;
-import org.egov.wscalculation.web.models.MeterReadingSearchCriteria;
+import org.egov.wscalculation.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -141,10 +140,32 @@ public class WSCalculationDaoImpl implements WSCalculationDao {
 	}
 
 	@Override
+	public Boolean isDuplicateBulkDemandCall(String tenantId, String billingPeriod, Timestamp fromTime) {
+		List<Object> preparedStatement = new ArrayList<>();
+		String query = queryBuilder.getDuplicateBulkDemandCallQuery(tenantId, billingPeriod, fromTime, preparedStatement);
+		int count = jdbcTemplate.queryForObject(query, preparedStatement.toArray(), Integer.class);
+		return count > 0;
+	}
+
+
+	@Override
+	public void insertBulkDemandCall(String tenantId, String billingPeriod, String status, AuditDetails auditDetails) {
+		List<Object> preparedStatement = new ArrayList<>();
+		String query = queryBuilder.getInsertBulkDemandCallQuery(tenantId, billingPeriod, status, auditDetails, preparedStatement);
+		jdbcTemplate.update(query, preparedStatement.toArray());
+	}
+
+	@Override
 	public List<String> getTenantId() {
 		String query = queryBuilder.getDistinctTenantIds();
 		log.info("Tenant Id's List Query : " + query);
 		return jdbcTemplate.queryForList(query, String.class);
+	}
+
+	@Override
+	public void updateStatusForOldRecords(String tenantId,Timestamp durationAgo,String billingPeriod, AuditDetails auditDetails) {
+		String query = "UPDATE eg_ws_bulk_demand_batch SET status = 'EXPIRED', lastModifiedBy = ?, lastModifiedTime = ? WHERE tenantId = ? AND billingPeriod = ? AND createdTime < ?";
+		jdbcTemplate.update(query,auditDetails.getLastModifiedBy(), auditDetails.getLastModifiedTime(),tenantId,billingPeriod, durationAgo.getTime());
 	}
 
 	@Override

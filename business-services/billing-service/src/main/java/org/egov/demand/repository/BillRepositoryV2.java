@@ -69,6 +69,8 @@ public class BillRepositoryV2 {
 				AuditDetails auditDetails = bill.getAuditDetails();
 				
 				ps.setString(1, bill.getId());
+				ps.setString(15, bill.getUserId());
+				ps.setString(16, bill.getConsumerCode());
 				ps.setString(2, bill.getTenantId());
 				ps.setString(3, bill.getPayerName());
 				ps.setString(4, bill.getPayerAddress());
@@ -82,8 +84,8 @@ public class BillRepositoryV2 {
 				ps.setString(12, bill.getMobileNumber());
 				ps.setString(13, bill.getStatus().toString());
 				ps.setObject(14, util.getPGObject(bill.getAdditionalDetails()));
-				ps.setString(15, bill.getConsumerCode());
-				ps.setString(16, bill.getTenantId());
+				// ps.setString(15, bill.getConsumerCode());
+				// ps.setString(16, bill.getTenantId());
 
 			}
 			

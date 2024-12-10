@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:mgramseva/model/bill/billing.dart';
+import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/providers/common_provider.dart';
 import 'package:mgramseva/repository/billing_service_repo.dart';
 import 'package:mgramseva/utils/error_logging.dart';
@@ -25,11 +27,11 @@ class FetchBillProvider with ChangeNotifier {
         billList = res;
         streamController.add(res);
       } else {
-         billList = new BillList();
+        billList = new BillList();
         billList.bill = [];
         streamController.add(billList);
       }
-        } catch (e, s) {
+    } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);
       streamController.addError('error');
     }
@@ -50,11 +52,30 @@ class FetchBillProvider with ChangeNotifier {
           .fetchBillwithoutLogin(input)
           .then((res) async {
         var prams = {
-          "key": data['key'] != null ? data['key'] : "ws-bill",
+          "key": data['key'] != null ? '${data['key']}' : "ws-bill",
           "tenantId": data['tenantId']
         };
-        var body = {"Bill": res.bill};
-        await BillingServiceRepository()
+
+        log("${data}",name:"data");
+        AggragateDemandDetails? aggDemandItems = null;
+
+        await BillingServiceRepository().fetchAggregateDemand({
+          "tenantId": data['tenantId'],
+          "consumerCode": data['consumerCode'],
+          "businessService": "WS",
+        }).then((AggragateDemandDetails? value) {
+          if (value != null) {
+            aggDemandItems = value;
+            notifyListeners();
+          }
+        });
+        var body = {
+          "BillAndDemand": {
+            "Bill": res.bill,
+            "AggregatedDemands": aggDemandItems
+          }
+        };
+             await BillingServiceRepository()
             .fetchdfilestordIDNoAuth(body, prams)
             .then((value) async {
           var output = await BillingServiceRepository()
@@ -63,6 +84,8 @@ class FetchBillProvider with ChangeNotifier {
             ..onTapOfAttachment(output!.first, navigatorKey.currentContext);
           // window.location.href = "https://www.google.com/";
         });
+
+   
       });
     } catch (e, s) {
       ErrorHandler().allExceptionsHandler(navigatorKey.currentContext!, e, s);

@@ -603,7 +603,7 @@ public class SchedulerService {
 	private Recepient getRecepient(RequestInfo requestInfo, String tenantId) {
 		Recepient recepient = null;
 		UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-				Arrays.asList("GP_ADMIN"));
+				Arrays.asList("GP_ADMIN","SARPANCH"));
 		if (userDetailResponse.getUser().isEmpty())
 			log.error("Recepient is absent");
 		else {

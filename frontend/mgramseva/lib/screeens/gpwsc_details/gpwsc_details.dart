@@ -6,9 +6,10 @@ import '../../providers/ifix_hierarchy_provider.dart';
 import '../../utils/global_variables.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/drawer_wrapper.dart';
-import '../../widgets/footer.dart';
 import '../../widgets/home_back.dart';
 import '../../widgets/side_bar.dart';
+import '../../widgets/footer.dart';
+import 'gpwsc_boundary_detail_card.dart';
 
 class GPWSCDetails extends StatefulWidget {
   const GPWSCDetails({Key? key}) : super(key: key);
@@ -64,32 +65,32 @@ class _GpwscDetails extends State<GPWSCDetails>
               ],
             ),
           ),
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      alignment: Alignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  HomeBack(),
-                ],
-              ),
+              HomeBack(),
+            ],
+          ),
           Container(
                 margin: constraints.maxWidth < 760
                     ? null
                     : EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width / 25),
-                padding: EdgeInsets.only(left: 8, right: 8),
-                height: constraints.maxHeight - 52,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    children: [
+            padding: EdgeInsets.only(left: 8, right: 8),
+            height: constraints.maxHeight - 50,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
                       // GPWSCBoundaryDetailCard(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      GPWSCRateCard(rateType: "Non_Metered"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GPWSCRateCard(rateType: "Non_Metered"),
                   SizedBox(
                     height: 10,
                   ),

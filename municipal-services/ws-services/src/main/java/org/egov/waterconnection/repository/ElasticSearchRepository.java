@@ -1,12 +1,18 @@
 package org.egov.waterconnection.repository;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Base64;
 
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.repository.builder.FuzzySearchQueryBuilder;
 import org.egov.waterconnection.web.models.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

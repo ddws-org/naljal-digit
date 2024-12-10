@@ -32,7 +32,7 @@ public class EncryptionDecryptionUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value(("${state.level.tenant.id}"))
+    @Value(("${egov.state.level.tenant.id}"))
     private String stateLevelTenantId;
 
     @Value(("${decryption.abac.enabled}"))
@@ -47,6 +47,7 @@ public class EncryptionDecryptionUtil {
             if (objectToEncrypt == null) {
                 return null;
             }
+            log.info("stateleveltenantid"+stateLevelTenantId);
             T encryptedObject = encryptionService.encryptJson(objectToEncrypt, key, stateLevelTenantId, classType);
             if (encryptedObject == null) {
                 throw new CustomException("ENCRYPTION_NULL_ERROR", "Null object found on performing encryption");
@@ -83,6 +84,10 @@ public class EncryptionDecryptionUtil {
 
             if(key == null)
                 key = keyPurposeMap.get("key");
+
+            log.info(purpose);
+            log.info(key);
+            log.info(objectToDecrypt.toString());
 
             P decryptedObject = (P) encryptionService.decryptJson(requestInfo,objectToDecrypt, key, purpose, classType);
             if (decryptedObject == null) {
