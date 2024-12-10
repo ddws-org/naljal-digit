@@ -96,6 +96,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
     const thumbs = userDetails?.photo?.split(",");
     setProfileImg(thumbs?.at(0));
 
+
     setLoading(false);
   }, [userDetails !== null]);
 
@@ -146,7 +147,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserCurrentPassword = (value) => {
     setCurrentPassword(value);
 
-    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,15})$/i).test(value)) {
+    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,20})$/i).test(value)) {
       setErrors({ ...errors, currentPassword: { type: "pattern", message: "CORE_COMMON_PROFILE_PASSWORD_INVALID" } });
     } else {
       setErrors({ ...errors, currentPassword: null });
@@ -156,7 +157,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserNewPassword = (value) => {
     setNewPassword(value);
 
-    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(value)) {
+    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,20})$/i).test(value)) {
       setErrors({ ...errors, newPassword: { type: "pattern", message: "CORE_COMMON_PROFILE_PASSWORD_INVALID" } });
     } else {
       setErrors({ ...errors, newPassword: null });
@@ -166,7 +167,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const setUserConfirmPassword = (value) => {
     setConfirmPassword(value);
 
-    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(value)) {
+    if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,20})$/i).test(value)) {
       setErrors({ ...errors, confirmPassword: { type: "pattern", message: "CORE_COMMON_PROFILE_PASSWORD_INVALID" } });
     } else {
       setErrors({ ...errors, confirmPassword: null });
@@ -314,6 +315,8 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
       return null;
     }
   };
+
+  
 
   if (loading) return <Loader></Loader>;
 
