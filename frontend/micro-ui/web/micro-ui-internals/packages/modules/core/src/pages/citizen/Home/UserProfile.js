@@ -218,7 +218,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
           throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_PASSWORD_INVALID") });
         }
 
-        if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(newPassword) && !new RegExp(/^([a-zA-Z0-9@#$%]{8,10})$/i).test(confirmPassword)) {
+        if (!new RegExp(/^([a-zA-Z0-9@#$%]{8,20})$/i).test(newPassword) && !new RegExp(/^([a-zA-Z0-9@#$%]{8,20})$/i).test(confirmPassword)) {
           throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_PASSWORD_INVALID") });
         }
       }

@@ -15,6 +15,7 @@ module.exports = function (app) {
     "/egov-hrms",
     "/user-otp",
     "/user",
+    "/filestore",
     "/fsm",
     "/billing-service",
     "/collection-services",

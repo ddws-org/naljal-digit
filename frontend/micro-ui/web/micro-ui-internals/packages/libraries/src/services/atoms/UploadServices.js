@@ -21,8 +21,6 @@ export const UploadServices = {
       data: formData,
       headers: { "auth-token": Digit.UserService.getUser() ? Digit.UserService.getUser()?.access_token : null},
     };
-
-    Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
     return Axios(config);
   },
 
@@ -41,7 +39,6 @@ export const UploadServices = {
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
     };
-    Axios.defaults.baseURL = `https://naljalseva.jjm.gov.in/${getDynamicPart(window?.location?.href)}/`;
     return Axios(config);
   },
 
