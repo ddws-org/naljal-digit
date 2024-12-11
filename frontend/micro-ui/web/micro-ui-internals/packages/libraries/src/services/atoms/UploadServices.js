@@ -36,7 +36,8 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      url:`${Urls.FileStore}${tenantInfo}`, 
+      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`, 
+      url:`${Urls.FileStore}${tenantInfo}`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
     };
@@ -48,7 +49,8 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "get",
-      url:`${Urls.FileFetch}${tenantInfo}`, 
+      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
+      url:`${Urls.FileFetch}${tenantInfo}`,
       params: {
         tenantId: tenantId,
         fileStoreIds: filesArray?.join(","),
