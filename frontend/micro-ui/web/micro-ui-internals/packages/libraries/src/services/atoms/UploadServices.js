@@ -10,18 +10,19 @@ const getDynamicPart = (url) => {
 export const UploadServices = {
   Filestorage: async (module, filedata, tenantId) => {
     const formData = new FormData();
-
     formData.append("file", filedata, filedata.name);
     formData.append("tenantId", tenantId);
     formData.append("module", module);
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
+      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
       url:`${Urls.FileStore}${tenantInfo}`,   
       data: formData,
       headers: { "auth-token": Digit.UserService.getUser() ? Digit.UserService.getUser()?.access_token : null},
-    };
-    return Axios(config);
+    };    
+    const res = await Axios(config);
+    return res;
   },
 
   // ${getDynamicPart(window?.location?.href)}
@@ -39,7 +40,8 @@ export const UploadServices = {
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
     };
-    return Axios(config);
+    const res = await Axios(config);
+    return res;
   },
 
   Filefetch: async (filesArray, tenantId) => {
