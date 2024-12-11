@@ -376,23 +376,23 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	/**
 	 * Generate Demand Based on Time (Monthly, Quarterly, Yearly)
 	 */
-	public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean isSendMessage) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime date = LocalDateTime.now();
-		log.info("Time schedule start for water demand generation on : " + date.format(dateTimeFormatter));
-		List<String> tenantIds = wSCalculationDao.getTenantId();
-		if (tenantIds.isEmpty())
-			return;
-		log.info("Tenant Ids : " + tenantIds.toString());
-		tenantIds.forEach(tenantId -> {
-			HashMap<Object, Object> demandData = new HashMap<Object, Object>();
-			demandData.put("requestInfo", requestInfo);
-			demandData.put("tenantId", tenantId);
-			demandData.put("isSendMessage", isSendMessage);
-			wsCalculationProducer.push(config.getBulkDemandSchedularTopic(),demandData);
-//			demandService.generateDemandForTenantId(tenantId, requestInfo);
-		});
-	}
+//	public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean isSendMessage) {
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//		LocalDateTime date = LocalDateTime.now();
+//		log.info("Time schedule start for water demand generation on : " + date.format(dateTimeFormatter));
+//		List<String> tenantIds = wSCalculationDao.getTenantId();
+//		if (tenantIds.isEmpty())
+//			return;
+//		log.info("Tenant Ids : " + tenantIds.toString());
+//		tenantIds.forEach(tenantId -> {
+//			HashMap<Object, Object> demandData = new HashMap<Object, Object>();
+//			demandData.put("requestInfo", requestInfo);
+//			demandData.put("tenantId", tenantId);
+//			demandData.put("isSendMessage", isSendMessage);
+//			wsCalculationProducer.push(config.getBulkDemandSchedularTopic(),demandData);
+////			demandService.generateDemandForTenantId(tenantId, requestInfo);
+//		});
+//	}
 	
 	public void generateBulkDemandForTenant(BulkDemand bulkDemand) {
 		String tenantId = bulkDemand.getTenantId();
