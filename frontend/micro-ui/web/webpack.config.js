@@ -56,8 +56,8 @@ if (typeof window !== "undefined") {
     __webpack_public_path__ = `${window.location.origin}/uat/mgramseva-web/`;
   } else if (pathName.includes('/assam')) {
     __webpack_public_path__ = `${window.location.origin}/assam/mgramseva-web/`;
-  } else if (pathName.includes('/keala')) {
-    __webpack_public_path__ = `${window.location.origin}/keala/mgramseva-web/`;
+  } else if (pathName.includes('/kerala')) {
+    __webpack_public_path__ = `${window.location.origin}/kerala/mgramseva-web/`;
   } else {
     __webpack_public_path__ = `${window.location.origin}/mgramseva-web/`;  // Default path
   }
