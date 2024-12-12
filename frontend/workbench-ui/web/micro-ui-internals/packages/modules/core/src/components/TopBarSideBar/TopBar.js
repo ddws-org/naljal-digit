@@ -98,10 +98,11 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
+
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <img className="city" src={loggedin ? cityDetails?.logoId : stateInfo?.statelogo} />
+      <img className="city" src={window?.globalConfigs?.getConfig("LOGO_URL")} />
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
@@ -110,7 +111,8 @@ const TopBar = ({
               {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()}
             </p>
           ) : (
-            <img className="state" src={logoUrl} />
+            <div className="state"></div>
+            // <img className="state" src={logoUrl}/>
           ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
