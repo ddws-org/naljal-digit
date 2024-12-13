@@ -29,7 +29,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: "auto",
+    publicPath: "/uat/mgramseva-web/",
   },
   optimization: {
     splitChunks: {
@@ -50,17 +50,17 @@ module.exports = {
 };
 
 
-// Dynamically set the publicPath based on the environment
-if (typeof window !== "undefined") {
-  const pathName = window.location.pathname;
+// // Dynamically set the publicPath based on the environment
+// if (typeof window !== "undefined") {
+//   const pathName = window.location.pathname;
 
-  if (pathName.includes('/uat')) {
-    __webpack_public_path__ = `${window.location.origin}/uat/mgramseva-web/`;
-  } else if (pathName.includes('/assam')) {
-    __webpack_public_path__ = `${window.location.origin}/assam/mgramseva-web/`;
-  } else if (pathName.includes('/kerala')) {
-    __webpack_public_path__ = `${window.location.origin}/kerala/mgramseva-web/`;
-  } else {
-    __webpack_public_path__ = `${window.location.origin}/mgramseva-web/`;  // Default path
-  }
-}
+//   if (pathName.includes('/uat')) {
+//     __webpack_public_path__ = `${window.location.origin}/uat/mgramseva-web/`;
+//   } else if (pathName.includes('/assam')) {
+//     __webpack_public_path__ = `${window.location.origin}/assam/mgramseva-web/`;
+//   } else if (pathName.includes('/kerala')) {
+//     __webpack_public_path__ = `${window.location.origin}/kerala/mgramseva-web/`;
+//   } else {
+//     __webpack_public_path__ = `${window.location.origin}/mgramseva-web/`;  // Default path
+//   }
+// }
