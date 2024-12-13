@@ -41,10 +41,13 @@ const HRMSCard = () => {
         {
           label: t("CREATE_BOUNDARY_RELATIONSHIP"),
           link: `/${window?.contextPath}/employee/hrms/create-boundary-relationship`,
+          category: t("HR_HIERARCHY"),
         },
         {
           label: t("CREATE_NEW_HIERARCHY"),
           link: `/${window?.contextPath}/employee/hrms/create-new-hierarchy`,
+          category: t("HR_HIERARCHY"),
+
         },
         {
           label: t("WORK_BENCH_URL_VILLAGE_MASTER_DATA"),
