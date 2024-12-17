@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
   // mode: 'development',
-  entry: "./src/index.js",
+  main: ['./src/fix-public-path.js', './src/index.js'],
   devtool: "source-map",
   module: {
     rules: [
@@ -29,7 +29,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: "/uat/mgramseva-web/", // Use runtime public path
+    publicPath: '/', // Use runtime public path
   },
   optimization: {
     splitChunks: {
