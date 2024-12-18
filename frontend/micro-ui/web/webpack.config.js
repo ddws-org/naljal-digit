@@ -29,7 +29,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: '/uat/mgramseva-web/', // Use runtime public path
+    publicPath: process.env['REACT_APP_CONTEXT_PATH'], // Use runtime public path
   },
   optimization: {
     splitChunks: {
@@ -45,6 +45,9 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_CONTEXT_PATH': JSON.stringify(process.env.REACT_APP_CONTEXT_PATH),
+  }),
   ],
 };
 
