@@ -14,6 +14,8 @@ const CreateNewHierarchy = () => {
   const levelCounter = useRef(2);
   const history = useHistory();
 
+
+
   const getDynamicPart = (url) => {
     const parsedUrl = new URL(url);
     const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
@@ -21,14 +23,16 @@ const CreateNewHierarchy = () => {
   };
 
   const reqCriteriaBoundaryHierarchyTypeAdd = {
-    baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
-    url: "/boundary-service/boundary-hierarchy-definition/_create",
+    url: "/uat/boundary-service/boundary-hierarchy-definition/_create",
     params: {},
     body: {},
     config: {
       enabled: true,
     },
   };
+
+
+
 
   const hierarchy_mutation = Digit.Hooks.useCustomAPIMutationHook(reqCriteriaBoundaryHierarchyTypeAdd);
 
@@ -78,7 +82,6 @@ const CreateNewHierarchy = () => {
 
       await hierarchy_mutation.mutate(
         {
-          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             BoundaryHierarchy: {
