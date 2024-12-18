@@ -41,7 +41,6 @@
     "**/@babel/runtime": "7.20.1",
     "**/babel-preset-react-app": "10.0.0",
     "**/@babel/traverse":"7.25.9",
-    "cssesc": "3.0.0",
     "**/polished": "4.2.2"
   },
   "devDependencies": {

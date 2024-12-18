@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { FormComposerV2 } from "@egovernments/digit-ui-react-components";
+import { FormComposerV2,FormComposer } from "@egovernments/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 import { Toast } from "@egovernments/digit-ui-react-components";
 import { addBoundaryHierarchyConfig } from "../config/addBoundaryHierarchyConfig";
@@ -14,7 +14,14 @@ const CreateNewHierarchy = () => {
   const levelCounter = useRef(2);
   const history = useHistory();
 
+  const getDynamicPart = (url) => {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
+  };
+
   const reqCriteriaBoundaryHierarchyTypeAdd = {
+    baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
     url: "/boundary-service/boundary-hierarchy-definition/_create",
     params: {},
     body: {},
@@ -110,7 +117,7 @@ const CreateNewHierarchy = () => {
 
   return (
     <React.Fragment>
-      <FormComposerV2
+      <FormComposer
         defaultValues={{}}
         onSubmit={handleFormSubmit}
         fieldStyle={{ marginRight: 0 }}
@@ -122,7 +129,7 @@ const CreateNewHierarchy = () => {
         enableDelete={true}
         headingStyle={{ marginBottom: "1rem" }}
         descriptionStyle={{ color: "#0B0C0C" }}
-      ></FormComposerV2>
+      ></FormComposer>
       {showToast && (
         <Toast error={showToast.isError} label={showToast.label} isDleteBtn={"true"} onClose={() => setShowToast(false)} style={{ bottom: "8%" }} />
       )}{" "}

@@ -8,10 +8,10 @@ export const addBoundaryHierarchyConfig = [
         disable: false,
         populators: {
           name: "hierarchyType",
-          customStyle: { alignItems: "baseline" },
+          customStyle: { UUUU: "baseline" },
           required: true,
           validation: {
-            maxlength: 64,
+            maxlength: 25,
           },
         },
       },
@@ -25,6 +25,9 @@ export const addBoundaryHierarchyConfig = [
         populators: {
           name: "levelcards",
           required: true,
+          validation: {
+            maxlength: 25,
+          },
         },
       },
     ],
