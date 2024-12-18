@@ -78,6 +78,7 @@ const CreateNewHierarchy = () => {
 
       await hierarchy_mutation.mutate(
         {
+          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             BoundaryHierarchy: {

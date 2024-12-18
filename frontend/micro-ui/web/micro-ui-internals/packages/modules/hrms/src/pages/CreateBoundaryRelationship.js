@@ -165,6 +165,7 @@ const CreateBoundaryRelationship = () => {
     try {
       await relation_mutation.mutate(
         {
+          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             BoundaryRelationship: {
@@ -218,6 +219,7 @@ const CreateBoundaryRelationship = () => {
 
       await entity_mutation.mutate(
         {
+          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             Boundary: [
