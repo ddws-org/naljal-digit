@@ -23,7 +23,7 @@ const CreateNewHierarchy = () => {
   };
 
   const reqCriteriaBoundaryHierarchyTypeAdd = {
-    url: "/uat/boundary-service/boundary-hierarchy-definition/_create",
+    url: `/${getDynamicPart(window?.location?.href)}/boundary-service/boundary-hierarchy-definition/_create`,
     params: {},
     body: {},
     config: {
