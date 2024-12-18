@@ -2,10 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-console.log("PUBLIC_PATH:1", process.env);
+
 module.exports = {
   // mode: 'development',
-  entry:  './src/index.js',
+  entry: ['./src/fix-public-path.js', './src/index.js'],
   devtool: "source-map",
   module: {
     rules: [
@@ -29,7 +29,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: '/uat/mgramseva-web/', // Use runtime public path
+    publicPath: 'auto', // Use runtime public path
   },
   optimization: {
     splitChunks: {

@@ -4,8 +4,10 @@
 <head>
   <script type="application/javascript">
     
-    window.__PUBLIC_PATH__ = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
-    // window.__PUBLIC_PATH__ = "/uat/mgramseva-web/";
+    // window.__PUBLIC_PATH__ = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
+    window.__PUBLIC_PATH__ = "/uat/mgramseva-web/";
+
+    console.log(`*** LOG *** __PUBLIC_PATH__`,__PUBLIC_PATH__);
 
     // Set Webpack public path before any assets are loaded
     // __webpack_public_path__ = "uat/mgramseva-web/";
