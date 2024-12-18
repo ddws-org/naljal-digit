@@ -65,14 +65,7 @@ const CreateBoundaryRelationship = () => {
     },
   };
 
-  const getDynamicPart = (url) => {
-    const parsedUrl = new URL(url);
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
-  };
-
   const reqCriteriaBoundaryRelationshipCreate = {
-    baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
     url: "/boundary-service/boundary-relationships/_create",
     params: {},
     body: {},
@@ -82,7 +75,6 @@ const CreateBoundaryRelationship = () => {
   };
 
   const reqCriteriaBoundaryEntityCreate = {
-    baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
     url: "/boundary-service/boundary/_create",
     params: {},
     body: {},
@@ -165,7 +157,6 @@ const CreateBoundaryRelationship = () => {
     try {
       await relation_mutation.mutate(
         {
-          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             BoundaryRelationship: {
@@ -219,7 +210,6 @@ const CreateBoundaryRelationship = () => {
 
       await entity_mutation.mutate(
         {
-          baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
           params: {},
           body: {
             Boundary: [
