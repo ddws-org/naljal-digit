@@ -289,7 +289,7 @@ def create_json_rate(state_code,name, ratec, rater):
               ]
             },
             {
-              "id": 2,
+              "id": "2",
               "buildingType": "COMMERCIAL",
               "calculationAttribute": "Water consumption",
               "connectionType": "Metered",
@@ -312,7 +312,7 @@ def create_json_rate(state_code,name, ratec, rater):
               ]
             },
             {
-              "id": 3,
+              "id": "3",
               "buildingType": "MIXED",
               "calculationAttribute": "Water consumption",
               "connectionType": "Metered",
@@ -418,7 +418,7 @@ def create_json_penalty(state_code,name,penalty):
                 "applicableAfterDays": 10,
                 "flatAmount": None,
                 "fromFY": "2023-24",
-                "startingDay": "1/04/2023"
+                "startingDay": "01/04/2023"
             }
         ]
     }
@@ -443,7 +443,7 @@ pb_village_folder = ""
 #     print("The file does not exist!")
     
 df = df.fillna(0)
-state_code="ka"
+state_code="as"
 for index, row in df.iterrows():
     print(row['unique_tenant_code'])
     pb_village_folder = row['unique_tenant_code']
