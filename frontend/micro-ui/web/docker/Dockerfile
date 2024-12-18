@@ -8,11 +8,16 @@ ENV NODE_OPTIONS "--max-old-space-size=8168"
 COPY ${WORK_DIR} .
 RUN ls -lah
 
+# Accept the build argument
+ARG REACT_APP_CONTEXT_PATH
+# ENV REACT_APP_CONTEXT_PATH=${REACT_APP_CONTEXT_PATH}
+ENV REACT_APP_CONTEXT_PATH="/uat/mgramseva-web/"
+
 #RUN node web/envs.js
 RUN cd web/ \
     &&  ./install-deps.sh \
     && yarn install \
-    && yarn build:webpack 
+    && REACT_APP_CONTEXT_PATH=${REACT_APP_CONTEXT_PATH} yarn build:webpack
 
 FROM nginx:mainline-alpine
 #FROM ghcr.io/egovernments/nginx:mainline-alpine
