@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const webpack = require("webpack");
 module.exports = {
   // mode: 'development',
   entry: './src/index.js',
@@ -29,7 +29,8 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath: process.env['REACT_APP_CONTEXT_PATH'], // Use runtime public path
+    publicPath:'/uat/mgramseva-web/',
+    // publicPath: process.env['REACT_APP_CONTEXT_PATH'], // Use runtime public path
   },
   optimization: {
     splitChunks: {
