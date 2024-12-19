@@ -46,9 +46,9 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
-    new webpack.DefinePlugin({
-      'process.env.REACT_APP_CONTEXT_PATH': JSON.stringify(process.env.REACT_APP_CONTEXT_PATH),
-  }),
+  //   new webpack.DefinePlugin({
+  //     'process.env.REACT_APP_CONTEXT_PATH': JSON.stringify(process.env.REACT_APP_CONTEXT_PATH),
+  // }),
   ],
 };
 
