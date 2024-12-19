@@ -75,7 +75,7 @@ const CreateBoundaryRelationship = () => {
   };
 
   const reqCriteriaBoundaryEntityCreate = {
-    url: `${getDynamicPart(window?.location?.href)}/boundary-service/boundary/_create`,
+    url: `/${getDynamicPart(window?.location?.href)}/boundary-service/boundary/_create`,
     params: {},
     body: {},
     config: {
