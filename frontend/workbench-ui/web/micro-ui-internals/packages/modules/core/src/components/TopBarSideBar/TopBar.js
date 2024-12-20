@@ -98,11 +98,11 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
-  console.log(`*** LOG ***`,window?.globalConfigs?.getConfig("LOGO_URL"));
+
   return (
     <div className="topbar">
       {mobileView && <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> }
-     { window?.globalConfigs?.getConfig("LOGO_URL") && <img className="city" src={window?.globalConfigs?.getConfig("LOGO_URL")} /> }
+     <img src={"https://naljal-uat-s3.s3.ap-south-1.amazonaws.com/Assam_Logo.png"} className="city"/> 
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
