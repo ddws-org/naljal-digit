@@ -112,7 +112,6 @@ const TopBar = ({
             </p>
           ) : (
             <div className="state"></div>
-            // <img className="state" src={logoUrl}/>
           ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
