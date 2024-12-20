@@ -1153,23 +1153,28 @@ class CommonProvider with ChangeNotifier {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        ApplicationLocalizations.of(context)
-                                            .translate(visibleTenants[index].code!),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: commonProvider.userDetails!
-                                                            .selectedtenant !=
-                                                        null &&
-                                                    commonProvider
-                                                            .userDetails!
-                                                            .selectedtenant!
-                                                            .city!
-                                                            .code ==
-                                                        visibleTenants[index].city!.code!
-                                                ? Theme.of(context).primaryColor
-                                                : Colors.black),
+                                      Flexible(
+                                        child: Text(
+                                          ApplicationLocalizations.of(context)
+                                              .translate(visibleTenants[index].code!),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: commonProvider.userDetails!
+                                                              .selectedtenant !=
+                                                          null &&
+                                                      commonProvider
+                                                              .userDetails!
+                                                              .selectedtenant!
+                                                              .city!
+                                                              .code ==
+                                                          visibleTenants[index].city!.code!
+                                                  ? Theme.of(context).primaryColor
+                                                  : Colors.black),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                        ),
                                       ),
                                       Text(visibleTenants[index].city!.code!,
                                           style: TextStyle(
