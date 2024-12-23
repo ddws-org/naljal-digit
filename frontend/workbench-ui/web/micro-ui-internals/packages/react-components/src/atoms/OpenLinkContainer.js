@@ -7,7 +7,7 @@ const OpenLinkContainer = ({ img,}) => {
     <div className="navbar">
       <div className="center-container">
         <img
-          className="city"
+          className="city2"
           id="topbar-logo" 
           crossOrigin="anonymous"
           src={"https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
