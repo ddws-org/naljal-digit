@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 
 class HouseConnectionDetailCard extends StatelessWidget {
   final WaterConnection? waterconnection;
+
   HouseConnectionDetailCard({this.waterconnection});
+
   _getLabelText(label, value, context) {
     return (Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,13 +37,38 @@ class HouseConnectionDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var commonProvider = Provider.of<CommonProvider>(context,
-        listen: false);
+    var commonProvider = Provider.of<CommonProvider>(context, listen: false);
     return Card(
         child: Padding(
             padding: EdgeInsets.all(8.0),
             child: Column(
               children: [
+                InkWell(
+                  onTap: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        children: [
+                          Text(
+                            "Edit Consumer",
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w700),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Icon(
+                              Icons.edit,
+                              size: 24,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Row(
@@ -121,33 +148,40 @@ class HouseConnectionDetailCard extends StatelessWidget {
                 _getLabelText(
                   i18.common.STATUS,
                   waterconnection!.status == "Active"
-                      ? ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.STATUS_ACTIVE)
-                      : ApplicationLocalizations.of(context).translate(i18.searchWaterConnection.STATUS_INACTIVE),
+                      ? ApplicationLocalizations.of(context)
+                          .translate(i18.searchWaterConnection.STATUS_ACTIVE)
+                      : ApplicationLocalizations.of(context)
+                          .translate(i18.searchWaterConnection.STATUS_INACTIVE),
                   context,
                 ),
                 Consumer<HouseHoldProvider>(
-                    builder: (_, provider, child) =>
-                        Wrap(
+                    builder: (_, provider, child) => Wrap(
                           children: [
                             Visibility(
                               visible: provider.isVisible,
                               child: Wrap(
                                 children: [
                                   _getLabelText(
-                                      i18.consumer.CONSUMER_CATEGORY, waterconnection?.additionalDetails?.category ?? i18.common.NA,
-                                      context,
-                                      ),
+                                    i18.consumer.CONSUMER_CATEGORY,
+                                    waterconnection
+                                            ?.additionalDetails?.category ??
+                                        i18.common.NA,
+                                    context,
+                                  ),
                                   _getLabelText(
-                                      i18.consumer.CONSUMER_SUBCATEGORY,  waterconnection?.additionalDetails?.subCategory ?? i18.common.NA,
-                                      context,
-                                      )
+                                    i18.consumer.CONSUMER_SUBCATEGORY,
+                                    waterconnection
+                                            ?.additionalDetails?.subCategory ??
+                                        i18.common.NA,
+                                    context,
+                                  )
                                 ],
                               ),
                             ),
                             InkWell(
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                       bottom: 10, right: 25),
+                                      bottom: 10, right: 25),
                                   child: new Row(
                                     children: [
                                       new Text(
@@ -158,11 +192,9 @@ class HouseConnectionDetailCard extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                onTap: provider.onTapOfShow
-                            )
+                                onTap: provider.onTapOfShow)
                           ],
-                        )
-                )
+                        ))
               ],
             )));
   }
