@@ -421,6 +421,7 @@ public class WaterDaoImpl implements WaterDao {
 		List<Object> preparedStatementList = new ArrayList<>();
 
 		String query = wsQueryBuilder.getIds(criteria, preparedStatementList);
+		log.info("get Id query for fuzzySearch{}", query);
 		
 		try {
 			return jdbcTemplate.query(query, preparedStatementList.toArray(), new SingleColumnRowMapper<>());
