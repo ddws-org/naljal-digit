@@ -98,11 +98,11 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
-
+  console.log("window.cityLogo"+"*** LOG ***"  , window.cityLogo);
   return (
     <div className="topbar">
       {mobileView && <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> }
-     <img src={logoUrl} className="city"/> 
+     <img src={window.cityLogo} className="city"/> 
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (

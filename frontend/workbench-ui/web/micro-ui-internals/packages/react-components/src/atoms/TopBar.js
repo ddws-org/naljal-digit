@@ -62,12 +62,12 @@ const TopBar = ({
   );
 };
 
-TopBar.propTypes = {
-  img: PropTypes.string,
-};
+// TopBar.propTypes = {
+//   img: PropTypes.string,
+// };
 
-TopBar.defaultProps = {
-  img: undefined,
-};
+// TopBar.defaultProps = {
+//   img: undefined,
+// };
 
 export default TopBar;

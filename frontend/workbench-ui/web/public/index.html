@@ -16,6 +16,7 @@
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
     // Update all <img> elements with the class "city" after the DOM is loaded
+    window.cityLogo = window?.globalConfigs?.getConfig?.("LOGO_URL");
     document.addEventListener("DOMContentLoaded", function () {
       const cityImages = document.querySelectorAll("img.city");
       cityImages.forEach((img) => {
