@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Redirect, Route, Switch, useLocation, useRouteMatch, useHistory } from "react-router-dom";
 import { AppModules } from "../../components/AppModules";
@@ -10,7 +10,10 @@ import LanguageSelection from "./LanguageSelection";
 import EmployeeLogin from "./Login";
 import UserProfile from "../citizen/Home/UserProfile";
 import ErrorComponent from "../../components/ErrorComponent";
-import { PrivateRoute } from "@egovernments/digit-ui-react-components";
+import { PrivateRoute, Card, CardText, CardSubHeader, CardLabelError } from "@egovernments/digit-ui-react-components";
+
+
+
 
 const userScreensExempted = ["user/profile", "user/error"];
 
@@ -36,9 +39,51 @@ const EmployeeApp = ({
   const location = useLocation();
   const showLanguageChange = location?.pathname?.includes("language-selection");
   const isUserProfile = userScreensExempted.some((url) => location?.pathname?.includes(url));
+  const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
+  const MDMS_ADMIN = Digit.UserService.hasAccess(["MDMS_ADMIN"]);
+  const STATE_ADMIN = Digit.UserService.hasAccess(["STATE_ADMIN"]);
+
+
+  const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     Digit.UserService.setType("employee");
+
+    console.log(cityDetails);
+
+
+    if (userDetails?.info?.roles.some(obj => obj.name === "STATE ADMIN")) {
+      setShowAlert(false);
+    }
+    if (cityDetails.code == "as" || cityDetails.code == "pb" ) {
+      if (DIV_ADMIN == 0 && MDMS_ADMIN == 1 && STATE_ADMIN == 1) {
+        setShowAlert(false);
+      }
+      if (DIV_ADMIN == 0 && MDMS_ADMIN == 0 && STATE_ADMIN == 0) {
+        setShowAlert(true);
+
+      } else {
+        setShowAlert(false);
+
+      }
+    }
+    else {
+      setShowAlert(false);
+    }
+
+
+    // if (cityDetails.code == "pb") {
+    //   setShowAlert(true);
+    // }
+    // else {
+    //   setShowAlert(false);
+    // }
   }, []);
+
+  const closeAlert = () => {
+    setShowAlert(false);
+  };
+
+
 
   return (
     <div className="employee">
@@ -54,8 +99,7 @@ const EmployeeApp = ({
               mobileView={mobileView}
               handleUserDropdownSelection={handleUserDropdownSelection}
               logoUrl={logoUrl}
-              // showSidebar={isUserProfile ? true : false}
-              showSidebar={false}
+              showSidebar={isUserProfile ? true : false}
               showLanguageChange={!showLanguageChange}
             />
           )}
@@ -106,17 +150,18 @@ const EmployeeApp = ({
             cityDetails={cityDetails}
             mobileView={mobileView}
             handleUserDropdownSelection={handleUserDropdownSelection}
-            logoUrl={logoUrl}
+            logoUrl={  window?.globalConfigs?.getConfig?.("LOGO_URL")}
             modules={modules}
-            showSidebar={false}
-
           />
-          <div className={`main ${DSO ? "m-auto" : ""}`}>
+          <div className={`main ${DSO ? "m-auto" : ""}`} style={{ width: "100%", marginLeft: 0 }}>
             <div className="employee-app-wrapper">
               <ErrorBoundary initData={initData}>
                 <AppModules stateCode={stateCode} userType="employee" modules={modules} appTenants={appTenants} />
               </ErrorBoundary>
+
+
             </div>
+
             <div className="employee-home-footer">
               <img
                 alt="Powered by DIGIT"
