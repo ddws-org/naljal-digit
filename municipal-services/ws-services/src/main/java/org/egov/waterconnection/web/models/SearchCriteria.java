@@ -56,6 +56,9 @@ public class SearchCriteria {
 	@JsonProperty("imisNumber")
 	private String imisNumber;
 
+	@JsonProperty("dataVerified")
+	private Boolean dataVerified = false;
+
 	@JsonProperty("villageId")
 	private String villageId;
 
