@@ -35,10 +35,10 @@ const TopBar = ({
       <div className="center-container back-wrapper">
         <div className="hambuger-back-wrapper">
           {isMobile && <Hamburger handleClick={toggleSidebar} />}
-          { logoUrl && <img
+          { img && <img
             className="city"
             id="topbar-logo"
-            src={logoUrl || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
+            src={img || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
             alt="mSeva"
           /> }
           <h3>{cityOfCitizenShownBesideLogo}</h3>
