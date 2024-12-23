@@ -98,13 +98,11 @@ const TopBar = ({
     );
   }
   const loggedin = userDetails?.access_token ? true : false;
-  console.log("loggedin"+"*** LOG ***"  , loggedin);
-  console.log("cityDetails?.logoId"+"*** LOG ***"  , cityDetails?.logoId);
-  console.log("stateInfo?.statelogo"+"*** LOG ***"  , stateInfo?.statelogo);
+
   return (
     <div className="topbar">
       {mobileView && <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> }
-      <img className="city" src={loggedin ? cityDetails?.logoId : stateInfo?.statelogo} />
+     <img className="city" src={"https://m.brickshop.eu/components/com_virtuemart/shop_image/product/LEGO_Sticker_12x_5a7_5a7330349b7d9.jpg"}/> 
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
