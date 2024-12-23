@@ -506,7 +506,7 @@ config:
   - name: "builds/naljal-digit/utilities/mdms-read-cronjob"
     build:
       - work-dir: "utilities/mdms-read-cronjob"
-        image-name: "api-cronjob"
+        image-name: "mdms-read-cronjob"
         dockerfile: "utilities/mdms-read-cronjob/Dockerfile"  
 
 
