@@ -150,7 +150,7 @@ const EmployeeApp = ({
             cityDetails={cityDetails}
             mobileView={mobileView}
             handleUserDropdownSelection={handleUserDropdownSelection}
-            logoUrl={logoUrl}
+            logoUrl={window?.globalConfigs?.getConfig?.("LOGO_URL")}
             modules={modules}
           />
           <div className={`main ${DSO ? "m-auto" : ""}`} style={{ width: "100%", marginLeft: 0 }}>
