@@ -29,6 +29,9 @@ const TopBar = ({
   //     return <BackButton className="top-back-btn" />;
   //   }
   // };
+
+
+  console.log("window.cityLogo"+"*** LOG ***"  , window.cityLogo);
   
   return (
     <div className="navbar">
@@ -38,12 +41,11 @@ const TopBar = ({
           { img && <img
             className="city"
             id="topbar-logo"
-            src={img || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
+            src={window.cityLogo || "https://cdn.jsdelivr.net/npm/@egovernments/digit-ui-css@1.0.7/img/m_seva_white_logo.png"}
             alt="mSeva"
           /> }
           <h3>{cityOfCitizenShownBesideLogo}</h3>
         </div>
-
         <div className="RightMostTopBarOptions">
           {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? changeLanguage : null}
           {!hideNotificationIconOnSomeUrlsWhenNotLoggedIn ? (
