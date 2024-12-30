@@ -3,10 +3,11 @@
 
 <head>
   <script type="application/javascript">
-    // Set Webpack public path before any assets are loaded
-    __webpack_public_path__ = "uat/mgramseva-web/";
+    
+    // window.__PUBLIC_PATH__ = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;
+    // window.__PUBLIC_PATH__ = "/uat/mgramseva-web/";
 
-    console.log("Webpack public path is set to:", __webpack_public_path__);
+
   </script>
   <meta charset="utf-8" />
   <link rel="icon" href="https://assam-s3.s3.ap-south-1.amazonaws.com/hrms/favicon.ico" />
@@ -15,9 +16,17 @@
     rel='stylesheet' type='text/css'>
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.8.2-beta.3/dist/index.css" /> -->
   <!-- <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.50/dist/index.css" /> -->
+  <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-components-css@0.0.2-beta.38/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.29/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-css@1.5.53/dist/index.css" />
   <link rel="stylesheet" href="https://unpkg.com/@egovernments/digit-ui-naljal-css@1.0.1/dist/index.css" />
+
+
+
+
+
+
+
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,9 +79,9 @@
     <!-- Set the public path dynamically or hardcode it here -->
     <script type="application/javascript">
       // Set Webpack public path before any assets are loaded
-      __webpack_public_path__ = "/uat/mgramseva-web/";
+      // __webpack_public_path__ = "/uat/mgramseva-web/";
   
-      console.log("Webpack public path is set to:", __webpack_public_path__);
+      // console.log("Webpack public path is set to:", __webpack_public_path__);
     </script>
   <script type="application/javascript">
     // window.resourceBasePath = `/${window?.globalConfigs?.getConfig("CONTEXT_PATH")}`;

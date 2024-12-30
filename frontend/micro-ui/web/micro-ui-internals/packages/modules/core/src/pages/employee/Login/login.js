@@ -27,6 +27,10 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   const [showToast, setShowToast] = useState(null);
   const [disable, setDisable] = useState(false);
 
+  console.log('Context Path:#1', process.env.REACT_APP_CONTEXT_PATH);
+  console.log('Context Path:#2', process.env['REACT_APP_CONTEXT_PATH']);
+
+
   const history = useHistory();
   // const getUserType = () => "EMPLOYEE" || Digit.UserService.getType();
 

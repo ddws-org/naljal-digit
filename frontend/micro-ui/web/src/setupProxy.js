@@ -25,5 +25,6 @@ module.exports = function (app) {
     "/property-services",
     "/fsm-calculator/v1/billingSlab/_search",
     "/muster-roll",
+    "/boundary-service",
   ].forEach((location) => app.use(location, createProxy));
 };
