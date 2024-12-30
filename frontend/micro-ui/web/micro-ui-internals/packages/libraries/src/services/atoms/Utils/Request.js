@@ -80,7 +80,7 @@ export const Request = async ({
   reqTimestamp = false,
 }) => {
   // url = `/${getDynamicPart(window?.location?.href)}${url}`;
-  url =`/uat${url}`;
+  url =`/assam${url}`;
   const ts = new Date().getTime();
   if (method.toUpperCase() === "POST") {
    
