@@ -135,7 +135,7 @@ const Home = ({
       </React.Fragment>
     );
   });
-
+  console.log("logoUrl"+"*** LOG ***1"  , logoUrl);
   return (
     <div className={classname}>
       <TopBarSideBar
