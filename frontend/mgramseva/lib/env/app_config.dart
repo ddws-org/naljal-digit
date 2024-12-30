@@ -61,7 +61,7 @@ Future<Map<String, dynamic>> get devConstantsMobile async {
     }
     return {
 
-      _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
+      _baseUrl: "https://naljalseva.jjm.gov.in/assam/",
       // _baseUrl: "https://naljalseva.jjm.gov.in/uat/",
       // _baseUrl: "https://naljal-uat.digit.org/",
 };
