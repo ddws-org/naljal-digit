@@ -373,7 +373,7 @@ public class DemandGenerationConsumer {
 			}
 			log.info("Time taken for notification : "+(System.currentTimeMillis()-starttimeforNotification)/1000+ " Secondss");
 		});
-	/*	if (isSendMessage && failedConnectionNos.size() > 0) {
+		if (isSendMessage && failedConnectionNos.size() > 0) {
 			List<ActionItem> actionItems = new ArrayList<>();
 			String actionLink = config.getBulkDemandFailedLink();
 			ActionItem actionItem = ActionItem.builder().actionUrl(actionLink).build();
@@ -422,52 +422,22 @@ public class DemandGenerationConsumer {
 			HashMap<String, Object> additionals = new HashMap<String, Object>();
 
 			String message = null;
-			if (connectionNos.size() > 0 && meteredConnectionNos.size() > 0) {
+			if (connectionNos.size() > 0 ) {
 				messageMap = util.getLocalizationMessage(requestInfo, WSCalculationConstant.NEW_BULK_DEMAND_EVENT,
 						tenantId);
-				int size = connectionNos.size() + meteredConnectionNos.size();
+				int size = connectionNos.size() ;
 				message = messageMap.get(WSCalculationConstant.MSG_KEY);
 				message = message.replace("{billing cycle}", billingCycle);
-				int nmSize = connectionNos.size() - failedConnectionNos.size();
+				int nmSize = connectionNos.size() ;
 				message = message.replace("{X}", String.valueOf(nmSize)); // this should be x- failed
 																			// connections count
 				message = message.replace("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
-				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT);
 				HashMap<String, String> attributes = new HashMap<String, String>();
 				attributes.put("{billing cycle}", billingCycle);
 				attributes.put("{X}", String.valueOf(nmSize));
-				attributes.put("{X/X+Y}", String.valueOf(nmSize) + "/" + String.valueOf(size));
-				attributes.put("{Y}", String.valueOf(meteredConnectionNos.size()));
-				additionals.put("attributes", attributes);
-			} else if (connectionNos.size() > 0 && meteredConnectionNos.isEmpty()) {
-				messageMap = util.getLocalizationMessage(requestInfo, WSCalculationConstant.NEW_BULK_DEMAND_EVENT_NM,
-						tenantId);
-				int nmSize = connectionNos.size() - failedConnectionNos.size();
-				message = messageMap.get(WSCalculationConstant.MSG_KEY);
-				message = message.replace("{billing cycle}", billingCycle);
-				message = message.replace("{X}", String.valueOf(nmSize));
-				message = message.replace("{X/X}",
-						String.valueOf(nmSize) + "/" + String.valueOf(connectionNos.size()));
-
-				additionals.put("localizationCode", "NEW_BULK_DEMAND_EVENT_NM");
-				HashMap<String, String> attributes = new HashMap<String, String>();
-				attributes.put("{billing cycle}", billingCycle);
-				attributes.put("{X}", String.valueOf(nmSize));
-				attributes.put("{X/X}",
-						String.valueOf(nmSize) + "/" + String.valueOf(connectionNos.size()));
-				additionals.put("attributes", attributes);
-			} else if (connectionNos.isEmpty() && meteredConnectionNos.size() > 0) {
-				messageMap = util.getLocalizationMessage(requestInfo, WSCalculationConstant.NEW_BULK_DEMAND_EVENT_M,
-						tenantId);
-				message = messageMap.get(WSCalculationConstant.MSG_KEY);
-				message = message.replace("{Y}", String.valueOf(meteredConnectionNos.size()));
-				additionals.put("localizationCode", WSCalculationConstant.NEW_BULK_DEMAND_EVENT_M);
-				HashMap<String, String> attributes = new HashMap<String, String>();
-				attributes.put("{Y}", String.valueOf(meteredConnectionNos.size()));
 				additionals.put("attributes", attributes);
 			}
-
 			System.out.println("Bulk Event msg1:: " + message);
 			events.add(Event.builder().tenantId(tenantId).description(message)
 					.eventType(WSCalculationConstant.USREVENTS_EVENT_TYPE)
@@ -480,48 +450,7 @@ public class DemandGenerationConsumer {
 				EventRequest eventReq = EventRequest.builder().requestInfo(requestInfo).events(events).build();
 				util.sendEventNotification(eventReq);
 			}
-
-			// GP User message
-
-			HashMap<String, String> demandMessage = util.getLocalizationMessage(requestInfo,
-					WSCalculationConstant.mGram_Consumer_NewDemand, tenantId);
-
-			HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
-			UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-					Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"), tenantId);
-			Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
-
-			String msgLink = config.getNotificationUrl() + config.getGpUserDemandLink();
-
-			for (OwnerInfo userInfo : userDetailResponse.getUser()) {
-				if (userInfo.getName() != null) {
-					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getName());
-				} else {
-					mobileNumberIdMap.put(userInfo.getMobileNumber(), userInfo.getUserName());
-				}
-			}
-			mobileNumberIdMap.entrySet().stream().forEach(map -> {
-				String msg = demandMessage.get(WSCalculationConstant.MSG_KEY);
-				msg = msg.replace("{ownername}", map.getValue());
-				msg = msg.replace("{villagename}",
-						(gpwscMap != null && !StringUtils.isEmpty(gpwscMap.get(WSCalculationConstant.MSG_KEY)))
-								? gpwscMap.get(WSCalculationConstant.MSG_KEY)
-								: tenantId);
-				msg = msg.replace("{billingcycle}", billingCycle);
-				msg = msg.replace("{LINK}", msgLink);
-
-				System.out.println("Demand GP USER SMS1::" + msg);
-				if(!map.getKey().equals(config.getPspclVendorNumber())) {
-					SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(msg)
-							.tenantid(tenantId)
-							.category(Category.TRANSACTION).build();
-					if(config.isSmsForDemandEnable()) {
-						producer.push(config.getSmsNotifTopic(), smsRequest);
-					}
-				}
-
-			});
-		}*/
+		}
 	}
 
 	public void generateDemandInBulk(CalculationReq calculationReq, String billingCycle, Map<String, Object> masterMap,
