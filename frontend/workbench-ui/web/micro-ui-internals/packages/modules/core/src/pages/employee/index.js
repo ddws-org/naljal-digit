@@ -39,6 +39,16 @@ const EmployeeApp = ({
   useEffect(() => {
     Digit.UserService.setType("employee");
   }, []);
+  console.log("22**");
+  console.log("22**",cityDetails);
+
+  useEffect(() => {
+    if (cityDetails && window?.globalConfigs?.getConfig?.("LOGO_URL")) {
+      cityDetails.logoId = window?.globalConfigs?.getConfig?.("LOGO_URL");
+    }
+  }, [cityDetails]);
+
+  
 
   return (
     <div className="employee">
