@@ -18,12 +18,12 @@ import re
 import concurrent.futures
 import pytz
 
-host = 'https://naljalseva.jjm.gov.in/assam/'
+host = 'https://naljalseva.jjm.gov.in/uat/'
 loginUrl = host + 'mgramseva/login'
 username = ''  # superuser mobile no
 password = ''  # superuser password
 stateTenantId = 'as'
-path = 'golparaalldata.xlsx'
+path = '' # file path
 oldReadingDate = '2024-09-01'
 
 
@@ -99,7 +99,7 @@ def propertyExist(tenantId, oldConnectionNo, accesstoken, userInfo):
     propertySearchRequest['RequestInfo'] = requestInfo
     print(propertySearchRequest)
     propertySearchRequest['userType'] = 'EMPLOYEE'
-    post_response = requests.post(url=host
+    post_response = requests.post(url="http://ws-services.uat:8080/uat/"
                                       + 'ws-services/wc/_search?tenantId=' + tenantId + '&oldConnectionNumber=' + str(
         oldConnectionNo),
                                   headers={'Content-type': 'application/json'},
@@ -140,7 +140,7 @@ def propertyExist2(tenantId, ptid, accesstoken, userInfo):
     print(propertySearchRequest)
     propertySearchRequest['userType'] = 'EMPLOYEE'
 
-    post_response = requests.post(url=host
+    post_response = requests.post(url="http://property-services.uat:8080/uat/"
                                       + 'property-services/property/_search',
                                   headers={'Content-type': 'application/json'},
                                   json=propertySearchRequest)
@@ -222,14 +222,20 @@ def createProperty(sheet, rowIndex, accesstoken, file, userInfo):
             Property['creationReason'] = 'CREATE'
             Property['source'] = 'MUNICIPAL_RECORDS'
             Property['channel'] = 'CITIZEN'
-            requestInfo = {'authToken': accesstoken}
+            requestInfo = {'authToken': accesstoken, 'userInfo': userInfo, 'apiId': 'mgramseva',
+                   'ver': 1,
+                   'ts': "",
+                   'action': '_search',
+                   'did': 1,
+                   'key': "",
+                   'msgId': '20170310130900|en_IN'}
 
             ptRequest = {}
             ptRequest['RequestInfo'] = requestInfo
             ptRequest['Property'] = Property
             print("ptRequest!!")
             print(ptRequest)
-            post_response = requests.post(url=host
+            post_response = requests.post(url="http://property-services.uat:8080/uat/"
                                               + 'property-services/property/_create',
                                           headers={'Content-type': 'application/json'},
                                           json=ptRequest)
@@ -247,7 +253,7 @@ def createProperty(sheet, rowIndex, accesstoken, file, userInfo):
                         print(ptid)
                         owner['mobileNumber'] = jsondata.get('Properties')[0]['owners'][0]['mobileNumber']
                         sheet.cell(rowIndex, 24).value = ptid
-                        createWaterConnection(sheet, rowIndex, accesstoken, file, ptid, cityTenantId, owner)
+                        createWaterConnection(sheet, rowIndex, accesstoken, file, ptid, cityTenantId, owner,userInfo)
                     else:
                         print("Property Creation failed ! ")
                         # print(jsondata);
@@ -272,7 +278,7 @@ def createProperty(sheet, rowIndex, accesstoken, file, userInfo):
                 sheet.cell(rowIndex, 18).value = ptid
                 if (wa.get('WaterConnection') != None):
                     if (len(wa.get('WaterConnection')) == 0):
-                        createWaterConnection(sheet, rowIndex, accesstoken, file, ptid, cityTenantId, owner)
+                        createWaterConnection(sheet, rowIndex, accesstoken, file, ptid, cityTenantId, owner,userInfo)
                     else:
                         # oldReadingDate = str(sh.cell(i, 13).value)
                         previousReadingDate = datetime.datetime.strptime(oldReadingDate, '%Y-%m-%d')
@@ -291,7 +297,7 @@ def createProperty(sheet, rowIndex, accesstoken, file, userInfo):
                 sheet.cell(rowIndex, 24).value = error
 
 
-def createWaterConnection(sheet, rowIndex, accesstoken, file, propertyId, tenantId, owner):
+def createWaterConnection(sheet, rowIndex, accesstoken, file, propertyId, tenantId, owner,userInfo):
     print('creating connection.....');
     WaterConnection = {}
     WaterConnection['propertyId'] = propertyId
@@ -366,7 +372,13 @@ def createWaterConnection(sheet, rowIndex, accesstoken, file, propertyId, tenant
     processInstance['action'] = 'SUBMIT'
     WaterConnection['processInstance'] = processInstance
 
-    requestInfo = {'authToken': accesstoken}
+    requestInfo = {'authToken': accesstoken, 'userInfo': userInfo, 'apiId': 'mgramseva',
+                   'ver': 1,
+                   'ts': "",
+                   'action': '_search',
+                   'did': 1,
+                   'key': "",
+                   'msgId': '20170310130900|en_IN'}
     waterRequest = {}
     waterRequest['RequestInfo'] = requestInfo
     waterRequest['WaterConnection'] = WaterConnection
@@ -376,7 +388,7 @@ def createWaterConnection(sheet, rowIndex, accesstoken, file, propertyId, tenant
 
     print("water request!!!")
     print(waterRequest)
-    post_response = requests.post(url=host
+    post_response = requests.post(url="http://ws-services.uat:8080/uat/"
                                       + 'ws-services/wc/_create',
                                   headers={'Content-type': 'application/json'},
                                   json=waterRequest)
