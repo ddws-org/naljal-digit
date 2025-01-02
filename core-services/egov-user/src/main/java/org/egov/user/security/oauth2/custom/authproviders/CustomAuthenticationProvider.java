@@ -112,7 +112,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 contract_roles.add(org.egov.common.contract.request.Role.builder().code(role.getCode()).name(role.getName()).build());
             }
 
-            org.egov.common.contract.request.User userInfo = org.egov.common.contract.request.User.builder().uuid(user.getUuid()).id(user.getId())
+            org.egov.common.contract.request.User userInfo = org.egov.common.contract.request.User.builder().uuid(user.getUuid()).id(user.getId() !=null ? user.getId() : null)
                     .type(user.getType() != null ? user.getType().name() : null).roles(contract_roles).build();
             requestInfo = RequestInfo.builder().userInfo(userInfo).build();
             user = encryptionDecryptionUtil.decryptObject(user, "UserSelf", User.class, requestInfo);
