@@ -31,8 +31,8 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    publicPath:'/assam/mgramseva-web/',
-    // publicPath: process.env['REACT_APP_CONTEXT_PATH'], // Use runtime public path
+    // publicPath:'/assam/mgramseva-web/',
+    publicPath: process.env['REACT_APP_CONTEXT_PATH'], // Use runtime public path
   },
   optimization: {
     splitChunks: {
