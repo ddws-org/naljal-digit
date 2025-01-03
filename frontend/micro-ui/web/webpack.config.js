@@ -5,7 +5,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 // const webpack = require("webpack");
 
 console.log("PUBLIC_PATH:1", process.env);
-console.log("PUBLIC_PATH:2", process.env['REACT_APP_CONTEXT_PATH']);
+console.log("PUBLIC_PATH:2", process.env['REACT_APP_PUBLIC_PATH']);
+console.log("PUBLIC_PATH:3", process.env.REACT_APP_PUBLIC_PATH);
 module.exports = {
   // mode: 'development',
   entry: './src/index.js',
@@ -33,7 +34,7 @@ module.exports = {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
     // publicPath:'/assam/mgramseva-web/',
-    publicPath: `${process.env['REACT_APP_CONTEXT_PATH']}`, // Use runtime public path
+    publicPath: `${process.env['REACT_APP_PUBLIC_PATH']}`, // Use runtime public path
   },
   optimization: {
     splitChunks: {
