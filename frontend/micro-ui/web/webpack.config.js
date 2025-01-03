@@ -33,8 +33,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    // publicPath:'/assam/mgramseva-web/',
-    publicPath: `${process.env['REACT_APP_PUBLIC_PATH']}`, // Use runtime public path
+    publicPath: `/${process.env['REACT_APP_PUBLIC_PATH']}/mgramseva-web/`, // Use runtime public path
   },
   optimization: {
     splitChunks: {
@@ -50,23 +49,5 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ inject: true, template: "public/index.html" }),
-  //   new webpack.DefinePlugin({
-  //     'process.env.REACT_APP_CONTEXT_PATH': JSON.stringify(process.env.REACT_APP_CONTEXT_PATH),
-  // }),
   ],
 };
-
-// Dynamically set the publicPath based on the environment
-// if (typeof window !== "undefined") {
-//   const pathName = window.location.pathname;
-
-//   if (pathName.includes('/uat')) {
-//     __webpack_public_path__ = `${window.location.origin}/uat/mgramseva-web/`;
-//   } else if (pathName.includes('/assam')) {
-//     __webpack_public_path__ = `${window.location.origin}/assam/mgramseva-web/`;
-//   } else if (pathName.includes('/kerala')) {
-//     __webpack_public_path__ = `${window.location.origin}/kerala/mgramseva-web/`;
-//   } else {
-//     __webpack_public_path__ = `${window.location.origin}/mgramseva-web/`;  // Default path
-//   }
-// }

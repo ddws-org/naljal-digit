@@ -11,7 +11,6 @@ RUN ls -lah
 # Accept the build argument
 ARG REACT_APP_PUBLIC_PATH
 ENV REACT_APP_PUBLIC_PATH=${REACT_APP_PUBLIC_PATH}
-# ENV REACT_APP_PUBLIC_PATH="/uat/mgramseva-web/"
 
 #RUN node web/envs.js
 RUN cd web/ \
