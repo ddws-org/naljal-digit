@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/model/bill/bill_payments.dart';
 import 'package:mgramseva/model/demand/demand_list.dart';
 import 'package:mgramseva/model/file/file_store.dart';
@@ -23,6 +24,7 @@ import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/services/state_config_services.dart';
 import 'package:mgramseva/utils/common_methods.dart';
 import 'package:mgramseva/utils/constants/i18_key_constants.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
@@ -264,8 +266,11 @@ class CommonProvider with ChangeNotifier {
 
   Future<void> getAppVersionDetails() async {
     try {
+       final stateConfigService = StateConfigService();
+
+      stateConfigService.getTenantId();
       var localizationList = await CoreRepository().getMdms(
-          initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+          initRequestBody({"tenantId": stateConfigService.getTenantId()}));
       appVersion = localizationList.mdmsRes!.commonMasters!.appVersion!.first;
     } catch (e) {
       print(e.toString());

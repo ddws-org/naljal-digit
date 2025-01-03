@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mgramseva/env/app_config.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/repository/core_repo.dart';
 import 'package:mgramseva/services/local_storage.dart';
 import 'package:mgramseva/services/mdms.dart';
+import 'package:mgramseva/services/state_config_services.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/constants.dart';
 import 'package:mgramseva/utils/custom_exception.dart';
@@ -36,8 +38,9 @@ class LanguageProvider with ChangeNotifier {
         stateInfos.add(new StateInfo.fromJson(res.toJson()));
         streamController.add(stateInfos);
       } else {
+            final stateConfigService = StateConfigService();
         var localizationList =
-            await CoreRepository().getMdms(initRequestBody({"tenantId": dotenv.get('STATE_LEVEL_TENANT_ID')}));
+            await CoreRepository().getMdms(initRequestBody({"tenantId": stateConfigService.getTenantId()}));
         stateInfo = localizationList.mdmsRes?.commonMasters?.stateInfo?.first;
         if (stateInfo != null) {
                   stateInfo?.languages?.forEach((item){

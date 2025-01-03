@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mgramseva/model/localization/language.dart';
 import 'package:mgramseva/providers/language.dart';
@@ -18,7 +19,7 @@ class LanguageSelectMobileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundContainer(Container(
-      height: MediaQuery.of(context).size.height - 80,
+      height: MediaQuery.of(context).size.height,
       child: new Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [

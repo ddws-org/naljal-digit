@@ -40,6 +40,7 @@ import 'package:mgramseva/providers/user_profile_provider.dart';
 import 'package:mgramseva/routers/routers.dart';
 import 'package:mgramseva/screeens/home/home.dart';
 import 'package:mgramseva/screeens/select_language/select_language.dart';
+import 'package:mgramseva/services/state_config_services.dart';
 import 'package:mgramseva/theme.dart';
 import 'package:mgramseva/utils/localization/application_localizations.dart';
 import 'package:mgramseva/utils/common_methods.dart';
@@ -73,6 +74,10 @@ void main() {
     };
 
     WidgetsFlutterBinding.ensureInitialized();
+
+
+
+
     await dotenv.load(fileName: 'assets/.env');
  
  
@@ -80,21 +85,23 @@ void main() {
   const String apiKeyFromDefine = String.fromEnvironment('API_KEY', defaultValue: '');
   String apiKey = apiKeyFromDefine.isNotEmpty ? apiKeyFromDefine : dotenv.env['API_KEY'] ?? '';
 
-  // Log the loaded API key and other environment variables
-  print("STATE_LEVEL_TENANT_ID: ${dotenv.env['STATE_LEVEL_TENANT_ID']}");
-  print("API_KEY From ENV : ${dotenv.env['API_KEY']}");
-  log("API_KEY From ENV : ${dotenv.env['API_KEY']}");
-  print("API_KEY: $apiKey");
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
     await setEnvironment(Environment.dev);
-    // if(kIsWeb){
-    //   await Firebase.initializeApp(options: FirebaseOptions(apiKey: apiKey, appId: "appId", messagingSenderId: "messagingSenderId", projectId: "projectId"));
-    // }else{
-    //   await Firebase.initializeApp();
-    // }
+
+    
+      final stateConfigService = StateConfigService();
+      
+  try {
+    await stateConfigService.loadConfig();
+    print("Config loaded successfully");
+      stateConfigService.getTenantId();
+
+  } catch (e) {
+    print("Error loading config: $e");
+  }
     if (Firebase.apps.length == 0) {
 
     }
@@ -115,7 +122,6 @@ void main() {
     // exit(1); /// to close the app smoothly
   });
 
-  // runApp(new MyApp());
 }
 
 _MyAppState myAppstate = '' as _MyAppState;

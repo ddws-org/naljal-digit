@@ -18,7 +18,7 @@ class LanguageSelectionDesktopView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackgroundContainer(Container(
-      height: MediaQuery.of(context).size.height - 20,
+      height: MediaQuery.of(context).size.height ,
       child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
