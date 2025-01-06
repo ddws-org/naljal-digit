@@ -103,7 +103,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
 
   const links = [
     {
-      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva-web/employee/user/login`,
+      href: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}/mgramseva-web/employee/user/login`,
       text: `${t("LINK_State_Division")}`,
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       ),
     },
     {
-      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva/`,
+      href: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}/mgramseva/`,
       text: `${t("LINK_Village_Login")}`,
 
 
@@ -132,7 +132,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       ),
     },
     {
-      href: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}/mgramseva-web/citizen/payment/open-search?businessService=WS`,
+      href: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}/mgramseva-web/citizen/payment/open-search?businessService=WS`,
       text:
 
 

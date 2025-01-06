@@ -97,7 +97,7 @@ const TopBar = ({
                   }}>
                     <Link
                     className="dropdown-user-link" 
-                    to={`/${getDynamicPart(window?.location?.href)}/mgramseva-web/employee/user/login`}>
+                    to={`/${Digit.InitEnvironment.getStatePath}/mgramseva-web/employee/user/login`}>
                       Admin Login
                     </Link>
                   </li>
@@ -105,7 +105,7 @@ const TopBar = ({
                     <a
 
 
-                      href={`/${getDynamicPart(window?.location?.href)}/mgramseva`} target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
+                      href={`/${Digit.InitEnvironment.getStatePath}/mgramseva`} target="_blank" rel="noopener noreferrer" className="dropdown-user-link">Login as Employee</a>
                     
                   </li>
                 </ul>

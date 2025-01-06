@@ -16,7 +16,7 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
+      baseURL: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}`,
       url:`${Urls.FileStore}${tenantInfo}`,   
       data: formData,
       headers: { "auth-token": Digit.UserService.getUser() ? Digit.UserService.getUser()?.access_token : null},
@@ -25,7 +25,6 @@ export const UploadServices = {
     return res;
   },
 
-  // ${getDynamicPart(window?.location?.href)}
 
   MultipleFilesStorage: async (module, filesData, tenantId) => {
     const formData = new FormData();
@@ -36,7 +35,7 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "post",
-      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`, 
+      baseURL: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}`, 
       url:`${Urls.FileStore}${tenantInfo}`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data',"auth-token": Digit.UserService.getUser().access_token },
@@ -49,7 +48,7 @@ export const UploadServices = {
     let tenantInfo=window?.globalConfigs?.getConfig("ENABLE_SINGLEINSTANCE")?`?tenantId=${tenantId}`:"";
     var config = {
       method: "get",
-      baseURL: `${window?.location?.origin}/${getDynamicPart(window?.location?.href)}`,
+      baseURL: `${window?.location?.origin}/${Digit.InitEnvironment.getStatePath}`,
       url:`${Urls.FileFetch}${tenantInfo}`,
       params: {
         tenantId: tenantId,

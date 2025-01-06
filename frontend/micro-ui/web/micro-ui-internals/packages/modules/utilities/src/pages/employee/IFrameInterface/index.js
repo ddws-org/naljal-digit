@@ -25,9 +25,6 @@ const IFrameInterface = (props) => {
     },
     enabled: true,
   });
-  console.log(`*** LOG ***`,data);
-
-
 
   const injectCustomHttpInterceptors = (iframeWindow) => {
     const injectCustomHttpInterceptor = () => {
@@ -175,7 +172,7 @@ const IFrameInterface = (props) => {
     const domain = isOrign
       ? process.env.NODE_ENV === "development"
         ? "https://naljalseva.jjm.gov.in/uat/"
-        : `${document.location.origin}/${getDynamicPart(window?.location?.href)}`
+        : `${document.location.origin}/${Digit.InitEnvironment.getStatePath}`
       : pageObject?.["domain"];
     //checking if overwrite time is true then update the url as per filter time else return the url
 
