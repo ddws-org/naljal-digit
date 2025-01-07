@@ -51,27 +51,27 @@ const Complaint = () => {
 
   const crumbs = [
     {
-      path: "/mgramseva-web/employee",
+      path: "/naljalseva-web/employee",
       content: t("ES_COMMON_HOME"),
       show: isPgr,
     },
     {
-      path: "/mgramseva-web/employee/pgr/inbox",
+      path: "/naljalseva-web/employee/pgr/inbox",
       content: t("CS_COMMON_INBOX"),
       show: isPgr && isInbox,
     },
     {
-      path: "/mgramseva-web/employee/pgr/complaint/create",
+      path: "/naljalseva-web/employee/pgr/complaint/create",
       content: t("CS_PGR_CREATE_COMPLAINT"),
       show: isPgr && isCreate,
     },
     {
-      path: "/mgramseva-web/employee/pgr/inbox",
+      path: "/naljalseva-web/employee/pgr/inbox",
       content: t("CS_PGR_COMPLAINT_DETAILS"),
       show: isPgr && isDetails,
     },
     {
-      path: "mgramseva-web/employee/pgr/response",
+      path: "naljalseva-web/employee/pgr/response",
       content: t("CS_PGR_RESPONSE"),
       show: isPgr && isResponse,
     },

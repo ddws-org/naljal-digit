@@ -116,7 +116,7 @@ export const convertEpochToDate = (dateEpoch) => {
         />
         <CardText>{t("CS_PAYMENT_FAILURE_MESSAGE")}</CardText>
         {!(business_service?.includes("PT")) ? (
-          <Link to={`/mgramseva-web/citizen/payment/open-search?businessService=WS`}>
+          <Link to={`/naljalseva-web/citizen/payment/open-search?businessService=WS`}>
             <SubmitBar label={t("CORE_COMMON_GO_TO_HOME")} />
           </Link>
         ) : (
@@ -673,7 +673,7 @@ export const convertEpochToDate = (dateEpoch) => {
             {t("CS_DOWNLOAD_RECEIPT")}
           </div>
       ) : null}
-      {business_service?.includes("WS") ? <Link to={`/mgramseva-web/citizen/payment/open-search?businessService=WS`}>
+      {business_service?.includes("WS") ? <Link to={`/naljalseva-web/citizen/payment/open-search?businessService=WS`}>
             <SubmitBar style={{"marginTop":"1rem"}} label={t("CORE_COMMON_GO_TO_HOME")} />
           </Link>:null}
       {business_service?.includes("SW") ? (

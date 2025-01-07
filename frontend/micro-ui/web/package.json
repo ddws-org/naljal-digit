@@ -12,7 +12,7 @@
     "micro-ui-internals/packages/react-components",
     "micro-ui-internals/packages/modules/*"
   ],
-  "homepage": "/uat/mgramseva-web",
+  "homepage": "/uat/naljalseva-web",
   "dependencies": {
     "@egovernments/digit-ui-libraries": "1.5.7",
     "@egovernments/digit-ui-module-dss": "1.5.34",

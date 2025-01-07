@@ -77,7 +77,7 @@ const OpenSearch = () => {
         {/* <div className="search-wrapper">
 
             <div className="tooltip">
-              <Link className="dropdown-user-link links-font-high" to="/mgramseva-web/employee/user/login">{t("OPEN_PAYMENT_LOGIN_ADMIN")}</Link>
+              <Link className="dropdown-user-link links-font-high" to="/naljalseva-web/employee/user/login">{t("OPEN_PAYMENT_LOGIN_ADMIN")}</Link>
               <span className="tooltiptext" style={{ whiteSpace: "nowrap" }}>{t("OPEN_PAYMENT_LOGIN_ADMIN_TOOL_TIP")}</span>
             </div>
             <br />
