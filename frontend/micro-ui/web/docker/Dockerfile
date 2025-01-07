@@ -20,7 +20,7 @@ RUN cd web/ \
 
 FROM nginx:mainline-alpine
 #FROM ghcr.io/egovernments/nginx:mainline-alpine
-ENV WORK_DIR=/var/web/mgramseva-web
+ENV WORK_DIR=/var/web/naljalseva-web
 
 RUN mkdir -p ${WORK_DIR}
 
