@@ -11,7 +11,7 @@ import {
   PGRReducers,
 } from "@egovernments/digit-ui-module-pgr";
 // window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
-window.contextPath =  "naljalseva-web";
+window.contextPath =  "uat/naljalseva-web";
 ;
 
 const enabledModules = [
@@ -47,7 +47,7 @@ initLibraries().then(() => {
 
 function App() {
   // window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
-  window.contextPath =  "naljalseva-web";
+  window.contextPath =  "uat/naljalseva-web";
   const stateCode =
     window.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") ||
     process.env.REACT_APP_STATE_LEVEL_TENANT_ID;
