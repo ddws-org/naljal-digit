@@ -52,7 +52,8 @@ const initTokens = (stateCode) => {
 };
 
 const initDigitUI = () => {
-  window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "mgramseva-web";
+  // window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "mgramseva-web";
+  window.contextPath =  "naljalseva-web";
 
   // window?.Digit.ComponentRegistryService.setupRegistry({
   //   PaymentModule,
