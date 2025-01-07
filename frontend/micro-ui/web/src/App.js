@@ -43,6 +43,9 @@ initLibraries().then(() => {
   initDigitUI();
 });
 
+
+
+
 function App() {
   window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH");
   const stateCode =
@@ -52,6 +55,7 @@ function App() {
     return <h1>stateCode is not defined</h1>;
   }
   return (
+    
     <DigitUI
       stateCode={stateCode}
       enabledModules={enabledModules}

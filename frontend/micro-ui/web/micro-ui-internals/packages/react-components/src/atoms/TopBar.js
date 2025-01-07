@@ -21,18 +21,7 @@ const TopBar = ({
   changeLanguage,
 }) => {
 
-
-  const getDynamicPart = (url) => {
-    const parsedUrl = new URL(url);
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[0] : ""; // Gets the first part after the domain
-  };
-
   const [isOpen, setIsOpen] = useState(false);
-
-
-
-
   const handleClick = () => {
     setIsOpen(!isOpen);
   };

@@ -13,11 +13,6 @@ const HRMSCard = () => {
   const DIV_ADMIN = Digit.UserService.hasAccess(["DIV_ADMIN"]);
   const MDMS_ADMIN = Digit.UserService.hasAccess(["MDMS_ADMIN"]);
 
-  const getDynamicPart = (url) => {
-    const parsedUrl = new URL(url);
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
-  };
 
   if (!ADMIN) {
     return null;

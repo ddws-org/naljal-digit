@@ -30,13 +30,6 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   const history = useHistory();
   // const getUserType = () => "EMPLOYEE" || Digit.UserService.getType();
 
-
-  const getDynamicPart = (url) => {
-    const parsedUrl = new URL(url);
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
-  };
-
   // console.log(`${window?.location?.origin}/${path}`, "path1");
   // console.log(`${window?.location?.origin}`, "path1.5");
   // console.log(`${path}`, "path2");

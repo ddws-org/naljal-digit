@@ -66,12 +66,6 @@ const CreateBoundaryRelationship = () => {
   };
 
 
-  const getDynamicPart = (url) => {
-    const parsedUrl = new URL(url);
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
-  };
-
   const reqCriteriaBoundaryRelationshipCreate = {
     url: `/${Digit.InitEnvironment.getStatePath}/boundary-service/boundary-relationships/_create`,
     params: {},

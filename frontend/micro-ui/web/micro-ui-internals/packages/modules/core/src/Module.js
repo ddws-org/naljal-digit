@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import { DigitApp } from "./App";
 import SelectOtp from "./pages/citizen/Login/SelectOtp";
-
 import { useState } from "react";
 import ErrorBoundary from "./components/ErrorBoundaries";
 import getStore from "./redux/store";

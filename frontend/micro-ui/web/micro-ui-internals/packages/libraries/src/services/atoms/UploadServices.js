@@ -1,12 +1,6 @@
 import Axios from "axios";
 import Urls from "./urls";
 
-const getDynamicPart = (url) => {
-  const parsedUrl = new URL(url);
-  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-  return pathParts.length > 0 ? pathParts[0] : null; // Gets the first part after the domain
-};
-
 export const UploadServices = {
   Filestorage: async (module, filedata, tenantId) => {
     const formData = new FormData();
