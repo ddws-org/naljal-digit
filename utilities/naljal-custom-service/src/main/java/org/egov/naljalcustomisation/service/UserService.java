@@ -3,21 +3,22 @@ package org.egov.naljalcustomisation.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
-import org.egov.common.contract.user.UserSearchRequest;
+import org.egov.naljalcustomisation.web.model.users.UserSearchRequest;
 import org.egov.naljalcustomisation.config.CustomisationConfiguration;
 import org.egov.naljalcustomisation.repository.ServiceRequestRepository;
+import org.egov.naljalcustomisation.web.model.OwnerInfo;
 import org.egov.naljalcustomisation.web.model.users.UserDetailResponse;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -121,5 +122,59 @@ public class UserService {
             throw new CustomException("INVALID_DATE_FORMAT","Failed to parse date format in user");
         }
         return d.getTime();
+    }
+
+    /**
+     *
+     * @param userSearchRequest
+     * @return serDetailResponse containing the user if present and the responseInfo
+     */
+    public UserDetailResponse getUser(UserSearchRequest userSearchRequest) {
+        StringBuilder uri = new StringBuilder(configuration.getUserHost())
+                .append(configuration.getUserSearchEndpoint());
+        UserDetailResponse userDetailResponse = userCall(userSearchRequest, uri);
+        return userDetailResponse;
+    }
+
+    /**
+     * provides a user search request with basic mandatory parameters
+     *
+     * @param tenantId
+     * @param requestInfo
+     * @return
+     */
+    public UserSearchRequest getBaseUserSearchRequest(String tenantId, RequestInfo requestInfo,String userType) {
+        return UserSearchRequest.builder().requestInfo(requestInfo).userType(userType).tenantId(tenantId).active(true)
+                .build();
+    }
+
+    /**
+     *
+     * @param mobileNumber
+     * @param tenantId
+     * @param requestInfo
+     * @return
+     */
+    public Set<String> getUUIDForUsers(String mobileNumber, String name, String tenantId, RequestInfo requestInfo) {
+        //TenantId is not mandatory when Citizen searches. So it can be empty. Refer the value from UserInfo
+        tenantId = StringUtils.isEmpty(tenantId) ? requestInfo.getUserInfo().getTenantId() : tenantId;
+        UserSearchRequest userSearchRequest = UserSearchRequest.builder()
+                .requestInfo(requestInfo).userType("CITIZEN")
+                .tenantId(tenantId).mobileNumber(mobileNumber).name(name).build();
+        return getUsersUUID(userSearchRequest);
+    }
+
+    /**
+     * Get user based on given property
+     * @param userSearchRequest
+     * @return combination of uuid given in search criteria
+     */
+    private Set<String> getUsersUUID(UserSearchRequest userSearchRequest) {
+        StringBuilder uri = new StringBuilder(configuration.getUserHost())
+                .append(configuration.getUserSearchEndpoint());
+        UserDetailResponse userDetailResponse = userCall(userSearchRequest, uri);
+        if (CollectionUtils.isEmpty(userDetailResponse.getUser()))
+            return Collections.emptySet();
+        return userDetailResponse.getUser().stream().map(OwnerInfo::getUuid).collect(Collectors.toSet());
     }
 }

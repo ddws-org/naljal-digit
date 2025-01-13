@@ -1,5 +1,9 @@
 package org.egov.naljalcustomisation.constants;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class CustomConstants {
 
     public static final String MDMS_EGFFINACIALYEAR_PATH = "$.MdmsRes.egf-master.FinancialYear[?(@.code==\"{}\")]";
@@ -22,4 +26,26 @@ public class CustomConstants {
     public static final String MARK_PAID_BILL_EVENT = "MARK_PAID_BILL_EN_REMINDER";
     public static final String EXPENSE_PAYMENT = "EXPENSE_PAYMENT";
     public static final String MARK_PAID_BILL_SMS = "mGram.GPUser.MarkExpense";
+    public static final String SEARCH_TYPE_CONNECTION = "CONNECTION";
+    public static final String MODIFIED_FINAL_STATE = "APPROVED";
+    public static final String STATUS_APPROVED = "CONNECTION_ACTIVATED";
+    public static final List<String> FINAL_CONNECTION_STATES = Collections
+            .unmodifiableList(Arrays.asList(MODIFIED_FINAL_STATE, STATUS_APPROVED));
+    public static final String APP_CREATED_DATE = "appCreatedDate";
+    public static final String INITIAL_METER_READING_CONST = "initialMeterReading";
+    public static final String LOCALITY = "locality";
+    public static final String ADHOC_PENALTY = "adhocPenalty";
+    public static final String ADHOC_REBATE = "adhocRebate";
+    public static final String ADHOC_PENALTY_REASON = "adhocPenaltyReason";
+    public static final String ADHOC_PENALTY_COMMENT = "adhocPenaltyComment";
+    public static final String ADHOC_REBATE_REASON = "adhocRebateReason";
+    public static final String ADHOC_REBATE_COMMENT = "adhocRebateComment";
+    public static final String DETAILS_PROVIDED_BY = "detailsProvidedBy";
+    public static final String ESTIMATION_FILESTORE_ID = "estimationFileStoreId";
+    public static final String SANCTION_LETTER_FILESTORE_ID = "sanctionFileStoreId";
+    public static final String ESTIMATION_DATE_CONST = "estimationLetterDate";
+    public static final String ES_DATA_PATH = "$..Data";
+
+
+
 }
