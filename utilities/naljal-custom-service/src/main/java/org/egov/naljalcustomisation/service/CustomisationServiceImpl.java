@@ -1,6 +1,7 @@
 package org.egov.naljalcustomisation.service;
 
 import com.jayway.jsonpath.JsonPath;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestInfo;
@@ -12,9 +13,11 @@ import org.egov.naljalcustomisation.config.CustomisationConfiguration;
 import org.egov.naljalcustomisation.constants.CustomConstants;
 import org.egov.naljalcustomisation.producer.CustomisationProducer;
 import org.egov.naljalcustomisation.repository.CustomisationRepository;
+import org.egov.naljalcustomisation.repository.ElasticSearchRepository;
 import org.egov.naljalcustomisation.repository.ServiceRequestRepository;
 import org.egov.naljalcustomisation.util.MdmsUtil;
 import org.egov.naljalcustomisation.util.NotificationUtil;
+import org.egov.naljalcustomisation.validator.CustomisationServiceValidator;
 import org.egov.naljalcustomisation.web.model.*;
 import org.egov.naljalcustomisation.web.model.users.UserDetailResponse;
 import org.egov.tracer.model.CustomException;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -34,6 +39,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CustomisationServiceImpl implements CustomisationService {
+
+    @Autowired
+    private CustomisationServiceDaoImpl customisationServiceDaoImpl;
 
     @Autowired
     private CustomisationRepository repository;
@@ -62,6 +70,15 @@ public class CustomisationServiceImpl implements CustomisationService {
     @Autowired
     private MdmsUtil mdmsUtils;
 
+    @Autowired
+    private EnrichmentService enrichmentService;
+
+    @Autowired
+    private CustomisationServiceValidator customisationServiceValidator;
+
+    @Autowired
+    private ElasticSearchRepository elasticSearchRepository;
+
     public void generateDemandBasedOnTimePeriod(RequestInfo requestInfo, boolean isSendMessage) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime date = LocalDateTime.now();
@@ -75,8 +92,8 @@ public class CustomisationServiceImpl implements CustomisationService {
             demandData.put("requestInfo", requestInfo);
             demandData.put("tenantId", tenantId);
             demandData.put("isSendMessage", isSendMessage);
-            log.info("demand data : "+demandData);
-            producer.push(config.getBulkDemandSchedularTopic(),demandData);
+            log.info("demand data : " + demandData);
+            producer.push(config.getBulkDemandSchedularTopic(), demandData);
 //			demandService.generateDemandForTenantId(tenantId, requestInfo);
         });
     }
@@ -108,7 +125,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                         HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 
                         UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-                                Arrays.asList("GP_ADMIN","SARPANNCH"));
+                                Arrays.asList("GP_ADMIN", "SARPANNCH"));
 
                         String penColLink = config.getUiPath() + config.getMonthRevenueDashboardLink();
                         Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
@@ -141,8 +158,8 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 log.info("PENDING Coll SMS::" + message);
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
-                                        .users(new String[] { uuidUsername }).build();
-                                if(config.isSMSForPendingCollectionEnabled()) {
+                                        .users(new String[]{uuidUsername}).build();
+                                if (config.isSMSForPendingCollectionEnabled()) {
                                     producer.push(config.getSmsNotifTopic(), smsRequest);
                                 }
 
@@ -171,12 +188,12 @@ public class CustomisationServiceImpl implements CustomisationService {
         Map<String, Object> financialYear = getFinancialYear(requestInfo, tenantId);
         List<String> pendingCollection = repository.getPendingCollection(tenantId,
                 financialYear.get("startingDate").toString(), financialYear.get("endingDate").toString());
-        if(null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) !=null && Double.parseDouble(pendingCollection.get(0)) > 0 ) {
-                events.add(Event.builder().tenantId(tenantId)
-                        .description(
-                                formatPendingCollectionMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
-                        .eventType(CustomConstants.USREVENTS_EVENT_TYPE).name(CustomConstants.PENDING_COLLECTION_USEREVENT).postedBy(CustomConstants.USREVENTS_EVENT_POSTEDBY)
-                        .recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP)
+        if (null != pendingCollection && pendingCollection.size() > 0 && pendingCollection.get(0) != null && Double.parseDouble(pendingCollection.get(0)) > 0) {
+            events.add(Event.builder().tenantId(tenantId)
+                    .description(
+                            formatPendingCollectionMessage(requestInfo, tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
+                    .eventType(CustomConstants.USREVENTS_EVENT_TYPE).name(CustomConstants.PENDING_COLLECTION_USEREVENT).postedBy(CustomConstants.USREVENTS_EVENT_POSTEDBY)
+                    .recepient(getRecepient(requestInfo, tenantId)).source(Source.WEBAPP)
                     .recepient(getRecepient(requestInfo, tenantId)).eventDetails(null).actions(action).additionalDetails(additionalDetailsMap).build());
         }
         if (!CollectionUtils.isEmpty(events)) {
@@ -199,8 +216,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                 if (pendingCollection.get(0) != null) {
                     message = message.replace(" {PENDING_COLLECTION} ", pendingCollection.get(0));
                     attributes.put("{PENDING_COLLECTION}", pendingCollection.get(0));
-                }
-                else {
+                } else {
                     message = message.replace(" {PENDING_COLLECTION} ", "0");
                     attributes.put("{PENDING_COLLECTION}", "0");
                 }
@@ -209,8 +225,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                 if (pendingCollection.get(0) != null) {
                     message = message.replace("{amount}", pendingCollection.get(0));
                     attributes.put("{amount}", pendingCollection.get(0));
-                }
-                else {
+                } else {
                     message = message.replace("{amount}", "0");
                     attributes.put("{amount}", "0");
                 }
@@ -247,7 +262,7 @@ public class CustomisationServiceImpl implements CustomisationService {
             throw new CustomException("EXP_FIN_NOT_FOUND", "Financial year not found: " + financeYears);
         }
 
-        System.out.println("Financial year"+financialYearProperties);
+        System.out.println("Financial year" + financialYearProperties);
         return financialYearProperties;
     }
 
@@ -356,7 +371,7 @@ public class CustomisationServiceImpl implements CustomisationService {
 //									onlineMessageMap.get(NotificationUtil.MSG_KEY), mode);
 //							messages.add(onlineMessage);
                             UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo,
-                                    tenantId, Arrays.asList("COLLECTION_OPERATOR","REVENUE_COLLECTOR"));
+                                    tenantId, Arrays.asList("COLLECTION_OPERATOR", "REVENUE_COLLECTOR"));
                             Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
                             for (OwnerInfo userInfo : userDetailResponse.getUser()) {
@@ -385,8 +400,8 @@ public class CustomisationServiceImpl implements CustomisationService {
                                         log.info("TODAY Coll SMS::" + msg);
                                         SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey())
                                                 .message(msg).templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY)).tenantId(tenantId)
-                                                .users(new String[] { uuidUsername }).build();
-                                        if(config.isSMSForTodaysCollectionEnabled()) {
+                                                .users(new String[]{uuidUsername}).build();
+                                        if (config.isSMSForTodaysCollectionEnabled()) {
                                             producer.push(config.getSmsNotifTopic(), smsRequest);
                                         }
                                     });
@@ -424,7 +439,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                 cashMessageMap.get(NotificationUtil.MSG_KEY), mode, additionalDetailsMap);
         HashMap<String, String> onlineMessageMap = util.getLocalizationMessage(requestInfo, CustomConstants.TODAY_ONLINE_COLLECTION,
                 tenantId);
-        if(message!=null) {
+        if (message != null) {
             messages.add(message);
             for (String msg : messages) {
                 events.add(Event.builder().tenantId(tenantId).description(msg).eventType(CustomConstants.USREVENTS_EVENT_TYPE)
@@ -446,7 +461,7 @@ public class CustomisationServiceImpl implements CustomisationService {
 
     }
 
-    private String formatTodayCollectionMessage(RequestInfo requestInfo, String tenantId, String message, String mode, Map<String,Object> additionalDetailsMap) {
+    private String formatTodayCollectionMessage(RequestInfo requestInfo, String tenantId, String message, String mode, Map<String, Object> additionalDetailsMap) {
         // TODO Auto-generated method stub
         Map<String, String> attributes = new HashMap<>();
         LocalDate today = LocalDate.now();
@@ -467,8 +482,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                         if (value != null) {
                             message = message.replace("{amount}", value.toString());
                             attributes.put("{amount}", value.toString());
-                        }
-                        else {
+                        } else {
                             message = null;
                             return message;
                         }
@@ -478,8 +492,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                             if (value != null) {
                                 message = message.replace("{no}", value.toString());
                                 attributes.put("{no}", value.toString());
-                            }
-                            else {
+                            } else {
                                 message = message.replace("{no}", "0");
                                 attributes.put("{no}", "0");
                             }
@@ -487,7 +500,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                             if (value != null) {
                                 message = message.replace("{number}", value.toString());
                                 attributes.put("{number}", value.toString());
-                            }else {
+                            } else {
                                 message = message.replace("{number}", "0");
                                 attributes.put("{number}", "0");
                             }
@@ -558,7 +571,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                         HashMap<String, String> gpwscMap = util.getLocalizationMessage(requestInfo, tenantId, tenantId);
 
                         UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-                                Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+                                Arrays.asList("EXPENSE_PROCESSING", "SECRETARY"));
 
                         String revenueLink = config.getUiAppHost() + config.getMonthRevenueDashboardLink();
 
@@ -586,8 +599,8 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-                                        .users(new String[] { uuidUsername }).build();
-                                if(config.isSmsForMonthlySummaryEnabled()) {
+                                        .users(new String[]{uuidUsername}).build();
+                                if (config.isSmsForMonthlySummaryEnabled()) {
                                     producer.push(config.getSmsNotifTopic(), smsRequest);
                                 }
                             }
@@ -655,7 +668,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                     if (config.getIsSMSEnabled()) {
 
                         UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-                                Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+                                Arrays.asList("EXPENSE_PROCESSING", "SECRETARY"));
                         Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
                         HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo,
@@ -677,7 +690,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 String message = messageMap.get(NotificationUtil.MSG_KEY);
 
                                 message = message.replace("{NEW_EXP_LINK}", getShortenedUrl(addExpense));
-                                message = message.replace("{GPWSC}",  (gpwscMap != null
+                                message = message.replace("{GPWSC}", (gpwscMap != null
                                         && !StringUtils.isEmpty(gpwscMap.get(NotificationUtil.MSG_KEY)))
                                         ? gpwscMap.get(NotificationUtil.MSG_KEY)
                                         : tenantId);
@@ -686,8 +699,8 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-                                        .users(new String[] { map.getValue() }).build();
-                                if(config.isSmsForExpenditureEnabled()) {
+                                        .users(new String[]{map.getValue()}).build();
+                                if (config.isSmsForExpenditureEnabled()) {
                                     producer.push(config.getSmsNotifTopic(), smsRequest);
                                 }
                             }
@@ -721,8 +734,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                     .build());
         }
 
-        if (!CollectionUtils.isEmpty(events))
-        {
+        if (!CollectionUtils.isEmpty(events)) {
             return EventRequest.builder().requestInfo(requestInfo).events(events).build();
         } else {
             return null;
@@ -754,7 +766,7 @@ public class CustomisationServiceImpl implements CustomisationService {
                     if (config.getIsSMSEnabled()) {
 
                         UserDetailResponse userDetailResponse = userService.getUserByRoleCodes(requestInfo, tenantId,
-                                Arrays.asList("EXPENSE_PROCESSING","SECRETARY"));
+                                Arrays.asList("EXPENSE_PROCESSING", "SECRETARY"));
                         Map<String, String> mobileNumberIdMap = new LinkedHashMap<>();
 
                         for (OwnerInfo userInfo : userDetailResponse.getUser())
@@ -788,8 +800,8 @@ public class CustomisationServiceImpl implements CustomisationService {
                                 SMSRequest smsRequest = SMSRequest.builder().mobileNumber(map.getKey()).message(message)
                                         .tenantId(tenantId)
                                         .templateId(messageMap.get(NotificationUtil.TEMPLATE_KEY))
-                                        .users(new String[] { map.getValue() }).build();
-                                if(config.isSmsForMarkBillEnabled()) {
+                                        .users(new String[]{map.getValue()}).build();
+                                if (config.isSmsForMarkBillEnabled()) {
                                     producer.push(config.getSmsNotifTopic(), smsRequest);
                                 }
                             }
@@ -812,9 +824,9 @@ public class CustomisationServiceImpl implements CustomisationService {
         additionalDetailsMap.put("localizationCode", CustomConstants.MARK_PAID_BILL_EVENT);
         List<Event> events = new ArrayList<>();
         List<String> activeExpenseCount = repository.getActiveExpenses(tenantId);
-        if (null != activeExpenseCount && activeExpenseCount.size() > 0 && activeExpenseCount.get(0)!=null
+        if (null != activeExpenseCount && activeExpenseCount.size() > 0 && activeExpenseCount.get(0) != null
                 && Integer.parseInt(activeExpenseCount.get(0)) > 0) {
-            log.info("Active expense bill Count"+activeExpenseCount.get(0));
+            log.info("Active expense bill Count" + activeExpenseCount.get(0));
             HashMap<String, String> messageMap = util.getLocalizationMessage(requestInfo, CustomConstants.MARK_PAID_BILL_EVENT, tenantId);
             events.add(Event.builder().tenantId(tenantId)
                     .description(formatMarkExpenseMessage(tenantId, messageMap.get(NotificationUtil.MSG_KEY), additionalDetailsMap))
@@ -844,6 +856,400 @@ public class CustomisationServiceImpl implements CustomisationService {
         return message;
     }
 
+    @Override
+    public List<BillReportData> billReport(@Valid String demandStartDate, @Valid String demandEndDate, String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder, RequestInfo requestInfo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate demStartDate = LocalDate.parse(demandStartDate, formatter);
+        LocalDate demEndDate = LocalDate.parse(demandEndDate, formatter);
 
+        Long demStartDateTime = LocalDateTime.of(demStartDate.getYear(), demStartDate.getMonth(), demStartDate.getDayOfMonth(), 0, 0, 0)
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long demEndDateTime = LocalDateTime.of(demEndDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        List<BillReportData> billReportData = customisationServiceDaoImpl.getBillReportData(demStartDateTime, demEndDateTime, tenantId, offset, limit, sortOrder);
+        return billReportData;
+    }
 
+    @Override
+    public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
+                                                       RequestInfo requestInfo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate payStartDate = LocalDate.parse(paymentStartDate, formatter);
+        LocalDate payEndDate = LocalDate.parse(paymentEndDate, formatter);
+
+        Long payStartDateTime = LocalDateTime.of(payStartDate.getYear(), payStartDate.getMonth(), payStartDate.getDayOfMonth(), 0, 0, 0)
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long payEndDateTime = LocalDateTime.of(payEndDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        List<CollectionReportData> collectionReportData = customisationServiceDaoImpl.getCollectionReportData(payStartDateTime, payEndDateTime, tenantId, offset, limit, sortOrder);
+        return collectionReportData;
+    }
+
+    @Override
+    public List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate, String monthEndDate, String tenantId, @Valid Integer offset, @Valid Integer limit, RequestInfo requestInfo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startDate = LocalDate.parse(monthStartDate, formatter);
+        LocalDate endDate = LocalDate.parse(monthEndDate, formatter);
+
+        Long monthStartDateTime = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long mothEndDateTime = LocalDateTime.of(endDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        List<InactiveConsumerReportData> inactiveConsumerReport = customisationServiceDaoImpl.getInactiveConsumerReport(monthStartDateTime, mothEndDateTime, tenantId, offset, limit);
+        return inactiveConsumerReport;
+    }
+
+    @Override
+    public WaterConnectionByDemandGenerationDateResponse countWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+        return getWCbyDemandGennerationDate(criteria, requestInfo);
+    }
+
+    public WaterConnectionByDemandGenerationDateResponse getWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
+        return customisationServiceDaoImpl.getWaterConnectionByDemandDate(criteria, requestInfo);
+    }
+
+    @Override
+    public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId, RequestInfo requestInfo) {
+        Long previousReadingEpoch;
+        try {
+            previousReadingEpoch = Long.parseLong(previousMeterReading);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid format for previousMeterReading. Expected a timestamp in milliseconds.", e);
+        }
+
+        List<ConsumersDemandNotGenerated> list = customisationServiceDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch, tenantId);
+        Set<String> connectionNo = new HashSet<>();
+        for (ConsumersDemandNotGenerated connection : list) {
+            connectionNo.add(connection.getConsumerCode());
+        }
+        SearchCriteria criteria = SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
+        return search(criteria, requestInfo);
+    }
+
+    public WaterConnectionResponse search(SearchCriteria criteria, RequestInfo requestInfo) {
+        WaterConnectionResponse waterConnection = getWaterConnectionsList(criteria, requestInfo);
+        if (!org.springframework.util.StringUtils.isEmpty(criteria.getSearchType())
+                && criteria.getSearchType().equals(CustomConstants.SEARCH_TYPE_CONNECTION)) {
+            waterConnection
+                    .setWaterConnection(enrichmentService.filterConnections(waterConnection.getWaterConnection()));
+            if (criteria.getIsPropertyDetailsRequired()) {
+                waterConnection.setWaterConnection(enrichmentService
+                        .enrichPropertyDetails(waterConnection.getWaterConnection(), criteria, requestInfo));
+
+            }
+        }
+        customisationServiceValidator.validatePropertyForConnection(waterConnection.getWaterConnection());
+        enrichmentService.enrichConnectionHolderDeatils(waterConnection.getWaterConnection(), criteria, requestInfo);
+        return waterConnection;
+    }
+
+    public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
+        return customisationServiceDaoImpl.getWaterConnectionList(criteria, requestInfo);
+    }
+
+    public WaterConnectionResponse getWCListFuzzySearch(SearchCriteria criteria, RequestInfo requestInfo) {
+
+        if (criteria != null && criteria.getTextSearch() != null) {
+            criteria.setTextSearch(criteria.getTextSearch().trim());
+        }
+        if (criteria != null && criteria.getName() != null) {
+            criteria.setName(criteria.getName().trim());
+        }
+
+        List<String> idsfromDB = customisationServiceDaoImpl.getWCListFuzzySearch(criteria);
+
+        if (CollectionUtils.isEmpty(idsfromDB))
+            WaterConnectionResponse.builder().waterConnection(new LinkedList<>());
+
+        validateFuzzySearchCriteria(criteria);
+
+        Object esResponse = elasticSearchRepository.fuzzySearchProperties(criteria, idsfromDB);
+
+        List<Map<String, Object>> data;
+
+        if (!org.springframework.util.StringUtils.isEmpty(criteria.getTextSearch())) {
+            data = waterConnectionSearch(criteria, esResponse);
+        } else {
+            data = waterConnectionFuzzySearch(criteria, esResponse);
+        }
+
+        return WaterConnectionResponse.builder().waterConnectionData(data).totalCount(data.size()).build();
+    }
+
+    @Override
+    public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year, RequestInfoWrapper requestInfoWrapper) {
+        List<Map<String, Object>> list = customisationServiceDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year, requestInfoWrapper);
+        return list;
+    }
+
+    @Override
+    public List<MonthReport> monthReport(String startDate, String endDate, String tenantId, Integer offset, Integer limit,String sortOrder)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate monthStartDate = LocalDate.parse(startDate, formatter);
+        LocalDate monthEndDate = LocalDate.parse(endDate, formatter);
+
+        Long monthStartDateTime = LocalDateTime.of(monthStartDate.getYear(), monthStartDate.getMonth(), monthStartDate.getDayOfMonth(), 0, 0, 0)
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long monthEndDateTime = LocalDateTime.of(monthEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return customisationServiceDaoImpl.getMonthReport(monthStartDateTime,monthEndDateTime,tenantId,offset,limit,sortOrder);
+    }
+
+    @Override
+    public LastMonthSummary getLastMonthSummary(SearchCriteria criteria, RequestInfo requestInfo) {
+
+        LastMonthSummary lastMonthSummary = new LastMonthSummary();
+        String tenantId = criteria.getTenantId();
+        LocalDate currentMonthDate = LocalDate.now();
+        if (criteria.getCurrentDate() != null) {
+            Calendar currentDate = Calendar.getInstance();
+            currentDate.setTimeInMillis(criteria.getCurrentDate());
+            currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH)+1,
+                    currentDate.get(Calendar.DAY_OF_MONTH));
+        }
+        LocalDate prviousMonthStart = currentMonthDate.minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate prviousMonthEnd = currentMonthDate.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+
+        LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
+                prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
+                prviousMonthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
+
+        // pending ws collectioni
+        Integer cumulativePendingCollection = repository.getTotalPendingCollection(tenantId,
+                ((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        if (null != cumulativePendingCollection)
+            lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.toString());
+
+        // ws demands in period
+        Integer newDemand = repository.getNewDemand(tenantId,
+                ((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
+                ((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        if (null != newDemand)
+            lastMonthSummary.setNewDemand(newDemand.toString());
+
+        // actuall ws collection
+        Integer actualCollection = repository.getActualCollection(tenantId,
+                ((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
+                ((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+        if (null != actualCollection)
+            lastMonthSummary.setActualCollection(actualCollection.toString());
+
+        lastMonthSummary.setPreviousMonthYear(getMonthYear());
+
+        return lastMonthSummary;
+
+    }
+
+    public String getMonthYear() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        int currentMonth = localDateTime.getMonthValue();
+        String monthYear;
+        if (currentMonth >= Month.APRIL.getValue()) {
+            monthYear = YearMonth.now().getYear() + "-";
+            monthYear = monthYear
+                    + (Integer.toString(YearMonth.now().getYear() + 1).substring(2, monthYear.length() - 1));
+        } else {
+            monthYear = YearMonth.now().getYear() - 1 + "-";
+            monthYear = monthYear + (Integer.toString(YearMonth.now().getYear()).substring(2, monthYear.length() - 1));
+
+        }
+        StringBuilder monthYearBuilder = new StringBuilder(localDateTime.minusMonths(1).getMonth().toString()).append(" ")
+                .append(monthYear);
+
+        return monthYearBuilder.toString();
+    }
+
+    @Override
+    public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
+        RevenueDashboard dashboardData = new RevenueDashboard();
+        String tenantId = criteria.getTenantId();
+        BigDecimal demand = customisationServiceDaoImpl.getTotalDemandAmount(criteria);
+        if (null != demand) {
+            dashboardData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        BigDecimal paidAmount = customisationServiceDaoImpl.getActualCollectionAmount(criteria);
+        if (null != paidAmount) {
+            dashboardData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        BigDecimal unpaidAmount = customisationServiceDaoImpl.getPendingCollectionAmount(criteria);
+        if (null != unpaidAmount) {
+            dashboardData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        Integer residentialCollection = customisationServiceDaoImpl.getResidentialCollectionAmount(criteria);
+        if (null != residentialCollection) {
+            dashboardData.setResidetialColllection(residentialCollection.toString());
+        }
+        Integer commeritialCollection = customisationServiceDaoImpl.getCommercialCollectionAmount(criteria);
+        if (null != commeritialCollection) {
+            dashboardData.setComercialCollection(commeritialCollection.toString());
+        }
+        Integer othersCollection = customisationServiceDaoImpl.getOthersCollectionAmount(criteria);
+        if (null != othersCollection) {
+            dashboardData.setOthersCollection(othersCollection.toString());
+        }
+        Map<String, Object> residentialsPaid = customisationServiceDaoImpl.getResidentialPaid(criteria);
+        if (null != residentialsPaid) {
+            dashboardData.setResidentialsCount(residentialsPaid);
+        }
+        Map<String, Object> comercialsPaid = customisationServiceDaoImpl.getCommercialPaid(criteria);
+        if (null != comercialsPaid) {
+            dashboardData.setComercialsCount(comercialsPaid);
+        }
+        Map<String, Object> totalApplicationsPaid = customisationServiceDaoImpl.getAllPaid(criteria);
+        if (null != totalApplicationsPaid) {
+            dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
+        }
+        BigDecimal advanceAdjusted = customisationServiceDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+        if (null != advanceAdjusted) {
+            dashboardData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        BigDecimal pendingPenalty = customisationServiceDaoImpl.getTotalPendingPenaltyAmount(criteria);
+        if (null != pendingPenalty) {
+            dashboardData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        BigDecimal advanceCollection = customisationServiceDaoImpl.getAdvanceCollectionAmount(criteria);
+        if (null != advanceCollection) {
+            dashboardData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+        BigDecimal penaltyCollection = customisationServiceDaoImpl.getPenaltyCollectionAmount(criteria);
+        if (null != penaltyCollection) {
+            dashboardData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
+        }
+
+        return dashboardData;
+    }
+
+    @Override
+    public List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria,
+                                                                RequestInfo requestInfo) {
+
+        long endDate = criteria.getToDate();
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        LocalDate currentMonthDate = LocalDate.now();
+
+        Calendar currentDate = Calendar.getInstance();
+        int currentYear = currentDate.get(Calendar.YEAR);
+        int actualMonthnum = currentDate.get(Calendar.MONTH);
+
+        currentDate.setTimeInMillis(criteria.getFromDate());
+        int actualYear = currentDate.get(Calendar.YEAR);
+
+        int currentMonthNumber = currentDate.get(Calendar.MONTH);
+
+        int totalMonthsTillDate;
+        LocalDate finYearStarting;
+
+        if (currentYear != actualYear && actualYear < currentYear) {
+            totalMonthsTillDate = 11;
+            currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+                    currentDate.get(Calendar.DAY_OF_MONTH));
+            finYearStarting = currentMonthDate;
+        } else {
+            totalMonthsTillDate = actualMonthnum - currentMonthNumber;
+            currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
+                    currentDate.get(Calendar.DAY_OF_MONTH));
+            finYearStarting = currentMonthDate;
+
+        }
+        ArrayList<RevenueCollectionData> data = new ArrayList<RevenueCollectionData>();
+        for (int i = 0; i <= totalMonthsTillDate; i++) {
+            LocalDate monthStart = currentMonthDate.minusMonths(0).with(TemporalAdjusters.firstDayOfMonth());
+            LocalDate monthEnd = currentMonthDate.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
+
+            LocalDateTime monthStartDateTime = LocalDateTime.of(monthStart.getYear(), monthStart.getMonth(),
+                    monthStart.getDayOfMonth(), 0, 0, 0);
+            LocalDateTime monthEndDateTime = LocalDateTime.of(monthEnd.getYear(), monthEnd.getMonth(),
+                    monthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
+            criteria.setFromDate((Long) monthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+            String tenantId = criteria.getTenantId();
+            BigDecimal demand = customisationServiceDaoImpl.getTotalDemandAmount(criteria);
+            RevenueCollectionData collectionData = new RevenueCollectionData();
+
+            if (null != demand) {
+                collectionData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal paidAmount = customisationServiceDaoImpl.getActualCollectionAmount(criteria);
+            if (null != paidAmount) {
+                collectionData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal unpaidAmount = customisationServiceDaoImpl.getPendingCollectionAmount(criteria);
+            if (null != unpaidAmount) {
+                collectionData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal arrears = customisationServiceDaoImpl.getArrearsAmount(criteria);
+            if (null != arrears) {
+                collectionData.setArrears(arrears.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal advanceAdjusted = customisationServiceDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
+            if (null != advanceAdjusted) {
+                collectionData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal pendingPenalty = customisationServiceDaoImpl.getTotalPendingPenaltyAmount(criteria);
+            if (null != pendingPenalty) {
+                collectionData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal advanceCollection = customisationServiceDaoImpl.getAdvanceCollectionAmount(criteria);
+            if (null != advanceCollection) {
+                collectionData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+            BigDecimal penaltyCollection = customisationServiceDaoImpl.getPenaltyCollectionAmount(criteria);
+            if (null != penaltyCollection) {
+                collectionData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
+            }
+
+            collectionData.setMonth(criteria.getFromDate());
+            data.add(i, collectionData);
+            System.out.println("Month:: " + criteria.getFromDate());
+
+            currentMonthDate = currentMonthDate.plusMonths(1);
+        }
+        System.out.println("datadatadatadata" + data);
+        return data;
+    }
+
+    private void validateFuzzySearchCriteria(SearchCriteria criteria) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(criteria.getTextSearch())
+                && org.apache.commons.lang3.StringUtils.isBlank(criteria.getName())
+                && org.apache.commons.lang3.StringUtils.isBlank(criteria.getMobileNumber()))
+            throw new CustomException("EG_WC_SEARCH_ERROR", " No criteria given for the water connection search");
+    }
+
+    private List<Map<String, Object>> waterConnectionSearch(SearchCriteria criteria, Object esResponse) {
+        List<Map<String, Object>> data;
+        try {
+            data = wsDataResponse(esResponse);
+        } catch (Exception e) {
+            throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+                    "Could not find user or water connection details !");
+        }
+        return data;
+    }
+
+    private List<Map<String, Object>> wsDataResponse(Object esResponse) {
+
+        List<Map<String, Object>> data;
+        try {
+            data = JsonPath.read(esResponse, CustomConstants.ES_DATA_PATH);
+        } catch (Exception e) {
+            throw new CustomException("PARSING_ERROR", "Failed to extract data from es response");
+        }
+
+        return data;
+    }
+
+    private List<Map<String, Object>> waterConnectionFuzzySearch(SearchCriteria criteria, Object esResponse) {
+        List<Map<String, Object>> data;
+        try {
+            data = wsDataResponse(esResponse);
+            if (data.isEmpty()) {
+                throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+                        "Could not find user or water connection details !");
+
+            }
+        } catch (Exception e) {
+            throw new CustomException("INVALID_SEARCH_USER_PROP_NOT_FOUND",
+                    "Could not find user or water connection details !");
+        }
+        return data;
+    }
 }

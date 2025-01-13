@@ -110,5 +110,52 @@ public class CustomisationConfiguration {
     @Value("${sms.expenditure.mark.bill.enabled}")
     private boolean isSmsForMarkBillEnabled;
 
+    @Value("${egov.waterservice.pagination.default.limit}")
+    private Integer defaultLimit;
+
+    @Value("${egov.waterservice.pagination.default.offset}")
+    private Integer defaultOffset;
+
+    @Value("${egov.waterservice.pagination.max.limit}")
+    private Integer maxLimit;
+
+    @Value("${egov.user.host}")
+    private String userHost;
+
+    @Value("${state.level.tenant.id}")
+    private String stateLevelTenantId;
+
+    @Value("${egov.collection.host}")
+    private String collectionHost;
+
+    @Value("${egov.collectiom.payment.search}")
+    private String paymentSearch;
+
+    @Value("${egov.ws.fuzzy.searh.is.wildcard}")
+    private Boolean isSearchWildcardBased;
+
+    @Value("${egov.ws.search.name.fuziness}")
+    private String nameFuziness;
+
+    @Value("${egov.ws.search.mobileNo.fuziness}")
+    private String MobileNoFuziness;
+
+    @Value("${egov.ws.search.tenantId.fuziness}")
+    private String tenantFuziness;
+
+    @Value("${egov.es.host}")
+    private String esHost;
+
+    @Value("${egov.waterservice.es.index}")
+    private String esWSIndex;
+
+    @Value("${egov.es.search.endpoint}")
+    private String esSearchEndpoint;
+
+    @Value("${egov.indexer.es.username}")
+    private String esUsername;
+
+    @Value("${egov.indexer.es.password}")
+    private String esPassword;
 
 }

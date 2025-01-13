@@ -2,10 +2,12 @@ package org.egov.naljalcustomisation.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.egov.naljalcustomisation.repository.builder.CustomisationQueryBuilder;
+import org.egov.naljalcustomisation.util.CustomServiceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,9 @@ public class CustomisationRepository {
 
     @Autowired
     private CustomisationQueryBuilder queryBuilder;
+
+    @Autowired
+    private CustomServiceUtil customServiceUtil;
 
     public List<String> getTenantId() {
         String query = queryBuilder.getDistinctTenantIds();
@@ -71,6 +76,39 @@ public class CustomisationRepository {
         query.append(" and tenantid = '").append(tenantId).append("'");
         log.info("Active expense query : " + query);
         return jdbcTemplate.queryForList(query.toString(), String.class);
+    }
+
+    public Integer getTotalPendingCollection(String tenantId, Long endDate) {
+        StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTimeInMillis(endDate);
+        int currentMonthNumber = startDate.get(Calendar.MONTH);
+        if (currentMonthNumber < 3) {
+            startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
+        }
+        startDate.set(Calendar.MONTH,3);
+        startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
+        customServiceUtil.setTimeToBeginningOfDay(startDate);
+        query.append(" and  dmd.taxperiodto between " +  startDate.getTimeInMillis() +" and "+ endDate );
+        query.append(" and dmd.tenantid = '").append(tenantId).append("'");
+        System.out.println("Query in WS for pending collection: " + query.toString());
+        return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+    }
+
+    public Integer getNewDemand(String tenantId, Long startDate, Long endDate) {
+        StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
+        query.append(" and dmd.taxperiodto between " + startDate + " and " + endDate)
+                .append(" and dmd.tenantId = '").append(tenantId).append("'");
+        return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+
+    }
+
+    public Integer getActualCollection(String tenantId, Long startDate, Long endDate) {
+        StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
+        query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
+                .append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
+        return jdbcTemplate.queryForObject(query.toString(), Integer.class);
+
     }
 
 }
