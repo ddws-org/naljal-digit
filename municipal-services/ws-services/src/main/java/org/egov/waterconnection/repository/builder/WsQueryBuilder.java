@@ -2,10 +2,8 @@ package org.egov.waterconnection.repository.builder;
 
 import static org.egov.waterconnection.constants.WCConstants.SEARCH_TYPE_CONNECTION;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,10 +11,8 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
 import org.egov.waterconnection.service.UserService;
-import org.egov.waterconnection.service.WaterService;
 import org.egov.waterconnection.service.WaterServiceImpl;
 import org.egov.waterconnection.util.WaterServicesUtil;
-import org.egov.waterconnection.web.controller.WaterController;
 import org.egov.waterconnection.web.models.FeedbackSearchCriteria;
 import org.egov.waterconnection.web.models.Property;
 import org.egov.waterconnection.web.models.SearchCriteria;
@@ -25,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class WsQueryBuilder {
@@ -87,15 +81,6 @@ public class WsQueryBuilder {
 			+ "eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id"
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
-
-	private static final String WATER_CONNNECTION_BY_DEMANNDDATE = "SELECT ((select distinct d.taxperiodto as taxperiodto from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
-	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE = " and  dd.taxheadcode='10101' and d.status = 'ACTIVE' and d.businessservice = 'WS' and d.consumercode = conn.connectionno order by d.taxperiodto desc limit 1))" +
-			" as taxperiodto, count(*) as count ";
-	private static final String WATER_CONNNECTION_BY_DEMANNDDATE_FROM	=" FROM eg_ws_connection conn INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id and wc.connectiontype='Non_Metered'and conn.status='Active' ";
-
-	private  static final String WATER_CONNECTION_BY_PREVIOUSREADINNDATE = "select previousreadingdate as taxperiodto , count(*) as count from eg_ws_connection conn";
-
-	private static final String CONSUMERCODE_IN_DEMANDTABLE= "select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id ";
 	private static final String PAGINATION_WRAPPER = "{} {orderby} {pagination}";
 
 	private static final String ORDER_BY_CLAUSE = " ORDER BY wc.appCreatedDate DESC";
@@ -103,10 +88,6 @@ public class WsQueryBuilder {
 	public static final String GET_BILLING_CYCLE = "select fromperiod,toperiod from egcl_billdetial where billid=(select billid from egcl_paymentdetail where paymentid=?)";
 
 	public static final String FEEDBACK_BASE_QUERY = "select id,tenantid,connectionno,paymentid, billingcycle,additionaldetails,createdtime,lastmodifiedtime,createdby,lastmodifiedby from eg_ws_feedback where tenantid=?";
-
-	public static final String TotalCollectionAmount = " select sum(payd.amountpaid)  from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
-
-	public static final String CollectionAmountList = " select sum(payd.amountpaid) from egcl_paymentdetail payd join egcl_bill payspay ON ( payd.billid = payspay.id) where payd.businessservice='WS' ";
 
 	public static final String PROPERTY_COUNT = "select additionaldetails->>'propertyType' as propertytype,count(additionaldetails->>'propertyType') from eg_ws_connection as conn";
 
@@ -122,38 +103,7 @@ public class WsQueryBuilder {
 
 	public static final String PREVIOUSDAYONLINECOLLECTION = "select count(*), sum(p.totalamountpaid) from egcl_payment p join egcl_paymentdetail pd on p.id = pd.paymentid where p.paymentmode='ONLINE' and pd.businessservice = 'WS' ";
 
-	public static final String NEWDEMAND = "select sum(dmdl.taxamount) FROM egbs_demand_v1 dmd INNER JOIN egbs_demanddetail_v1 dmdl ON dmd.id=dmdl.demandid AND dmd.tenantid=dmdl.tenantid WHERE dmd.businessservice='WS' and dmd.status = 'ACTIVE' and dmdl.taxheadcode<>'WS_ADVANCE_CARRYFORWARD'";
-
-	public static final String ACTUALCOLLECTION = " select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id where pyd.businessservice='WS' ";
-	
-	public static final String RESIDENTIALCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('RESIDENTIAL') and wc.status='Active' ";
-	
-	public static final String COMMERCIALCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('COMMERCIAL') and wc.status='Active' ";
-	
-	public static final String OTHERSCOLLECTION = "select sum(py.totalAmountPaid) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' not IN ('RESIDENTIAL','COMMERCIAL') and wc.status='Active' ";
-	
-	public static final String TOTALAPPLICATIONSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where status='Active' ";
-
-	public static final String RESIDENTIALSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where additionaldetails->>'propertyType' IN ('RESIDENTIAL') and status='Active' ";
-
-	public static final String COMMERCIALSPAID = "select count(*), ({paidCount}) as paid from eg_ws_connection where additionaldetails->>'propertyType' IN ('COMMERCIAL') and status='Active' ";
-
-	public static final String RESIDENTIALSPAIDCOUNT = "select count(distinct consumercode)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('RESIDENTIAL') ";
-	
-	public static final String COMMERCIALSPAIDCOUNT = "select count(distinct consumercode)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' and wc.additionaldetails->>'propertyType' IN ('COMMERCIAL') ";
-
-	public static final String TOTALAPPLICATIONSPAIDCOUNT = "select count(distinct consumercode)FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON pyd.paymentid = py.id INNER JOIN egcl_bill bill ON bill.id = pyd.billid INNER JOIN eg_ws_connection wc ON wc.connectionno = bill.consumercode  where pyd.businessservice='WS' ";
-
 	public static final String PENDINGCOLLECTIONTILLDATE = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' ";
-
-	public static final String ADVANCEADJUSTED = "SELECT SUM(DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' AND DMDL.TAXHEADCODE='WS_ADVANCE_CARRYFORWARD'";
-
-	public static final String PENDINGPENALTY = "SELECT SUM(DMDL.TAXAMOUNT - DMDL.COLLECTIONAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' AND DMDL.TAXHEADCODE='WS_TIME_PENALTY'";
-
-	public static final String ADVANCECOLLECTION = "SELECT SUM(DMDL.TAXAMOUNT) FROM EGBS_DEMAND_V1 DMD INNER JOIN EGBS_DEMANDDETAIL_V1 DMDL ON DMD.ID=DMDL.DEMANDID AND DMD.TENANTID=DMDL.TENANTID WHERE DMD.BUSINESSSERVICE = 'WS' and DMD.status = 'ACTIVE' AND DMDL.TAXHEADCODE='WS_ADVANCE_CARRYFORWARD'";
-
-	public static final String PENALTYCOLLECTION = "select sum(ddl.collectionamount) FROM egcl_payment py INNER JOIN egcl_paymentdetail pyd ON py.id = pyd.paymentid INNER JOIN egbs_billdetail_v1 bdl ON pyd.billid=bdl.billid INNER JOIN egbs_demanddetail_v1 ddl on  bdl.demandid = ddl.demandid where ddl.taxheadcode='WS_TIME_PENALTY' and pyd.businessservice='WS'";
-
 	
 	public static final String ID_QUERY = "select conn.id FROM eg_ws_connection conn " + INNER_JOIN_STRING
 			+ " eg_ws_service wc ON wc.connection_id = conn.id" + LEFT_OUTER_JOIN_STRING
@@ -163,87 +113,6 @@ public class WsQueryBuilder {
 			+ LEFT_OUTER_JOIN_STRING + "eg_ws_roadcuttinginfo roadcuttingInfo ON roadcuttingInfo.wsid = conn.id";
 
 	public static final String DEMAND_DETAILS = "select d.consumercode from egbs_demand_v1 d join egbs_demanddetail_v1 dd on d.id = dd.demandid where d.status = 'ACTIVE' ";
-	
-	
-	public static final String BILL_REPORT_QUERY = "SELECT conn.tenantId as tenantId,conn.connectionno as connectionNo,conn.oldConnectionno as oldConnectionNo,conn.createdTime as connCreatedDate,"
-			+ "  connectionholder.userid as uuid,SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as WS_TIME_PENALTY_DemandAmount,"
-			+ "  SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as A10101_DemandAmount,"
-			+ "  SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as WS_ADVANCE_CARRYFORWARD_DemandAmount "
-			+ "  FROM eg_ws_connection conn " + INNER_JOIN_STRING + " eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id "
-			+   INNER_JOIN_STRING + " egbs_demand_v1 dem ON dem.consumercode = conn.connectionno "
-			+   INNER_JOIN_STRING + "  egbs_demanddetail_v1 dd on dd.demandid = dem.id WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? "
-			+ "  AND conn.tenantId = ? AND conn.status='Active' AND dem.status='ACTIVE' GROUP BY conn.connectionno,conn.tenantId,conn.oldConnectionno,conn.createdTime,connectionholder.userid ORDER BY conn.connectionno ";
-	
-	public static final String COLLECTION_REPORT_QUERY = "SELECT c.connectionno as connectionNo,p.tenantid as tenantId,c.oldconnectionno as oldConnectionNo," +
-			" p.paymentmode,ch.userid as uuid,SUM(p.totalamountpaid) AS totalAmountPaid FROM egcl_payment p " + INNER_JOIN_STRING +
-			" eg_ws_connection c ON p.tenantid = c.tenantid " + INNER_JOIN_STRING + " eg_ws_connectionholder ch " +
-			" ON c.id = ch.connectionid WHERE p.tenantid = ? AND p.transactiondate BETWEEN ? AND ? AND " +
-			" p.id IN ( SELECT paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid =? and " +
-			" pd.billid IN ( SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
-			" and bd.tenantid = ?)) AND p.instrumentstatus = 'APPROVED' AND p.paymentstatus NOT IN ('CANCELLED') " +
-			" GROUP BY c.connectionno, p.tenantid, c.oldconnectionno, p.paymentmode, ch.userid ORDER BY c.connectionno ";
-
-	public static final String INACTIVE_CONSUMER_QUERY= "SELECT connectionno AS connectionno,status AS status,lastmodifiedby "
-			+ " AS lastmodifiedbyUuid,lastmodifiedtime AS lastmodifiedtime FROM eg_ws_connection_audit WHERE connectionno "
-			+ " IN (SELECT distinct connectionno FROM eg_ws_connection_audit WHERE status='Inactive' AND lastmodifiedtime >= ? AND"
-			+ " lastmodifiedtime <= ? AND tenantid=?) " + UNION_STRING + " SELECT connectionno,status,lastmodifiedby,lastmodifiedtime FROM eg_ws_connection WHERE"
-			+ " connectionno IN (SELECT distinct connectionno FROM eg_ws_connection WHERE status='Inactive' AND"
-			+ " lastmodifiedtime >= ? AND lastmodifiedtime <= ? AND tenantid=?) "
-			+ " order by connectionno,lastmodifiedtime desc";
-
-	public static final String DEMAND_NOT_GENERATED_QUERY="select distinct conn.connectionno as connectionno from eg_ws_connection conn " +
-			"INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' " +
-			"AND  conn.tenantid=? and wc.connectiontype='Non_Metered' and conn.previousreadingdate=? and connectionno NOT IN " +
-			"(select distinct consumercode from egbs_demand_v1 d inner join egbs_demanddetail_v1 dd on dd.demandid = d.id " +
-			"where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and " +
-			"d.tenantid=?) order by connectionno;";
-
-	public static final String LEDGER_REPORT_QUERY = "SELECT connectionholder.userid as uuid,conn.connectionno as connectionNo,conn.oldconnectionno," +
-			"dem.taxperiodfrom as startdate,dem.taxperiodto as enddate," +
-			"dem.createdtime as demandGenerationDate," +
-			"dd.taxheadcode as code,dd.taxamount as taxamount " +
-			"FROM eg_ws_connection conn INNER JOIN eg_ws_connectionholder connectionholder " +
-			"ON connectionholder.connectionid = conn.id " +
-			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno INNER JOIN " +
-			"egbs_demanddetail_v1 dd ON dd.demandid = dem.id " +
-			"WHERE dem.consumercode = ? AND conn.tenantId = ? AND dem.status = 'ACTIVE' " +
-			"AND taxperiodfrom>=? AND taxperiodto<=? "+
-			"ORDER BY startdate";
-
-	public static final String TAX_AMOUNT_QUERY="SELECT SUM(taxamount) FROM egbs_demanddetail_v1 WHERE " +
-			"demandid IN (SELECT id FROM egbs_demand_v1 WHERE consumercode = ? AND taxperiodto < ? AND status='ACTIVE') and taxheadcode!= 'WS_ADVANCE_CARRYFORWARD';";
-
-	public static final String TOTAL_AMOUNT_PAID_QUERY="SELECT SUM(totalamountpaid) FROM egcl_payment WHERE " +
-			"id IN (SELECT paymentid FROM egcl_paymentdetail WHERE billid IN " +
-			"(SELECT billid FROM egbs_billdetail_v1 WHERE consumercode = ?)) AND createdtime < ? AND paymentstatus!='CANCELLED';";
-
-	public static final String TILL_DATE_CONSUMER="select conn.tenantId as tenantId,conn.connectionno as connectionno, " +
-			" conn.oldconnectionno as oldconnectionno ,conn.createdTime as consumerCreatedOnDate," +
-			" connectionholder.userid as userId from eg_ws_connection conn INNER JOIN " +
-			" eg_ws_connectionholder connectionholder ON connectionholder.connectionid = conn.id " +
-			" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id where wc.connectiontype='Non_Metered' and " +
-			" conn.createdtime<=? and conn.tenantid=? ORDER BY conn.connectionno  ";
-
-	public static final String MONTH_DEMAND_QUERY ="SELECT " +
-			"conn.connectionno as connectionNo, " +
-			"dem.createdtime as demandGenerationDate, " +
-			"SUM(CASE WHEN dd.taxheadcode = 'WS_TIME_PENALTY' THEN dd.taxamount ELSE 0 END) as penalty, " +
-			"SUM(CASE WHEN dd.taxheadcode = '10101' THEN dd.taxamount ELSE 0 END) as demandAmount, " +
-			"SUM(CASE WHEN dd.taxheadcode = 'WS_ADVANCE_CARRYFORWARD' THEN dd.taxamount ELSE 0 END) as advance " +
-			"FROM eg_ws_connection conn " +
-			"INNER JOIN egbs_demand_v1 dem ON dem.consumercode = conn.connectionno " +
-			"INNER JOIN egbs_demanddetail_v1 dd on dd.demandid = dem.id " +
-			"WHERE dem.taxperiodfrom >= ? AND dem.taxperiodto <= ? AND dem.tenantId = ? AND conn.connectionno = ? AND dem.status='ACTIVE' " +
-			"GROUP BY conn.connectionno, dem.tenantId, conn.createdTime, dem.createdtime ";
-//			"ORDER BY conn.connectionno";
-
-	public static final String MONTH_PAYMENT_QUERY="SELECT SUM(p.totalamountpaid) AS totalAmountPaid, MIN(p.transactiondate) " +
-			"FROM egcl_payment p INNER JOIN eg_ws_connection c ON p.tenantid = c.tenantid " +
-			"WHERE p.tenantid = ? AND c.connectionno = ? AND p.transactiondate BETWEEN ? AND ? " +
-			"AND p.id IN (SELECT pd.paymentid FROM egcl_paymentdetail pd WHERE pd.tenantid = ? " +
-			"AND pd.billid IN (SELECT bd.billid FROM egbs_billdetail_v1 bd WHERE bd.consumercode = c.connectionno " +
-			" AND bd.tenantid = ? )) AND p.instrumentstatus = 'APPROVED' " +
-			"AND p.paymentstatus NOT IN ('CANCELLED');";
 
 	/**
 	 * 
@@ -798,30 +667,6 @@ public class WsQueryBuilder {
 			builder.append(" DESC ");
 
 		return builder.toString();
-	}
-
-	public String getQueryForWCCountbyDemandDate(SearchCriteria criteria, List<Object> preparedStatement,
-									   RequestInfo requestInfo) {
-		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
-			return null;
-		StringBuilder query = new StringBuilder(WATER_CONNNECTION_BY_DEMANNDDATE);
-		query.append( "WHERE d.tenantid  = '" +criteria.getTenantId()+"' " );
-		query.append(WATER_CONNNECTION_BY_DEMANNDDATE_CLAUSE);
-		query.append(WATER_CONNNECTION_BY_DEMANNDDATE_FROM);
-		applyFiltersForPlaneSearch(query,preparedStatement,criteria);
-		query.append(" GROUP BY taxperiodto ");
-		return query.toString();
-	}
-
-	public String getQueryForWCCountForPreviousreadingdate(SearchCriteria criteria, List<Object> preparedStatement,
-												 RequestInfo requestInfo) {
-		if (criteria.isEmpty() || criteria.getTenantId().isEmpty())
-			return null;
-		StringBuilder query = new StringBuilder(WATER_CONNECTION_BY_PREVIOUSREADINNDATE);
-		query.append(" INNER JOIN eg_ws_service wc ON wc.connection_id = conn.id WHERE conn.status='Active' AND  conn.tenantid='"+criteria.getTenantId()+"'" +
-				" and wc.connectiontype='Non_Metered' and connectionno NOT IN (" + CONSUMERCODE_IN_DEMANDTABLE+" where dd.taxheadcode='10101' and d.status ='ACTIVE' and  d.businessservice='WS' and d.tenantid='"+criteria.getTenantId()+"') ");
-		query.append(" GROUP BY taxperiodto ");
-		return query.toString();
 	}
 
 }

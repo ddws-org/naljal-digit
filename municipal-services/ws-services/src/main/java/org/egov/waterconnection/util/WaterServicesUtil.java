@@ -322,12 +322,4 @@ public class WaterServicesUtil {
 	public StringBuilder getMdmsSearchUrl() {
 	        return new StringBuilder().append(config.getMdmsHost()).append(config.getMdmsEndPoint());
 	}
-	
-	 public static void setTimeToBeginningOfDay(Calendar calendar) {
-		    calendar.set(Calendar.HOUR_OF_DAY, 0);
-		    calendar.set(Calendar.MINUTE, 0);
-		    calendar.set(Calendar.SECOND, 0);
-		    calendar.set(Calendar.MILLISECOND, 0);
-		}
-
 }

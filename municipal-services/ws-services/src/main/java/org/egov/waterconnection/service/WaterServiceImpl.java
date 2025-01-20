@@ -1,18 +1,10 @@
 package org.egov.waterconnection.service;
 
 import static org.egov.waterconnection.constants.WCConstants.APPROVE_CONNECTION;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,9 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import jakarta.validation.Valid;
-
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.tracer.model.CustomException;
 import org.egov.waterconnection.config.WSConfiguration;
@@ -214,10 +203,6 @@ public class WaterServiceImpl implements WaterService {
 		return waterConnection;
 	}
 
-	public WaterConnectionByDemandGenerationDateResponse countWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
-		return getWCbyDemandGennerationDate(criteria, requestInfo);
-	}
-
 	/**
 	 *
 	 * @param criteria    WaterConnectionSearchCriteria contains search criteria on
@@ -227,9 +212,6 @@ public class WaterServiceImpl implements WaterService {
 	 */
 	public WaterConnectionResponse getWaterConnectionsList(SearchCriteria criteria, RequestInfo requestInfo) {
 		return waterDaoImpl.getWaterConnectionList(criteria, requestInfo);
-	}
-	public WaterConnectionByDemandGenerationDateResponse getWCbyDemandGennerationDate(SearchCriteria criteria, RequestInfo requestInfo) {
-		return waterDaoImpl.getWaterConnectionByDemandDate(criteria, requestInfo);
 	}
 
 	/**
@@ -510,51 +492,6 @@ public class WaterServiceImpl implements WaterService {
 		return returnMap;
 	}
 
-	public LastMonthSummary getLastMonthSummary(SearchCriteria criteria, RequestInfo requestInfo) {
-
-		LastMonthSummary lastMonthSummary = new LastMonthSummary();
-		String tenantId = criteria.getTenantId();
-		LocalDate currentMonthDate = LocalDate.now();
-		if (criteria.getCurrentDate() != null) {
-			Calendar currentDate = Calendar.getInstance();
-			currentDate.setTimeInMillis(criteria.getCurrentDate());
-			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH)+1,
-					currentDate.get(Calendar.DAY_OF_MONTH));
-		}
-		LocalDate prviousMonthStart = currentMonthDate.minusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate prviousMonthEnd = currentMonthDate.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
-
-		LocalDateTime previousMonthStartDateTime = LocalDateTime.of(prviousMonthStart.getYear(),
-				prviousMonthStart.getMonth(), prviousMonthStart.getDayOfMonth(), 0, 0, 0);
-		LocalDateTime previousMonthEndDateTime = LocalDateTime.of(prviousMonthEnd.getYear(), prviousMonthEnd.getMonth(),
-				prviousMonthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
-
-		// pending ws collectioni
-		Integer cumulativePendingCollection = repository.getTotalPendingCollection(tenantId,
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != cumulativePendingCollection)
-			lastMonthSummary.setCumulativePendingCollection(cumulativePendingCollection.toString());
-
-		// ws demands in period
-		Integer newDemand = repository.getNewDemand(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != newDemand)
-			lastMonthSummary.setNewDemand(newDemand.toString());
-
-		// actuall ws collection
-		Integer actualCollection = repository.getActualCollection(tenantId,
-				((Long) previousMonthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()),
-				((Long) previousMonthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
-		if (null != actualCollection)
-			lastMonthSummary.setActualCollection(actualCollection.toString());
-
-		lastMonthSummary.setPreviousMonthYear(getMonthYear());
-
-		return lastMonthSummary;
-
-	}
-
 	public String getMonthYear() {
 		LocalDateTime localDateTime = LocalDateTime.now();
 		int currentMonth = localDateTime.getMonthValue();
@@ -572,67 +509,6 @@ public class WaterServiceImpl implements WaterService {
 				.append(monthYear);
 
 		return monthYearBuilder.toString();
-	}
-
-	@Override
-	public RevenueDashboard getRevenueDashboardData(@Valid SearchCriteria criteria, RequestInfo requestInfo) {
-		RevenueDashboard dashboardData = new RevenueDashboard();
-		String tenantId = criteria.getTenantId();
-		BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
-		if (null != demand) {
-			dashboardData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
-		if (null != paidAmount) {
-			dashboardData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
-		if (null != unpaidAmount) {
-			dashboardData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		Integer residentialCollection = waterDaoImpl.getResidentialCollectionAmount(criteria);
-		if (null != residentialCollection) {
-			dashboardData.setResidetialColllection(residentialCollection.toString());
-		}
-		Integer commeritialCollection = waterDaoImpl.getCommercialCollectionAmount(criteria);
-		if (null != commeritialCollection) {
-			dashboardData.setComercialCollection(commeritialCollection.toString());
-		}
-		Integer othersCollection = waterDaoImpl.getOthersCollectionAmount(criteria);
-		if (null != othersCollection) {
-			dashboardData.setOthersCollection(othersCollection.toString());
-		}
-		Map<String, Object> residentialsPaid = waterDaoImpl.getResidentialPaid(criteria);
-		if (null != residentialsPaid) {
-			dashboardData.setResidentialsCount(residentialsPaid);
-		}
-		Map<String, Object> comercialsPaid = waterDaoImpl.getCommercialPaid(criteria);
-		if (null != comercialsPaid) {
-			dashboardData.setComercialsCount(comercialsPaid);
-		}
-		Map<String, Object> totalApplicationsPaid = waterDaoImpl.getAllPaid(criteria);
-		if (null != totalApplicationsPaid) {
-			dashboardData.setTotalApplicationsCount(totalApplicationsPaid);
-		}
-		BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
-		if (null != advanceAdjusted) {
-			dashboardData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
-		if (null != pendingPenalty) {
-			dashboardData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
-		if (null != advanceCollection) {
-			dashboardData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-		BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
-		if (null != penaltyCollection) {
-			dashboardData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
-		}
-
-		return dashboardData;
-
 	}
 
 	@Override
@@ -724,97 +600,6 @@ public class WaterServiceImpl implements WaterService {
 		return waterDaoImpl.getWaterConnectionListForPlaneSearch(criteria, requestInfo);
 	}
 
-	@Override
-	public List<RevenueCollectionData> getRevenueCollectionData(@Valid SearchCriteria criteria,
-																RequestInfo requestInfo) {
-
-		long endDate = criteria.getToDate();
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-		LocalDate currentMonthDate = LocalDate.now();
-
-		Calendar currentDate = Calendar.getInstance();
-		int currentYear = currentDate.get(Calendar.YEAR);
-		int actualMonthnum = currentDate.get(Calendar.MONTH);
-
-		currentDate.setTimeInMillis(criteria.getFromDate());
-		int actualYear = currentDate.get(Calendar.YEAR);
-
-		int currentMonthNumber = currentDate.get(Calendar.MONTH);
-
-		int totalMonthsTillDate;
-		LocalDate finYearStarting;
-
-		if (currentYear != actualYear && actualYear < currentYear) {
-			totalMonthsTillDate = 11;
-			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
-					currentDate.get(Calendar.DAY_OF_MONTH));
-			finYearStarting = currentMonthDate;
-		} else {
-			totalMonthsTillDate = actualMonthnum - currentMonthNumber;
-			currentMonthDate = LocalDate.of(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH) + 1,
-					currentDate.get(Calendar.DAY_OF_MONTH));
-			finYearStarting = currentMonthDate;
-
-		}
-		ArrayList<RevenueCollectionData> data = new ArrayList<RevenueCollectionData>();
-		for (int i = 0; i <= totalMonthsTillDate; i++) {
-			LocalDate monthStart = currentMonthDate.minusMonths(0).with(TemporalAdjusters.firstDayOfMonth());
-			LocalDate monthEnd = currentMonthDate.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
-
-			LocalDateTime monthStartDateTime = LocalDateTime.of(monthStart.getYear(), monthStart.getMonth(),
-					monthStart.getDayOfMonth(), 0, 0, 0);
-			LocalDateTime monthEndDateTime = LocalDateTime.of(monthEnd.getYear(), monthEnd.getMonth(),
-					monthEnd.getDayOfMonth(), 23, 59, 59, 999000000);
-			criteria.setFromDate((Long) monthStartDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-			criteria.setToDate((Long) monthEndDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
-			String tenantId = criteria.getTenantId();
-			BigDecimal demand = waterDaoImpl.getTotalDemandAmount(criteria);
-			RevenueCollectionData collectionData = new RevenueCollectionData();
-
-			if (null != demand) {
-				collectionData.setDemand(demand.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal paidAmount = waterDaoImpl.getActualCollectionAmount(criteria);
-			if (null != paidAmount) {
-				collectionData.setActualCollection(paidAmount.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal unpaidAmount = waterDaoImpl.getPendingCollectionAmount(criteria);
-			if (null != unpaidAmount) {
-				collectionData.setPendingCollection(unpaidAmount.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal arrears = waterDaoImpl.getArrearsAmount(criteria);
-			if (null != arrears) {
-				collectionData.setArrears(arrears.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal advanceAdjusted = waterDaoImpl.getTotalAdvanceAdjustedAmount(criteria);
-			if (null != advanceAdjusted) {
-				collectionData.setAdvanceAdjusted(advanceAdjusted.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal pendingPenalty = waterDaoImpl.getTotalPendingPenaltyAmount(criteria);
-			if (null != pendingPenalty) {
-				collectionData.setPendingPenalty(pendingPenalty.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal advanceCollection = waterDaoImpl.getAdvanceCollectionAmount(criteria);
-			if (null != advanceCollection) {
-				collectionData.setAdvanceCollection(advanceCollection.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-			BigDecimal penaltyCollection = waterDaoImpl.getPenaltyCollectionAmount(criteria);
-			if (null != penaltyCollection) {
-				collectionData.setPenaltyCollection(penaltyCollection.setScale(0, RoundingMode.HALF_UP).toString());
-			}
-
-			collectionData.setMonth(criteria.getFromDate());
-			data.add(i, collectionData);
-			System.out.println("Month:: " + criteria.getFromDate());
-
-			currentMonthDate = currentMonthDate.plusMonths(1);
-		}
-		System.out.println("datadatadatadata" + data);
-		return data;
-	}
-
 	/**
 	 * Create meter reading for meter connection
 	 *
@@ -843,85 +628,5 @@ public class WaterServiceImpl implements WaterService {
 				}
 			}
 		}
-	}
-
-	@Override
-	public List<BillReportData> billReport(@Valid String demandStartDate, @Valid String demandEndDate, String tenantId, @Valid Integer offset, @Valid Integer limit, @Valid String sortOrder, RequestInfo requestInfo) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate demStartDate = LocalDate.parse(demandStartDate, formatter);
-		LocalDate demEndDate = LocalDate.parse(demandEndDate, formatter);
-
-		Long demStartDateTime = LocalDateTime.of(demStartDate.getYear(), demStartDate.getMonth(), demStartDate.getDayOfMonth(), 0, 0, 0)
-				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		Long demEndDateTime = LocalDateTime.of(demEndDate, LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<BillReportData> billReportData = waterDaoImpl.getBillReportData(demStartDateTime,demEndDateTime,tenantId,offset,limit,sortOrder);
-		return billReportData;
-	}
-
-	@Override
-	public List<CollectionReportData> collectionReport(String paymentStartDate, String paymentEndDate, String tenantId,@Valid Integer offset, @Valid Integer limit, @Valid String sortOrder,
-													   RequestInfo requestInfo) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate payStartDate = LocalDate.parse(paymentStartDate, formatter);
-		LocalDate payEndDate = LocalDate.parse(paymentEndDate, formatter);
-
-		Long payStartDateTime = LocalDateTime.of(payStartDate.getYear(), payStartDate.getMonth(), payStartDate.getDayOfMonth(), 0, 0, 0)
-				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		Long payEndDateTime = LocalDateTime.of(payEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<CollectionReportData> collectionReportData = waterDaoImpl.getCollectionReportData(payStartDateTime,payEndDateTime,tenantId,offset,limit,sortOrder);
-		return collectionReportData;
-	}
-
-	public List<InactiveConsumerReportData> inactiveConsumerReport(String monthStartDate,String monthEndDate,String tenantId,@Valid Integer offset,@Valid Integer limit, RequestInfo requestInfo)
-	{
-		DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate startDate=LocalDate.parse(monthStartDate,formatter);
-		LocalDate endDate=LocalDate.parse(monthEndDate,formatter);
-
-		Long monthStartDateTime=LocalDateTime.of(startDate.getYear(),startDate.getMonth(),startDate.getDayOfMonth(),0,0,0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		Long mothEndDateTime=LocalDateTime.of(endDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		List<InactiveConsumerReportData> inactiveConsumerReport=waterDaoImpl.getInactiveConsumerReport(monthStartDateTime,mothEndDateTime,tenantId,offset,limit);
-		return inactiveConsumerReport;
-	}
-
-	@Override
-	public WaterConnectionResponse getConsumersWithDemandNotGenerated(String previousMeterReading, String tenantId ,RequestInfo requestInfo)
-	{
-		Long previousReadingEpoch;
-		try {
-			previousReadingEpoch = Long.parseLong(previousMeterReading);
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Invalid format for previousMeterReading. Expected a timestamp in milliseconds.", e);
-		}
-
-		List<ConsumersDemandNotGenerated> list=waterDaoImpl.getConsumersByPreviousMeterReading(previousReadingEpoch,tenantId);
-		Set<String> connectionNo=new HashSet<>();
-		for(ConsumersDemandNotGenerated connection:list)
-		{
-			connectionNo.add(connection.getConsumerCode());
-		}
-		SearchCriteria criteria=SearchCriteria.builder().connectionNoSet(connectionNo).tenantId(tenantId).build();
-		 return search(criteria,requestInfo);
-	}
-
-	@Override
-	public List<Map<String, Object>> ledgerReport(String consumercode, String tenantId, Integer offset, Integer limit, String year,RequestInfoWrapper requestInfoWrapper)
-	{
-		List<Map<String, Object>> list = waterDaoImpl.getLedgerReport(consumercode, tenantId, offset, limit, year,requestInfoWrapper);
-		return list;
-	}
-
-
-	@Override
-	public List<MonthReport> monthReport(String startDate, String endDate, String tenantId, Integer offset, Integer limit,String sortOrder)
-	{
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate monthStartDate = LocalDate.parse(startDate, formatter);
-		LocalDate monthEndDate = LocalDate.parse(endDate, formatter);
-
-		Long monthStartDateTime = LocalDateTime.of(monthStartDate.getYear(), monthStartDate.getMonth(), monthStartDate.getDayOfMonth(), 0, 0, 0)
-				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		Long monthEndDateTime = LocalDateTime.of(monthEndDate,LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		return waterDaoImpl.getMonthReport(monthStartDateTime,monthEndDateTime,tenantId,offset,limit,sortOrder);
 	}
 }
