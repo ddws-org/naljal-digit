@@ -70,39 +70,6 @@ public class WaterRepository {
 		return list;
 	}
 	
-	public Integer getTotalPendingCollection(String tenantId, Long endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.PENDINGCOLLECTION);
-		Calendar startDate = Calendar.getInstance();
-		startDate.setTimeInMillis(endDate);
-		int currentMonthNumber = startDate.get(Calendar.MONTH);
-		if (currentMonthNumber < 3) {
-			startDate.set(Calendar.YEAR, startDate.get(Calendar.YEAR) - 1);
-		}
-		startDate.set(Calendar.MONTH,3);
-		startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH));
-		util.setTimeToBeginningOfDay(startDate);
-		query.append(" and  dmd.taxperiodto between " +  startDate.getTimeInMillis() +" and "+ endDate );
-		query.append(" and dmd.tenantid = '").append(tenantId).append("'");
-		System.out.println("Query in WS for pending collection: " + query.toString());
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-	}
-
-	public Integer getNewDemand(String tenantId, Long startDate, Long endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.NEWDEMAND);
-		query.append(" and dmd.taxperiodto between " + startDate + " and " + endDate)
-		.append(" and dmd.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-
-	}
-
-	public Integer getActualCollection(String tenantId, Long startDate, Long endDate) {
-		StringBuilder query = new StringBuilder(queryBuilder.ACTUALCOLLECTION);
-		query.append(" and py.transactionDate  >= ").append(startDate).append(" and py.transactionDate <= ")
-				.append(endDate).append(" and py.tenantId = '").append(tenantId).append("'");
-		return jdbcTemplate.queryForObject(query.toString(), Integer.class);
-
-	}
-	
 
 
 }

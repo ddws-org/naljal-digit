@@ -26,33 +26,7 @@ public interface WaterDao {
 
 	List<Feedback> getFeebback(FeedbackSearchCriteria feedbackSearchCriteria);
 
-	BigDecimal getTotalDemandAmount(SearchCriteria criteria);
-
-	BigDecimal getActualCollectionAmount(SearchCriteria criteria);
-
-	BigDecimal getPendingCollectionAmount(SearchCriteria criteria);
-
 	BigDecimal getArrearsAmount(SearchCriteria criteria);
-
-	Integer getResidentialCollectionAmount(SearchCriteria criteria);
-
-	Integer getCommercialCollectionAmount(SearchCriteria criteria);
-
-	Integer getOthersCollectionAmount(SearchCriteria criteria);
-
-	Map<String, Object> getResidentialPaid(SearchCriteria criteria);
-
-	Map<String, Object> getCommercialPaid(SearchCriteria criteria);
-
-	Map<String, Object> getAllPaid(SearchCriteria criteria);
-
-	BigDecimal getTotalAdvanceAdjustedAmount(SearchCriteria criteria);
-
-	BigDecimal getTotalPendingPenaltyAmount(SearchCriteria criteria);
-
-	BigDecimal getAdvanceCollectionAmount(SearchCriteria criteria);
-
-	BigDecimal getPenaltyCollectionAmount(SearchCriteria criteria);
 
 	void postForMeterReading(WaterConnectionRequest waterConnectionrequest);
 }
