@@ -13,11 +13,11 @@ import os
 import string
 import random
 
-host = 'https://naljal-uat.digit.org/'
+host = 'https://naljalseva.jjm.gov.in/assam/'
 loginUrl = host + 'mgramseva/login'
 username = ''            #super user mobileno
 password = ''            #super user paswword
-stateTenantId='ka'
+stateTenantId='as'
 path='updated-user.xlsx'
 #cmd=['kubectl', '-it', 'exec', 'kafka-v2-0',  '-n', 'mgramseva', '--', 'kafka-console-producer', '--broker-list', 'localhost:9092', '--topic',  'egov.core.notification.sms']
 cmd = "kubectl -it exec kafka-v2-0  -n kafka-cluster -- kafka-console-producer --broker-list localhost:9092 --topic  egov.core.notification.sms <sms.txt"
@@ -64,7 +64,7 @@ def createUser(sheet, rowIndex, accesstoken,file):
     role1 = {}
     cityTenantId= str(sheet.cell(rowIndex, 2).value)
     cityTenantId=cityTenantId.replace(' ','')
-    cityTenantId='ka.'+cityTenantId.lower()
+    cityTenantId='as.'+cityTenantId.lower()
     multiRole= sheet.cell(rowIndex, 10).value
     multiRoleList=multiRole.split(",")
     #print(multiRoleList)
@@ -202,7 +202,7 @@ def accessToken():
         'scope': 'read',
         'grant_type': 'password',
         }
-    query['tenantId'] = 'ka'
+    query['tenantId'] = 'as'
     response = requests.post(host + 'user/oauth/token', data=query,
                              headers={
         'Connection': 'keep-alive',
